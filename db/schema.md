@@ -152,3 +152,17 @@ Existe como **contrato de datos**, no como checkout real — sigue marcado CRITI
 **Lo que NO hace `api/orders.js` todavia (a proposito):** no procesa pagos, no valida ni reserva inventario, no calcula envio/impuestos, y no aplica automaticamente los descuentos de `loyalty_progress` en estado `reward_ready` — eso es una decision de negocio pendiente (¿se aplica en la orden actual o en la siguiente?). El endpoint solo informa cuales reglas de lealtad quedaron listas para redimir.
 
 **Indices:** `(customer_id, created_at desc)` para historial por cliente; `status`.
+
+---
+
+## 7. Gap conocido: catálogo de productos vive solo en el cliente (no en Mongo)
+
+Los campos `sku`, `rating` (`{stars, count}`), `related` (array de skus para "compra conjunta") y los comentarios de producto (`demoComments`) se agregaron en el objeto `V.products[...]` dentro de `index.html` — **JavaScript estático, no en MongoDB**. Esto fue una decisión deliberada para no bloquear la maquetación móvil/UX con una migración de datos a mitad de sprint, pero implica lo siguiente antes de producción real:
+
+| Riesgo | Detalle |
+|---|---|
+| Sin persistencia real de reseñas | `rating` y los comentarios son data dummy fija por producto — no hay endpoint que capture una reseña real de un cliente ni la guarde en Mongo. |
+| Cross-sell no auditable | `related: [skus]` es una relación fija a mano en el JS, no una colección `products` con relación real; no se puede medir conversión de "compra conjunta" ni cambiarla sin republicar el sitio. |
+| Único punto de verdad de precio/sku duplicado | `api/orders.js` recibe `items: [{sku, name, unit_price, qty}]` del cliente y confía en que el sku/precio coincide con el catálogo estático — no hay validación cruzada contra una colección `products` en servidor. |
+
+**Recomendación (bloqueante antes de campaña con inversión real en tráfico):** crear colección `products` en Mongo (sku, nombre, precio, vertical, rating agregado, related[]) y una colección `product_reviews` (customer_id, sku, stars, text, created_at, status: pending/published) para que rating y comentarios sean reales y `api/orders.js` valide `unit_price` contra el servidor, no contra el cliente. Mientras esto no exista, cualquier cifra de "rating" o "comentarios" en el sitio debe tratarse como **contenido de demostración**, no como dato de negocio.

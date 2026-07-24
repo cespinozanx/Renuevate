@@ -50,8 +50,12 @@ nav.main a{font-size:12px; letter-spacing:1.6px; text-transform:uppercase; font-
 nav.main a:hover{border-color:var(--gold); color:var(--navy);}
 nav.main a.active{border-color:var(--active); color:var(--navy);}
 .header-icons{display:flex; align-items:center; gap:20px;}
-.hamburger{display:none; flex-direction:column; gap:5px; cursor:pointer;}
+.hamburger{display:none; flex-direction:column; gap:5px; cursor:pointer; padding:6px; margin-left:-6px;}
 .hamburger span{width:24px; height:2px; background:var(--grey);}
+.nav-overlay{display:none; position:fixed; inset:0; background:rgba(30,30,30,.45); z-index:69;}
+.nav-overlay.open{display:block;}
+.nav-close{display:none; position:absolute; top:22px; right:22px; background:none; border:none; font-size:28px; line-height:1; color:var(--ink); cursor:pointer;}
+body.nav-lock{overflow:hidden;}
 
 .lang-select-top{background:transparent; color:var(--ink); border:1px solid var(--line); border-radius:2px; font-size:11px; letter-spacing:.6px; padding:5px 6px; cursor:pointer; font-family:'Manrope',sans-serif;}
 
@@ -136,9 +140,25 @@ section{padding:92px 0;}
 .product-img svg{width:52px; height:52px; opacity:.7; color:var(--active);}
 .product-body{padding:18px;}
 .product-body .p-eyebrow{font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--active); font-weight:700;}
-.product-body h4{font-family:'Playfair Display',serif; font-size:15.5px; font-weight:600; margin:7px 0 5px;}
-.product-body p{font-size:12.5px; color:var(--grey); margin-bottom:10px;}
+/* Regla permanente: nombre a 1 linea + descripcion a 2 lineas = 3 lineas de texto maximo por tarjeta */
+.product-body h4{font-family:'Playfair Display',serif; font-size:15.5px; font-weight:600; margin:7px 0 5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.product-body p{font-size:12.5px; color:var(--grey); margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.6em;}
+.product-rating{display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--grey); margin-bottom:8px;}
+.product-rating .stars{color:var(--gold); letter-spacing:1px; font-size:12px;}
 .product-body .price{font-size:14.5px; font-weight:700; font-family:'Manrope',sans-serif;}
+.product-related{font-size:10.5px; color:var(--grey); margin-top:8px; padding-top:8px; border-top:1px dashed var(--line);}
+.product-related b{color:var(--ink);}
+.products-footnote{text-align:center; margin:-36px 0 60px;}
+.products-footnote button{background:none; border:none; color:var(--grey); font-size:12.5px; text-decoration:underline; cursor:pointer; letter-spacing:.3px;}
+.products-footnote button:hover{color:var(--navy);}
+.comments-panel{display:none; max-width:720px; margin:18px auto 0; text-align:left; background:#F8F7F3; border:1px solid var(--line); border-radius:6px; padding:22px 26px;}
+.comments-panel.open{display:block;}
+.comment-item{padding:12px 0; border-bottom:1px solid var(--line);}
+.comment-item:last-child{border-bottom:none;}
+.comment-item .c-head{display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:4px;}
+.comment-item .c-stars{color:var(--gold); font-size:12px;}
+.comment-item p{font-size:13px; color:var(--grey); margin:0;}
+.comments-disclaimer{font-size:10.5px; color:var(--grey); opacity:.75; margin-top:10px; font-style:italic;}
 
 .routine-block{background:var(--active-soft); border-radius:6px; padding:46px; margin-bottom:20px;}
 .routine-head{text-align:center; max-width:520px; margin:0 auto 36px;}
@@ -254,17 +274,34 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:66px;}
 }
 @media(max-width:760px){
   .topbar-links span:nth-child(2), .topbar-links span:nth-child(3){display:none;}
-  nav.main{position:fixed; top:0; right:-100%; width:78%; max-width:320px; height:100vh; background:#fff; flex-direction:column; padding:100px 30px; gap:26px; transition:right .3s ease; box-shadow:-8px 0 24px rgba(0,0,0,.15);}
+  .nav-row{position:relative;}
+  .logo{flex:1; text-align:center; font-size:21px;}
+  nav.main{position:fixed; top:0; right:-100%; width:78%; max-width:320px; height:100vh; z-index:70; background:#fff; flex-direction:column; padding:100px 30px; gap:26px; transition:right .3s ease; box-shadow:-8px 0 24px rgba(0,0,0,.15);}
   nav.main.open{right:0;}
+  .nav-close{display:block;}
   .hamburger{display:flex;}
   .header-icons .icon-label{display:none;}
+  /* Regla permanente: en movil, listas de productos nunca muestran mas de 2 por fila (legibilidad) */
   .verticals-grid{grid-template-columns:1fr;}
-  .products-grid{grid-template-columns:1fr 1fr;}
+  .products-grid{grid-template-columns:1fr 1fr; gap:12px;}
   .routine-cards{grid-template-columns:1fr;}
   .zoom-banner{grid-template-columns:1fr;}
+  .zoom-stats{grid-template-columns:1fr;}
   .section-head{padding:0 6px;}
   .brand-map .bm-verticals{gap:18px;}
-  section{padding:64px 0;}
+  section{padding:48px 0;}
+  .footer-grid{grid-template-columns:1fr !important;}
+  .phil-grid{gap:32px;}
+  .nl-form{flex-direction:column;}
+  .social-signup{flex-direction:column; align-items:stretch;}
+}
+
+@media(max-width:400px){
+  .products-grid{gap:8px;}
+  .product-body{padding:12px;}
+  .product-body h4{font-size:13.5px;}
+  .hero-content h1{font-size:26px;}
+  .chat-panel{height:70vh;}
 }
 
 /* ===================== Entrada izquierda -> derecha al desplazarse ===================== */
@@ -321,13 +358,16 @@ var AZURA_CONFIG = {
 
 <header class="site" id="siteHeader">
   <div class="container nav-row">
+    <div class="hamburger" id="hamburgerBtn" onclick="toggleNav()" role="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><span></span><span></span><span></span></div>
     <div class="logo">AZURA <span>WELLNESS GROUP</span></div>
+    <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
+      <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
       <a data-v="raiz" onclick="goVertical('raiz')" data-i18n="nav.raiz">Raiz . Suplementos</a>
       <a data-v="nacar" onclick="goVertical('nacar')" data-i18n="nav.nacar">Nacar . Belleza</a>
       <a data-v="vigor" onclick="goVertical('vigor')" data-i18n="nav.vigor">Vigor . Nutricion</a>
       <a data-v="roble" onclick="goVertical('roble')" data-i18n="nav.roble">Roble . Hombre</a>
-      <a onclick="scrollToId('filosofia')" data-i18n="nav.filosofia">Nuestra filosofia</a>
+      <a onclick="scrollToId('filosofia'); closeNav();" data-i18n="nav.filosofia">Nuestra filosofia</a>
     </nav>
     <div class="header-icons">
       <select class="lang-select-top" id="langSelectTop" onchange="applyLanguage(this.value)" aria-label="Idioma / Language / Langue">
@@ -335,7 +375,6 @@ var AZURA_CONFIG = {
         <option value="en">EN</option>
         <option value="fr">FR</option>
       </select>
-      <div class="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
     </div>
   </div>
 </header>
@@ -452,6 +491,10 @@ var AZURA_CONFIG = {
     </div>
 
     <div class="products-grid" id="productsGrid"></div>
+    <div class="products-footnote">
+      <button id="commentsToggleBtn" onclick="toggleComments()">Ver comentarios</button>
+      <div class="comments-panel" id="commentsPanel"></div>
+    </div>
 
     <div class="routine-block">
       <div class="routine-head reveal-stagger">
@@ -559,14 +602,14 @@ var AZURA_CONFIG = {
   <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.8 14.3c-.2.6-1.2 1.2-1.7 1.3-.4.1-1 .1-1.6-.1-.4-.1-1-.3-1.6-.6-2.9-1.3-4.8-4.2-4.9-4.4-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4.2.5.7 1.8.8 1.9.1.2.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.2 1.4 2.6 1.6.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.7.8.2.1.4.2.4.3.1.2.1.7-.1 1.3Z"/></svg>
 </a>
 
-<div class="chat-float" id="chatFloat" onclick="toggleChat()" aria-label="Juelita, asistente virtual de Azura">
+<div class="chat-float" id="chatFloat" onclick="toggleChat()" aria-label="Julieta, asistente virtual de Azura">
   <svg viewBox="0 0 24 24" fill="none" stroke="#5E5E5E" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/><circle cx="8.5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="15.5" cy="12" r="1"/></svg>
 </div>
 
 <div class="chat-panel" id="chatPanel">
   <div class="chat-head">
     <div>
-      <b>Juelita</b>
+      <b>Julieta</b>
       <span id="chatSubtitle">En linea . tu asistente de bienestar Azura</span>
     </div>
     <div class="chat-close" onclick="toggleChat()">&times;</div>
@@ -596,10 +639,10 @@ var V = {
       tag:"Suplementos organicos", msg:"El bienestar empieza desde la raiz.", bmLabel:"Raiz · Organics",
       stats:["96%","30 dias","100%"],
       products:[
-        {tag:"Multivitaminico", name:"Bienestar Diario 30 caps", desc:"Complejo natural para energia sostenida.", price:"$389 MXN"},
-        {tag:"Adaptogeno", name:"Equilibrio Ashwagandha", desc:"Apoyo natural ante el estres diario.", price:"$449 MXN"},
-        {tag:"Digestivo", name:"Fibra Prebiotica Raiz", desc:"Bienestar digestivo de origen vegetal.", price:"$329 MXN"},
-        {tag:"Inmunidad", name:"Defensa Natural C+Zinc", desc:"Refuerzo natural de las defensas.", price:"$369 MXN"}
+        {sku:"RAIZ-01", tag:"Multivitaminico", name:"Bienestar Diario 30 caps", desc:"Complejo natural para energia sostenida.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
+        {sku:"RAIZ-02", tag:"Adaptogeno", name:"Equilibrio Ashwagandha", desc:"Apoyo natural ante el estres diario.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
+        {sku:"RAIZ-03", tag:"Digestivo", name:"Fibra Prebiotica Raiz", desc:"Bienestar digestivo de origen vegetal.", price:"$329 MXN", rating:{stars:4.5,count:145}, related:["RAIZ-01"]},
+        {sku:"RAIZ-04", tag:"Inmunidad", name:"Defensa Natural C+Zinc", desc:"Refuerzo natural de las defensas.", price:"$369 MXN", rating:{stars:4.8,count:267}, related:["RAIZ-01"]}
       ],
       routines:[{title:"Rutina esencial", desc:"1 producto ancla para empezar tu bienestar diario."},{title:"Rutina intermedia", desc:"combo energia + digestion para resultados visibles."},{title:"Rutina completa", desc:"protocolo de 30 dias con seguimiento incluido."}]
     },
@@ -609,10 +652,10 @@ var V = {
       tag:"Organic supplements", msg:"Wellness starts from the root.", bmLabel:"Raiz · Organics",
       stats:["96%","30 days","100%"],
       products:[
-        {tag:"Multivitamin", name:"Daily Wellness 30 caps", desc:"Natural complex for sustained energy.", price:"$389 MXN"},
-        {tag:"Adaptogen", name:"Ashwagandha Balance", desc:"Natural support against daily stress.", price:"$449 MXN"},
-        {tag:"Digestive", name:"Raiz Prebiotic Fiber", desc:"Plant-based digestive wellness.", price:"$329 MXN"},
-        {tag:"Immunity", name:"Natural Defense C+Zinc", desc:"Natural immune support.", price:"$369 MXN"}
+        {sku:"RAIZ-01", tag:"Multivitamin", name:"Daily Wellness 30 caps", desc:"Natural complex for sustained energy.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
+        {sku:"RAIZ-02", tag:"Adaptogen", name:"Ashwagandha Balance", desc:"Natural support against daily stress.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
+        {sku:"RAIZ-03", tag:"Digestive", name:"Raiz Prebiotic Fiber", desc:"Plant-based digestive wellness.", price:"$329 MXN", rating:{stars:4.5,count:145}, related:["RAIZ-01"]},
+        {sku:"RAIZ-04", tag:"Immunity", name:"Natural Defense C+Zinc", desc:"Natural immune support.", price:"$369 MXN", rating:{stars:4.8,count:267}, related:["RAIZ-01"]}
       ],
       routines:[{title:"Essential routine", desc:"1 anchor product to start your daily wellness."},{title:"Intermediate routine", desc:"energy + digestion combo for visible results."},{title:"Complete routine", desc:"30-day protocol with follow-up included."}]
     },
@@ -622,10 +665,10 @@ var V = {
       tag:"Complements organiques", msg:"Le bien-etre commence a la racine.", bmLabel:"Raiz · Organics",
       stats:["96%","30 jours","100%"],
       products:[
-        {tag:"Multivitamine", name:"Bien-etre Quotidien 30 gel.", desc:"Complexe naturel pour une energie durable.", price:"$389 MXN"},
-        {tag:"Adaptogene", name:"Equilibre Ashwagandha", desc:"Soutien naturel contre le stress quotidien.", price:"$449 MXN"},
-        {tag:"Digestif", name:"Fibre Prebiotique Raiz", desc:"Bien-etre digestif d'origine vegetale.", price:"$329 MXN"},
-        {tag:"Immunite", name:"Defense Naturelle C+Zinc", desc:"Renfort naturel des defenses.", price:"$369 MXN"}
+        {sku:"RAIZ-01", tag:"Multivitamine", name:"Bien-etre Quotidien 30 gel.", desc:"Complexe naturel pour une energie durable.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
+        {sku:"RAIZ-02", tag:"Adaptogene", name:"Equilibre Ashwagandha", desc:"Soutien naturel contre le stress quotidien.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
+        {sku:"RAIZ-03", tag:"Digestif", name:"Fibre Prebiotique Raiz", desc:"Bien-etre digestif d'origine vegetale.", price:"$329 MXN", rating:{stars:4.5,count:145}, related:["RAIZ-01"]},
+        {sku:"RAIZ-04", tag:"Immunite", name:"Defense Naturelle C+Zinc", desc:"Renfort naturel des defenses.", price:"$369 MXN", rating:{stars:4.8,count:267}, related:["RAIZ-01"]}
       ],
       routines:[{title:"Routine essentielle", desc:"1 produit phare pour commencer votre bien-etre quotidien."},{title:"Routine intermediaire", desc:"combo energie + digestion pour des resultats visibles."},{title:"Routine complete", desc:"protocole de 30 jours avec suivi inclus."}]
     }
@@ -638,10 +681,10 @@ var V = {
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"Nacar · Beauty",
       stats:["94%","14 dias","+87%"],
       products:[
-        {tag:"Serum facial", name:"Luz Nacar Vitamina C", desc:"Luminosidad inmediata, uso diario.", price:"$549 MXN"},
-        {tag:"Hidratante", name:"Crema Perla Hidratante", desc:"Hidratacion profunda 24h.", price:"$479 MXN"},
-        {tag:"Cabello", name:"Aceite Brillo Sedoso", desc:"Brillo y suavidad sin sensacion grasosa.", price:"$399 MXN"},
-        {tag:"Contorno", name:"Contorno de Ojos Nacar", desc:"Reduce signos de cansancio.", price:"$419 MXN"}
+        {sku:"NACAR-01", tag:"Serum facial", name:"Luz Nacar Vitamina C", desc:"Luminosidad inmediata, uso diario.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
+        {sku:"NACAR-02", tag:"Hidratante", name:"Crema Perla Hidratante", desc:"Hidratacion profunda 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
+        {sku:"NACAR-03", tag:"Cabello", name:"Aceite Brillo Sedoso", desc:"Brillo y suavidad sin sensacion grasosa.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
+        {sku:"NACAR-04", tag:"Contorno", name:"Contorno de Ojos Nacar", desc:"Reduce signos de cansancio.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]}
       ],
       routines:[{title:"Ritual esencial", desc:"limpieza + hidratacion diaria."},{title:"Ritual principal", desc:"suma serum de tratamiento."},{title:"Ritual completo", desc:"rutina de 5 pasos con contorno y proteccion."}]
     },
@@ -651,10 +694,10 @@ var V = {
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"Nacar · Beauty",
       stats:["94%","14 days","+87%"],
       products:[
-        {tag:"Facial serum", name:"Nacar Glow Vitamin C", desc:"Instant radiance, daily use.", price:"$549 MXN"},
-        {tag:"Moisturizer", name:"Pearl Hydrating Cream", desc:"24h deep hydration.", price:"$479 MXN"},
-        {tag:"Hair", name:"Silky Shine Oil", desc:"Shine and softness with no greasy feel.", price:"$399 MXN"},
-        {tag:"Eye care", name:"Nacar Eye Contour", desc:"Reduces signs of tiredness.", price:"$419 MXN"}
+        {sku:"NACAR-01", tag:"Facial serum", name:"Nacar Glow Vitamin C", desc:"Instant radiance, daily use.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
+        {sku:"NACAR-02", tag:"Moisturizer", name:"Pearl Hydrating Cream", desc:"24h deep hydration.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
+        {sku:"NACAR-03", tag:"Hair", name:"Silky Shine Oil", desc:"Shine and softness with no greasy feel.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
+        {sku:"NACAR-04", tag:"Eye care", name:"Nacar Eye Contour", desc:"Reduces signs of tiredness.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]}
       ],
       routines:[{title:"Essential ritual", desc:"daily cleansing + hydration."},{title:"Core ritual", desc:"adds a treatment serum."},{title:"Complete ritual", desc:"5-step routine with eye contour and protection."}]
     },
@@ -664,10 +707,10 @@ var V = {
       tag:"Beaute feminine", msg:"Une luminosite qui prend soin d'elle-meme.", bmLabel:"Nacar · Beauty",
       stats:["94%","14 jours","+87%"],
       products:[
-        {tag:"Serum visage", name:"Eclat Nacar Vitamine C", desc:"Luminosite immediate, usage quotidien.", price:"$549 MXN"},
-        {tag:"Hydratant", name:"Creme Perle Hydratante", desc:"Hydratation profonde 24h.", price:"$479 MXN"},
-        {tag:"Cheveux", name:"Huile Brillance Soyeuse", desc:"Brillance et douceur sans effet gras.", price:"$399 MXN"},
-        {tag:"Contour", name:"Contour des Yeux Nacar", desc:"Reduit les signes de fatigue.", price:"$419 MXN"}
+        {sku:"NACAR-01", tag:"Serum visage", name:"Eclat Nacar Vitamine C", desc:"Luminosite immediate, usage quotidien.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
+        {sku:"NACAR-02", tag:"Hydratant", name:"Creme Perle Hydratante", desc:"Hydratation profonde 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
+        {sku:"NACAR-03", tag:"Cheveux", name:"Huile Brillance Soyeuse", desc:"Brillance et douceur sans effet gras.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
+        {sku:"NACAR-04", tag:"Contour", name:"Contour des Yeux Nacar", desc:"Reduit les signes de fatigue.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]}
       ],
       routines:[{title:"Rituel essentiel", desc:"nettoyage + hydratation quotidienne."},{title:"Rituel principal", desc:"ajoute un serum de traitement."},{title:"Rituel complet", desc:"routine en 5 etapes avec contour et protection."}]
     }
@@ -680,10 +723,10 @@ var V = {
       tag:"Nutricion y rendimiento", msg:"Energia que se sostiene.", bmLabel:"Vigor · Nutrition",
       stats:["92%","7 dias","100%"],
       products:[
-        {tag:"Proteina", name:"Proteina Vegetal Vigor", desc:"22g de proteina limpia por porcion.", price:"$699 MXN"},
-        {tag:"Pre-actividad", name:"Energia Natural Pre-Entreno", desc:"Foco y energia sin picos ni caidas.", price:"$459 MXN"},
-        {tag:"Recuperacion", name:"Recovery Magnesio+", desc:"Apoyo muscular post actividad.", price:"$389 MXN"},
-        {tag:"Hidratacion", name:"Electrolitos Naturales", desc:"Hidratacion funcional sin azucares anadidos.", price:"$299 MXN"}
+        {sku:"VIGOR-01", tag:"Proteina", name:"Proteina Vegetal Vigor", desc:"22g de proteina limpia por porcion.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
+        {sku:"VIGOR-02", tag:"Pre-actividad", name:"Energia Natural Pre-Entreno", desc:"Foco y energia sin picos ni caidas.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
+        {sku:"VIGOR-03", tag:"Recuperacion", name:"Recovery Magnesio+", desc:"Apoyo muscular post actividad.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
+        {sku:"VIGOR-04", tag:"Hidratacion", name:"Electrolitos Naturales", desc:"Hidratacion funcional sin azucares anadidos.", price:"$299 MXN", rating:{stars:4.7,count:245}, related:["VIGOR-02"]}
       ],
       routines:[{title:"Rutina esencial", desc:"proteina diaria."},{title:"Rutina activa", desc:"proteina + pre-entreno."},{title:"Rutina de rendimiento", desc:"protocolo completo con recuperacion."}]
     },
@@ -693,10 +736,10 @@ var V = {
       tag:"Nutrition & performance", msg:"Energy that lasts.", bmLabel:"Vigor · Nutrition",
       stats:["92%","7 days","100%"],
       products:[
-        {tag:"Protein", name:"Vigor Plant Protein", desc:"22g of clean protein per serving.", price:"$699 MXN"},
-        {tag:"Pre-workout", name:"Natural Pre-Workout Energy", desc:"Focus and energy with no spikes or crashes.", price:"$459 MXN"},
-        {tag:"Recovery", name:"Recovery Magnesium+", desc:"Muscle support after activity.", price:"$389 MXN"},
-        {tag:"Hydration", name:"Natural Electrolytes", desc:"Functional hydration with no added sugars.", price:"$299 MXN"}
+        {sku:"VIGOR-01", tag:"Protein", name:"Vigor Plant Protein", desc:"22g of clean protein per serving.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
+        {sku:"VIGOR-02", tag:"Pre-workout", name:"Natural Pre-Workout Energy", desc:"Focus and energy with no spikes or crashes.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
+        {sku:"VIGOR-03", tag:"Recovery", name:"Recovery Magnesium+", desc:"Muscle support after activity.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
+        {sku:"VIGOR-04", tag:"Hydration", name:"Natural Electrolytes", desc:"Functional hydration with no added sugars.", price:"$299 MXN", rating:{stars:4.7,count:245}, related:["VIGOR-02"]}
       ],
       routines:[{title:"Essential routine", desc:"daily protein."},{title:"Active routine", desc:"protein + pre-workout."},{title:"Performance routine", desc:"complete protocol with recovery."}]
     },
@@ -706,10 +749,10 @@ var V = {
       tag:"Nutrition et performance", msg:"Une energie qui dure.", bmLabel:"Vigor · Nutrition",
       stats:["92%","7 jours","100%"],
       products:[
-        {tag:"Proteine", name:"Proteine Vegetale Vigor", desc:"22g de proteine pure par portion.", price:"$699 MXN"},
-        {tag:"Pre-entrainement", name:"Energie Naturelle Pre-Entrainement", desc:"Concentration et energie sans pics ni chutes.", price:"$459 MXN"},
-        {tag:"Recuperation", name:"Recovery Magnesium+", desc:"Soutien musculaire apres l'effort.", price:"$389 MXN"},
-        {tag:"Hydratation", name:"Electrolytes Naturels", desc:"Hydratation fonctionnelle sans sucres ajoutes.", price:"$299 MXN"}
+        {sku:"VIGOR-01", tag:"Proteine", name:"Proteine Vegetale Vigor", desc:"22g de proteine pure par portion.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
+        {sku:"VIGOR-02", tag:"Pre-entrainement", name:"Energie Naturelle Pre-Entrainement", desc:"Concentration et energie sans pics ni chutes.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
+        {sku:"VIGOR-03", tag:"Recuperation", name:"Recovery Magnesium+", desc:"Soutien musculaire apres l'effort.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
+        {sku:"VIGOR-04", tag:"Hydratation", name:"Electrolytes Naturels", desc:"Hydratation fonctionnelle sans sucres ajoutes.", price:"$299 MXN", rating:{stars:4.7,count:245}, related:["VIGOR-02"]}
       ],
       routines:[{title:"Routine essentielle", desc:"proteine quotidienne."},{title:"Routine active", desc:"proteine + pre-entrainement."},{title:"Routine de performance", desc:"protocole complet avec recuperation."}]
     }
@@ -722,10 +765,10 @@ var V = {
       tag:"Cuidado para hombre", msg:"Fuerza que se cuida a si misma.", bmLabel:"Roble · Men",
       stats:["95%","21 dias","100%"],
       products:[
-        {tag:"Facial", name:"Limpiador Roble Carbon", desc:"Limpieza profunda sin resecar.", price:"$339 MXN"},
-        {tag:"Barba", name:"Aceite de Barba Cedro", desc:"Suaviza y da forma sin efecto grasoso.", price:"$379 MXN"},
-        {tag:"Corporal", name:"Desodorante Natural Roble", desc:"Proteccion 24h sin sales de aluminio.", price:"$259 MXN"},
-        {tag:"Cabello", name:"Shampoo Anticaida Roble", desc:"Fortalece desde la raiz.", price:"$389 MXN"}
+        {sku:"ROBLE-01", tag:"Facial", name:"Limpiador Roble Carbon", desc:"Limpieza profunda sin resecar.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
+        {sku:"ROBLE-02", tag:"Barba", name:"Aceite de Barba Cedro", desc:"Suaviza y da forma sin efecto grasoso.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
+        {sku:"ROBLE-03", tag:"Corporal", name:"Desodorante Natural Roble", desc:"Proteccion 24h sin sales de aluminio.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
+        {sku:"ROBLE-04", tag:"Cabello", name:"Shampoo Anticaida Roble", desc:"Fortalece desde la raiz.", price:"$389 MXN", rating:{stars:4.4,count:176}, related:["ROBLE-03"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza facial diaria."},{title:"Rutina intermedia", desc:"suma cuidado de barba."},{title:"Rutina completa", desc:"protocolo facial + corporal + capilar."}]
     },
@@ -735,10 +778,10 @@ var V = {
       tag:"Men's care", msg:"Strength that takes care of itself.", bmLabel:"Roble · Men",
       stats:["95%","21 days","100%"],
       products:[
-        {tag:"Facial", name:"Roble Charcoal Cleanser", desc:"Deep cleansing without drying out.", price:"$339 MXN"},
-        {tag:"Beard", name:"Cedar Beard Oil", desc:"Softens and shapes with no greasy feel.", price:"$379 MXN"},
-        {tag:"Body", name:"Natural Roble Deodorant", desc:"24h protection, no aluminum salts.", price:"$259 MXN"},
-        {tag:"Hair", name:"Roble Anti-Hair-Loss Shampoo", desc:"Strengthens from the root.", price:"$389 MXN"}
+        {sku:"ROBLE-01", tag:"Facial", name:"Roble Charcoal Cleanser", desc:"Deep cleansing without drying out.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
+        {sku:"ROBLE-02", tag:"Beard", name:"Cedar Beard Oil", desc:"Softens and shapes with no greasy feel.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
+        {sku:"ROBLE-03", tag:"Body", name:"Natural Roble Deodorant", desc:"24h protection, no aluminum salts.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
+        {sku:"ROBLE-04", tag:"Hair", name:"Roble Anti-Hair-Loss Shampoo", desc:"Strengthens from the root.", price:"$389 MXN", rating:{stars:4.4,count:176}, related:["ROBLE-03"]}
       ],
       routines:[{title:"Essential routine", desc:"daily facial cleansing."},{title:"Intermediate routine", desc:"adds beard care."},{title:"Complete routine", desc:"facial + body + hair protocol."}]
     },
@@ -748,10 +791,10 @@ var V = {
       tag:"Soin pour homme", msg:"Une force qui prend soin d'elle-meme.", bmLabel:"Roble · Men",
       stats:["95%","21 jours","100%"],
       products:[
-        {tag:"Visage", name:"Nettoyant Roble au Charbon", desc:"Nettoyage profond sans dessecher.", price:"$339 MXN"},
-        {tag:"Barbe", name:"Huile a Barbe Cedre", desc:"Adoucit et sculpte sans effet gras.", price:"$379 MXN"},
-        {tag:"Corps", name:"Deodorant Naturel Roble", desc:"Protection 24h sans sels d'aluminium.", price:"$259 MXN"},
-        {tag:"Cheveux", name:"Shampoing Anti-Chute Roble", desc:"Renforce depuis la racine.", price:"$389 MXN"}
+        {sku:"ROBLE-01", tag:"Visage", name:"Nettoyant Roble au Charbon", desc:"Nettoyage profond sans dessecher.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
+        {sku:"ROBLE-02", tag:"Barbe", name:"Huile a Barbe Cedre", desc:"Adoucit et sculpte sans effet gras.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
+        {sku:"ROBLE-03", tag:"Corps", name:"Deodorant Naturel Roble", desc:"Protection 24h sans sels d'aluminium.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
+        {sku:"ROBLE-04", tag:"Cheveux", name:"Shampoing Anti-Chute Roble", desc:"Renforce depuis la racine.", price:"$389 MXN", rating:{stars:4.4,count:176}, related:["ROBLE-03"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage facial quotidien."},{title:"Routine intermediaire", desc:"ajoute le soin de la barbe."},{title:"Routine complete", desc:"protocole visage + corps + cheveux."}]
     }
@@ -799,8 +842,8 @@ var I18N = {
     "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)",
     "profile.consentSmsLabel":"Tambien por SMS", "profile.consentWhatsappLabel":"Tambien por WhatsApp",
     "profile.submitLabel":"Guardar perfil", "profile.skipLabel":"Ahora no", "profile.phonePlaceholder":"+525512345678",
-    "chat.greeting":"Hola! Soy Juelita 🌿, tu asesora de bienestar Azura. ¿En que te ayudo hoy?",
-    "chat.q.identity":"Quien eres", "chat.a.identity":"Soy Juelita, tu asesora de belleza y bienestar Azura. ¿En que te ayudo?",
+    "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de bienestar Azura. ¿En que te ayudo hoy?",
+    "chat.q.identity":"Quien eres", "chat.a.identity":"Soy Julieta, tu asesora de belleza y bienestar Azura. ¿En que te ayudo?",
     "chat.a.greeting":"Hola! ¿En que te ayudo?",
     "chat.a.capability":"Te ayudo con envios, pagos, devoluciones, elegir tu ritual o hablar con un asesor.",
     "chat.a.purpose":"Te ayudo a encontrar tu ritual ideal, rapido y sin vueltas.",
@@ -870,8 +913,8 @@ var I18N = {
     "profile.consentEmailLabel":"I agree to receive email promotions (required for birthday and loyalty perks)",
     "profile.consentSmsLabel":"Also by SMS", "profile.consentWhatsappLabel":"Also by WhatsApp",
     "profile.submitLabel":"Save profile", "profile.skipLabel":"Not now", "profile.phonePlaceholder":"+15551234567",
-    "chat.greeting":"Hi! I'm Juelita 🌿, your Azura wellness advisor. How can I help you today?",
-    "chat.q.identity":"Who are you", "chat.a.identity":"I'm Juelita, your Azura beauty and wellness advisor. How can I help?",
+    "chat.greeting":"Hi! I'm Julieta 🌿, your Azura wellness advisor. How can I help you today?",
+    "chat.q.identity":"Who are you", "chat.a.identity":"I'm Julieta, your Azura beauty and wellness advisor. How can I help?",
     "chat.a.greeting":"Hi! How can I help?",
     "chat.a.capability":"I can help with shipping, payment, returns, choosing your ritual, or a human advisor.",
     "chat.a.purpose":"I help you find your ideal ritual, fast and simple.",
@@ -941,8 +984,8 @@ var I18N = {
     "profile.consentEmailLabel":"J'accepte de recevoir des promotions par courriel (requis pour anniversaire et fidelite)",
     "profile.consentSmsLabel":"Aussi par SMS", "profile.consentWhatsappLabel":"Aussi par WhatsApp",
     "profile.submitLabel":"Enregistrer le profil", "profile.skipLabel":"Pas maintenant", "profile.phonePlaceholder":"+33612345678",
-    "chat.greeting":"Bonjour ! Je suis Juelita 🌿, votre conseillere bien-etre Azura. Comment puis-je vous aider ?",
-    "chat.q.identity":"Qui es-tu", "chat.a.identity":"Je suis Juelita, votre conseillere beaute et bien-etre Azura. Comment puis-je vous aider ?",
+    "chat.greeting":"Bonjour ! Je suis Julieta 🌿, votre conseillere bien-etre Azura. Comment puis-je vous aider ?",
+    "chat.q.identity":"Qui es-tu", "chat.a.identity":"Je suis Julieta, votre conseillere beaute et bien-etre Azura. Comment puis-je vous aider ?",
     "chat.a.greeting":"Bonjour ! Comment puis-je vous aider ?",
     "chat.a.capability":"Je peux vous aider avec la livraison, le paiement, les retours, ou un conseiller humain.",
     "chat.a.purpose":"Je vous aide a trouver votre rituel ideal, vite et simplement.",
@@ -983,6 +1026,15 @@ var DYN = {
        configMissing:function(field){ return 'Falta configurar ' + field + ' en AZURA_CONFIG (ver README de azura-site) antes de que este boton funcione.'; },
        registerOk:function(name){ return 'Listo' + (name ? ', ' + name : '') + '. Tu registro quedo guardado en la base de datos de Azura.'; },
        registerFail:function(msg){ return 'No pudimos guardar tu registro todavia (' + msg + '). Si el sitio ya esta desplegado, revisa las variables de entorno del backend en Vercel.'; },
+       boughtTogether:function(){ return 'Se compra junto con:'; },
+       viewComments:function(){ return 'Ver comentarios'; },
+       hideComments:function(){ return 'Ocultar comentarios'; },
+       commentsDisclaimer:function(){ return 'Comentarios de ejemplo con fines de demostracion del prototipo.'; },
+       demoComments:function(){ return [
+         {name:'Cliente verificado', stars:5, text:'Buena calidad y llego mas rapido de lo que esperaba.'},
+         {name:'Cliente verificado', stars:4, text:'Cumple lo que promete, seguire comprando.'},
+         {name:'Cliente verificado', stars:5, text:'Se nota la diferencia despues de unas semanas de uso.'}
+       ]; },
        profile:{
          title:'Completa tu perfil',
          subtitle:'Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.',
@@ -1000,7 +1052,7 @@ var DYN = {
          errorPrefix:function(msg){ return 'No pudimos guardar tu perfil (' + msg + ').'; },
        },
        recommend:function(age,gender,v1,v2){ return 'Con ' + age + ' anos, te recomiendo empezar por <b>' + v1 + '</b> y complementarlo con <b>' + v2 + '</b> para tu bienestar diario. Te llevo a conocer ' + v1 + '...'; },
-       juelita:{
+       julieta:{
          goalQuestion:function(){ return 'Cual es tu prioridad hoy? 🌿'; },
          goalOptions:function(){ return [
            { label:'Suplementos y nutricion', action:function(){ chooseGoal('supplements'); } },
@@ -1052,6 +1104,15 @@ var DYN = {
        configMissing:function(field){ return 'Missing ' + field + ' in AZURA_CONFIG (see azura-site README) before this button will work.'; },
        registerOk:function(name){ return 'Done' + (name ? ', ' + name : '') + '. Your registration was saved to Azura\'s database.'; },
        registerFail:function(msg){ return 'We could not save your registration yet (' + msg + '). If the site is already deployed, check the backend environment variables on Vercel.'; },
+       boughtTogether:function(){ return 'Frequently bought together:'; },
+       viewComments:function(){ return 'View comments'; },
+       hideComments:function(){ return 'Hide comments'; },
+       commentsDisclaimer:function(){ return 'Sample comments for prototype demonstration purposes.'; },
+       demoComments:function(){ return [
+         {name:'Verified customer', stars:5, text:'Good quality and arrived faster than expected.'},
+         {name:'Verified customer', stars:4, text:'Does what it promises, will keep buying.'},
+         {name:'Verified customer', stars:5, text:'You notice the difference after a few weeks of use.'}
+       ]; },
        profile:{
          title:'Complete your profile',
          subtitle:'This activates your birthday promotions and loyalty program.',
@@ -1069,7 +1130,7 @@ var DYN = {
          errorPrefix:function(msg){ return 'We could not save your profile (' + msg + ').'; },
        },
        recommend:function(age,gender,v1,v2){ return 'At ' + age + ' years old, I would recommend starting with <b>' + v1 + '</b> and pairing it with <b>' + v2 + '</b> for your daily wellness. Let me take you to ' + v1 + '...'; },
-       juelita:{
+       julieta:{
          goalQuestion:function(){ return "What's your priority today? 🌿"; },
          goalOptions:function(){ return [
            { label:'Supplements & nutrition', action:function(){ chooseGoal('supplements'); } },
@@ -1121,6 +1182,15 @@ var DYN = {
        configMissing:function(field){ return field + ' manquant dans AZURA_CONFIG (voir le README de azura-site) avant que ce bouton fonctionne.'; },
        registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de donnees Azura.'; },
        registerFail:function(msg){ return 'Nous n\'avons pas pu enregistrer votre inscription (' + msg + '). Si le site est deja deploye, verifiez les variables d\'environnement du backend sur Vercel.'; },
+       boughtTogether:function(){ return 'Souvent achete avec:'; },
+       viewComments:function(){ return 'Voir les commentaires'; },
+       hideComments:function(){ return 'Masquer les commentaires'; },
+       commentsDisclaimer:function(){ return 'Commentaires d\'exemple a des fins de demonstration du prototype.'; },
+       demoComments:function(){ return [
+         {name:'Client verifie', stars:5, text:'Bonne qualite, livraison plus rapide que prevu.'},
+         {name:'Client verifie', stars:4, text:'Tient ses promesses, je continuerai a en acheter.'},
+         {name:'Client verifie', stars:5, text:'On remarque la difference apres quelques semaines d\'utilisation.'}
+       ]; },
        profile:{
          title:'Completez votre profil',
          subtitle:'Cela active vos promotions d\'anniversaire et votre programme de fidelite.',
@@ -1138,7 +1208,7 @@ var DYN = {
          errorPrefix:function(msg){ return 'Nous n\'avons pas pu enregistrer votre profil (' + msg + ').'; },
        },
        recommend:function(age,gender,v1,v2){ return 'A ' + age + ' ans, je vous recommande de commencer par <b>' + v1 + '</b> et de le completer avec <b>' + v2 + '</b> pour votre bien-etre quotidien. Je vous emmene decouvrir ' + v1 + '...'; },
-       juelita:{
+       julieta:{
          goalQuestion:function(){ return 'Quelle est votre priorite aujourd\'hui ? 🌿'; },
          goalOptions:function(){ return [
            { label:'Complements et nutrition', action:function(){ chooseGoal('supplements'); } },
@@ -1186,6 +1256,34 @@ var DYN = {
        } }
 };
 
+/* ===================== Rating, compra conjunta y comentarios (datos de demostracion) ===================== */
+function starsHtml(stars){
+  var full = Math.round(stars);
+  var s = '';
+  for (var i=1;i<=5;i++){ s += (i<=full ? '★' : '☆'); }
+  return s;
+}
+function findProductBySku(products, sku){
+  for (var i=0;i<products.length;i++){ if (products[i].sku === sku) return products[i]; }
+  return null;
+}
+function toggleComments(){
+  var panel = document.getElementById('commentsPanel');
+  var btn = document.getElementById('commentsToggleBtn');
+  var isOpen = panel.classList.toggle('open');
+  if (isOpen){
+    var items = DYN[currentLang].demoComments();
+    var html = '';
+    for (var i=0;i<items.length;i++){
+      html += '<div class="comment-item"><div class="c-head"><span>' + items[i].name + '</span><span class="c-stars">' + starsHtml(items[i].stars) + '</span></div><p>' + items[i].text + '</p></div>';
+    }
+    html += '<div class="comments-disclaimer">' + DYN[currentLang].commentsDisclaimer() + '</div>';
+    panel.innerHTML = html;
+    btn.textContent = DYN[currentLang].hideComments();
+  } else {
+    btn.textContent = DYN[currentLang].viewComments();
+  }
+}
 function iconSvg(v){
   var paths = {
     raiz:'<path d="M12 22V12"/><path d="M12 12C12 6 6 4 4 4c0 6 3 8 8 8Z"/><path d="M12 12c0-6 6-8 8-8 0 6-3 8-8 8Z"/>',
@@ -1225,12 +1323,27 @@ function renderVertical(v){
   var html = '';
   for (var k=0;k<d.products.length;k++){
     var p = d.products[k];
+    var ratingHtml = p.rating ? ('<div class="product-rating"><span class="stars">' + starsHtml(p.rating.stars) + '</span><span>' + p.rating.stars.toFixed(1) + ' (' + p.rating.count + ')</span></div>') : '';
+    var relatedHtml = '';
+    if (p.related && p.related.length){
+      var names = [];
+      for (var r=0;r<p.related.length;r++){
+        var rp = findProductBySku(d.products, p.related[r]);
+        if (rp) names.push(rp.name);
+      }
+      if (names.length) relatedHtml = '<div class="product-related">' + DYN[currentLang].boughtTogether() + ' <b>' + names.join(', ') + '</b></div>';
+    }
     html += '<div class="product-card"><div class="product-img">' + iconSvg(v) + '</div>' +
       '<div class="product-body"><div class="p-eyebrow">' + p.tag + '</div>' +
       '<h4>' + p.name + '</h4><p>' + p.desc + '</p>' +
-      '<div class="price">' + p.price + '</div></div></div>';
+      ratingHtml +
+      '<div class="price">' + p.price + '</div>' +
+      relatedHtml +
+      '</div></div>';
   }
   grid.innerHTML = html;
+  document.getElementById('commentsPanel').classList.remove('open');
+  document.getElementById('commentsToggleBtn').textContent = DYN[currentLang].viewComments();
 
   selectedRoutine = null;
   var rc = document.getElementById('routineCards');
@@ -1260,8 +1373,18 @@ function goVertical(v){
   closeNav();
 }
 function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
-function toggleNav(){ document.getElementById('mainNav').classList.toggle('open'); }
-function closeNav(){ document.getElementById('mainNav').classList.remove('open'); }
+function toggleNav(){
+  var isOpen = document.getElementById('mainNav').classList.toggle('open');
+  document.getElementById('navOverlay').classList.toggle('open', isOpen);
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  document.body.classList.toggle('nav-lock', isOpen);
+}
+function closeNav(){
+  document.getElementById('mainNav').classList.remove('open');
+  document.getElementById('navOverlay').classList.remove('open');
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('nav-lock');
+}
 
 function subscribeForm(e){
   e.preventDefault();
@@ -1535,10 +1658,10 @@ function menuCategorias(){
   startGoalFlow();
 }
 function menuOfertas(){
-  addChatMsg(DYN[currentLang].juelita.noOffers(), 'bot');
+  addChatMsg(DYN[currentLang].julieta.noOffers(), 'bot');
 }
 function menuCarrito(){
-  addChatMsg(DYN[currentLang].juelita.noCartYet(), 'bot');
+  addChatMsg(DYN[currentLang].julieta.noCartYet(), 'bot');
 }
 function menuAsesor(){
   answerTopic('human');
@@ -1555,7 +1678,7 @@ function renderChatQuickButtons(){
   box.innerHTML = html;
 }
 
-/* Estado de la conversacion guiada de Juelita (objetivo, refinamiento, idioma ya detectado) */
+/* Estado de la conversacion guiada de Julieta (objetivo, refinamiento, idioma ya detectado) */
 var JULIETA = { goal: null, refine: null, langChecked: false, pendingOptions: null };
 
 /* Lista numerada y seleccionable (reemplaza temporalmente los accesos rapidos de FAQ) */
@@ -1640,13 +1763,13 @@ function crossSellPick(goal){
 }
 
 function startGoalFlow(){
-  var j = DYN[currentLang].juelita;
+  var j = DYN[currentLang].julieta;
   addChatMsg(j.goalQuestion(), 'bot');
   renderDynamicOptions(j.goalOptions());
 }
 function chooseGoal(goal){
   JULIETA.goal = goal;
-  var j = DYN[currentLang].juelita;
+  var j = DYN[currentLang].julieta;
   if (goal === 'makeup'){
     addChatMsg(j.makeupUnavailable(), 'bot');
     renderDynamicOptions(j.makeupFallbackOptions());
@@ -1656,7 +1779,7 @@ function chooseGoal(goal){
   askRefine(goal);
 }
 function askRefine(goal){
-  var j = DYN[currentLang].juelita;
+  var j = DYN[currentLang].julieta;
   addChatMsg(j.refineQuestion(goal), 'bot');
   renderDynamicOptions(j.refineOptions(goal));
 }
@@ -1673,7 +1796,7 @@ function productCardHtml(p, j){
 }
 function showRecommendation(goal, refine){
   JULIETA.refine = refine;
-  var j = DYN[currentLang].juelita;
+  var j = DYN[currentLang].julieta;
   var products = pickProducts(goal, refine);
   addChatMsg(j.recommendIntro(goal), 'bot');
   var html = '';
@@ -1683,7 +1806,7 @@ function showRecommendation(goal, refine){
   setTimeout(function(){ hideTyping(); showCrossSell(goal); }, 700);
 }
 function showCrossSell(goal){
-  var j = DYN[currentLang].juelita;
+  var j = DYN[currentLang].julieta;
   if (!JULIETA.crossSellShown) JULIETA.crossSellShown = {};
   var cross = crossSellPick(goal);
   if (cross && !JULIETA.crossSellShown[goal]){
@@ -1694,7 +1817,7 @@ function showCrossSell(goal){
   setTimeout(function(){ hideTyping(); showCloseOptions(goal); }, 500);
 }
 function showCloseOptions(goal){
-  var j = DYN[currentLang].juelita;
+  var j = DYN[currentLang].julieta;
   addChatMsg(j.closeQuestion(), 'bot');
   var vertMap = { supplements:'raiz', skin:'nacar', hair:'nacar', wellness:'raiz' };
   var vert = vertMap[goal] || 'raiz';
@@ -1705,15 +1828,15 @@ function showCloseOptions(goal){
   ]);
 }
 function answerMedicalGuard(){
-  addChatMsg(DYN[currentLang].juelita.medicalGuard(), 'bot');
+  addChatMsg(DYN[currentLang].julieta.medicalGuard(), 'bot');
   setTimeout(function(){ window.open('https://wa.me/525500000000','_blank'); }, 900);
 }
 function answerComplaintGuard(){
-  addChatMsg(DYN[currentLang].juelita.complaintGuard(), 'bot');
+  addChatMsg(DYN[currentLang].julieta.complaintGuard(), 'bot');
   setTimeout(function(){ window.open('https://wa.me/525500000000','_blank'); }, 900);
 }
 function answerCertUnknown(){
-  addChatMsg(DYN[currentLang].juelita.certUnknown(), 'bot');
+  addChatMsg(DYN[currentLang].julieta.certUnknown(), 'bot');
 }
 
 /* ===================== Recomendador de perfil (edad + genero) ===================== */
