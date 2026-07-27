@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AZURA Wellness Group — Prototipo de Holding E-commerce</title>
+<title>Casa Azura Wellness — Prototipo de Holding E-commerce</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -160,6 +160,54 @@ section{padding:92px 0;}
 .comment-item p{font-size:13px; color:var(--grey); margin:0;}
 .comments-disclaimer{font-size:10.5px; color:var(--grey); opacity:.75; margin-top:10px; font-style:italic;}
 
+/* ===================== Carrito, cuenta/pagos y resenas reales (conectado a BD) ===================== */
+.account-icon-btn, .cart-icon-btn{position:relative; background:none; border:none; cursor:pointer; color:var(--ink); padding:4px; display:flex; align-items:center;}
+.account-icon-btn svg, .cart-icon-btn svg{width:21px; height:21px;}
+.cart-badge{position:absolute; top:-4px; right:-6px; background:var(--gold); color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px;}
+
+.add-to-cart-btn{width:100%; margin-top:10px; background:var(--navy); color:#fff; border:none; border-radius:2px; padding:9px 10px; font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:700; cursor:pointer;}
+.add-to-cart-btn:hover{background:#3F3F3F;}
+.add-to-cart-btn:disabled{background:var(--line); color:var(--grey); cursor:not-allowed;}
+
+.cart-overlay{display:none; position:fixed; inset:0; background:rgba(30,30,30,.5); z-index:210;}
+.cart-overlay.open{display:block;}
+.cart-panel{position:fixed; top:0; right:-100%; width:400px; max-width:92vw; height:100vh; background:#fff; z-index:211; transition:right .3s ease; box-shadow:-8px 0 24px rgba(0,0,0,.2); display:flex; flex-direction:column;}
+.cart-panel.open{right:0;}
+.cart-head{padding:22px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+.cart-head h3{font-size:19px;}
+.cart-close{background:none; border:none; font-size:26px; cursor:pointer; line-height:1; color:var(--ink);}
+.cart-items{flex:1; overflow-y:auto; padding:14px 24px;}
+.cart-line{display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--line); align-items:center;}
+.cart-line-body{flex:1;}
+.cart-line-body b{font-size:13.5px; display:block; margin-bottom:3px;}
+.cart-line-body span{font-size:12px; color:var(--grey);}
+.cart-qty{display:flex; align-items:center; gap:8px;}
+.cart-qty button{width:24px; height:24px; border:1px solid var(--line); background:#fff; cursor:pointer; border-radius:2px; font-size:14px; line-height:1;}
+.cart-line-remove{font-size:11px; color:#B23A3A; background:none; border:none; cursor:pointer; text-decoration:underline; margin-top:4px;}
+.cart-empty{color:var(--grey); font-size:13.5px; text-align:center; padding:40px 0;}
+.cart-foot{padding:20px 24px; border-top:1px solid var(--line);}
+.cart-subtotal{display:flex; justify-content:space-between; font-size:15px; font-weight:700; margin-bottom:14px;}
+.cart-checkout-note{font-size:11px; color:var(--grey); margin-top:8px; text-align:center; line-height:1.5;}
+
+.review-form{border-top:1px dashed var(--line); margin-top:14px; padding-top:14px;}
+.review-form .rf-stars{display:flex; gap:4px; font-size:22px; cursor:pointer; margin-bottom:10px; color:var(--line);}
+.review-form .rf-stars span.sel{color:var(--gold);}
+.review-form textarea{width:100%; border:1px solid var(--line); border-radius:2px; padding:9px; font-family:inherit; font-size:12.5px; resize:vertical; min-height:60px; margin-bottom:8px;}
+.review-form input[type="file"]{font-size:11px; margin-bottom:8px;}
+.review-photo-preview{display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;}
+.review-photo-preview img{width:48px; height:48px; object-fit:cover; border-radius:3px; border:1px solid var(--line);}
+.review-form button{background:var(--navy); color:#fff; border:none; padding:9px 16px; font-size:11px; letter-spacing:.6px; text-transform:uppercase; border-radius:2px; cursor:pointer;}
+.review-photo-thumb{width:56px; height:56px; object-fit:cover; border-radius:4px; margin-top:6px;}
+.review-login-hint{font-size:11.5px; color:var(--grey); font-style:italic;}
+
+.pm-list{margin-bottom:18px;}
+.pm-row{display:flex; justify-content:space-between; align-items:center; border:1px solid var(--line); border-radius:3px; padding:10px 12px; margin-bottom:8px; font-size:13px;}
+.pm-row button{background:none; border:none; color:#B23A3A; cursor:pointer; font-size:11px; text-decoration:underline;}
+.pm-type-toggle{display:flex; gap:8px; margin-bottom:14px;}
+.pm-type-toggle button{flex:1; padding:9px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:12px; border-radius:2px;}
+.pm-type-toggle button.sel{border-color:var(--navy); background:var(--navy); color:#fff;}
+.pm-pci-note{font-size:10.5px; color:var(--grey); margin:10px 0; line-height:1.5; background:var(--cream); padding:10px; border-radius:3px;}
+
 .routine-block{background:var(--active-soft); border-radius:6px; padding:46px; margin-bottom:20px;}
 .routine-head{text-align:center; max-width:520px; margin:0 auto 36px;}
 .routine-cards{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
@@ -176,9 +224,34 @@ section{padding:92px 0;}
 .nl-form{display:flex; max-width:460px; margin:28px auto 12px; gap:10px;}
 .nl-form input{flex:1; padding:14px 16px; border:1px solid var(--line); border-radius:2px; font-size:14px; font-family:'Manrope',sans-serif;}
 .social-signup{display:flex; justify-content:center; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap;}
-#googleBtnContainer{line-height:0;}
-.social-signup button{display:flex; align-items:center; gap:8px; padding:11px 18px; border:1px solid var(--line); background:#fff; border-radius:3px; font-size:13px; cursor:pointer; font-family:'Manrope',sans-serif;}
-.social-signup button:hover{background:#fff; border-color:var(--gold);}
+#googleBtnContainer{line-height:0; display:flex; justify-content:center;}
+.social-signup button, .auth-social button{display:flex; align-items:center; justify-content:center; gap:10px; padding:11px 18px; border:1px solid var(--line); background:#fff; border-radius:3px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:'Manrope',sans-serif;}
+.social-signup button svg, .auth-social button svg{width:18px; height:18px; flex-shrink:0;}
+.social-signup button.btn-google, .auth-social button.btn-google{color:#3c4043; border-color:#dadce0;}
+.social-signup button.btn-google:hover, .auth-social button.btn-google:hover{background:#f8f9fa; border-color:#dadce0; box-shadow:0 1px 3px rgba(0,0,0,.12);}
+.social-signup button.btn-facebook, .auth-social button.btn-facebook{background:#1877F2; border-color:#1877F2; color:#fff;}
+.social-signup button.btn-facebook:hover, .auth-social button.btn-facebook:hover{background:#166FE5; border-color:#166FE5;}
+.nl-account-hint{font-size:12.5px; color:var(--grey); margin-top:16px;}
+
+/* ===================== Modal de login / crear cuenta (header) ===================== */
+.auth-modal{background:#fff; max-width:420px; width:100%; border-radius:6px; padding:0; box-shadow:0 24px 64px rgba(0,0,0,.32); max-height:92vh; overflow-y:auto; position:relative;}
+.auth-modal-close{position:absolute; top:16px; right:16px; background:none; border:none; font-size:24px; line-height:1; color:var(--grey); cursor:pointer; z-index:2;}
+.auth-modal-head{background:var(--cream); padding:34px 32px 24px; text-align:center; border-bottom:1px solid var(--line);}
+.auth-modal-head .auth-logo{font-family:'Playfair Display',serif; font-weight:700; letter-spacing:2px; font-size:18px; color:var(--navy); margin-bottom:14px;}
+.auth-tabs{display:flex; background:#fff; border:1px solid var(--line); border-radius:30px; padding:3px; max-width:300px; margin:0 auto;}
+.auth-tabs button{flex:1; border:none; background:none; padding:9px 10px; font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; border-radius:26px; cursor:pointer; color:var(--grey); font-family:'Manrope',sans-serif;}
+.auth-tabs button.sel{background:var(--navy); color:#fff;}
+.auth-modal-body{padding:28px 32px 32px;}
+.auth-headline{font-size:15px; color:var(--ink); text-align:center; margin-bottom:22px; line-height:1.5;}
+.auth-social{display:flex; flex-direction:column; gap:12px;}
+.auth-social button{width:100%; padding:13px 18px; font-size:14px; border-radius:4px;}
+.auth-divider{display:flex; align-items:center; gap:12px; margin:22px 0; color:var(--grey); font-size:11px; letter-spacing:.5px; text-transform:uppercase;}
+.auth-divider::before, .auth-divider::after{content:""; flex:1; height:1px; background:var(--line);}
+.auth-switch{text-align:center; font-size:12.5px; color:var(--grey); margin-top:4px;}
+.auth-switch a{color:var(--navy); font-weight:700; cursor:pointer; text-decoration:underline;}
+.auth-privacy-note{font-size:10.5px; color:var(--grey); line-height:1.6; text-align:center; margin-top:22px; padding-top:18px; border-top:1px solid var(--line);}
+.auth-privacy-note b{color:var(--ink);}
+.auth-privacy-note a{color:var(--navy); font-weight:700; cursor:pointer; text-decoration:underline; white-space:nowrap;}
 
 footer{background:var(--grey); color:#e2e2e2; padding-top:66px;}
 .footer-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr 1fr; gap:34px; padding-bottom:46px; border-bottom:1px solid rgba(255,255,255,.1);}
@@ -206,11 +279,21 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:66px;}
 .profile-modal-overlay{position:fixed; inset:0; background:rgba(30,30,30,.55); display:none; align-items:center; justify-content:center; z-index:200; padding:20px;}
 .profile-modal-overlay.is-open{display:flex;}
 .profile-modal{background:#fff; max-width:420px; width:100%; border-radius:4px; padding:32px 28px; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:92vh; overflow-y:auto;}
+.privacy-modal{background:#fff; max-width:640px; width:100%; border-radius:4px; padding:36px 34px; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:88vh; overflow-y:auto; position:relative;}
+.privacy-modal h3{font-size:23px; margin-bottom:4px;}
+.privacy-modal .pm-subtitle{color:var(--grey); font-size:12.5px; margin-bottom:22px;}
+.privacy-modal .priv-section{margin-bottom:18px;}
+.privacy-modal .priv-section h4{font-size:14px; margin-bottom:6px; color:var(--navy);}
+.privacy-modal .priv-section p{font-size:13px; line-height:1.65; color:var(--ink);}
+.privacy-modal-close{position:absolute; top:18px; right:18px; background:none; border:none; font-size:22px; line-height:1; cursor:pointer; color:var(--grey);}
 .profile-modal h3{font-size:22px; margin-bottom:8px;}
 .profile-modal p.pm-subtitle{color:var(--grey); font-size:13.5px; margin-bottom:20px; line-height:1.5;}
 .pm-field{margin-bottom:16px;}
 .pm-field label{display:block; font-size:12px; font-weight:700; letter-spacing:.4px; margin-bottom:6px; color:var(--ink);}
-.pm-field input[type="tel"], .pm-field input[type="date"]{width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px; font-size:14.5px; font-family:inherit;}
+.pm-field input[type="tel"], .pm-field input[type="date"], .pm-field input[type="text"]{width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px; font-size:14.5px; font-family:inherit;}
+.auth-phone-toggle{display:block; width:100%; text-align:center; background:none; border:none; color:var(--navy); font-size:12.5px; font-weight:700; text-decoration:underline; cursor:pointer; padding:4px 0; font-family:inherit;}
+.auth-phone-form{margin-top:14px;}
+.btn-link-inline{display:block; width:100%; text-align:center; background:none; border:none; color:var(--grey); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:8px; font-family:inherit;}
 .pm-hint{font-size:11px; color:var(--grey); margin-top:5px;}
 .pm-consent{display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--ink); margin-bottom:10px; line-height:1.4;}
 .pm-consent input{margin-top:3px; flex-shrink:0;}
@@ -331,9 +414,13 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:66px;}
 /* Configuracion de integraciones reales -- reemplaza estos valores por los tuyos.
    Ver README.md en azura-site/ para como obtenerlos (Google Cloud, Meta for Developers). */
 var AZURA_CONFIG = {
-  GOOGLE_CLIENT_ID: "REEMPLAZA_CON_TU_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
-  FACEBOOK_APP_ID: "REEMPLAZA_CON_TU_FACEBOOK_APP_ID",
-  REGISTER_ENDPOINT: "/api/register"
+  GOOGLE_CLIENT_ID: "134635437294-vv4ett18l5tqh65jb6g3ht4t4vjl8tkf.apps.googleusercontent.com",
+  FACEBOOK_APP_ID: "3518013621701110",
+  REGISTER_ENDPOINT: "/api/register",
+  PHONE_AUTH_ENDPOINT: "/api/phone-auth",
+  CART_ENDPOINT: "/api/cart",
+  REVIEWS_ENDPOINT: "/api/reviews",
+  PAYMENT_METHODS_ENDPOINT: "/api/payment-methods"
 };
 </script>
 <div id="fb-root"></div>
@@ -359,7 +446,7 @@ var AZURA_CONFIG = {
 <header class="site" id="siteHeader">
   <div class="container nav-row">
     <div class="hamburger" id="hamburgerBtn" onclick="toggleNav()" role="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><span></span><span></span><span></span></div>
-    <div class="logo">AZURA <span>WELLNESS GROUP</span></div>
+    <div class="logo">CASA AZURA <span>WELLNESS</span></div>
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
       <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
@@ -370,6 +457,13 @@ var AZURA_CONFIG = {
       <a onclick="scrollToId('filosofia'); closeNav();" data-i18n="nav.filosofia">Nuestra filosofia</a>
     </nav>
     <div class="header-icons">
+      <button class="account-icon-btn" id="accountIconBtn" onclick="onAccountIconClick()" aria-label="Mi cuenta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </button>
+      <button class="cart-icon-btn" id="cartIconBtn" onclick="openCart()" aria-label="Carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M1 1h3l2.6 13.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6L22 6H5"/></svg>
+        <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+      </button>
       <select class="lang-select-top" id="langSelectTop" onchange="applyLanguage(this.value)" aria-label="Idioma / Language / Langue">
         <option value="es">ES</option>
         <option value="en">EN</option>
@@ -382,7 +476,7 @@ var AZURA_CONFIG = {
 <section class="hero">
   <div class="container hero-grid">
     <div class="hero-content reveal-stagger">
-      <div class="eyebrow" data-i18n="hero.eyebrow">Grupo Azura . Holding de Bienestar</div>
+      <div class="eyebrow" data-i18n="hero.eyebrow">Casa Azura Wellness . Holding de Bienestar</div>
       <h1 data-i18n-html="hero.h1">El bienestar de las personas, elevado a <span class="accent">ritual</span></h1>
       <p data-i18n-html="hero.p">Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.</p>
       <div class="hero-cta">
@@ -401,7 +495,7 @@ var AZURA_CONFIG = {
       <p data-i18n="vert.p">Cada nombre resuelve una necesidad especifica de bienestar. Comparten el mismo estandar de calidad y la misma promesa: nada se vende solo por vender.</p>
     </div>
     <div class="brand-map reveal">
-      <div class="bm-holding">AZURA WELLNESS GROUP</div>
+      <div class="bm-holding">CASA AZURA WELLNESS</div>
       <div class="bm-line"></div>
       <div class="bm-verticals">
         <span class="bm-raiz" id="bmRaiz">Raiz &middot; Organics</span>
@@ -457,7 +551,7 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div class="phil-visual reveal">
-      <div class="quote" data-i18n-html="phil.quote">&ldquo;Productos para el bienestar de las personas, no productos para vender por vender.&rdquo;</div>
+      <div class="quote" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darias a alguien que quieres: pensando primero en su bienestar.&rdquo;</div>
     </div>
   </div>
 </section>
@@ -508,7 +602,7 @@ var AZURA_CONFIG = {
   </div>
 </section>
 
-<section class="newsletter">
+<section class="newsletter" id="newsletter">
   <div class="container reveal-stagger">
     <div class="eyebrow" data-i18n="nl.eyebrow">Unete a Azura</div>
     <h2 style="font-size:27px; margin-top:12px;" data-i18n-html="nl.h2">Recibe <span class="accent">rituales</span>, novedades y acceso anticipado</h2>
@@ -517,17 +611,14 @@ var AZURA_CONFIG = {
       <input type="email" id="nlEmail" placeholder="tu@correo.com" required>
       <button class="btn btn-dark" type="submit" data-i18n="nl.submit">Suscribirme</button>
     </form>
-    <div class="social-signup">
-      <div id="googleBtnContainer"></div>
-      <button onclick="facebookLogin()" data-i18n="nl.facebook">Continuar con Facebook</button>
-    </div>
+    <p class="nl-account-hint" data-i18n="nl.accountHint">¿Ya tienes cuenta o quieres crear una? Usa el icono de perfil arriba a la derecha.</p>
   </div>
 </section>
 
 <footer>
   <div class="container footer-grid reveal-stagger">
     <div class="footer-brand">
-      <div class="logo">AZURA</div>
+      <div class="logo">CASA AZURA</div>
       <p data-i18n="footer.brandP">Raiz, Nacar, Vigor y Roble: rituales de bienestar para cada etapa de tu vida.</p>
       <div class="footer-social">
         <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
@@ -548,19 +639,19 @@ var AZURA_CONFIG = {
       <a onclick="openChat()" data-i18n="footer.chat">Chatea con el asistente</a>
     </div>
     <div><h5 data-i18n="footer.hCompania">Compania</h5>
-      <a data-i18n="footer.about">Sobre Azura</a>
+      <a data-i18n="footer.about">Sobre Casa Azura</a>
       <a data-i18n="footer.sustainability">Sostenibilidad</a>
       <a data-i18n="footer.careers">Trabaja con nosotros</a>
     </div>
     <div><h5 data-i18n="footer.hLegal">Legal</h5>
-      <a data-i18n="footer.privacy">Aviso de privacidad</a>
+      <a onclick="openPrivacyModal()" data-i18n="footer.privacy">Aviso de privacidad</a>
       <a data-i18n="footer.terms">Terminos y condiciones</a>
       <a data-i18n="footer.cookies">Politica de cookies</a>
     </div>
   </div>
   <div class="container footer-bottom">
     <div class="footer-bottom-text">
-      <span data-i18n="footer.copyright">&copy; 2026 Azura Wellness Group. Todos los derechos reservados.</span>
+      <span data-i18n="footer.copyright">&copy; 2026 Casa Azura Wellness. Todos los derechos reservados.</span>
       <span data-i18n="footer.prototypeNote">Prototipo de diseno - no es un sitio en produccion</span>
     </div>
     <select class="lang-select" id="langSelect" onchange="applyLanguage(this.value)" aria-label="Idioma / Language / Langue">
@@ -598,11 +689,145 @@ var AZURA_CONFIG = {
   </div>
 </div>
 
+<div class="profile-modal-overlay" id="authModalOverlay">
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authHeadline">
+    <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Cerrar">&times;</button>
+    <div class="auth-modal-head">
+      <div class="auth-logo">CASA AZURA WELLNESS</div>
+      <div class="auth-tabs">
+        <button type="button" id="authTabSigninBtn" class="sel" onclick="setAuthTab('signin')" data-i18n="auth.tabSignin">Iniciar sesion</button>
+        <button type="button" id="authTabSignupBtn" onclick="setAuthTab('signup')" data-i18n="auth.tabSignup">Crear cuenta</button>
+      </div>
+    </div>
+    <div class="auth-modal-body">
+      <p class="auth-headline" id="authHeadline">Inicia sesion para ver tu carrito, tus pedidos y tus promociones.</p>
+      <div class="auth-social">
+        <div id="googleBtnContainer"></div>
+        <button class="btn-facebook" onclick="facebookLogin()">
+          <svg viewBox="0 0 24 24" fill="#fff"><path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06C2 17.06 5.66 21.2 10.44 21.94V14.9H7.9v-2.84h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.45 2.84h-2.33v7.04C18.34 21.2 22 17.06 22 12.06Z"/></svg>
+          <span data-i18n="nl.facebook">Continuar con Facebook</span>
+        </button>
+      </div>
+      <div class="auth-divider"><span data-i18n="auth.or">o</span></div>
+      <button type="button" class="auth-phone-toggle" id="authPhoneToggleBtn" onclick="togglePhoneAuth()" data-i18n="auth.phoneToggle">Continuar con tu telefono</button>
+      <div class="auth-phone-form" id="authPhoneStep1" style="display:none;">
+        <div class="pm-field">
+          <label for="authPhoneName" data-i18n="auth.phoneNameLabel">Nombre</label>
+          <input type="text" id="authPhoneName" placeholder="Tu nombre">
+        </div>
+        <div class="pm-field">
+          <label for="authPhoneNumber" data-i18n="profile.phoneLabel">Telefono (con codigo de pais)</label>
+          <input type="tel" id="authPhoneNumber" placeholder="+525512345678">
+        </div>
+        <div class="pm-field">
+          <label for="authPhoneBirth" data-i18n="profile.birthLabel">Fecha de nacimiento</label>
+          <input type="date" id="authPhoneBirth">
+        </div>
+        <label class="pm-consent"><input type="checkbox" id="authPhoneConsentEmail" required> <span data-i18n="profile.consentEmailLabel">Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)</span></label>
+        <label class="pm-consent"><input type="checkbox" id="authPhoneConsentSms"> <span data-i18n="profile.consentSmsLabel">Tambien por SMS</span></label>
+        <button type="button" class="btn btn-outline" style="width:100%; justify-content:center;" onclick="requestPhoneCode()" data-i18n="auth.phoneSendCode">Enviar codigo por SMS</button>
+        <div class="pm-error" id="authPhoneError"></div>
+      </div>
+      <div class="auth-phone-form" id="authPhoneStep2" style="display:none;">
+        <div class="pm-field">
+          <label for="authPhoneOtp" data-i18n="auth.phoneOtpLabel">Codigo de verificacion</label>
+          <input type="tel" id="authPhoneOtp" maxlength="6" placeholder="123456" inputmode="numeric">
+        </div>
+        <button type="button" class="btn btn-dark" style="width:100%; justify-content:center;" onclick="verifyPhoneCode()" data-i18n="auth.phoneVerify">Verificar y continuar</button>
+        <button type="button" class="btn-link-inline" onclick="resetPhoneAuth()" data-i18n="auth.phoneChangeNumber">Cambiar numero</button>
+        <div class="pm-error" id="authPhoneOtpError"></div>
+      </div>
+      <p class="auth-switch" id="authSwitchLine">
+        <span>Nuevo en Casa Azura?</span>
+        <a onclick="setAuthTab('signup')">Crea tu cuenta</a>
+      </p>
+      <div class="auth-privacy-note" data-i18n-html="auth.privacyNote">Usamos tu correo de Google o Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick="openPrivacyModal()" data-i18n="auth.privacyLink">Ver aviso de privacidad completo.</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="profile-modal-overlay" id="privacyModalOverlay">
+  <div class="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+    <button class="privacy-modal-close" onclick="closePrivacyModal()" aria-label="Cerrar">&times;</button>
+    <h3 id="privacyTitle" data-i18n="privacy.title">Aviso de Privacidad</h3>
+    <p class="pm-subtitle" data-i18n="privacy.updated">Ultima actualizacion: julio 2026.</p>
+    <div id="privacyBody"></div>
+  </div>
+</div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-head">
+    <h3 data-i18n="cart.title">Tu carrito</h3>
+    <button class="cart-close" onclick="closeCart()" aria-label="Cerrar carrito">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-subtotal"><span data-i18n="cart.subtotal">Subtotal</span><span id="cartSubtotalValue">$0 MXN</span></div>
+    <button class="btn btn-dark" style="width:100%; justify-content:center;" disabled data-i18n="cart.checkout">Proceder al pago</button>
+    <div class="cart-checkout-note" data-i18n="cart.checkoutNote">Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.</div>
+  </div>
+</div>
+
+<div class="profile-modal-overlay" id="accountModalOverlay">
+  <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="accTitle">
+    <h3 id="accTitle" data-i18n="account.title">Mi cuenta y metodos de pago</h3>
+    <p class="pm-subtitle" id="accSubtitle" data-i18n="account.subtitle">Inicia sesion para administrar tus metodos de pago guardados.</p>
+    <div id="pmListContainer" class="pm-list"></div>
+    <div id="pmFormContainer">
+      <div class="pm-type-toggle">
+        <button type="button" id="pmTypeCardBtn" class="sel" onclick="setPaymentType('card')" data-i18n="account.card">Tarjeta</button>
+        <button type="button" id="pmTypePaypalBtn" onclick="setPaymentType('paypal')" data-i18n="account.paypal">PayPal</button>
+      </div>
+      <form id="paymentForm" onsubmit="submitPaymentMethod(event)">
+        <div id="pmCardFields">
+          <div class="pm-field">
+            <label data-i18n="account.brandLabel">Marca</label>
+            <select id="pmBrand" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+              <option value="visa">Visa</option>
+              <option value="mastercard">Mastercard</option>
+              <option value="amex">Amex</option>
+              <option value="other">Otra</option>
+            </select>
+          </div>
+          <div class="pm-field">
+            <label data-i18n="account.last4Label">Ultimos 4 digitos</label>
+            <input type="text" id="pmLast4" maxlength="4" pattern="[0-9]{4}" placeholder="1234" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div class="pm-field" style="flex:1;">
+              <label data-i18n="account.expMonthLabel">Mes exp.</label>
+              <input type="number" id="pmExpMonth" min="1" max="12" placeholder="MM" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+            </div>
+            <div class="pm-field" style="flex:1;">
+              <label data-i18n="account.expYearLabel">Ano exp.</label>
+              <input type="number" id="pmExpYear" min="2024" placeholder="YYYY" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+            </div>
+          </div>
+        </div>
+        <div id="pmPaypalFields" style="display:none;">
+          <div class="pm-field">
+            <label data-i18n="account.paypalEmailLabel">Correo de PayPal</label>
+            <input type="email" id="pmPaypalEmail" placeholder="tu@correo.com" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+          </div>
+        </div>
+        <div class="pm-pci-note" data-i18n="account.pciNote">Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el numero de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.</div>
+        <div class="pm-actions">
+          <button type="submit" class="btn btn-dark" style="flex:1;" data-i18n="account.saveLabel">Guardar metodo de pago</button>
+          <button type="button" class="btn btn-outline" onclick="closeAccountModal()" data-i18n="account.closeLabel">Cerrar</button>
+        </div>
+        <div class="pm-error" id="pmPayError"></div>
+        <div class="pm-success" id="pmPaySuccess"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <a class="wa-float" href="https://wa.me/525500000000" target="_blank" aria-label="WhatsApp">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.8 14.3c-.2.6-1.2 1.2-1.7 1.3-.4.1-1 .1-1.6-.1-.4-.1-1-.3-1.6-.6-2.9-1.3-4.8-4.2-4.9-4.4-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4.2.5.7 1.8.8 1.9.1.2.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.2 1.4 2.6 1.6.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.7.8.2.1.4.2.4.3.1.2.1.7-.1 1.3Z"/></svg>
 </a>
 
-<div class="chat-float" id="chatFloat" onclick="toggleChat()" aria-label="Julieta, asistente virtual de Azura">
+<div class="chat-float" id="chatFloat" onclick="toggleChat()" aria-label="Julieta, asistente virtual de Casa Azura Wellness">
   <svg viewBox="0 0 24 24" fill="none" stroke="#5E5E5E" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/><circle cx="8.5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="15.5" cy="12" r="1"/></svg>
 </div>
 
@@ -610,7 +835,7 @@ var AZURA_CONFIG = {
   <div class="chat-head">
     <div>
       <b>Julieta</b>
-      <span id="chatSubtitle">En linea . tu asistente de bienestar Azura</span>
+      <span id="chatSubtitle">En linea . tu asistente de bienestar Casa Azura</span>
     </div>
     <div class="chat-close" onclick="toggleChat()">&times;</div>
   </div>
@@ -806,7 +1031,7 @@ var I18N = {
   es:{
     "top.shipping":"Envio calculado en checkout . 2 a 5 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.raiz":"Raiz . Suplementos", "nav.nacar":"Nacar . Belleza", "nav.vigor":"Vigor . Nutricion", "nav.roble":"Roble . Hombre", "nav.filosofia":"Nuestra filosofia",
-    "hero.eyebrow":"Grupo Azura . Holding de Bienestar", "hero.h1":'El bienestar de las personas, elevado a <span class="accent">ritual</span>',
+    "hero.eyebrow":"Casa Azura Wellness . Holding de Bienestar", "hero.h1":'El bienestar de las personas, elevado a <span class="accent">ritual</span>',
     "hero.p":'Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.',
     "hero.cta1":"Explorar el catalogo", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro rituales de bienestar, un mismo estandar de origen y calidad.",
@@ -822,7 +1047,7 @@ var I18N = {
     "phil.pillar2h":"Ciencia, no promesas vacias", "phil.pillar2p":"Evidencia y ficha tecnica clara, sin claims que no podemos sostener.",
     "phil.pillar3h":"Rituales, no transacciones", "phil.pillar3p":"Rutinas escalonadas que acompanan el progreso real de la persona.",
     "phil.pillar4h":"Un solo estandar", "phil.pillar4p":"Las 4 marcas comparten gobierno de calidad y servicio al cliente.",
-    "phil.quote":"&ldquo;Productos para el bienestar de las personas, no productos para vender por vender.&rdquo;",
+    "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darias a alguien que quieres: pensando primero en su bienestar.&rdquo;",
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Ritual destacado", "zoom.knowRitual":"Conocer el ritual",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
     "zoom.routineEyebrow":"Que rutina es para ti?", "zoom.routineH2":"Encuentra tu combo ideal", "zoom.routineP":"Selecciona tu nivel de experiencia y te sugerimos la rutina adecuada.",
@@ -831,10 +1056,10 @@ var I18N = {
     "footer.brandP":"Raiz, Nacar, Vigor y Roble: rituales de bienestar para cada etapa de tu vida.",
     "footer.hVerticales":"Verticales", "footer.raiz":"Raiz - Suplementos", "footer.nacar":"Nacar - Belleza", "footer.vigor":"Vigor - Nutricion", "footer.roble":"Roble - Hombre",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu ritual", "footer.shipping":"Envios y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
-    "footer.hCompania":"Compania", "footer.about":"Sobre Azura", "footer.sustainability":"Sostenibilidad", "footer.careers":"Trabaja con nosotros",
+    "footer.hCompania":"Compania", "footer.about":"Sobre Casa Azura", "footer.sustainability":"Sostenibilidad", "footer.careers":"Trabaja con nosotros",
     "footer.hLegal":"Legal", "footer.privacy":"Aviso de privacidad", "footer.terms":"Terminos y condiciones", "footer.cookies":"Politica de cookies",
-    "footer.copyright":"&copy; 2026 Azura Wellness Group. Todos los derechos reservados.", "footer.prototypeNote":"Prototipo de diseno - no es un sitio en produccion",
-    "chat.subtitle":"En linea . tu asesora de bienestar Azura", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
+    "footer.copyright":"&copy; 2026 Casa Azura Wellness. Todos los derechos reservados.", "footer.prototypeNote":"Prototipo de diseno - no es un sitio en produccion",
+    "chat.subtitle":"En linea . tu asesora de bienestar Casa Azura", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
     "chat.menu.categories":"Categorias", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
     "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.",
     "profile.phoneLabel":"Telefono (con codigo de pais)", "profile.phoneHint":"Formato internacional E.164, ej. +52 para Mexico.",
@@ -842,8 +1067,8 @@ var I18N = {
     "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)",
     "profile.consentSmsLabel":"Tambien por SMS", "profile.consentWhatsappLabel":"Tambien por WhatsApp",
     "profile.submitLabel":"Guardar perfil", "profile.skipLabel":"Ahora no", "profile.phonePlaceholder":"+525512345678",
-    "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de bienestar Azura. ¿En que te ayudo hoy?",
-    "chat.q.identity":"Quien eres", "chat.a.identity":"Soy Julieta, tu asesora de belleza y bienestar Azura. ¿En que te ayudo?",
+    "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de bienestar Casa Azura. ¿En que te ayudo hoy?",
+    "chat.q.identity":"Quien eres", "chat.a.identity":"Soy Julieta, tu asesora de belleza y bienestar de Casa Azura Wellness. ¿En que te ayudo?",
     "chat.a.greeting":"Hola! ¿En que te ayudo?",
     "chat.a.capability":"Te ayudo con envios, pagos, devoluciones, elegir tu ritual o hablar con un asesor.",
     "chat.a.purpose":"Te ayudo a encontrar tu ritual ideal, rapido y sin vueltas.",
@@ -860,7 +1085,7 @@ var I18N = {
     "chat.a.loyalty":"Cada compra suma puntos Azura, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o hola@azura.mx.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
-    "chat.a.about":"Azura es la tienda online del holding de belleza y bienestar con 4 marcas: RAIZ, NACAR, VIGOR y ROBLE.",
+    "chat.a.about":"Casa Azura Wellness es la tienda online del holding de belleza y bienestar con 4 marcas: RAIZ, NACAR, VIGOR y ROBLE.",
     "chat.a.products":"Vendemos suplementos, cuidado de piel y cabello, y bienestar diario en 4 marcas: RAIZ, NACAR, VIGOR y ROBLE.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario habil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
@@ -872,12 +1097,31 @@ var I18N = {
     "chat.a.recommend.needAge":"Para afinar tu recomendacion, cuentame tu edad. Por ejemplo: tengo 40 anos.",
     "chat.a.recommend.needGender":"Para afinar tu recomendacion, cuentame si buscas algo para mujer u hombre.",
     "chat.a.recommend.needBoth":"Cuentame tu edad y si buscas algo para mujer u hombre y te doy una recomendacion puntual. Por ejemplo: tengo 40 anos, soy mujer.",
-    "chat.a.fallback":"No tengo esa respuesta. Prueba con envios, pagos, devoluciones, o habla con un asesor."
+    "chat.a.fallback":"No tengo esa respuesta. Prueba con envios, pagos, devoluciones, o habla con un asesor.",
+    "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
+    "cart.checkoutNote":"Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.",
+    "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesion para administrar tus metodos de pago guardados.",
+    "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Ultimos 4 digitos",
+    "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Ano exp.", "account.paypalEmailLabel":"Correo de PayPal",
+    "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el numero de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.",
+    "account.saveLabel":"Guardar metodo de pago", "account.closeLabel":"Cerrar",
+    "auth.tabSignin":"Iniciar sesion", "auth.tabSignup":"Crear cuenta",
+    "auth.privacyNote":"Usamos tu correo, telefono o datos de Google/Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick=\"openPrivacyModal()\">Ver aviso de privacidad completo</a>.",
+    "nl.accountHint":"¿Ya tienes cuenta o quieres crear una? Usa el icono de perfil arriba a la derecha.",
+    "auth.or":"o",
+    "auth.phoneToggle":"Continuar con tu telefono",
+    "auth.phoneNameLabel":"Nombre",
+    "auth.phoneSendCode":"Enviar codigo por SMS",
+    "auth.phoneOtpLabel":"Codigo de verificacion",
+    "auth.phoneVerify":"Verificar y continuar",
+    "auth.phoneChangeNumber":"Cambiar numero",
+    "auth.privacyLink":"Ver aviso de privacidad completo.",
+    "privacy.title":"Aviso de Privacidad", "privacy.updated":"Ultima actualizacion: julio 2026."
   },
   en:{
     "top.shipping":"Shipping calculated at checkout . 2 to 5 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.raiz":"Raiz . Supplements", "nav.nacar":"Nacar . Beauty", "nav.vigor":"Vigor . Nutrition", "nav.roble":"Roble . Men", "nav.filosofia":"Our philosophy",
-    "hero.eyebrow":"Azura Group . Wellness Holding", "hero.h1":'People’s wellness, elevated to <span class="accent">ritual</span>',
+    "hero.eyebrow":"Casa Azura Wellness . Wellness Holding", "hero.h1":'People’s wellness, elevated to <span class="accent">ritual</span>',
     "hero.p":'Products designed to <span class="accent">accompany</span> every stage of your life.',
     "hero.cta1":"Explore the catalog", "hero.cta2":"Our philosophy",
     "hero.visualCaption":"Four wellness rituals, one single standard of origin and quality.",
@@ -893,7 +1137,7 @@ var I18N = {
     "phil.pillar2h":"Science, not empty promises", "phil.pillar2p":"Clear evidence and technical data sheets, no claims we can't stand behind.",
     "phil.pillar3h":"Rituals, not transactions", "phil.pillar3p":"Staged routines that support the person's real progress.",
     "phil.pillar4h":"One single standard", "phil.pillar4p":"All 4 brands share the same quality governance and customer service.",
-    "phil.quote":"&ldquo;Products for people's wellness, not products sold just to sell.&rdquo;",
+    "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: wellness first.&rdquo;",
     "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured ritual", "zoom.knowRitual":"Explore the ritual",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"TO SEE RESULTS*", "zoom.stat3Label":"VERIFIED ORIGIN",
     "zoom.routineEyebrow":"Which routine is right for you?", "zoom.routineH2":"Find your ideal combo", "zoom.routineP":"Select your experience level and we'll suggest the right routine.",
@@ -902,10 +1146,10 @@ var I18N = {
     "footer.brandP":"Raiz, Nacar, Vigor and Roble: wellness rituals for every stage of your life.",
     "footer.hVerticales":"Verticals", "footer.raiz":"Raiz - Supplements", "footer.nacar":"Nacar - Beauty", "footer.vigor":"Vigor - Nutrition", "footer.roble":"Roble - Men",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your ritual", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
-    "footer.hCompania":"Company", "footer.about":"About Azura", "footer.sustainability":"Sustainability", "footer.careers":"Work with us",
+    "footer.hCompania":"Company", "footer.about":"About Casa Azura", "footer.sustainability":"Sustainability", "footer.careers":"Work with us",
     "footer.hLegal":"Legal", "footer.privacy":"Privacy notice", "footer.terms":"Terms & conditions", "footer.cookies":"Cookie policy",
-    "footer.copyright":"&copy; 2026 Azura Wellness Group. All rights reserved.", "footer.prototypeNote":"Design prototype - not a live production site",
-    "chat.subtitle":"Online . your Azura wellness advisor", "chat.placeholder":"Type your question...", "chat.send":"Send",
+    "footer.copyright":"&copy; 2026 Casa Azura Wellness. All rights reserved.", "footer.prototypeNote":"Design prototype - not a live production site",
+    "chat.subtitle":"Online . your Casa Azura wellness advisor", "chat.placeholder":"Type your question...", "chat.send":"Send",
     "chat.menu.categories":"Categories", "chat.menu.offers":"Offers", "chat.menu.cart":"My cart", "chat.menu.advisor":"Advisor",
     "profile.title":"Complete your profile", "profile.subtitle":"This activates your birthday promotions and loyalty program.",
     "profile.phoneLabel":"Phone (with country code)", "profile.phoneHint":"International E.164 format, e.g. +1 for the US.",
@@ -913,8 +1157,8 @@ var I18N = {
     "profile.consentEmailLabel":"I agree to receive email promotions (required for birthday and loyalty perks)",
     "profile.consentSmsLabel":"Also by SMS", "profile.consentWhatsappLabel":"Also by WhatsApp",
     "profile.submitLabel":"Save profile", "profile.skipLabel":"Not now", "profile.phonePlaceholder":"+15551234567",
-    "chat.greeting":"Hi! I'm Julieta 🌿, your Azura wellness advisor. How can I help you today?",
-    "chat.q.identity":"Who are you", "chat.a.identity":"I'm Julieta, your Azura beauty and wellness advisor. How can I help?",
+    "chat.greeting":"Hi! I'm Julieta 🌿, your Casa Azura wellness advisor. How can I help you today?",
+    "chat.q.identity":"Who are you", "chat.a.identity":"I'm Julieta, your Casa Azura Wellness beauty and wellness advisor. How can I help?",
     "chat.a.greeting":"Hi! How can I help?",
     "chat.a.capability":"I can help with shipping, payment, returns, choosing your ritual, or a human advisor.",
     "chat.a.purpose":"I help you find your ideal ritual, fast and simple.",
@@ -931,7 +1175,7 @@ var I18N = {
     "chat.a.loyalty":"Every purchase earns Azura points, redeemable on your next order.",
     "chat.a.contact":"Reach us on WhatsApp, this chat, or hola@azura.mx.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
-    "chat.a.about":"Azura is the online store for a beauty and wellness holding with 4 brands: RAIZ, NACAR, VIGOR and ROBLE.",
+    "chat.a.about":"Casa Azura Wellness is the online store for a beauty and wellness holding with 4 brands: RAIZ, NACAR, VIGOR and ROBLE.",
     "chat.a.products":"We sell supplements, skin and hair care, and daily wellness across 4 brands: RAIZ, NACAR, VIGOR and ROBLE.",
     "chat.a.hours":"The site takes orders 24/7. A human advisor is available on WhatsApp during business hours.",
     "chat.a.security":"Secure encrypted payment. We never store your card details on our servers.",
@@ -943,12 +1187,31 @@ var I18N = {
     "chat.a.recommend.needAge":"To fine-tune your recommendation, tell me your age. For example: I am 40 years old.",
     "chat.a.recommend.needGender":"To fine-tune your recommendation, tell me if you're looking for something for a woman or a man.",
     "chat.a.recommend.needBoth":"Tell me your age and whether you're looking for something for a woman or a man, and I'll give you a precise recommendation. For example: I am 40 years old, woman.",
-    "chat.a.fallback":"I don't have that answer. Try shipping, payment, returns, or talk to an advisor."
+    "chat.a.fallback":"I don't have that answer. Try shipping, payment, returns, or talk to an advisor.",
+    "cart.title":"Your cart", "cart.subtotal":"Subtotal", "cart.checkout":"Proceed to checkout",
+    "cart.checkoutNote":"Coming soon: online payment. For now this cart is a working demo, with no real charge.",
+    "account.title":"My account & payment methods", "account.subtitle":"Sign in to manage your saved payment methods.",
+    "account.card":"Card", "account.paypal":"PayPal", "account.brandLabel":"Brand", "account.last4Label":"Last 4 digits",
+    "account.expMonthLabel":"Exp. month", "account.expYearLabel":"Exp. year", "account.paypalEmailLabel":"PayPal email",
+    "account.pciNote":"For security (PCI-DSS/ISO 27001), this site never captures or stores the full card number or CVV. Only the last 4 digits are stored to identify your payment method.",
+    "account.saveLabel":"Save payment method", "account.closeLabel":"Close",
+    "auth.tabSignin":"Sign in", "auth.tabSignup":"Create account",
+    "auth.privacyNote":"We use your email, phone, or Google/Facebook data only to identify you and save your promotions. <b>We never see or store your password</b> — ISO 27001 compliant, personal data minimization. <a onclick=\"openPrivacyModal()\">See the full privacy notice</a>.",
+    "nl.accountHint":"Already have an account or want to create one? Use the profile icon in the top right.",
+    "auth.or":"or",
+    "auth.phoneToggle":"Continue with your phone",
+    "auth.phoneNameLabel":"Name",
+    "auth.phoneSendCode":"Send code by SMS",
+    "auth.phoneOtpLabel":"Verification code",
+    "auth.phoneVerify":"Verify and continue",
+    "auth.phoneChangeNumber":"Change number",
+    "auth.privacyLink":"See the full privacy notice.",
+    "privacy.title":"Privacy Notice", "privacy.updated":"Last updated: July 2026."
   },
   fr:{
     "top.shipping":"Livraison calculee au paiement . 2 a 5 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.raiz":"Raiz . Complements", "nav.nacar":"Nacar . Beaute", "nav.vigor":"Vigor . Nutrition", "nav.roble":"Roble . Homme", "nav.filosofia":"Notre philosophie",
-    "hero.eyebrow":"Groupe Azura . Holding Bien-etre", "hero.h1":'Le bien-etre des personnes, eleve au rang de <span class="accent">rituel</span>',
+    "hero.eyebrow":"Casa Azura Wellness . Holding Bien-etre", "hero.h1":'Le bien-etre des personnes, eleve au rang de <span class="accent">rituel</span>',
     "hero.p":'Des produits concus pour <span class="accent">accompagner</span> chaque etape de votre vie.',
     "hero.cta1":"Explorer le catalogue", "hero.cta2":"Notre philosophie",
     "hero.visualCaption":"Quatre rituels de bien-etre, un seul standard d'origine et de qualite.",
@@ -964,7 +1227,7 @@ var I18N = {
     "phil.pillar2h":"La science, pas des promesses vides", "phil.pillar2p":"Preuves et fiches techniques claires, sans allegations que nous ne pouvons pas soutenir.",
     "phil.pillar3h":"Des rituels, pas des transactions", "phil.pillar3p":"Des routines progressives qui accompagnent le progres reel de la personne.",
     "phil.pillar4h":"Un seul standard", "phil.pillar4p":"Les 4 marques partagent la meme gouvernance qualite et le meme service client.",
-    "phil.quote":"&ldquo;Des produits pour le bien-etre des personnes, pas des produits vendus pour vendre.&rdquo;",
+    "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Rituel phare", "zoom.knowRitual":"Decouvrir le rituel",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RESULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
     "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo ideal", "zoom.routineP":"Selectionnez votre niveau d'experience et nous vous suggerons la routine adaptee.",
@@ -973,10 +1236,10 @@ var I18N = {
     "footer.brandP":"Raiz, Nacar, Vigor et Roble : des rituels de bien-etre pour chaque etape de votre vie.",
     "footer.hVerticales":"Marques", "footer.raiz":"Raiz - Complements", "footer.nacar":"Nacar - Beaute", "footer.vigor":"Vigor - Nutrition", "footer.roble":"Roble - Homme",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre rituel", "footer.shipping":"Livraison et retours", "footer.faq":"Questions frequentes", "footer.chat":"Discuter avec l'assistant",
-    "footer.hCompania":"Entreprise", "footer.about":"A propos d'Azura", "footer.sustainability":"Durabilite", "footer.careers":"Travailler avec nous",
+    "footer.hCompania":"Entreprise", "footer.about":"A propos de Casa Azura", "footer.sustainability":"Durabilite", "footer.careers":"Travailler avec nous",
     "footer.hLegal":"Mentions legales", "footer.privacy":"Politique de confidentialite", "footer.terms":"Conditions generales", "footer.cookies":"Politique de cookies",
-    "footer.copyright":"&copy; 2026 Azura Wellness Group. Tous droits reserves.", "footer.prototypeNote":"Prototype de design - ce n'est pas un site en production",
-    "chat.subtitle":"En ligne . votre conseillere bien-etre Azura", "chat.placeholder":"Ecrivez votre question...", "chat.send":"Envoyer",
+    "footer.copyright":"&copy; 2026 Casa Azura Wellness. Tous droits reserves.", "footer.prototypeNote":"Prototype de design - ce n'est pas un site en production",
+    "chat.subtitle":"En ligne . votre conseillere bien-etre Casa Azura", "chat.placeholder":"Ecrivez votre question...", "chat.send":"Envoyer",
     "chat.menu.categories":"Categories", "chat.menu.offers":"Offres", "chat.menu.cart":"Mon panier", "chat.menu.advisor":"Conseiller",
     "profile.title":"Completez votre profil", "profile.subtitle":"Cela active vos promotions d'anniversaire et votre programme de fidelite.",
     "profile.phoneLabel":"Telephone (avec indicatif pays)", "profile.phoneHint":"Format international E.164, ex. +33 pour la France.",
@@ -984,8 +1247,8 @@ var I18N = {
     "profile.consentEmailLabel":"J'accepte de recevoir des promotions par courriel (requis pour anniversaire et fidelite)",
     "profile.consentSmsLabel":"Aussi par SMS", "profile.consentWhatsappLabel":"Aussi par WhatsApp",
     "profile.submitLabel":"Enregistrer le profil", "profile.skipLabel":"Pas maintenant", "profile.phonePlaceholder":"+33612345678",
-    "chat.greeting":"Bonjour ! Je suis Julieta 🌿, votre conseillere bien-etre Azura. Comment puis-je vous aider ?",
-    "chat.q.identity":"Qui es-tu", "chat.a.identity":"Je suis Julieta, votre conseillere beaute et bien-etre Azura. Comment puis-je vous aider ?",
+    "chat.greeting":"Bonjour ! Je suis Julieta 🌿, votre conseillere bien-etre Casa Azura. Comment puis-je vous aider ?",
+    "chat.q.identity":"Qui es-tu", "chat.a.identity":"Je suis Julieta, votre conseillere beaute et bien-etre de Casa Azura Wellness. Comment puis-je vous aider ?",
     "chat.a.greeting":"Bonjour ! Comment puis-je vous aider ?",
     "chat.a.capability":"Je peux vous aider avec la livraison, le paiement, les retours, ou un conseiller humain.",
     "chat.a.purpose":"Je vous aide a trouver votre rituel ideal, vite et simplement.",
@@ -1002,7 +1265,7 @@ var I18N = {
     "chat.a.loyalty":"Chaque achat cumule des points Azura, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou hola@azura.mx.",
     "chat.a.sustainability":"Emballages recyclables et ingredients d'origine certifiee.",
-    "chat.a.about":"Azura est la boutique en ligne du holding beaute et bien-etre avec 4 marques : RAIZ, NACAR, VIGOR et ROBLE.",
+    "chat.a.about":"Casa Azura Wellness est la boutique en ligne du holding beaute et bien-etre avec 4 marques : RAIZ, NACAR, VIGOR et ROBLE.",
     "chat.a.products":"Nous vendons des complements, des soins de la peau et des cheveux, et du bien-etre quotidien sur 4 marques : RAIZ, NACAR, VIGOR et ROBLE.",
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
     "chat.a.security":"Paiement securise et chiffre. Nous ne stockons jamais les donnees de votre carte.",
@@ -1014,7 +1277,26 @@ var I18N = {
     "chat.a.recommend.needAge":"Pour affiner ma recommandation, dites-moi votre age. Par exemple : j'ai 40 ans.",
     "chat.a.recommend.needGender":"Pour affiner ma recommandation, dites-moi si vous cherchez quelque chose pour une femme ou un homme.",
     "chat.a.recommend.needBoth":"Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, et je vous donne une recommandation precise. Par exemple : j'ai 40 ans, femme.",
-    "chat.a.fallback":"Je n'ai pas cette reponse. Essayez livraison, paiement, retours, ou un conseiller."
+    "chat.a.fallback":"Je n'ai pas cette reponse. Essayez livraison, paiement, retours, ou un conseiller.",
+    "cart.title":"Votre panier", "cart.subtotal":"Sous-total", "cart.checkout":"Passer au paiement",
+    "cart.checkoutNote":"Bientot disponible : paiement en ligne. Pour l'instant ce panier est une demonstration fonctionnelle, sans facturation reelle.",
+    "account.title":"Mon compte et moyens de paiement", "account.subtitle":"Connectez-vous pour gerer vos moyens de paiement enregistres.",
+    "account.card":"Carte", "account.paypal":"PayPal", "account.brandLabel":"Marque", "account.last4Label":"4 derniers chiffres",
+    "account.expMonthLabel":"Mois exp.", "account.expYearLabel":"Annee exp.", "account.paypalEmailLabel":"Email PayPal",
+    "account.pciNote":"Par securite (PCI-DSS/ISO 27001), ce site ne capture ni ne stocke jamais le numero de carte complet ni le CVV. Seuls les 4 derniers chiffres sont conserves pour identifier votre moyen de paiement.",
+    "account.saveLabel":"Enregistrer le moyen de paiement", "account.closeLabel":"Fermer",
+    "auth.tabSignin":"Connexion", "auth.tabSignup":"Creer un compte",
+    "auth.privacyNote":"Nous utilisons votre email, telephone ou vos donnees Google/Facebook uniquement pour vous identifier et enregistrer vos promotions. <b>Nous ne voyons ni ne stockons jamais votre mot de passe</b> — conforme ISO 27001, minimisation des donnees personnelles. <a onclick=\"openPrivacyModal()\">Voir l'avis de confidentialite complet</a>.",
+    "nl.accountHint":"Vous avez deja un compte ou voulez en creer un ? Utilisez l'icone de profil en haut a droite.",
+    "auth.or":"ou",
+    "auth.phoneToggle":"Continuer avec votre telephone",
+    "auth.phoneNameLabel":"Nom",
+    "auth.phoneSendCode":"Envoyer le code par SMS",
+    "auth.phoneOtpLabel":"Code de verification",
+    "auth.phoneVerify":"Verifier et continuer",
+    "auth.phoneChangeNumber":"Changer de numero",
+    "auth.privacyLink":"Voir l'avis de confidentialite complet.",
+    "privacy.title":"Avis de confidentialite", "privacy.updated":"Derniere mise a jour : juillet 2026."
   }
 };
 
@@ -1035,6 +1317,23 @@ var DYN = {
          {name:'Cliente verificado', stars:4, text:'Cumple lo que promete, seguire comprando.'},
          {name:'Cliente verificado', stars:5, text:'Se nota la diferencia despues de unas semanas de uso.'}
        ]; },
+       addToCart:function(){ return 'Agregar al carrito'; },
+       cartEmpty:function(){ return 'Tu carrito esta vacio todavia.'; },
+       productUnavailable:function(){ return 'Este producto ya no esta disponible.'; },
+       removeItem:function(){ return 'Quitar'; },
+       loginRequired:function(){ return 'Inicia sesion con Google o Facebook para agregar productos al carrito, guardar tu metodo de pago o dejar una resena.'; },
+       paymentSaved:function(){ return 'Metodo de pago guardado.'; },
+       loadingReviews:function(){ return 'Cargando resenas...'; },
+       shareExperience:function(){ return 'Comparte tu experiencia'; },
+       reviewPlaceholder:function(){ return 'Cuentanos que te parecio (opcional)'; },
+       submitReview:function(){ return 'Publicar resena'; },
+       loginToReview:function(){ return 'Inicia sesion para dejar tu resena y compartir fotos de tu experiencia.'; },
+       authSigninHeadline:function(){ return 'Inicia sesion para ver tu carrito, tus pedidos y tus promociones.'; },
+       authSignupHeadline:function(){ return 'Crea tu cuenta en segundos y desbloquea tus promociones de bienvenida.'; },
+       authNewHereText:function(){ return 'Nuevo en Casa Azura?'; },
+       authNewHereLink:function(){ return 'Crea tu cuenta'; },
+       authAlreadyHaveText:function(){ return 'Ya tienes cuenta?'; },
+       authAlreadyHaveLink:function(){ return 'Inicia sesion'; },
        profile:{
          title:'Completa tu perfil',
          subtitle:'Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.',
@@ -1113,6 +1412,23 @@ var DYN = {
          {name:'Verified customer', stars:4, text:'Does what it promises, will keep buying.'},
          {name:'Verified customer', stars:5, text:'You notice the difference after a few weeks of use.'}
        ]; },
+       addToCart:function(){ return 'Add to cart'; },
+       cartEmpty:function(){ return 'Your cart is empty for now.'; },
+       productUnavailable:function(){ return 'This product is no longer available.'; },
+       removeItem:function(){ return 'Remove'; },
+       loginRequired:function(){ return 'Sign in with Google or Facebook to add products to your cart, save a payment method, or leave a review.'; },
+       paymentSaved:function(){ return 'Payment method saved.'; },
+       loadingReviews:function(){ return 'Loading reviews...'; },
+       shareExperience:function(){ return 'Share your experience'; },
+       reviewPlaceholder:function(){ return 'Tell us what you thought (optional)'; },
+       submitReview:function(){ return 'Post review'; },
+       loginToReview:function(){ return 'Sign in to leave your review and share photos of your experience.'; },
+       authSigninHeadline:function(){ return 'Sign in to see your cart, your orders, and your promotions.'; },
+       authSignupHeadline:function(){ return 'Create your account in seconds and unlock your welcome promotions.'; },
+       authNewHereText:function(){ return 'New to Casa Azura?'; },
+       authNewHereLink:function(){ return 'Create your account'; },
+       authAlreadyHaveText:function(){ return 'Already have an account?'; },
+       authAlreadyHaveLink:function(){ return 'Sign in'; },
        profile:{
          title:'Complete your profile',
          subtitle:'This activates your birthday promotions and loyalty program.',
@@ -1191,6 +1507,23 @@ var DYN = {
          {name:'Client verifie', stars:4, text:'Tient ses promesses, je continuerai a en acheter.'},
          {name:'Client verifie', stars:5, text:'On remarque la difference apres quelques semaines d\'utilisation.'}
        ]; },
+       addToCart:function(){ return 'Ajouter au panier'; },
+       cartEmpty:function(){ return 'Votre panier est vide pour le moment.'; },
+       productUnavailable:function(){ return 'Ce produit n\'est plus disponible.'; },
+       removeItem:function(){ return 'Retirer'; },
+       loginRequired:function(){ return 'Connectez-vous avec Google ou Facebook pour ajouter des produits au panier, enregistrer un moyen de paiement ou laisser un avis.'; },
+       paymentSaved:function(){ return 'Moyen de paiement enregistre.'; },
+       loadingReviews:function(){ return 'Chargement des avis...'; },
+       shareExperience:function(){ return 'Partagez votre experience'; },
+       reviewPlaceholder:function(){ return 'Dites-nous ce que vous en avez pense (facultatif)'; },
+       submitReview:function(){ return 'Publier l\'avis'; },
+       loginToReview:function(){ return 'Connectez-vous pour laisser votre avis et partager des photos de votre experience.'; },
+       authSigninHeadline:function(){ return 'Connectez-vous pour voir votre panier, vos commandes et vos promotions.'; },
+       authSignupHeadline:function(){ return 'Creez votre compte en quelques secondes et debloquez vos promotions de bienvenue.'; },
+       authNewHereText:function(){ return 'Nouveau chez Casa Azura ?'; },
+       authNewHereLink:function(){ return 'Creez votre compte'; },
+       authAlreadyHaveText:function(){ return 'Vous avez deja un compte ?'; },
+       authAlreadyHaveLink:function(){ return 'Connectez-vous'; },
        profile:{
          title:'Completez votre profil',
          subtitle:'Cela active vos promotions d\'anniversaire et votre programme de fidelite.',
@@ -1267,23 +1600,484 @@ function findProductBySku(products, sku){
   for (var i=0;i<products.length;i++){ if (products[i].sku === sku) return products[i]; }
   return null;
 }
+var reviewPhotoQueue = [];
+var reviewStarsSelected = 5;
+
 function toggleComments(){
   var panel = document.getElementById('commentsPanel');
   var btn = document.getElementById('commentsToggleBtn');
   var isOpen = panel.classList.toggle('open');
   if (isOpen){
-    var items = DYN[currentLang].demoComments();
-    var html = '';
-    for (var i=0;i<items.length;i++){
-      html += '<div class="comment-item"><div class="c-head"><span>' + items[i].name + '</span><span class="c-stars">' + starsHtml(items[i].stars) + '</span></div><p>' + items[i].text + '</p></div>';
-    }
-    html += '<div class="comments-disclaimer">' + DYN[currentLang].commentsDisclaimer() + '</div>';
-    panel.innerHTML = html;
+    loadReviewsForCurrentVertical();
     btn.textContent = DYN[currentLang].hideComments();
   } else {
     btn.textContent = DYN[currentLang].viewComments();
   }
 }
+
+// Trae resenas reales de /api/reviews para todos los skus de la vertical activa.
+// Si un producto no tiene resenas reales todavia, cae al comentario de
+// demostracion (dejando claro que es contenido de ejemplo) para no dejar el
+// panel vacio -- ver gap documentado en db/schema.md.
+function loadReviewsForCurrentVertical(){
+  var panel = document.getElementById('commentsPanel');
+  panel.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].loadingReviews() + '</p>';
+  var products = V[currentV][currentLang].products;
+  var fetches = products.map(function(p){
+    return fetch(AZURA_CONFIG.REVIEWS_ENDPOINT + '?sku=' + encodeURIComponent(p.sku))
+      .then(function(r){ return r.ok ? r.json() : { reviews: [] }; })
+      .then(function(data){ return { sku: p.sku, name: p.name, reviews: (data && data.reviews) || [] }; })
+      .catch(function(){ return { sku: p.sku, name: p.name, reviews: [] }; });
+  });
+  Promise.all(fetches).then(function(results){
+    var html = '';
+    var anyReal = false;
+    for (var i=0;i<results.length;i++){
+      var r = results[i];
+      if (r.reviews.length){
+        anyReal = true;
+        for (var j=0;j<r.reviews.length;j++){
+          var rv = r.reviews[j];
+          html += '<div class="comment-item"><div class="c-head"><span>' + rv.customer_display_name + ' &middot; ' + r.name + '</span><span class="c-stars">' + starsHtml(rv.stars) + '</span></div>';
+          if (rv.text) html += '<p>' + rv.text + '</p>';
+          if (rv.photos && rv.photos.length){
+            for (var k=0;k<rv.photos.length;k++){ html += '<img class="review-photo-thumb" src="' + rv.photos[k].data_url + '">'; }
+          }
+          html += '</div>';
+        }
+      }
+    }
+    if (!anyReal){
+      var demo = DYN[currentLang].demoComments();
+      for (var d=0;d<demo.length;d++){
+        html += '<div class="comment-item"><div class="c-head"><span>' + demo[d].name + '</span><span class="c-stars">' + starsHtml(demo[d].stars) + '</span></div><p>' + demo[d].text + '</p></div>';
+      }
+      html += '<div class="comments-disclaimer">' + DYN[currentLang].commentsDisclaimer() + '</div>';
+    }
+    html += buildReviewFormHtml();
+    panel.innerHTML = html;
+    var starEls = panel.querySelectorAll('.rf-stars span');
+    for (var s=0;s<starEls.length;s++){
+      starEls[s].onclick = (function(val){ return function(){ setReviewStars(val); }; })(s+1);
+    }
+    setReviewStars(5);
+  });
+}
+
+function buildReviewFormHtml(){
+  return '<div class="review-form">' +
+    '<p style="font-size:12.5px; font-weight:700; margin-bottom:8px;">' + DYN[currentLang].shareExperience() + '</p>' +
+    (CURRENT_CUSTOMER.id
+      ? ('<div class="rf-stars" id="rfStars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>' +
+         '<textarea id="rfText" maxlength="500" placeholder="' + DYN[currentLang].reviewPlaceholder() + '"></textarea>' +
+         '<input type="file" id="rfPhotos" accept="image/*" multiple onchange="handleReviewPhotos(event)">' +
+         '<div class="review-photo-preview" id="rfPhotoPreview"></div>' +
+         '<button type="button" onclick="submitReview()">' + DYN[currentLang].submitReview() + '</button>' +
+         '<div class="pm-error" id="rfError"></div>')
+      : ('<p class="review-login-hint">' + DYN[currentLang].loginToReview() + '</p>')) +
+    '</div>';
+}
+
+function setReviewStars(n){
+  reviewStarsSelected = n;
+  var els = document.querySelectorAll('#rfStars span');
+  for (var i=0;i<els.length;i++){ els[i].classList.toggle('sel', i < n); }
+}
+
+function handleReviewPhotos(evt){
+  var files = Array.prototype.slice.call(evt.target.files).slice(0, 3);
+  reviewPhotoQueue = [];
+  var preview = document.getElementById('rfPhotoPreview');
+  preview.innerHTML = '';
+  files.forEach(function(file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      reviewPhotoQueue.push(e.target.result);
+      var img = document.createElement('img');
+      img.src = e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function submitReview(){
+  var errEl = document.getElementById('rfError');
+  errEl.className = 'pm-error';
+  if (!CURRENT_CUSTOMER.id){ return; }
+  var sku = V[currentV][currentLang].products[0].sku; // panel es por vertical; se asocia a la primera categoria visible
+  var text = document.getElementById('rfText').value.trim();
+  fetch(AZURA_CONFIG.REVIEWS_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, stars: reviewStarsSelected, text: text, photos: reviewPhotoQueue })
+  })
+  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
+  .then(function(res){
+    if (res.ok){
+      reviewPhotoQueue = [];
+      loadReviewsForCurrentVertical();
+    } else {
+      errEl.textContent = (res.data && res.data.error) || 'Error';
+      errEl.className = 'pm-error is-visible';
+    }
+  })
+  .catch(function(err){
+    errEl.textContent = err.message;
+    errEl.className = 'pm-error is-visible';
+  });
+}
+/* ===================== Carrito real (conectado a /api/cart) ===================== */
+function requireLogin(){
+  openAuthModal('signin');
+}
+
+function addToCart(sku){
+  if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
+  fetch(AZURA_CONFIG.CART_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, qty: 1 })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if (data && data.ok){ renderCartPanel(data.cart); openCart(); }
+    else { alert((data && data.error) || 'Error al agregar al carrito.'); }
+  })
+  .catch(function(err){ alert(err.message); });
+}
+
+function refreshCart(){
+  if (!CURRENT_CUSTOMER.id){ renderCartPanel({ items: [], subtotal: 0, currency: 'MXN' }); return; }
+  fetch(AZURA_CONFIG.CART_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id))
+    .then(function(r){ return r.json(); })
+    .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); })
+    .catch(function(){});
+}
+
+function changeCartQty(sku, newQty){
+  if (!CURRENT_CUSTOMER.id) return;
+  fetch(AZURA_CONFIG.CART_ENDPOINT, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, qty: newQty })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
+}
+
+function removeCartItem(sku){
+  if (!CURRENT_CUSTOMER.id) return;
+  fetch(AZURA_CONFIG.CART_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id) + '&sku=' + encodeURIComponent(sku), { method: 'DELETE' })
+    .then(function(r){ return r.json(); })
+    .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
+}
+
+function renderCartPanel(cart){
+  var itemsEl = document.getElementById('cartItems');
+  var badge = document.getElementById('cartBadge');
+  var subtotalEl = document.getElementById('cartSubtotalValue');
+  var items = (cart && cart.items) || [];
+  var totalQty = items.reduce(function(sum, i){ return sum + (i.qty || 0); }, 0);
+
+  if (totalQty > 0){ badge.style.display = 'flex'; badge.textContent = totalQty; }
+  else { badge.style.display = 'none'; }
+
+  if (!items.length){
+    itemsEl.innerHTML = '<div class="cart-empty">' + DYN[currentLang].cartEmpty() + '</div>';
+  } else {
+    var html = '';
+    for (var i=0;i<items.length;i++){
+      var it = items[i];
+      if (it.unavailable){
+        html += '<div class="cart-line"><div class="cart-line-body"><b>' + it.sku + '</b><span>' + DYN[currentLang].productUnavailable() + '</span>' +
+          '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div></div>';
+        continue;
+      }
+      var name = it.name ? (it.name[currentLang] || it.name.es) : it.sku;
+      html += '<div class="cart-line"><div class="cart-line-body"><b>' + name + '</b><span>$' + it.unit_price + ' MXN c/u</span>' +
+        '<div class="cart-qty"><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty-1) + ')">-</button><span>' + it.qty + '</span><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty+1) + ')">+</button></div>' +
+        '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\')">' + DYN[currentLang].removeItem() + '</button>' +
+        '</div><div><b>$' + it.line_total + '</b></div></div>';
+    }
+    itemsEl.innerHTML = html;
+  }
+  subtotalEl.textContent = '$' + (cart.subtotal || 0) + ' ' + (cart.currency || 'MXN');
+}
+
+function openCart(){
+  if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
+  refreshCart();
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartPanel').classList.add('open');
+  document.body.classList.add('nav-lock');
+}
+function closeCart(){
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartPanel').classList.remove('open');
+  document.body.classList.remove('nav-lock');
+}
+
+/* ===================== Mi cuenta / metodos de pago (conectado a /api/payment-methods) ===================== */
+var currentPaymentType = 'card';
+
+function setPaymentType(type){
+  currentPaymentType = type;
+  document.getElementById('pmTypeCardBtn').classList.toggle('sel', type === 'card');
+  document.getElementById('pmTypePaypalBtn').classList.toggle('sel', type === 'paypal');
+  document.getElementById('pmCardFields').style.display = type === 'card' ? 'block' : 'none';
+  document.getElementById('pmPaypalFields').style.display = type === 'paypal' ? 'block' : 'none';
+}
+
+function openAccountModal(){
+  if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
+  document.getElementById('accountModalOverlay').classList.add('is-open');
+  loadPaymentMethods();
+}
+function closeAccountModal(){
+  document.getElementById('accountModalOverlay').classList.remove('is-open');
+}
+
+/* ===================== Modal de login / crear cuenta (icono del header) ===================== */
+function onAccountIconClick(){
+  if (CURRENT_CUSTOMER.id){ openAccountModal(); } else { openAuthModal('signin'); }
+}
+
+function openAuthModal(tab){
+  setAuthTab(tab || 'signin');
+  document.getElementById('authModalOverlay').classList.add('is-open');
+}
+function closeAuthModal(){
+  document.getElementById('authModalOverlay').classList.remove('is-open');
+  document.getElementById('authPhoneStep1').style.display = 'none';
+  resetPhoneAuth();
+}
+
+function setAuthTab(tab){
+  var isSignup = tab === 'signup';
+  document.getElementById('authTabSigninBtn').classList.toggle('sel', !isSignup);
+  document.getElementById('authTabSignupBtn').classList.toggle('sel', isSignup);
+  var headline = document.getElementById('authHeadline');
+  var d = DYN[currentLang];
+  headline.textContent = isSignup ? d.authSignupHeadline() : d.authSigninHeadline();
+  var switchLine = document.getElementById('authSwitchLine');
+  switchLine.innerHTML = isSignup
+    ? ('<span>' + d.authAlreadyHaveText() + '</span> <a onclick="setAuthTab(\'signin\')">' + d.authAlreadyHaveLink() + '</a>')
+    : ('<span>' + d.authNewHereText() + '</span> <a onclick="setAuthTab(\'signup\')">' + d.authNewHereLink() + '</a>');
+}
+
+/* ===================== Registro/login por telefono (OTP real, ver api/phone-auth.js) ===================== */
+function togglePhoneAuth(){
+  var step1 = document.getElementById('authPhoneStep1');
+  var showing = step1.style.display !== 'none';
+  step1.style.display = showing ? 'none' : 'block';
+  if (showing) resetPhoneAuth();
+}
+
+function resetPhoneAuth(){
+  document.getElementById('authPhoneStep1').style.display = 'block';
+  document.getElementById('authPhoneStep2').style.display = 'none';
+  document.getElementById('authPhoneOtp').value = '';
+  var errEl = document.getElementById('authPhoneOtpError');
+  errEl.textContent = ''; errEl.className = 'pm-error';
+}
+
+function requestPhoneCode(){
+  var errEl = document.getElementById('authPhoneError');
+  errEl.textContent = ''; errEl.className = 'pm-error';
+
+  var payload = {
+    firstName: document.getElementById('authPhoneName').value.trim(),
+    phone: document.getElementById('authPhoneNumber').value.trim(),
+    birthDate: document.getElementById('authPhoneBirth').value,
+    marketingConsent: {
+      email: document.getElementById('authPhoneConsentEmail').checked,
+      sms: document.getElementById('authPhoneConsentSms').checked,
+    },
+  };
+
+  fetch(AZURA_CONFIG.PHONE_AUTH_ENDPOINT + '?action=request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
+  .then(function(res){
+    if (res.ok){
+      document.getElementById('authPhoneStep1').style.display = 'none';
+      document.getElementById('authPhoneStep2').style.display = 'block';
+    } else {
+      errEl.textContent = (res.data && res.data.error) || DYN[currentLang].registerFail('error desconocido');
+      errEl.className = 'pm-error is-visible';
+    }
+  })
+  .catch(function(err){
+    errEl.textContent = err.message;
+    errEl.className = 'pm-error is-visible';
+  });
+}
+
+function verifyPhoneCode(){
+  var errEl = document.getElementById('authPhoneOtpError');
+  errEl.textContent = ''; errEl.className = 'pm-error';
+
+  var payload = {
+    phone: document.getElementById('authPhoneNumber').value.trim(),
+    otp: document.getElementById('authPhoneOtp').value.trim(),
+  };
+
+  fetch(AZURA_CONFIG.PHONE_AUTH_ENDPOINT + '?action=verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
+  .then(function(res){
+    if (res.ok){
+      var u = res.data.user || {};
+      CURRENT_CUSTOMER.id = u.id || null;
+      CURRENT_CUSTOMER.profileComplete = Boolean(u.profile_complete);
+      closeAuthModal();
+      resetPhoneAuth();
+      document.getElementById('authPhoneStep1').style.display = 'none';
+      alert(DYN[currentLang].registerOk(u.name ? u.name : ''));
+      refreshCart();
+    } else {
+      errEl.textContent = (res.data && res.data.error) || DYN[currentLang].registerFail('error desconocido');
+      errEl.className = 'pm-error is-visible';
+    }
+  })
+  .catch(function(err){
+    errEl.textContent = err.message;
+    errEl.className = 'pm-error is-visible';
+  });
+}
+
+/* ===================== Aviso de Privacidad (contenido real, ES/EN/FR) ===================== */
+var PRIVACY_CONTENT = {
+  es: {
+    sections: [
+      { h:'1. Responsable de tus datos', p:'Casa Azura Wellness (operado por GoNexus Group / Nexus Tours, S.A.) es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesion de los Particulares (LFPDPPP) de Mexico.' },
+      { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, resenas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el numero completo ni el CVV).' },
+      { h:'3. Para que los usamos', p:'Identificarte al iniciar sesion, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleanos y tu programa de lealtad, mostrar tus resenas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
+      { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos ademas los controles tecnicos del estandar ISO 27001 sobre estos datos.' },
+      { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesion con ellos (solo reciben la solicitud de autenticacion, nunca tu contrasena de Azura porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. Si activas el registro por telefono, Twilio procesa el envio del SMS de verificacion. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
+      { h:'6. Cuanto tiempo los conservamos', p:'Mientras tu cuenta este activa. Los codigos de verificacion telefonica (OTP) se eliminan automaticamente a los 10 minutos, se hayan usado o no.' },
+      { h:'7. Tus derechos (ARCO)', p:'Puedes Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales en cualquier momento, escribiendo al contacto que aparece abajo.' },
+      { h:'8. Seguridad', p:'Nunca capturamos ni guardamos el numero completo de tu tarjeta ni el CVV (control PCI-DSS/ISO 27001 A.8.24). Los codigos OTP se guardan solo como huella criptografica (hash), nunca en texto plano.' },
+      { h:'9. Cambios a este aviso', p:'Podemos actualizar este aviso; la fecha de la version vigente aparece al inicio de esta seccion.' },
+      { h:'10. Contacto', p:'Para ejercer tus derechos o resolver dudas sobre tus datos, contacta al area de Tech Ops & Security de GoNexus Group.' },
+    ],
+  },
+  en: {
+    sections: [
+      { h:'1. Who is responsible for your data', p:'Casa Azura Wellness (operated by GoNexus Group / Nexus Tours, S.A.) is responsible for processing your personal data under Mexico\'s Federal Law on Protection of Personal Data Held by Private Parties (LFPDPPP).' },
+      { h:'2. What data we collect', p:'Name, email and/or phone, date of birth, order history, reviews and photos you choose to share, and masked payment method data (brand and last 4 digits only -- never the full card number or CVV).' },
+      { h:'3. What we use it for', p:'To identify you when you sign in, process and track your orders, activate birthday promotions and your loyalty program, display your published reviews, and send marketing communications only if you gave explicit consent.' },
+      { h:'4. Legal basis', p:'Your express consent (marketing checkbox), performance of the contractual relationship when you place an order, and our legitimate interest in operating the site securely. We also apply ISO 27001 technical controls to this data.' },
+      { h:'5. Who we share it with', p:'Google and/or Facebook act as identity providers if you choose to sign in with them (they only receive the authentication request, never an Azura password because none exists). MongoDB Atlas is our database storage processor. If phone registration is enabled, Twilio processes the verification SMS. We do not sell or rent your data to third parties for advertising.' },
+      { h:'6. How long we keep it', p:'While your account is active. Phone verification codes (OTP) are automatically deleted after 10 minutes, whether used or not.' },
+      { h:'7. Your rights', p:'You can Access, Rectify, Cancel, or Object to the processing of your personal data at any time by writing to the contact below.' },
+      { h:'8. Security', p:'We never capture or store your full card number or CVV (PCI-DSS/ISO 27001 A.8.24 control). OTP codes are stored only as a cryptographic hash, never in plain text.' },
+      { h:'9. Changes to this notice', p:'We may update this notice; the effective date appears at the top of this section.' },
+      { h:'10. Contact', p:'To exercise your rights or ask questions about your data, contact the Tech Ops & Security team at GoNexus Group.' },
+    ],
+  },
+  fr: {
+    sections: [
+      { h:'1. Responsable de vos donnees', p:'Casa Azura Wellness (exploite par GoNexus Group / Nexus Tours, S.A.) est responsable du traitement de vos donnees personnelles conformement a la loi mexicaine LFPDPPP.' },
+      { h:'2. Donnees que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et donnees masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le numero complet ni le CVV).' },
+      { h:'3. A quoi elles servent', p:'Vous identifier a la connexion, traiter et suivre vos commandes, activer les promotions d\'anniversaire et votre programme de fidelite, afficher vos avis publies, et vous envoyer des communications marketing uniquement si vous avez donne votre consentement explicite.' },
+      { h:'4. Fondement legal', p:'Votre consentement expres (case promotions), l\'execution de la relation contractuelle lors d\'une commande, et notre interet legitime a exploiter le site en toute securite. Nous appliquons aussi les controles techniques ISO 27001 a ces donnees.' },
+      { h:'5. Avec qui nous les partageons', p:'Google et/ou Facebook agissent comme fournisseurs d\'identite si vous choisissez de vous connecter avec eux (ils recoivent uniquement la demande d\'authentification, jamais un mot de passe Azura puisqu\'il n\'en existe pas). MongoDB Atlas est notre sous-traitant de stockage de base de donnees. Si l\'inscription par telephone est activee, Twilio traite l\'envoi du SMS de verification. Nous ne vendons ni ne louons vos donnees a des tiers a des fins publicitaires.' },
+      { h:'6. Duree de conservation', p:'Tant que votre compte est actif. Les codes de verification telephonique (OTP) sont automatiquement supprimes apres 10 minutes, utilises ou non.' },
+      { h:'7. Vos droits', p:'Vous pouvez Acceder, Rectifier, Annuler ou vous Opposer au traitement de vos donnees personnelles a tout moment, en ecrivant au contact ci-dessous.' },
+      { h:'8. Securite', p:'Nous ne capturons ni ne stockons jamais votre numero de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24). Les codes OTP sont stockes uniquement sous forme de hash cryptographique, jamais en texte clair.' },
+      { h:'9. Modifications de cet avis', p:'Nous pouvons mettre a jour cet avis ; la date de la version en vigueur apparait en haut de cette section.' },
+      { h:'10. Contact', p:'Pour exercer vos droits ou poser des questions sur vos donnees, contactez l\'equipe Tech Ops & Security de GoNexus Group.' },
+    ],
+  },
+};
+
+function renderPrivacyModal(){
+  var body = document.getElementById('privacyBody');
+  if (!body) return;
+  var content = PRIVACY_CONTENT[currentLang] || PRIVACY_CONTENT.es;
+  body.innerHTML = content.sections.map(function(s){
+    return '<div class="priv-section"><h4>' + s.h + '</h4><p>' + s.p + '</p></div>';
+  }).join('');
+}
+
+function openPrivacyModal(){
+  renderPrivacyModal();
+  document.getElementById('privacyModalOverlay').classList.add('is-open');
+}
+function closePrivacyModal(){
+  document.getElementById('privacyModalOverlay').classList.remove('is-open');
+}
+
+function loadPaymentMethods(){
+  var container = document.getElementById('pmListContainer');
+  fetch(AZURA_CONFIG.PAYMENT_METHODS_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var methods = (data && data.payment_methods) || [];
+      if (!methods.length){ container.innerHTML = ''; return; }
+      var html = '';
+      for (var i=0;i<methods.length;i++){
+        var m = methods[i];
+        var label = m.type === 'card' ? (m.brand + ' •••• ' + m.last4 + ' (' + m.exp_month + '/' + m.exp_year + ')') : ('PayPal: ' + m.paypal_email);
+        html += '<div class="pm-row"><span>' + label + (m.is_default ? ' &#9733;' : '') + '</span><button onclick="deletePaymentMethod(\'' + m._id + '\')">' + DYN[currentLang].removeItem() + '</button></div>';
+      }
+      container.innerHTML = html;
+    });
+}
+
+function deletePaymentMethod(id){
+  fetch(AZURA_CONFIG.PAYMENT_METHODS_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id) + '&id=' + encodeURIComponent(id), { method: 'DELETE' })
+    .then(function(r){ return r.json(); })
+    .then(function(){ loadPaymentMethods(); });
+}
+
+function submitPaymentMethod(evt){
+  evt.preventDefault();
+  var errEl = document.getElementById('pmPayError');
+  var okEl = document.getElementById('pmPaySuccess');
+  errEl.className = 'pm-error'; okEl.className = 'pm-success';
+
+  var payload = { customerId: CURRENT_CUSTOMER.id, type: currentPaymentType };
+  if (currentPaymentType === 'card'){
+    payload.brand = document.getElementById('pmBrand').value;
+    payload.last4 = document.getElementById('pmLast4').value.trim();
+    payload.exp_month = Number(document.getElementById('pmExpMonth').value);
+    payload.exp_year = Number(document.getElementById('pmExpYear').value);
+  } else {
+    payload.paypal_email = document.getElementById('pmPaypalEmail').value.trim();
+  }
+
+  fetch(AZURA_CONFIG.PAYMENT_METHODS_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
+  .then(function(res){
+    if (res.ok){
+      okEl.textContent = DYN[currentLang].paymentSaved();
+      okEl.className = 'pm-success is-visible';
+      document.getElementById('paymentForm').reset();
+      loadPaymentMethods();
+    } else {
+      errEl.textContent = (res.data && res.data.error) || 'Error';
+      errEl.className = 'pm-error is-visible';
+    }
+  })
+  .catch(function(err){
+    errEl.textContent = err.message;
+    errEl.className = 'pm-error is-visible';
+  });
+}
+
 function iconSvg(v){
   var paths = {
     raiz:'<path d="M12 22V12"/><path d="M12 12C12 6 6 4 4 4c0 6 3 8 8 8Z"/><path d="M12 12c0-6 6-8 8-8 0 6-3 8-8 8Z"/>',
@@ -1339,6 +2133,7 @@ function renderVertical(v){
       ratingHtml +
       '<div class="price">' + p.price + '</div>' +
       relatedHtml +
+      '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\')">' + DYN[currentLang].addToCart() + '</button>' +
       '</div></div>';
   }
   grid.innerHTML = html;
@@ -1408,7 +2203,9 @@ function initGoogleButton(containerId, retries){
   var container = document.getElementById(containerId);
   if (!container) return;
   if (isPlaceholder(AZURA_CONFIG.GOOGLE_CLIENT_ID)){
-    container.innerHTML = '<button onclick="configWarning(\'google\')" data-i18n="nl.google">Continuar con Google</button>';
+    container.innerHTML = '<button class="btn-google" onclick="configWarning(\'google\')">' +
+      '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47c-.28 1.5-1.13 2.78-2.4 3.63v3.02h3.88c2.27-2.09 3.57-5.17 3.57-8.84Z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.88-3.02c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.26v3.12A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54V6.61H1.26a12 12 0 0 0 0 10.78l4.01-3.12Z"/><path fill="#EA4335" d="M12 4.75c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.26 6.61l4.01 3.12C6.22 6.86 8.87 4.75 12 4.75Z"/></svg>' +
+      '<span data-i18n="nl.google">Continuar con Google</span></button>';
     var el = container.querySelector('[data-i18n]');
     if (el && I18N[currentLang][el.getAttribute('data-i18n')]) el.textContent = I18N[currentLang][el.getAttribute('data-i18n')];
     return;
@@ -1506,10 +2303,12 @@ function sendToBackend(provider, credential){
       var u = res.data.user || {};
       CURRENT_CUSTOMER.id = u.id || null;
       CURRENT_CUSTOMER.profileComplete = Boolean(u.profile_complete);
+      closeAuthModal();
       alert(DYN[currentLang].registerOk(u.name ? u.name : ''));
       if (CURRENT_CUSTOMER.id && !CURRENT_CUSTOMER.profileComplete){
         openProfileModal();
       }
+      refreshCart();
     }
     else { alert(DYN[currentLang].registerFail((res.data && res.data.error) || 'error desconocido')); }
   })
@@ -1555,6 +2354,11 @@ function applyLanguage(lang){
   if (searchInputEl) searchInputEl.placeholder = dict['search.placeholder'] || '';
   var pmPhoneEl = document.getElementById('pmPhone');
   if (pmPhoneEl) pmPhoneEl.placeholder = dict['profile.phonePlaceholder'] || '';
+  var authTabSignupBtnEl = document.getElementById('authTabSignupBtn');
+  if (authTabSignupBtnEl) setAuthTab(authTabSignupBtnEl.classList.contains('sel') ? 'signup' : 'signin');
+
+  var privacyOverlayEl = document.getElementById('privacyModalOverlay');
+  if (privacyOverlayEl && privacyOverlayEl.classList.contains('is-open')) renderPrivacyModal();
 
   document.getElementById('chatSubtitle').textContent = dict['chat.subtitle'];
   document.getElementById('chatInput').placeholder = dict['chat.placeholder'];

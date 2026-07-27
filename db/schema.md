@@ -166,3 +166,40 @@ Los campos `sku`, `rating` (`{stars, count}`), `related` (array de skus para "co
 | Único punto de verdad de precio/sku duplicado | `api/orders.js` recibe `items: [{sku, name, unit_price, qty}]` del cliente y confía en que el sku/precio coincide con el catálogo estático — no hay validación cruzada contra una colección `products` en servidor. |
 
 **Recomendación (bloqueante antes de campaña con inversión real en tráfico):** crear colección `products` en Mongo (sku, nombre, precio, vertical, rating agregado, related[]) y una colección `product_reviews` (customer_id, sku, stars, text, created_at, status: pending/published) para que rating y comentarios sean reales y `api/orders.js` valide `unit_price` contra el servidor, no contra el cliente. Mientras esto no exista, cualquier cifra de "rating" o "comentarios" en el sitio debe tratarse como **contenido de demostración**, no como dato de negocio.
+
+**Actualización — este gap ya se cerró parcialmente.** Se agregaron las colecciones `products`, `carts`, `product_reviews` y `payment_methods` (ver `db/collections.js` y `db/seed-products.js`), y los endpoints `api/products.js`, `api/cart.js`, `api/reviews.js` y `api/payment-methods.js` ya validan sku/precio contra el servidor. `api/orders.js` **todavía no fue actualizado** para validar contra `products` — sigue confiando en el `unit_price` que manda el cliente (ver sección 6). Antes de conectar el carrito a un checkout real, `orders.js` debe recalcular el precio contra `products`, igual que ya lo hace `cart.js`.
+
+---
+
+## 9. Gobierno de seguridad — Carrito, reseñas y métodos de pago (ISO 27001 / ISO 42001)
+
+Controles aplicados en esta iteración, mapeados a los dominios que un auditor o VP va a preguntar primero:
+
+**A.8.24 Criptografía / manejo de datos de pago (PCI-DSS por analogía).** `api/payment-methods.js` nunca acepta ni almacena número de tarjeta completo (PAN) ni CVV — hay una lista negra explícita de campos (`card_number`, `cvv`, `pan`, etc.) que si llegan en el payload, el endpoint responde `422` y rechaza la operación completa, no solo el campo. A nivel de base de datos, el validador `$jsonSchema` de `payment_methods` usa `additionalProperties:false`, así que aunque alguien tenga acceso directo a Mongo (o un bug en el código) intente insertar un campo no contemplado, Mongo rechaza el insert. Solo se guardan `brand`, `last4` (4 dígitos, con regex), `exp_month/exp_year` y un `provider_token` placeholder para cuando se integre un procesador certificado PCI (Stripe, PayPal, Conekta) — ese token es lo único que representaría la tarjeta real, y lo emitiría el procesador, nunca este servidor.
+
+**A.5.34 Minimización de datos personales.** Las reseñas guardan `customer_display_name` (nombre + inicial), nunca el correo ni el nombre completo del cliente en la vista pública; el `customer_id` real solo vive en el backend y se excluye explícitamente (`project: {customer_id: 0}`) de la respuesta pública de `GET /api/reviews`.
+
+**Control de contenido generado por usuario (fotos y texto).** `api/reviews.js` limita texto a 500 caracteres, máximo 3 fotos por reseña, y valida que cada foto sea realmente una imagen (`data:image/...`) con un tope de tamaño (~800KB) antes de aceptarla — mitiga abuso de almacenamiento y subida de archivos arbitrarios disfrazados de imagen.
+
+**Gap abierto, con dueño claro:** las reseñas se auto-publican (`status:"published"`) porque todavía no existe un panel de moderación humana. El esquema ya trae el estado `pending/rejected` listo, pero mientras no haya un flujo de revisión, cualquier cliente autenticado puede publicar texto o fotos visibles al público sin filtro humano. Esto debe cerrarse antes de abrir el sitio a tráfico real — es el mismo tipo de riesgo reputacional que un comentario ofensivo público en redes sociales corporativas.
+
+**ISO 42001 (gestión de IA) — transparencia del chatbot.** Julieta ya se identifica como asistente en el saludo inicial (`chat.greeting`) en los 3 idiomas; no se requiere cambio adicional aquí, pero se deja como control ya cumplido y verificado en esta revisión.
+
+**Gaps heredados, todavía sin cerrar (no tocados en esta iteración, ver secciones 6-8):** sesión de servidor firmada (todo el backend confía en el `customerId` que manda el navegador), y `api/orders.js` sin validación de precio contra `products`. Ambos son prerrequisito antes de manejar dinero real o datos de clientes en producción con tráfico externo.
+
+## 10. Registro/login por teléfono (OTP) y Aviso de Privacidad
+
+**Por qué se agregó.** El modal de login/signup solo ofrecía Google/Facebook. Feedback directo: hace falta una tercera vía para quien no quiere u no puede usar OAuth social — mínimo un campo, teléfono o celular (son el mismo dato). Se optó por **verificación real vía código OTP** en vez de solo capturar el número, porque un campo de texto sin verificar permite que cualquiera escriba el número de un tercero y cree una cuenta a su nombre (suplantación). Ver `api/phone-auth.js`.
+
+**Diseño del control (mapeo ISO 27001 A.8.24 / A.9.4 / A.8.10):**
+- El código OTP nunca se guarda en claro — solo `sha256(otp + salt)`, con `salt` aleatorio distinto por intento.
+- Expira a los 10 minutos; un índice **TTL** en `phone_verifications.expires_at` hace que MongoDB borre el documento solo al vencer (minimización de retención — A.8.10). No queda rastro del código ni del intento después de expirar.
+- Máximo 5 intentos de verificación por código; al superarlo, hay que solicitar uno nuevo.
+- Máximo 1 código nuevo cada 60 segundos por número — control anti-flood que también protege el costo, porque **cada SMS real tiene costo por mensaje** (a diferencia de Google/Facebook OAuth, que es gratis a este volumen). Ver `lib/sendSms.js`.
+- Nombre, fecha de nacimiento y consentimiento de marketing se capturan **antes** de verificar el código y quedan atados al intento (`pending_profile`) — así el segundo paso (verificar) no vuelve a confiar en datos sueltos que mande el navegador; usa el mismo payload que ya quedó ligado a la verificación de ese número.
+- Cuenta creada por teléfono llega con `profile_complete:true` de inmediato (a diferencia de OAuth, que abre un formulario aparte) porque ya se pidió todo lo necesario en el mismo paso — mismo criterio de elegibilidad para promociones/lealtad que usa `lib/promotionsEngine.js`.
+- `customers.email` pasó de requerido a opcional (`anyOf: [{required:['email']}, {required:['phone']}]` en el validador) para permitir una identidad válida basada solo en teléfono. El índice único de `email` se volvió `sparse` para no romper con múltiples cuentas sin correo.
+
+**Gap conocido, con dueño claro (Carlos decide):** `lib/sendSms.js` requiere una cuenta Twilio real (`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`) — sin esas variables, el endpoint responde `501` con mensaje explícito en vez de fingir que envió el SMS. A diferencia del resto de las integraciones de este proyecto (todas gratis a este volumen), el envío de SMS **sí tiene costo variable por mensaje** — es una decisión de negocio antes de activar el botón en producción, no solo una configuración técnica.
+
+**Aviso de Privacidad.** Se agregó contenido real (ES/EN/FR) accesible desde el footer (`footer.privacy`) y enlazado desde la nota de privacidad del modal de login. Cubre: responsable de los datos, qué se recaba (identidad, contacto, fecha de nacimiento, pedidos, reseñas/fotos, método de pago enmascarado), finalidad, fundamento legal (LFPDPPP en México + los mismos controles ISO 27001 ya documentados en este archivo), terceros involucrados (Google/Facebook como proveedores de identidad, MongoDB Atlas como encargado de almacenamiento), plazo de conservación, derechos ARCO y medio de contacto. Es contenido estático de marketing/legal — no reemplaza una revisión por el área legal de GoNexus antes de tráfico real, particularmente para confirmar el nombre del responsable y el domicilio fiscal exacto.

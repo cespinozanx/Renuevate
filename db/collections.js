@@ -29,10 +29,17 @@ const VALIDATORS = {
   customers: {
     $jsonSchema: {
       bsonType: 'object',
-      required: ['email', 'status', 'created_at', 'updated_at'],
+      required: ['status', 'created_at', 'updated_at'],
+      // Antes email era obligatorio -- eso impedia una identidad valida basada solo en
+      // telefono (login por celular, sin Google/Facebook). Ahora se exige al menos uno
+      // de los dos (email O phone) via anyOf, ver mas abajo. La cuenta sigue necesitando
+      // una identidad verificable: email por OAuth (Google/Facebook ya lo validan) o
+      // telefono por OTP (ver api/phone-auth.js, que solo confirma el registro tras
+      // verificar posesion real del numero).
+      anyOf: [{ required: ['email'] }, { required: ['phone'] }],
       properties: {
-        email: { bsonType: 'string', description: 'requerido, unico, minusculas' },
-        phone: { bsonType: ['string', 'null'] },
+        email: { bsonType: ['string', 'null'], description: 'unico si existe, minusculas' },
+        phone: { bsonType: ['string', 'null'], description: 'E.164, unico si existe' },
         birth_date: { bsonType: ['date', 'null'] },
         birth_month_day: { bsonType: ['string', 'null'], description: 'formato MM-DD, derivado de birth_date' },
         first_name: { bsonType: ['string', 'null'] },
@@ -43,7 +50,7 @@ const VALIDATORS = {
             bsonType: 'object',
             required: ['provider', 'provider_user_id'],
             properties: {
-              provider: { enum: ['google', 'facebook'] },
+              provider: { enum: ['google', 'facebook', 'phone'] },
               provider_user_id: { bsonType: 'string' },
             },
           },
@@ -250,6 +257,162 @@ const VALIDATORS = {
       },
     },
   },
+
+  // Catalogo real server-side. Antes, sku/precio/rating/related vivian solo en
+  // JS estatico del frontend (index.html) -- ver db/schema.md seccion 7 (gap documentado).
+  // Esta coleccion es la fuente de verdad para validar precio/sku en cart y en
+  // futuras ordenes (PCI/ISO 27001 A.8.26: no confiar en datos de negocio que
+  // manda el cliente sin validarlos contra el servidor).
+  products: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['sku', 'vertical', 'name_i18n', 'unit_price', 'currency', 'status', 'created_at', 'updated_at'],
+      properties: {
+        sku: { bsonType: 'string' },
+        vertical: { enum: ['raiz', 'nacar', 'vigor', 'roble'] },
+        name_i18n: {
+          bsonType: 'object',
+          required: ['es', 'en', 'fr'],
+          properties: { es: { bsonType: 'string' }, en: { bsonType: 'string' }, fr: { bsonType: 'string' } },
+        },
+        description_i18n: {
+          bsonType: ['object', 'null'],
+          properties: { es: { bsonType: 'string' }, en: { bsonType: 'string' }, fr: { bsonType: 'string' } },
+        },
+        unit_price: { bsonType: ['double', 'int'], minimum: 0 },
+        currency: { bsonType: 'string' },
+        rating: {
+          bsonType: ['object', 'null'],
+          properties: {
+            stars: { bsonType: ['double', 'int'] },
+            count: { bsonType: 'int' },
+          },
+        },
+        related: { bsonType: ['array', 'null'], items: { bsonType: 'string' } },
+        status: { enum: ['active', 'inactive'] },
+        created_at: { bsonType: 'date' },
+        updated_at: { bsonType: 'date' },
+      },
+    },
+  },
+
+  // Un carrito activo por cliente (upsert por customer_id). No es historico de
+  // ordenes -- eso sigue siendo `orders`. `items` guarda una foto del precio al
+  // momento de agregarlo (unit_price_snapshot); el total real siempre se
+  // recalcula contra `products` al leer/mostrar el carrito, nunca se confia en
+  // lo que traiga el documento guardado.
+  carts: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['customer_id', 'items', 'status', 'created_at', 'updated_at'],
+      properties: {
+        customer_id: { bsonType: 'objectId' },
+        items: {
+          bsonType: 'array',
+          items: {
+            bsonType: 'object',
+            required: ['sku', 'qty'],
+            properties: {
+              sku: { bsonType: 'string' },
+              qty: { bsonType: 'int', minimum: 1 },
+              unit_price_snapshot: { bsonType: ['double', 'int', 'null'] },
+              added_at: { bsonType: ['date', 'null'] },
+            },
+          },
+        },
+        status: { enum: ['active', 'converted', 'abandoned'] },
+        created_at: { bsonType: 'date' },
+        updated_at: { bsonType: 'date' },
+      },
+    },
+  },
+
+  // Resenas/experiencias con foto por producto. `status` existe para moderacion
+  // -- ver nota de gap en db/schema.md seccion 8 (hoy se auto-publica porque no
+  // hay panel de moderacion construido todavia).
+  product_reviews: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['sku', 'customer_id', 'stars', 'status', 'created_at'],
+      properties: {
+        sku: { bsonType: 'string' },
+        customer_id: { bsonType: 'objectId' },
+        customer_display_name: { bsonType: ['string', 'null'], description: 'nombre + inicial de apellido, minimizacion de PII' },
+        stars: { bsonType: 'int', minimum: 1, maximum: 5 },
+        text: { bsonType: ['string', 'null'] },
+        photos: {
+          bsonType: ['array', 'null'],
+          maxItems: 3,
+          items: {
+            bsonType: 'object',
+            properties: {
+              data_url: { bsonType: 'string', description: 'MVP: base64 inline. Ver gap: migrar a blob storage (Vercel Blob/S3) antes de escala real.' },
+              uploaded_at: { bsonType: 'date' },
+            },
+          },
+        },
+        status: { enum: ['pending', 'published', 'rejected'] },
+        created_at: { bsonType: 'date' },
+      },
+    },
+  },
+
+  // Metodos de pago -- SOLO datos de despliegue/enmascarados. Nunca numero de
+  // tarjeta completo ni CVV (PCI-DSS SAQ-A / ISO 27001 A.8.24). additionalProperties:false
+  // fuerza a nivel de base de datos que nadie pueda agregar por accidente un
+  // campo `card_number` o `cvv` -- si alguien lo intenta, Mongo rechaza el insert.
+  payment_methods: {
+    $jsonSchema: {
+      bsonType: 'object',
+      additionalProperties: false,
+      required: ['_id', 'customer_id', 'type', 'is_default', 'created_at'],
+      properties: {
+        _id: {},
+        customer_id: { bsonType: 'objectId' },
+        type: { enum: ['card', 'paypal'] },
+        brand: { enum: ['visa', 'mastercard', 'amex', 'other', null] },
+        last4: { bsonType: ['string', 'null'], pattern: '^[0-9]{4}$' },
+        exp_month: { bsonType: ['int', 'null'], minimum: 1, maximum: 12 },
+        exp_year: { bsonType: ['int', 'null'], minimum: 2024 },
+        paypal_email: { bsonType: ['string', 'null'] },
+        provider_token: { bsonType: ['string', 'null'], description: 'placeholder para token real de Stripe/PayPal cuando se integre un procesador certificado PCI' },
+        is_default: { bsonType: 'bool' },
+        created_at: { bsonType: 'date' },
+      },
+    },
+  },
+
+  // Codigos OTP de un solo uso para registro/login por telefono (ver api/phone-auth.js).
+  // NUNCA se guarda el codigo en claro -- solo su hash (SHA-256 + salt aleatorio por
+  // registro). `pending_profile` guarda nombre/fecha de nacimiento/consentimiento que el
+  // usuario captura ANTES de verificar el codigo, para que verify-code no tenga que
+  // confiar de nuevo en datos sueltos del cliente -- se usa el mismo payload que ya
+  // quedo atado a ese intento de verificacion. El indice TTL en expires_at hace que
+  // Mongo purgue el documento solo (ISO 27001 A.8.10, minimizacion de retencion) --
+  // no queda ni el OTP ni el intento despues de que expira.
+  phone_verifications: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['phone', 'otp_hash', 'salt', 'attempts', 'consumed', 'expires_at', 'created_at'],
+      properties: {
+        phone: { bsonType: 'string' },
+        otp_hash: { bsonType: 'string' },
+        salt: { bsonType: 'string' },
+        attempts: { bsonType: 'int', minimum: 0 },
+        consumed: { bsonType: 'bool' },
+        pending_profile: {
+          bsonType: ['object', 'null'],
+          properties: {
+            first_name: { bsonType: ['string', 'null'] },
+            birth_date: { bsonType: ['date', 'null'] },
+            marketing_consent: { bsonType: ['object', 'null'] },
+          },
+        },
+        expires_at: { bsonType: 'date' },
+        created_at: { bsonType: 'date' },
+      },
+    },
+  },
 };
 
 async function setupCollections(db) {
@@ -265,7 +428,7 @@ async function setupCollections(db) {
     }
   }
 
-  await db.collection('customers').createIndex({ email: 1 }, { unique: true, name: 'uniq_email' });
+  await db.collection('customers').createIndex({ email: 1 }, { unique: true, sparse: true, name: 'uniq_email' });
   await db.collection('customers').createIndex({ phone: 1 }, { unique: true, sparse: true, name: 'uniq_phone' });
   await db.collection('customers').createIndex({ birth_month_day: 1 }, { name: 'idx_birth_month_day' });
 
@@ -291,6 +454,19 @@ async function setupCollections(db) {
 
   await db.collection('orders').createIndex({ customer_id: 1, created_at: -1 }, { name: 'idx_customer_orders' });
   await db.collection('orders').createIndex({ status: 1 }, { name: 'idx_status' });
+
+  await db.collection('products').createIndex({ sku: 1 }, { unique: true, name: 'uniq_sku' });
+  await db.collection('products').createIndex({ vertical: 1, status: 1 }, { name: 'idx_vertical_status' });
+
+  await db.collection('carts').createIndex({ customer_id: 1 }, { unique: true, name: 'uniq_customer_cart' });
+
+  await db.collection('product_reviews').createIndex({ sku: 1, status: 1, created_at: -1 }, { name: 'idx_sku_status_created' });
+  await db.collection('product_reviews').createIndex({ customer_id: 1 }, { name: 'idx_customer' });
+
+  await db.collection('payment_methods').createIndex({ customer_id: 1 }, { name: 'idx_customer' });
+
+  await db.collection('phone_verifications').createIndex({ phone: 1, created_at: -1 }, { name: 'idx_phone_created' });
+  await db.collection('phone_verifications').createIndex({ expires_at: 1 }, { expireAfterSeconds: 0, name: 'ttl_expires_at' });
 
   console.log('[collections] indices listos.');
 }

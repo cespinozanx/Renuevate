@@ -63,6 +63,18 @@ No hace falta crear la base ni la coleccion a mano: `api/register.js` las crea s
 
 ---
 
+## 3bis. Registro por telefono (SMS OTP via Twilio) — opcional, tiene costo
+
+El modal de login tambien ofrece "Registrarte con tu telefono" como alternativa a Google/Facebook, con un codigo de verificacion real por SMS (ver `api/phone-auth.js`). A diferencia de Google/Facebook OAuth (gratis a este volumen), **cada SMS enviado tiene costo** — es una decision de negocio, no solo tecnica. Si no configuras esto, el boton de registro por telefono muestra un aviso claro en vez de fallar en silencio (mismo patron que Google/Facebook sin configurar).
+
+1. Entra a https://www.twilio.com/try-twilio y crea una cuenta (da credito de prueba gratis).
+2. En el **Console Dashboard**, copia tu **Account SID** y tu **Auth Token**.
+3. Consigue un numero de telefono Twilio (**Phone Numbers > Buy a number** — con el credito de prueba alcanza para pruebas). Copia el numero en formato E.164 (ej. `+14155551234`).
+4. Guarda los 3 valores — son tu `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` y `TWILIO_FROM_NUMBER` (paso 6, tabla de variables de entorno).
+5. Con cuenta de prueba (trial), Twilio solo permite enviar SMS a numeros que hayas verificado como destinatario de prueba en la consola — para enviar a cualquier numero real hay que pasar a cuenta de pago (agregar tarjeta). Revisa el costo vigente por SMS a Mexico antes de activarlo con clientes reales.
+
+---
+
 ## 4. Preparar el proyecto localmente
 
 Este paquete (`azura-site/`) ya trae:
@@ -72,10 +84,12 @@ azura-site/
   index.html                  <- el sitio (copia ya lista de Azura_Wellness_Group_Prototipo.html)
   api/register.js             <- funcion serverless (verifica login, guarda/actualiza en `customers`)
   api/complete-profile.js     <- funcion serverless (telefono, fecha de nacimiento, consentimiento)
+  api/phone-auth.js            <- registro/login por telefono con codigo OTP real (ver seccion 3bis)
   api/orders.js                <- funcion serverless (contrato de datos de orden + dispara lealtad)
   api/promotions.js, api/loyalty-rules.js  <- CRUD admin de promociones/lealtad
   db/schema.md, db/collections.js  <- arquitectura de datos + creacion de colecciones/indices
   lib/promotionsEngine.js      <- logica de elegibilidad y conteo de lealtad
+  lib/sendSms.js                <- envio de SMS via Twilio (para el OTP de telefono)
   package.json                 <- dependencias (mongodb, google-auth-library)
   .env.example                 <- plantilla de variables de entorno
   .gitignore
@@ -138,6 +152,9 @@ git push -u origin main
    | `GOOGLE_CLIENT_ID` | el Client ID del paso 2 |
    | `FACEBOOK_APP_ID` | el App ID del paso 3 |
    | `FACEBOOK_APP_SECRET` | el App Secret del paso 3 |
+   | `TWILIO_ACCOUNT_SID` | (opcional, solo si activas registro por telefono — paso 3bis) |
+   | `TWILIO_AUTH_TOKEN` | (opcional, paso 3bis) |
+   | `TWILIO_FROM_NUMBER` | (opcional, paso 3bis) |
 
 5. Dale **Deploy**. En 1-2 minutos tendras una URL tipo `https://azura-wellness-site.vercel.app`.
 6. Vuelve al paso 2 (Google Cloud) y al paso 3 (Facebook) y agrega esa URL real a los origenes/dominios autorizados.
@@ -185,6 +202,7 @@ Agregado en `db/`, `lib/` y `api/` — mismo MongoDB Atlas, sin costo adicional.
 
 - `db/schema.md` — arquitectura completa de datos (colecciones, campos, indices, maquina de estados). Leer primero.
 - `db/collections.js` — crea las colecciones con validacion de esquema ($jsonSchema) e indices, incluida `orders`. Correr una vez (o cada vez que cambie el esquema): `node db/collections.js`.
+  **Nota si ya tenias el sitio corriendo antes de esta version:** el indice unico de `customers.email` cambio de "normal" a `sparse` (para permitir cuentas que solo tengan telefono). Si Mongo marca error al correr el script (`IndexOptionsConflict`), entra a Atlas > Collections > `customers` > Indexes y borra manualmente el indice `uniq_email` viejo antes de volver a correr `node db/collections.js`.
 - `lib/promotionsEngine.js` — logica de elegibilidad y de contar compras para lealtad.
 - `api/promotions.js` y `api/loyalty-rules.js` — CRUD + activar/pausar/archivar, protegidos con `ADMIN_API_KEY` (agregar esa variable en Vercel, ver `.env.example`).
 - `api/complete-profile.js` — formulario "completa tu perfil" (telefono E.164 + fecha de nacimiento + consentimiento de marketing). Se abre solo en el navegador justo despues del primer login si `profile_complete` viene en `false`. Escribe en `customers` y solo marca `profile_complete = true` cuando telefono, fecha de nacimiento y `marketing_consent.email` estan presentes — misma formula que usa `lib/promotionsEngine.js` para elegibilidad real, para que nunca queden desincronizados.
