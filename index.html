@@ -332,6 +332,8 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:66px;}
 .chat-pcard .cp-cta{font-size:10.5px; font-weight:700; letter-spacing:.3px; white-space:nowrap; cursor:pointer; color:var(--gold);}
 .chat-pcard .cp-cta:hover{text-decoration:underline;}
 .chat-msg.user{background:var(--grey); color:#fff; align-self:flex-end; border-bottom-right-radius:2px;}
+.chat-wa-btn{display:flex; align-items:center; gap:8px; background:#25D366; color:#fff; border:none; border-radius:20px; padding:9px 16px; font-size:12px; font-weight:700; cursor:pointer; font-family:'Manrope',sans-serif; margin-top:2px;}
+.chat-wa-btn:hover{background:#1EBE5A;}
 .chat-quick{display:flex; flex-direction:column; padding:2px 0 4px; border-top:1px solid var(--line); max-height:132px; overflow-y:auto;}
 .chat-quick button{font-size:10.5px; letter-spacing:.2px; padding:8px 16px; border:none; border-bottom:1px solid var(--line); background:#fff; text-align:left; cursor:pointer; font-family:'Manrope',sans-serif; color:var(--ink); display:flex; align-items:center; justify-content:space-between;}
 .chat-quick button:last-child{border-bottom:none;}
@@ -1081,7 +1083,11 @@ var I18N = {
     "chat.a.human":"Claro, te conecto con un asesor por WhatsApp.",
     "chat.a.payment":"Aceptamos tarjeta, debito y PayPal. Pago seguro en checkout.",
     "chat.a.tracking":"Te mandamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.",
-    "chat.a.returns":"15 dias para devolver sin abrir. Escribenos por WhatsApp con tu pedido.",
+    "chat.a.returns":"Estamos formalizando nuestra politica de devoluciones. Escribenos por WhatsApp con tu pedido y lo resolvemos caso por caso.",
+    "chat.a.store":"Casa Azura Wellness es 100% en linea, no tenemos tienda fisica por ahora.",
+    "chat.a.beautyritual":"Un ritual Azura es una rutina corta y constante (2 a 3 pasos) pensada para un objetivo especifico: energia, piel, cabello o bienestar. Cada linea (RAIZ, NACAR, VIGOR, ROBLE) tiene el suyo. Cuentame tu prioridad y te armo el tuyo.",
+    "chat.a.nutritionadvice":"Puedo darte tips generales de bienestar (hidratacion, constancia en tu rutina, descanso), pero no reemplazo a un nutriologo ni doy planes personalizados. Para eso te recomiendo un profesional de salud. Si quieres, cuentame tu prioridad y te sugiero productos de nuestras lineas.",
+    "chat.a.productadvisor":"Claro, soy tu asesora de productos y suplementos. Cuentame tu edad y si buscas algo para mujer u hombre, o dime tu prioridad (energia, piel, cabello, bienestar) y te doy una recomendacion puntual.",
     "chat.a.loyalty":"Cada compra suma puntos Azura, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o hola@azura.mx.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
@@ -1171,7 +1177,11 @@ var I18N = {
     "chat.a.human":"Sure, connecting you with a human advisor on WhatsApp.",
     "chat.a.payment":"We accept card, debit and PayPal. Secure checkout payment.",
     "chat.a.tracking":"We send your tracking number by email and WhatsApp once it ships.",
-    "chat.a.returns":"15 days to return unopened. Message us on WhatsApp with your order.",
+    "chat.a.returns":"We're still formalizing our returns policy. Message us on WhatsApp with your order and we'll sort it out case by case.",
+    "chat.a.store":"Casa Azura Wellness is 100% online, we don't have a physical store for now.",
+    "chat.a.beautyritual":"An Azura ritual is a short, consistent routine (2 to 3 steps) built around a specific goal: energy, skin, hair or wellness. Each line (RAIZ, NACAR, VIGOR, ROBLE) has its own. Tell me your priority and I'll build yours.",
+    "chat.a.nutritionadvice":"I can share general wellness tips (hydration, staying consistent with your routine, rest), but I'm not a replacement for a nutritionist and I don't give personalized plans. For that, a healthcare professional is best. If you want, tell me your priority and I'll suggest products from our lines.",
+    "chat.a.productadvisor":"Sure, I'm your product and supplement advisor. Tell me your age and whether you're looking for something for a woman or a man, or tell me your priority (energy, skin, hair, wellness) and I'll give you a precise recommendation.",
     "chat.a.loyalty":"Every purchase earns Azura points, redeemable on your next order.",
     "chat.a.contact":"Reach us on WhatsApp, this chat, or hola@azura.mx.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
@@ -1261,7 +1271,11 @@ var I18N = {
     "chat.a.human":"Bien sur, je vous mets en relation via WhatsApp.",
     "chat.a.payment":"Carte, debit et PayPal acceptes. Paiement securise au checkout.",
     "chat.a.tracking":"Numero de suivi envoye par e-mail et WhatsApp des l'expedition.",
-    "chat.a.returns":"15 jours pour retourner un produit non ouvert, via WhatsApp.",
+    "chat.a.returns":"Nous finalisons notre politique de retours. Ecrivez-nous sur WhatsApp avec votre commande et nous le resolvons au cas par cas.",
+    "chat.a.store":"Casa Azura Wellness est 100% en ligne, nous n'avons pas de boutique physique pour le moment.",
+    "chat.a.beautyritual":"Un rituel Azura est une routine courte et constante (2 a 3 etapes) pensee pour un objectif precis : energie, peau, cheveux ou bien-etre. Chaque ligne (RAIZ, NACAR, VIGOR, ROBLE) a le sien. Dites-moi votre priorite et je construis le votre.",
+    "chat.a.nutritionadvice":"Je peux vous donner des conseils generaux de bien-etre (hydratation, constance dans votre routine, repos), mais je ne remplace pas un nutritionniste et je ne donne pas de plan personnalise. Pour cela, consultez un professionnel de sante. Si vous voulez, dites-moi votre priorite et je vous suggere des produits de nos lignes.",
+    "chat.a.productadvisor":"Bien sur, je suis votre conseillere produits et complements. Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, ou dites-moi votre priorite (energie, peau, cheveux, bien-etre) et je vous donne une recommandation precise.",
     "chat.a.loyalty":"Chaque achat cumule des points Azura, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou hola@azura.mx.",
     "chat.a.sustainability":"Emballages recyclables et ingredients d'origine certifiee.",
@@ -1385,7 +1399,8 @@ var DYN = {
          viewCatalogLabel:function(v){ return 'Ver catalogo de ' + V[v].name; },
          viewDetailLabel:function(){ return 'Ver en catalogo'; },
          noOffers:function(){ return 'Por ahora no tenemos promociones activas, pero te aviso apenas haya una nueva.'; },
-         noCartYet:function(){ return 'El carrito de compra todavia no esta activo en este sitio. Puedo mostrarte el catalogo completo mientras tanto.'; },
+         cartOpening:function(){ return 'Claro, aqui esta tu carrito.'; },
+         cartNeedsLogin:function(){ return 'Tu carrito existe como demostracion funcional, pero necesitas iniciar sesion para verlo y guardarlo.'; },
          talkHumanLabel:function(){ return 'Hablar con un asesor'; },
          restartLabel:function(){ return 'Elegir otra prioridad'; },
          makeupUnavailable:function(){ return 'Por ahora no tengo maquillaje confirmado en catalogo, y no quiero ofrecerte algo que no pueda garantizar. Puedo mostrarte nuestro cuidado de piel NACAR, o conectarte con un asesor humano.'; },
@@ -1395,7 +1410,8 @@ var DYN = {
          ]; },
          medicalGuard:function(){ return 'Gracias por contarme. Por tu seguridad, en temas de embarazo, lactancia, alergias o medicamentos no hago recomendaciones — te conecto con un asesor humano; te sugiero tambien consultar a tu profesional de salud.'; },
          complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu numero de pedido por WhatsApp.'; },
-         certUnknown:function(){ return 'No tengo esa certificacion confirmada en este catalogo. Para no darte informacion incorrecta, te lo valida un asesor humano.'; }
+         certUnknown:function(){ return 'No tengo esa certificacion confirmada en este catalogo. Para no darte informacion incorrecta, te lo valida un asesor humano.'; },
+         frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; }
        } },
   en:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Right now it is ' + hh + ':' + mm + ' (your device time). Anything else I can help with?'; },
        routineResult:function(name,title){ return 'Recommendation logged for <b>' + name + '</b>: <em>' + title + '</em>. In production, this triggers a select_routine event in GA4 and an automatic WhatsApp proposal.'; },
@@ -1480,7 +1496,8 @@ var DYN = {
          viewCatalogLabel:function(v){ return 'View ' + V[v].name + ' catalog'; },
          viewDetailLabel:function(){ return 'View in catalog'; },
          noOffers:function(){ return "We don't have active promotions right now, but I'll let you know as soon as we do."; },
-         noCartYet:function(){ return "Checkout isn't active on this site yet. I can show you the full catalog in the meantime."; },
+         cartOpening:function(){ return 'Sure, here is your cart.'; },
+         cartNeedsLogin:function(){ return 'Your cart exists as a working demo, but you need to sign in to see and keep it.'; },
          talkHumanLabel:function(){ return 'Talk to an advisor'; },
          restartLabel:function(){ return 'Choose another priority'; },
          makeupUnavailable:function(){ return "I don't have makeup confirmed in our catalog yet, and I don't want to offer something I can't guarantee. I can show you NACAR skin care, or connect you with a human advisor."; },
@@ -1490,7 +1507,8 @@ var DYN = {
          ]; },
          medicalGuard:function(){ return "Thanks for sharing. For your safety, I don't make recommendations around pregnancy, breastfeeding, allergies or medication — connecting you with a human advisor; also worth checking with your healthcare professional."; },
          complaintGuard:function(){ return "I'm sorry for the inconvenience. Connecting you now with a human advisor as a priority — please share your order number on WhatsApp."; },
-         certUnknown:function(){ return "I don't have that certification confirmed in this catalog. To avoid giving you wrong information, a human advisor will verify it."; }
+         certUnknown:function(){ return "I don't have that certification confirmed in this catalog. To avoid giving you wrong information, a human advisor will verify it."; },
+         frustrationGuard:function(){ return "I'm really sorry about the bad experience. Connecting you right away with a human advisor as a priority."; }
        } },
   fr:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Il est actuellement ' + hh + 'h' + mm + ' (heure de votre appareil). Autre chose ?'; },
        routineResult:function(name,title){ return 'Recommandation enregistree pour <b>' + name + '</b> : <em>' + title + '</em>. En production, cela declenche un evenement select_routine dans GA4 et une proposition automatique via WhatsApp.'; },
@@ -1575,7 +1593,8 @@ var DYN = {
          viewCatalogLabel:function(v){ return 'Voir le catalogue ' + V[v].name; },
          viewDetailLabel:function(){ return 'Voir au catalogue'; },
          noOffers:function(){ return "Nous n'avons pas de promotion active pour le moment, mais je vous previendrai des qu'il y en aura une."; },
-         noCartYet:function(){ return "Le panier n'est pas encore actif sur ce site. Je peux vous montrer le catalogue complet en attendant."; },
+         cartOpening:function(){ return 'Bien sur, voici votre panier.'; },
+         cartNeedsLogin:function(){ return 'Votre panier existe en demonstration fonctionnelle, mais vous devez vous connecter pour le voir et le conserver.'; },
          talkHumanLabel:function(){ return 'Parler a un conseiller'; },
          restartLabel:function(){ return 'Choisir une autre priorite'; },
          makeupUnavailable:function(){ return "Je n'ai pas encore de maquillage confirme au catalogue, et je ne veux pas vous proposer quelque chose que je ne peux pas garantir. Je peux vous montrer le soin de la peau NACAR, ou vous mettre en relation avec un conseiller humain."; },
@@ -1585,7 +1604,8 @@ var DYN = {
          ]; },
          medicalGuard:function(){ return "Merci de me le dire. Pour votre securite, je ne fais pas de recommandation en cas de grossesse, allaitement, allergies ou medicaments — je vous mets en relation avec un conseiller humain ; pensez aussi a consulter votre professionnel de sante."; },
          complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre numero de commande sur WhatsApp."; },
-         certUnknown:function(){ return "Je n'ai pas cette certification confirmee dans ce catalogue. Pour eviter de vous donner une information incorrecte, un conseiller humain la verifiera."; }
+         certUnknown:function(){ return "Je n'ai pas cette certification confirmee dans ce catalogue. Pour eviter de vous donner une information incorrecte, un conseiller humain la verifiera."; },
+         frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; }
        } }
 };
 
@@ -2380,7 +2400,10 @@ var CHAT_KEYWORDS = {
   greeting:['hola','buenos dias','buenas tardes','buenas noches','hello','hi ','hi,','hey','bonjour','salut'],
   time:['que hora es','hora es','dame la hora','what time','time is it','quelle heure'],
   identity:['quien eres','quién eres','tu nombre','como te llamas','eres un bot','eres humano','who are you','your name','are you a bot','are you human','qui es tu','qui es-tu','ton nom','es-tu un robot'],
-  capability:['como me ayudas','como puedes ayudarme','que puedes hacer','en que me ayudas','como me pueden ayudar','en que nos pueden ayudar','como pueden ayudarme','en que me pueden apoyar','how can you help','how can you guys help','what can you do','how can i get help','comment peux tu m\'aider','comment pouvez vous m\'aider','comment pouvez-vous m\'aider','que peux tu faire'],
+  capability:['como me ayudas','como puedes ayudarme','que puedes hacer','que haces','que hace este chat','en que me ayudas','como me pueden ayudar','en que nos pueden ayudar','como pueden ayudarme','en que me pueden apoyar','how can you help','how can you guys help','what can you do','what do you do','how can i get help','comment peux tu m\'aider','comment pouvez vous m\'aider','comment pouvez-vous m\'aider','que peux tu faire','que fais tu'],
+  beautyritual:['ritual de belleza','rituales de belleza','que es un ritual','como armo mi ritual','beauty ritual','skincare ritual','what is a ritual','routine de beaute','quel est le rituel'],
+  nutritionadvice:['consejo de nutricion','consejos de nutricion','recomendacion nutricional','como mejorar mi alimentacion','tips de nutricion','asesoria nutricional','nutrition advice','nutrition tips','general nutrition','conseil nutrition','conseils nutritionnels'],
+  productadvisor:['asesor de productos','asesor de suplementos','ayudame a elegir un producto','ayudame a elegir un suplemento','que suplemento me recomiendas','product advisor','help me choose a product','which supplement should i take','conseiller produit','quel complement me recommandez vous'],
   purpose:['para que sirves','cual es tu funcion','para que es el sitio','para que es esta pagina','para que es esta web','que es este sitio','que es azura','de que trata este sitio','de que trata esta pagina','sobre azura','what are you for','what is your purpose','what is this site for','what is this website about','what is azura','about azura','a quoi sers tu','a quoi tu sers','a quoi sert ce site','qu\'est-ce que ce site','qu\'est-ce qu\'azura','a propos d\'azura'],
   products:['que venden','que productos tienen','que productos venden','que vendes','productos tienen','what do you sell','your products','what products do you have','do you sell','que vendez vous','quels produits','vous vendez quoi'],
   hours:['horario','horario de atencion','horas de atencion','a que hora abren','business hours','opening hours','are you open','what time do you open','heures d\'ouverture','horaires','vous ouvrez a quelle heure'],
@@ -2400,21 +2423,116 @@ var CHAT_KEYWORDS = {
   loyalty:['puntos','lealtad','loyalty','points','fidelite','recompensa','rewards'],
   contact:['contacto','contact','correo','email','telefono','phone'],
   sustainability:['sostenibilidad','sustainability','durabilite','reciclable','reciclado','recycled','ambiente','environnement'],
-  human:['humano','human','humain','asesor','advisor','conseiller','agente','persona']
+  human:['humano','human','humain','asesor','advisor','conseiller','agente','persona'],
+  store:['tienda fisica','tienda en','punto de venta','sucursal','tienen tienda','physical store','store location','have a store','magasin physique','boutique physique','avez vous un magasin']
 };
 var CHAT_QUICK_TOPICS = ['identity','shipping','payment','returns','verticals','diagnostic','human'];
 var CHAT_QUICK_KEYMAP = {identity:'chat.q.identity', shipping:'chat.q.shipping', verticals:'chat.q.verticals', diagnostic:'chat.q.diagnostic', human:'chat.q.human', payment:'chat.q.payment', returns:'chat.q.returns'};
-var CHAT_ANSWER_KEYMAP = {greeting:'chat.a.greeting', identity:'chat.a.identity', capability:'chat.a.capability', purpose:'chat.a.purpose', products:'chat.a.products', hours:'chat.a.hours', security:'chat.a.security', account:'chat.a.account', cancelorder:'chat.a.cancelorder', discount:'chat.a.discount', warranty:'chat.a.warranty', shipping:'chat.a.shipping', verticals:'chat.a.verticals', diagnostic:'chat.a.diagnostic', prices:'chat.a.prices', ingredients:'chat.a.ingredients', human:'chat.a.human', payment:'chat.a.payment', tracking:'chat.a.tracking', returns:'chat.a.returns', loyalty:'chat.a.loyalty', contact:'chat.a.contact', sustainability:'chat.a.sustainability'};
+var CHAT_ANSWER_KEYMAP = {greeting:'chat.a.greeting', identity:'chat.a.identity', capability:'chat.a.capability', purpose:'chat.a.purpose', products:'chat.a.products', hours:'chat.a.hours', security:'chat.a.security', account:'chat.a.account', cancelorder:'chat.a.cancelorder', discount:'chat.a.discount', warranty:'chat.a.warranty', shipping:'chat.a.shipping', verticals:'chat.a.verticals', diagnostic:'chat.a.diagnostic', prices:'chat.a.prices', ingredients:'chat.a.ingredients', human:'chat.a.human', payment:'chat.a.payment', tracking:'chat.a.tracking', returns:'chat.a.returns', loyalty:'chat.a.loyalty', contact:'chat.a.contact', sustainability:'chat.a.sustainability', store:'chat.a.store', beautyritual:'chat.a.beautyritual', nutritionadvice:'chat.a.nutritionadvice', productadvisor:'chat.a.productadvisor'};
 
 /* Guardrails: temas medicos, quejas y certificaciones no confirmadas en catalogo */
 var MEDICAL_TRIGGERS = ['embarazo','embarazada','lactancia','lactando','alergia','alergico','alergica','medicamento','medicacion','receta medica','diabetes','presion alta','enfermedad','tratamiento medico','pregnant','pregnancy','breastfeeding','allergic','allergy','medication','prescription','enceinte','allaitement','allergique','medicament','grossesse'];
 var COMPLAINT_TRIGGERS = ['queja','reclamo','no llego','no ha llegado','pedido dañado','pedido danado','cobro duplicado','cobro doble','mal servicio','problema con mi pedido','no funciona','defectuoso','complaint','order problem','didn\'t arrive','damaged','double charge','plainte','probleme avec ma commande','n\'est pas arrive','endommage'];
 var CERT_TRIGGERS = ['vegano','vegana','vegan','sin gluten','gluten free','cruelty free','crueltyfree','sin crueldad','organico certificado','certificacion organica','organic certified','certification bio','vegetalien'];
 
+/* ===================== Capa 2: normalizacion + fuzzy matching ===================== */
+/* Motor determinista de texto libre (ver QA_Chatbot_Julieta_CasaAzura.md /
+   Diagnostico_y_Superprompt_Julieta.md). Objetivo: tolerar errores ortograficos
+   reales de usuarios (ej. "beganos", "debolusion") SIN usar IA generativa, para
+   mantener el costo de tokens de Claude en cero para el 95%+ de las preguntas de
+   negocio. Solo si esta capa no resuelve nada se justificaria una Capa 3 de IA
+   (no incluida aqui -- decision de costo/arquitectura pendiente, ver respuesta a
+   Carlos). */
+function stripAccents(s){
+  return String(s).normalize('NFD').replace(new RegExp('[̀-ͯ]', 'g'), '');
+}
+function normalizeText(s){
+  return stripAccents(String(s).toLowerCase())
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 function textHasAny(text, list){
-  var t = ' ' + text.toLowerCase() + ' ';
-  for (var i=0;i<list.length;i++){ if (t.indexOf(list[i]) !== -1) return true; }
+  var norm = ' ' + normalizeText(text) + ' ';
+  for (var i=0;i<list.length;i++){ if (norm.indexOf(' ' + normalizeText(list[i]) + ' ') !== -1) return true; }
   return false;
+}
+/* Distancia de Levenshtein clasica (sin dependencias externas) */
+function levenshtein(a, b){
+  if (a === b) return 0;
+  var al = a.length, bl = b.length;
+  if (!al) return bl;
+  if (!bl) return al;
+  var prev = new Array(bl + 1);
+  for (var j=0;j<=bl;j++) prev[j] = j;
+  for (var i=1;i<=al;i++){
+    var cur = [i];
+    for (var j2=1;j2<=bl;j2++){
+      var cost = a[i-1] === b[j2-1] ? 0 : 1;
+      cur[j2] = Math.min(prev[j2] + 1, cur[j2-1] + 1, prev[j2-1] + cost);
+    }
+    prev = cur;
+  }
+  return prev[bl];
+}
+function fuzzyWordMatch(word, target){
+  if (word === target) return true;
+  if (!word || !target) return false;
+  var maxDist = target.length >= 6 ? 2 : (target.length >= 4 ? 1 : 0);
+  return levenshtein(word, target) <= maxDist;
+}
+/* Que fraccion de las palabras de una frase clave aparecen (tolerando errores
+   ortograficos) entre las palabras del mensaje normalizado del usuario. */
+function phraseFuzzyScore(messageWords, phrase){
+  var phraseWords = normalizeText(phrase).split(' ').filter(Boolean);
+  if (!phraseWords.length) return 0;
+  var matched = 0;
+  for (var p=0;p<phraseWords.length;p++){
+    var found = false;
+    for (var m=0;m<messageWords.length;m++){
+      if (fuzzyWordMatch(messageWords[m], phraseWords[p])){ found = true; break; }
+    }
+    if (found) matched++;
+  }
+  return matched / phraseWords.length;
+}
+/* Palabras ofensivas / senales de frustracion o urgencia -- si se detectan, la
+   respuesta debe ser empatica y escalar a un humano, nunca el fallback generico
+   neutro (hallazgo #3 y #6 del QA: hoy no hay ningun manejo diferenciado). */
+var PROFANITY_WORDS = ['mierda','pendejo','pendeja','pendejada','verga','idiota','idiotas','estupido','estupida','maldito','maldita','chinga','chingada','carajo','joder','pinche','fuck','shit','idiot','stupid','damn'];
+var FRUSTRATION_SIGNALS = ['no sirve','no sirven','pesimo servicio','pesima atencion','estoy harto','estoy harta','estoy encabronado','estoy encabronada','quiero mi dinero de vuelta','ya no aguanto','esto es el colmo','terrible servicio','muy mal servicio','worst service','so angry','fed up','ras le bol'];
+function detectFrustration(text){
+  if (textHasAny(text, PROFANITY_WORDS) || textHasAny(text, FRUSTRATION_SIGNALS)) return true;
+  var exclam = (String(text).match(/!/g) || []).length;
+  var lettersOnly = String(text).replace(/[^a-zA-Z]/g, '');
+  var isShout = lettersOnly.length > 6 && lettersOnly === lettersOnly.toUpperCase();
+  return exclam >= 2 || isShout;
+}
+/* Boton explicito de WhatsApp -- reemplaza los window.open() automaticos (bug
+   reportado en QA: se abria una pestana sin que el usuario diera click). */
+function waButtonHtml(label){
+  return '<button class="chat-wa-btn" onclick="window.open(\'https://wa.me/525500000000\',\'_blank\')">' + label + '</button>';
+}
+/* Comparacion real entre dos lineas de producto (hallazgo #8 del QA: antes solo
+   listaba las 4 marcas sin comparar nada). Reutiliza el tagline real de cada
+   vertical (V[v][lang].tag/msg) en vez de un texto generico. */
+var VERTICAL_NAMES = ['raiz','nacar','vigor','roble'];
+var COMPARE_TRIGGERS = ['diferencia','diferencias','comparar','comparacion','versus','difference','compare','comparison','differe','comparer'];
+var COMPARE_AND = { es:'y', en:'and', fr:'et' };
+function detectTwoVerticals(norm){
+  var found = [];
+  for (var i=0;i<VERTICAL_NAMES.length;i++){
+    if (norm.indexOf(VERTICAL_NAMES[i]) !== -1) found.push(VERTICAL_NAMES[i]);
+  }
+  return found.length >= 2 ? found.slice(0,2) : null;
+}
+function answerCompareLines(v1, v2){
+  var n1 = V[v1].name, n2 = V[v2].name;
+  var t1 = V[v1][currentLang].tag, m1 = V[v1][currentLang].msg;
+  var t2 = V[v2][currentLang].tag, m2 = V[v2][currentLang].msg;
+  var and = COMPARE_AND[currentLang] || COMPARE_AND.es;
+  var html = '<b>' + n1 + '</b> — ' + t1 + '. ' + m1 + '<br><b>' + n2 + '</b> — ' + t2 + '. ' + m2;
+  addChatMsg(html, 'bot');
 }
 
 /* Deteccion ligera de idioma sobre el primer mensaje libre del usuario */
@@ -2465,7 +2583,14 @@ function menuOfertas(){
   addChatMsg(DYN[currentLang].julieta.noOffers(), 'bot');
 }
 function menuCarrito(){
-  addChatMsg(DYN[currentLang].julieta.noCartYet(), 'bot');
+  if (CURRENT_CUSTOMER.id){
+    addChatMsg(DYN[currentLang].julieta.cartOpening(), 'bot');
+    setTimeout(function(){ toggleChat(); openCart(); }, 400);
+  } else {
+    var loginLabel = I18N[currentLang]['auth.tabSignin'] || 'Iniciar sesion';
+    addChatMsg(DYN[currentLang].julieta.cartNeedsLogin() + '<br>' +
+      '<button class="chat-wa-btn" style="background:var(--navy)" onclick="toggleChat(); openAuthModal(\'signin\');">' + loginLabel + '</button>', 'bot');
+  }
 }
 function menuAsesor(){
   answerTopic('human');
@@ -2522,18 +2647,33 @@ function answerTopic(topic){
   var key = CHAT_ANSWER_KEYMAP[topic] || 'chat.a.fallback';
   addChatMsg(dict[key] || dict['chat.a.fallback'], 'bot');
   if (topic === 'human'){
-    setTimeout(function(){ window.open('https://wa.me/525500000000','_blank'); }, 600);
+    var j = DYN[currentLang].julieta;
+    addChatMsg(waButtonHtml(j.talkHumanLabel()), 'bot');
   }
 }
 function matchTopic(text){
-  var t = text.toLowerCase() + ' ';
-  for (var topic in CHAT_KEYWORDS){
+  var norm = normalizeText(text);
+  var t = norm + ' ';
+  var topic;
+  /* 1) coincidencia exacta normalizada (rapido, mismo comportamiento de antes) */
+  for (topic in CHAT_KEYWORDS){
     var kws = CHAT_KEYWORDS[topic];
     for (var i=0;i<kws.length;i++){
-      if (t.indexOf(kws[i]) !== -1) return topic;
+      if (t.indexOf(normalizeText(kws[i])) !== -1) return topic;
     }
   }
-  return null;
+  /* 2) fuzzy matching -- tolera errores ortograficos en la palabra clave critica
+     (hallazgo QA: "beganos", "debolusion" no se reconocian antes) */
+  var words = norm.split(' ').filter(Boolean);
+  var best = { topic: null, score: 0 };
+  for (topic in CHAT_KEYWORDS){
+    var kws2 = CHAT_KEYWORDS[topic];
+    for (var k=0;k<kws2.length;k++){
+      var score = phraseFuzzyScore(words, kws2[k]);
+      if (score > best.score) best = { topic: topic, score: score };
+    }
+  }
+  return best.score >= 0.75 ? best.topic : null;
 }
 
 /* ===================== Flujo guiado de venta (objetivo -> refinamiento -> recomendacion -> cross-sell -> cierre) ===================== */
@@ -2632,15 +2772,24 @@ function showCloseOptions(goal){
   ]);
 }
 function answerMedicalGuard(){
-  addChatMsg(DYN[currentLang].julieta.medicalGuard(), 'bot');
-  setTimeout(function(){ window.open('https://wa.me/525500000000','_blank'); }, 900);
+  var j = DYN[currentLang].julieta;
+  addChatMsg(j.medicalGuard(), 'bot');
+  addChatMsg(waButtonHtml(j.talkHumanLabel()), 'bot');
 }
 function answerComplaintGuard(){
-  addChatMsg(DYN[currentLang].julieta.complaintGuard(), 'bot');
-  setTimeout(function(){ window.open('https://wa.me/525500000000','_blank'); }, 900);
+  var j = DYN[currentLang].julieta;
+  addChatMsg(j.complaintGuard(), 'bot');
+  addChatMsg(waButtonHtml(j.talkHumanLabel()), 'bot');
 }
 function answerCertUnknown(){
   addChatMsg(DYN[currentLang].julieta.certUnknown(), 'bot');
+}
+/* Groserias / tono agresivo (hallazgo QA: sin manejo diferenciado, caian en el
+   mismo fallback generico que cualquier otra pregunta). */
+function answerFrustrationGuard(){
+  var j = DYN[currentLang].julieta;
+  addChatMsg(j.frustrationGuard(), 'bot');
+  addChatMsg(waButtonHtml(j.talkHumanLabel()), 'bot');
 }
 
 /* ===================== Recomendador de perfil (edad + genero) ===================== */
@@ -2718,6 +2867,13 @@ function sendChat(){
   if (textHasAny(text, MEDICAL_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerMedicalGuard(); }, 500); return; }
   if (textHasAny(text, COMPLAINT_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerComplaintGuard(); }, 500); return; }
   if (textHasAny(text, CERT_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerCertUnknown(); }, 500); return; }
+  if (detectFrustration(text)){ showTyping(); setTimeout(function(){ hideTyping(); answerFrustrationGuard(); }, 500); return; }
+
+  var normForCompare = normalizeText(text);
+  if (textHasAny(text, COMPARE_TRIGGERS)){
+    var verts = detectTwoVerticals(normForCompare);
+    if (verts){ showTyping(); setTimeout(function(){ hideTyping(); answerCompareLines(verts[0], verts[1]); }, 500); return; }
+  }
 
   var profile = extractProfile(text);
   var wantsRecommendation = profile.hasIntent || (profile.age !== null && profile.gender !== null);
@@ -2727,6 +2883,12 @@ function sendChat(){
   setTimeout(function(){
     hideTyping();
     var topic = matchTopic(text);
+    if (!topic){
+      /* Log ligero de fallback (solo en consola, sin backend todavia -- ver gap
+         documentado en la respuesta a Carlos: falta un endpoint real de log para
+         revisar preguntas no resueltas y ampliar el diccionario de intenciones). */
+      if (window.console && console.info) console.info('[Julieta] fallback sin match:', text);
+    }
     answerTopic(topic || 'fallback');
   }, 500);
 }
