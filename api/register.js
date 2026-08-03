@@ -20,7 +20,12 @@ const { MongoClient } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
 
 const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB = process.env.MONGODB_DB || 'azura';
+const MONGODB_DB_RAW = process.env.MONGODB_DB || 'azura';
+// Defensa en profundidad: un MONGODB_DB mal configurado en Vercel (ej. con un
+// dominio o URL pegado por error, con un ".") revienta el driver de Mongo con
+// un error interno crudo. Validamos el formato y damos un error accionable.
+const MONGODB_DB_NAME_RE = /^[^/\\. "$*<>:|?]{1,64}$/;
+const MONGODB_DB = MONGODB_DB_NAME_RE.test(MONGODB_DB_RAW) ? MONGODB_DB_RAW : null;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
@@ -28,6 +33,12 @@ const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
 let cachedClient = null;
 
 async function getDb() {
+  if (!MONGODB_DB) {
+    throw new Error(
+      `MONGODB_DB tiene un valor invalido ("${MONGODB_DB_RAW}"). Revisa Vercel > Project Settings > ` +
+      'Environment Variables: MONGODB_DB debe ser solo el nombre de la base (ej. "azura"), sin URL, dominio, puntos ni espacios.'
+    );
+  }
   if (cachedClient) return cachedClient.db(MONGODB_DB);
   if (!MONGODB_URI) throw new Error('Falta MONGODB_URI en las variables de entorno.');
   const client = new MongoClient(MONGODB_URI);

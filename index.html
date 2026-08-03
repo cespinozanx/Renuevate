@@ -6,6 +6,8 @@
 <title>Renuévate — Holding de Bienestar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=Archivo+Black&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;1,500&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -43,8 +45,11 @@ img,svg{display:block;}
 header.site{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--line); transition:box-shadow .2s;}
 header.site.scrolled{box-shadow:0 2px 14px rgba(0,0,0,.06);}
 .nav-row{display:flex; align-items:center; justify-content:space-between; height:80px;}
-.logo{font-family:'Archivo Black','Playfair Display',sans-serif; font-size:35px; font-weight:400; letter-spacing:1.5px; color:var(--navy);}
+.logo-wrap{display:flex; flex-direction:column;}
+.logo{font-family:'Bodoni Moda','Playfair Display',Georgia,serif; font-weight:500; font-size:32px; letter-spacing:.06em; text-transform:uppercase; color:#1A1A1A; line-height:1.1;}
 .logo span{color:var(--gold); font-size:11px; letter-spacing:2.5px; font-family:'Manrope',sans-serif; font-weight:700; vertical-align:2px;}
+.logo span.logo-accent{font-style:italic; font-weight:500; color:#C9A227; font-size:.88em; letter-spacing:0; font-family:inherit; line-height:1; display:inline-block; vertical-align:middle; margin:0;}
+.logo-sub{font-family:'General Sans',Arial,sans-serif; font-size:10px; line-height:1.2; letter-spacing:.18em; color:#7A7974; text-transform:uppercase; margin-top:3px;}
 nav.main{display:flex; gap:36px;}
 nav.main a{font-size:12px; letter-spacing:1.6px; text-transform:uppercase; font-weight:700; color:var(--ink); padding:8px 0; border-bottom:2px solid transparent; cursor:pointer;}
 nav.main a:hover{border-color:var(--gold); color:var(--navy);}
@@ -68,13 +73,13 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
   .nav-dropdown-menu a{padding:8px 4px !important; white-space:nowrap; border-bottom:none !important;}
 }
 .hero-video{width:100%; max-width:520px; margin:0 auto 14px;}
-.hero-video-frame{position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:linear-gradient(160deg,#2A2A2A,#1E1E1E); box-shadow:0 14px 32px rgba(30,30,30,.16);}
-.hero-video-frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
-.hero-video-fallback{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#F8F7F3; text-align:center; padding:14px;}
-.hero-video-fallback svg{width:30px; height:30px;}
-.hero-video-fallback span{font-size:11px; letter-spacing:.5px; opacity:.9; max-width:260px;}
-.hero-video-fallback a{color:var(--gold); font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; border-bottom:1px solid var(--gold); padding-bottom:2px;}
-@media(min-width:761px){ .hero-video{max-width:720px;} .hero-video-frame{aspect-ratio:21/9;} }
+.hero-video-frame{position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#1E1E1E url('media/hero-mobile-poster.jpg') center/cover no-repeat; box-shadow:0 14px 32px rgba(30,30,30,.16);}
+.hero-video-el{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:0; display:block;}
+@media(prefers-reduced-motion:reduce){ .hero-video-el{display:none;} }
+@media(min-width:761px){
+  .hero-video{max-width:720px;}
+  .hero-video-frame{aspect-ratio:21/9; background-image:url('media/hero-desktop-poster.jpg');}
+}
 .hero-cta.hero-cta-sm .btn{padding:9px 18px; font-size:10.5px; letter-spacing:1.2px;}
 .vert-heading-row{display:flex; align-items:baseline; justify-content:center; gap:10px; flex-wrap:wrap;}
 .suggested-tag{display:inline-block; font-size:14px; letter-spacing:.5px; text-transform:none; color:var(--gold); font-weight:600; font-style:italic; margin-top:0;}
@@ -473,7 +478,11 @@ var AZURA_CONFIG = {
   PHONE_AUTH_ENDPOINT: "/api/phone-auth",
   CART_ENDPOINT: "/api/cart",
   REVIEWS_ENDPOINT: "/api/reviews",
-  PAYMENT_METHODS_ENDPOINT: "/api/payment-methods"
+  PAYMENT_METHODS_ENDPOINT: "/api/payment-methods",
+  SOCIAL_INSTAGRAM_URL: "https://instagram.com/TU_USUARIO_AQUI",
+  SOCIAL_TIKTOK_URL: "https://tiktok.com/@TU_USUARIO_AQUI",
+  SOCIAL_FACEBOOK_URL: "https://facebook.com/TU_PAGINA_AQUI",
+  GA4_MEASUREMENT_ID: "G-XXXXXXXXXX"
 };
 </script>
 <div id="fb-root"></div>
@@ -483,6 +492,24 @@ var AZURA_CONFIG = {
   };
 </script>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+<!-- Vercel Analytics (incluido gratis en el plan de Vercel, sin llaves adicionales) -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+
+<!-- Google Analytics 4 (opcional -- solo se activa si AZURA_CONFIG.GA4_MEASUREMENT_ID se reemplaza por el ID real) -->
+<script>
+  if (AZURA_CONFIG.GA4_MEASUREMENT_ID && AZURA_CONFIG.GA4_MEASUREMENT_ID.indexOf("G-X") !== 0){
+    var gaScript = document.createElement("script");
+    gaScript.async = true;
+    gaScript.src = "https://www.googletagmanager.com/gtag/js?id=" + AZURA_CONFIG.GA4_MEASUREMENT_ID;
+    document.head.appendChild(gaScript);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", AZURA_CONFIG.GA4_MEASUREMENT_ID);
+  }
+</script>
 
 
 <div class="topbar">
@@ -499,7 +526,10 @@ var AZURA_CONFIG = {
 <header class="site" id="siteHeader">
   <div class="container nav-row">
     <div class="hamburger" id="hamburgerBtn" onclick="toggleNav()" role="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><span></span><span></span><span></span></div>
-    <div class="logo">RENUÉVATE</div>
+    <div class="logo-wrap">
+      <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
+      <div class="logo-sub">. Holding de Bienestar</div>
+    </div>
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
       <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
@@ -538,19 +568,17 @@ var AZURA_CONFIG = {
     <div class="hero-content reveal-stagger">
       <div class="hero-video">
         <div class="hero-video-frame" id="heroVideoFrame">
-          <!-- Reemplazar por el <iframe> real que entrega Canva (Compartir > Insertar) al publicar el diseno final basado en https://www.canva.com/templates/EAHOW6hLpIM/ -->
-          <div class="hero-video-fallback">
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#F8F7F3" stroke-width="1.4"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="#F8F7F3" stroke="none"/></svg>
-            <span data-i18n="hero.videoCaption">Video de marca Renuévate</span>
-            <a href="https://www.canva.com/templates/EAHOW6hLpIM/" target="_blank" rel="noopener" data-i18n="hero.videoCta">Ver video &#8594;</a>
-          </div>
+          <video class="hero-video-el" id="heroVideoEl" autoplay muted loop playsinline preload="auto" aria-label="Video de marca Renuévate">
+            <source src="media/hero-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
+            <source src="media/hero-desktop.mp4" type="video/mp4">
+          </video>
         </div>
       </div>
       <div class="eyebrow" data-i18n="hero.eyebrow">Renuévate . Holding de Bienestar</div>
       <h1 data-i18n-html="hero.h1">El bienestar que <span class="accent">transforma</span> tu vida</h1>
       <p data-i18n-html="hero.p">Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.</p>
       <div class="hero-cta hero-cta-sm">
-        <a class="btn btn-dark" onclick="scrollToId('verticales')" data-i18n="hero.cta1">Explorar el catalogo</a>
+        <a class="btn btn-dark" onclick="scrollToId('verticales')" data-i18n="hero.cta1">Explorar el catálogo</a>
         <a class="btn btn-outline" onclick="scrollToId('filosofia')" data-i18n="hero.cta2">Nuestra filosofia</a>
       </div>
     </div>
@@ -565,7 +593,7 @@ var AZURA_CONFIG = {
         <h2 data-i18n="vert.h2">Lo mejor para ti</h2>
         <span class="suggested-tag" data-i18n="vert.suggested">Sugerido</span>
       </div>
-      <p data-i18n="vert.p">Cada nombre resuelve una necesidad especifica de bienestar. Comparten el mismo estandar de calidad y la misma promesa: nada se vende solo por vender.</p>
+      <p data-i18n="vert.p">Cada nombre resuelve una necesidad específica de bienestar. Comparten el mismo estándar de calidad y la misma convicción: consentirte es invertir en ti.</p>
     </div>
     <div class="brand-map reveal">
       <div class="bm-holding">RENUÉVATE</div>
@@ -580,9 +608,9 @@ var AZURA_CONFIG = {
     <div class="verticals-grid reveal-stagger">
       <div class="v-card raiz" onclick="goVertical('raiz')">
         <svg class="v-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22V12"/><path d="M12 12C12 6 6 4 4 4c0 6 3 8 8 8Z"/><path d="M12 12c0-6 6-8 8-8 0 6-3 8-8 8Z"/></svg>
-        <div class="v-tag" id="vtagRaiz">Suplementos organicos</div>
+        <div class="v-tag" id="vtagRaiz">Suplementos orgánicos</div>
         <h3>System Time Speciality</h3>
-        <p class="v-msg" id="vmsgRaiz">El bienestar empieza desde la raiz.</p>
+        <p class="v-msg" id="vmsgRaiz">El bienestar empieza desde la raíz.</p>
         <span class="v-cta" id="vctaRaiz">Descubrir &#8594;</span>
       </div>
       <div class="v-card nacar" onclick="goVertical('nacar')">
@@ -594,7 +622,7 @@ var AZURA_CONFIG = {
       </div>
       <div class="v-card vigor" onclick="goVertical('vigor')">
         <svg class="v-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="13 2 3 14 11 14 9 22 21 10 13 10 13 2"/></svg>
-        <div class="v-tag" id="vtagVigor">Nutricion y rendimiento</div>
+        <div class="v-tag" id="vtagVigor">Nutrición y rendimiento</div>
         <h3>System Health Speciality</h3>
         <p class="v-msg" id="vmsgVigor">Energia que se sostiene.</p>
         <span class="v-cta" id="vctaVigor">Descubrir &#8594;</span>
@@ -613,18 +641,18 @@ var AZURA_CONFIG = {
 <section class="philosophy" id="filosofia">
   <div class="container phil-grid">
     <div class="reveal-stagger">
-      <div class="eyebrow" data-i18n="phil.eyebrow">Nuestra filosofia</div>
-      <h2 data-i18n-html="phil.h2">No vendemos productos. Sostenemos <span class="accent">habitos</span>.</h2>
-      <p style="color:var(--grey); margin-top:18px;" data-i18n="phil.p">Renuévate existe para el bienestar real de las personas. Cada vertical fue disenada para resolver una necesidad concreta, no para competir por precio, sino por relevancia en el momento de vida de quien nos elige.</p>
+      <div class="eyebrow" data-i18n="phil.eyebrow">Nuestra filosofía</div>
+      <h2 data-i18n-html="phil.h2">No vendemos productos. Cultivamos <span class="accent">hábitos</span>.</h2>
+      <p style="color:var(--grey); margin-top:18px;" data-i18n="phil.p">Renuévate existe para el bienestar real de las personas. Cada marca de nuestro portafolio fue creada para resolver una necesidad específica, no para competir por precio, sino por relevancia en la etapa de vida de quien nos elige.</p>
       <div class="pillars reveal-stagger">
-        <div class="pillar"><h4 data-i18n="phil.pillar1h">Origen verificable</h4><p data-i18n="phil.pillar1p">Trazabilidad de ingrediente y respaldo regulatorio en cada suplemento.</p></div>
-        <div class="pillar"><h4 data-i18n="phil.pillar2h">Ciencia, no promesas vacias</h4><p data-i18n="phil.pillar2p">Evidencia y ficha tecnica clara, sin claims que no podemos sostener.</p></div>
-        <div class="pillar"><h4 data-i18n="phil.pillar3h">Habitos, no transacciones</h4><p data-i18n="phil.pillar3p">Rutinas escalonadas que acompanan el progreso real de la persona.</p></div>
-        <div class="pillar"><h4 data-i18n="phil.pillar4h">Un solo estandar</h4><p data-i18n="phil.pillar4p">Las 4 marcas comparten gobierno de calidad y servicio al cliente.</p></div>
+        <div class="pillar"><h4 data-i18n="phil.pillar1h">Origen verificable</h4><p data-i18n="phil.pillar1p">Trazabilidad de cada ingrediente y respaldo regulatorio en todos nuestros suplementos.</p></div>
+        <div class="pillar"><h4 data-i18n="phil.pillar2h">Transparencia, no promesas vacías</h4><p data-i18n="phil.pillar2p">Evidencia y ficha técnica siempre visibles, sin compromisos que no podamos cumplir.</p></div>
+        <div class="pillar"><h4 data-i18n="phil.pillar3h">Hábitos, no transacciones</h4><p data-i18n="phil.pillar3p">Rutinas pensadas para acompañar el progreso real, paso a paso.</p></div>
+        <div class="pillar"><h4 data-i18n="phil.pillar4h">Un solo estándar</h4><p data-i18n="phil.pillar4p">Las cuatro marcas comparten un mismo estándar de calidad y servicio.</p></div>
       </div>
     </div>
     <div class="phil-visual reveal">
-      <div class="quote" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darias a alguien que quieres: pensando primero en su bienestar.&rdquo;</div>
+      <div class="quote" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;</div>
     </div>
   </div>
 </section>
@@ -633,7 +661,7 @@ var AZURA_CONFIG = {
   <div class="container">
     <div class="section-head reveal-stagger">
       <div class="eyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
-      <h2 id="zoomTitle">System Time Speciality - Suplementos organicos</h2>
+      <h2 id="zoomTitle">System Time Speciality - Suplementos orgánicos</h2>
       <p id="zoomSubtitle">Ingredientes con origen verificado, pensados para el bienestar diario.</p>
     </div>
     <div class="zoom-tabs reveal-stagger">
@@ -647,7 +675,7 @@ var AZURA_CONFIG = {
       <div>
         <div class="eyebrow" data-i18n="zoom.featured">Sistema destacado</div>
         <h3 id="zoomBannerTitle">System Time Speciality: bienestar diario</h3>
-        <p id="zoomBannerText">Una rutina de tres pasos pensada para sostener tu energia y equilibrio desde el interior, con ingredientes de origen natural certificado.</p>
+        <p id="zoomBannerText">Una rutina de tres pasos pensada para sostener tu energía y equilibrio desde el interior, con ingredientes de origen natural certificado.</p>
         <a class="btn btn-vertical" style="margin-top:22px;" data-i18n="zoom.knowRitual">Conocer el sistema</a>
       </div>
       <div class="zoom-stats reveal-stagger">
@@ -691,12 +719,13 @@ var AZURA_CONFIG = {
 <footer>
   <div class="container footer-grid reveal-stagger">
     <div class="footer-brand">
-      <div class="logo">RENUÉVATE</div>
-      <p data-i18n="footer.brandP">System Time, Luminous, Health y Spot: habitos de bienestar para cada etapa de tu vida.</p>
+      <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
+      <p data-i18n="footer.brandP">System Time, Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.</p>
       <div class="footer-social">
-        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-        <a href="#" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M9 12a4 4 0 1 0 4 4V4c1 2 3 3 5 3"/></svg></a>
-        <a href="#" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="4"/><polygon points="10 9 15 12 10 15 10 9" fill="#fff"/></svg></a>
+        <a href="#" id="socialInstagram" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#" id="socialTiktok" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M9 12a4 4 0 1 0 4 4V4c1 2 3 3 5 3"/></svg></a>
+        <a href="#" id="socialFacebook" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M15 8h2V5h-2c-2 0-3 1-3 3v2H10v3h2v6h3v-6h2l1-3h-3V8c0-.5 0-1 1-1"/></svg></a>
+        <a href="#" id="socialYoutube" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="4"/><polygon points="10 9 15 12 10 15 10 9" fill="#fff"/></svg></a>
       </div>
     </div>
     <div><h5 data-i18n="footer.hVerticales">System Speciality</h5>
@@ -725,7 +754,7 @@ var AZURA_CONFIG = {
   <div class="container footer-bottom">
     <div class="footer-bottom-text">
       <span data-i18n="footer.copyright">&copy; 2026 Renuévate. Todos los derechos reservados.</span>
-      <span data-i18n="footer.prototypeNote">Prototipo de diseno - no es un sitio en produccion</span>
+      <span data-i18n="footer.prototypeNote">Prototipo de diseño - no es un sitio en produccion</span>
     </div>
     <select class="lang-select" id="langSelect" onchange="applyLanguage(this.value)" aria-label="Idioma / Language / Langue">
       <option value="es">ES · Espanol</option>
@@ -768,12 +797,12 @@ var AZURA_CONFIG = {
     <div class="auth-modal-head">
       <div class="auth-logo">RENUÉVATE</div>
       <div class="auth-tabs">
-        <button type="button" id="authTabSigninBtn" class="sel" onclick="setAuthTab('signin')" data-i18n="auth.tabSignin">Iniciar sesion</button>
+        <button type="button" id="authTabSigninBtn" class="sel" onclick="setAuthTab('signin')" data-i18n="auth.tabSignin">Iniciar sesión</button>
         <button type="button" id="authTabSignupBtn" onclick="setAuthTab('signup')" data-i18n="auth.tabSignup">Crear cuenta</button>
       </div>
     </div>
     <div class="auth-modal-body">
-      <p class="auth-headline" id="authHeadline">Inicia sesion para ver tu carrito, tus pedidos y tus promociones.</p>
+      <p class="auth-headline" id="authHeadline">Inicia sesión para ver tu carrito, tus pedidos y tus promociones.</p>
       <div class="auth-social">
         <div id="googleBtnContainer"></div>
         <button class="btn-facebook" onclick="facebookLogin()">
@@ -807,7 +836,7 @@ var AZURA_CONFIG = {
           <input type="tel" id="authPhoneOtp" maxlength="6" placeholder="123456" inputmode="numeric">
         </div>
         <button type="button" class="btn btn-dark" style="width:100%; justify-content:center;" onclick="verifyPhoneCode()" data-i18n="auth.phoneVerify">Verificar y continuar</button>
-        <button type="button" class="btn-link-inline" onclick="resetPhoneAuth()" data-i18n="auth.phoneChangeNumber">Cambiar numero</button>
+        <button type="button" class="btn-link-inline" onclick="resetPhoneAuth()" data-i18n="auth.phoneChangeNumber">Cambiar número</button>
         <div class="pm-error" id="authPhoneOtpError"></div>
       </div>
       <p class="auth-switch" id="authSwitchLine">
@@ -844,7 +873,7 @@ var AZURA_CONFIG = {
     <p class="pm-subtitle" data-i18n="cookie.modalSubtitle">Elige que categorias de cookies quieres permitir.</p>
     <div id="cookieBody"></div>
     <div class="cookie-toggle-row">
-      <div><b data-i18n="cookie.necessaryLabel">Necesarias</b><p data-i18n="cookie.necessaryDesc">Indispensables para el funcionamiento del sitio (carrito, sesion, seguridad). Siempre activas.</p></div>
+      <div><b data-i18n="cookie.necessaryLabel">Necesarias</b><p data-i18n="cookie.necessaryDesc">Indispensables para el funcionamiento del sitio (carrito, sesión, seguridad). Siempre activas.</p></div>
       <span class="cookie-toggle-fixed" data-i18n="cookie.alwaysOn">Siempre activas</span>
     </div>
     <div class="cookie-toggle-row">
@@ -897,7 +926,7 @@ var AZURA_CONFIG = {
 <div class="profile-modal-overlay" id="accountModalOverlay">
   <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="accTitle">
     <h3 id="accTitle" data-i18n="account.title">Mi cuenta y metodos de pago</h3>
-    <p class="pm-subtitle" id="accSubtitle" data-i18n="account.subtitle">Inicia sesion para administrar tus metodos de pago guardados.</p>
+    <p class="pm-subtitle" id="accSubtitle" data-i18n="account.subtitle">Inicia sesión para administrar tus metodos de pago guardados.</p>
     <div id="pmListContainer" class="pm-list"></div>
     <div id="pmFormContainer">
       <div class="pm-type-toggle">
@@ -936,7 +965,7 @@ var AZURA_CONFIG = {
             <input type="email" id="pmPaypalEmail" placeholder="tu@correo.com" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
           </div>
         </div>
-        <div class="pm-pci-note" data-i18n="account.pciNote">Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el numero de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.</div>
+        <div class="pm-pci-note" data-i18n="account.pciNote">Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.</div>
         <div class="pm-actions">
           <button type="submit" class="btn btn-dark" style="flex:1;" data-i18n="account.saveLabel">Guardar metodo de pago</button>
           <button type="button" class="btn btn-outline" onclick="closeAccountModal()" data-i18n="account.closeLabel">Cerrar</button>
@@ -983,18 +1012,18 @@ var AZURA_CONFIG = {
 var V = {
   raiz: {
     name:"System Time Speciality",
-    es:{ full:"System Time Speciality - Suplementos organicos", sub:"Ingredientes con origen verificado, pensados para el bienestar diario.",
+    es:{ full:"System Time Speciality - Suplementos orgánicos", sub:"Ingredientes con origen verificado, pensados para el bienestar diario.",
       bannerTitle:"System Time Speciality: bienestar diario",
-      bannerText:"Una rutina de tres pasos pensada para sostener tu energia y equilibrio desde el interior, con ingredientes de origen natural certificado.",
-      tag:"Suplementos organicos", msg:"El bienestar empieza desde la raiz.", bmLabel:"Speciality Time",
+      bannerText:"Una rutina de tres pasos pensada para sostener tu energía y equilibrio desde el interior, con ingredientes de origen natural certificado.",
+      tag:"Suplementos orgánicos", msg:"El bienestar empieza desde la raíz.", bmLabel:"Speciality Time",
       stats:["96%","30 dias","100%"],
       products:[
-        {sku:"RAIZ-01", tag:"Multivitaminico", name:"Bienestar Diario 30 caps", desc:"Complejo natural para energia sostenida.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
-        {sku:"RAIZ-02", tag:"Adaptogeno", name:"Equilibrio Ashwagandha", desc:"Apoyo natural ante el estres diario.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
+        {sku:"RAIZ-01", tag:"Multivitaminico", name:"Bienestar Diario 30 caps", desc:"Complejo natural para energía sostenida.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
+        {sku:"RAIZ-02", tag:"Adaptógeno", name:"Equilibrio Ashwagandha", desc:"Apoyo natural ante el estres diario.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
         {sku:"RAIZ-03", tag:"Digestivo", name:"Fibra Prebiotica Raiz", desc:"Bienestar digestivo de origen vegetal.", price:"$329 MXN", rating:{stars:4.5,count:145}, related:["RAIZ-01"]},
         {sku:"RAIZ-04", tag:"Inmunidad", name:"Defensa Natural C+Zinc", desc:"Refuerzo natural de las defensas.", price:"$369 MXN", rating:{stars:4.8,count:267}, related:["RAIZ-01"]}
       ],
-      routines:[{title:"Rutina esencial", desc:"1 producto ancla para empezar tu bienestar diario."},{title:"Rutina intermedia", desc:"combo energia + digestion para resultados visibles."},{title:"Rutina completa", desc:"protocolo de 30 dias con seguimiento incluido."}]
+      routines:[{title:"Rutina esencial", desc:"1 producto ancla para empezar tu bienestar diario."},{title:"Rutina intermedia", desc:"combo energía + digestion para resultados visibles."},{title:"Rutina completa", desc:"protocolo de 30 dias con seguimiento incluido."}]
     },
     en:{ full:"System Time Speciality - Organic Supplements", sub:"Verified-origin ingredients, designed for everyday wellness.",
       bannerTitle:"The System Time Speciality daily wellness",
@@ -1036,7 +1065,7 @@ var V = {
         {sku:"NACAR-03", tag:"Cabello", name:"Aceite Brillo Sedoso", desc:"Brillo y suavidad sin sensacion grasosa.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
         {sku:"NACAR-04", tag:"Contorno", name:"Contorno de Ojos Nacar", desc:"Reduce signos de cansancio.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]}
       ],
-      routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y proteccion."}]
+      routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
     en:{ full:"System Luminous Speciality - Beauty for Women", sub:"Beauty habits backed by dermo-cosmetic science and premium texture.",
       bannerTitle:"The System Luminous Speciality radiance",
@@ -1067,15 +1096,15 @@ var V = {
   },
   vigor: {
     name:"System Health Speciality",
-    es:{ full:"System Health Speciality - Nutricion y rendimiento", sub:"Nutricion funcional para sostener tu energia en el dia a dia.",
+    es:{ full:"System Health Speciality - Nutrición y rendimiento", sub:"Nutricion funcional para sostener tu energía en el dia a dia.",
       bannerTitle:"System Health Speciality: rendimiento diario",
       bannerText:"Nutricion pensada para antes, durante y despues de tu actividad fisica o jornada laboral exigente.",
-      tag:"Nutricion y rendimiento", msg:"Energia que se sostiene.", bmLabel:"Speciality Health",
+      tag:"Nutrición y rendimiento", msg:"Energia que se sostiene.", bmLabel:"Speciality Health",
       stats:["92%","7 dias","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Proteina", name:"Proteina Vegetal Vigor", desc:"22g de proteina limpia por porcion.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
-        {sku:"VIGOR-02", tag:"Pre-actividad", name:"Energia Natural Pre-Entreno", desc:"Foco y energia sin picos ni caidas.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
-        {sku:"VIGOR-03", tag:"Recuperacion", name:"Recovery Magnesio+", desc:"Apoyo muscular post actividad.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
+        {sku:"VIGOR-02", tag:"Pre-actividad", name:"Energia Natural Pre-Entreno", desc:"Foco y energía sin picos ni caidas.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
+        {sku:"VIGOR-03", tag:"Recuperación", name:"Recovery Magnesio+", desc:"Apoyo muscular post actividad.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
         {sku:"VIGOR-04", tag:"Hidratacion", name:"Electrolitos Naturales", desc:"Hidratacion funcional sin azucares anadidos.", price:"$299 MXN", rating:{stars:4.7,count:245}, related:["VIGOR-02"]}
       ],
       routines:[{title:"Rutina esencial", desc:"proteina diaria."},{title:"Rutina activa", desc:"proteina + pre-entreno."},{title:"Rutina de rendimiento", desc:"protocolo completo con recuperacion."}]
@@ -1118,7 +1147,7 @@ var V = {
         {sku:"ROBLE-01", tag:"Facial", name:"Limpiador Roble Carbon", desc:"Limpieza profunda sin resecar.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
         {sku:"ROBLE-02", tag:"Barba", name:"Aceite de Barba Cedro", desc:"Suaviza y da forma sin efecto grasoso.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
         {sku:"ROBLE-03", tag:"Corporal", name:"Desodorante Natural Roble", desc:"Proteccion 24h sin sales de aluminio.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
-        {sku:"ROBLE-04", tag:"Cabello", name:"Shampoo Anticaida Roble", desc:"Fortalece desde la raiz.", price:"$389 MXN", rating:{stars:4.4,count:176}, related:["ROBLE-03"]}
+        {sku:"ROBLE-04", tag:"Cabello", name:"Shampoo Anticaída Roble", desc:"Fortalece desde la raíz.", price:"$389 MXN", rating:{stars:4.4,count:176}, related:["ROBLE-03"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza facial diaria."},{title:"Rutina intermedia", desc:"suma cuidado de barba."},{title:"Rutina completa", desc:"protocolo facial + corporal + capilar."}]
     },
@@ -1158,32 +1187,32 @@ var I18N = {
     "nav.raiz":"Suplementos", "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.time":"Speciality Time", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
     "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'El bienestar que <span class="accent">transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
     "hero.p":'Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.',
-    "hero.cta1":"Explorar el catalogo", "hero.cta2":"Nuestra filosofia",
-    "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estandar de origen y calidad.",
+    "hero.cta1":"Explorar el catálogo", "hero.cta2":"Nuestra filosofia",
+    "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
     "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su sistema...",
-    "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesion para guardar tus productos favoritos y tu historial de pedidos.",
-    "cart.title":"Tu carrito", "cart.empty":"Tu carrito esta vacio por ahora.", "cart.cta":"Explorar catalogo",
+    "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesión para guardar tus productos favoritos y tu historial de pedidos.",
+    "cart.title":"Tu carrito", "cart.empty":"Tu carrito esta vacio por ahora.", "cart.cta":"Explorar catálogo",
     "vert.eyebrow":"Renuévate", "vert.h2":"Lo mejor para ti", "vert.suggested":"Sugerido",
-    "vert.p":"Cada nombre resuelve una necesidad especifica de bienestar. Comparten el mismo estandar de calidad y la misma promesa: nada se vende solo por vender.",
+    "vert.p":"Cada nombre resuelve una necesidad específica de bienestar. Comparten el mismo estándar de calidad y la misma convicción: consentirte es invertir en ti.",
     "vert.cta":"Descubrir &#8594;",
-    "phil.eyebrow":"Nuestra filosofia", "phil.h2":'No vendemos productos. Sostenemos <span class="accent">habitos</span>.',
-    "phil.p":"Renuévate existe para el bienestar real de las personas. Cada vertical fue disenada para resolver una necesidad concreta, no para competir por precio, sino por relevancia en el momento de vida de quien nos elige.",
-    "phil.pillar1h":"Origen verificable", "phil.pillar1p":"Trazabilidad de ingrediente y respaldo regulatorio en cada suplemento.",
-    "phil.pillar2h":"Ciencia, no promesas vacias", "phil.pillar2p":"Evidencia y ficha tecnica clara, sin claims que no podemos sostener.",
-    "phil.pillar3h":"Hábitos, no transacciones", "phil.pillar3p":"Rutinas escalonadas que acompanan el progreso real de la persona.",
-    "phil.pillar4h":"Un solo estandar", "phil.pillar4p":"Las 4 marcas comparten gobierno de calidad y servicio al cliente.",
-    "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darias a alguien que quieres: pensando primero en su bienestar.&rdquo;",
+    "phil.eyebrow":"Nuestra filosofía", "phil.h2":'No vendemos productos. Cultivamos <span class="accent">hábitos</span>.',
+    "phil.p":"Renuévate existe para el bienestar real de las personas. Cada marca de nuestro portafolio fue creada para resolver una necesidad específica, no para competir por precio, sino por relevancia en la etapa de vida de quien nos elige.",
+    "phil.pillar1h":"Origen verificable", "phil.pillar1p":"Trazabilidad de cada ingrediente y respaldo regulatorio en todos nuestros suplementos.",
+    "phil.pillar2h":"Transparencia, no promesas vacías", "phil.pillar2p":"Evidencia y ficha técnica siempre visibles, sin compromisos que no podamos cumplir.",
+    "phil.pillar3h":"Hábitos, no transacciones", "phil.pillar3p":"Rutinas pensadas para acompañar el progreso real, paso a paso.",
+    "phil.pillar4h":"Un solo estándar", "phil.pillar4p":"Las cuatro marcas comparten un mismo estándar de calidad y servicio.",
+    "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;",
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
     "zoom.routineEyebrow":"Que rutina es para ti?", "zoom.routineH2":"Encuentra tu combo ideal", "zoom.routineP":"Selecciona tu nivel de experiencia y te sugerimos la rutina adecuada.",
     "nl.eyebrow":"Unete a Renuévate", "nl.h2":'Recibe <span class="accent">novedades</span> y acceso anticipado a tus sistemas favoritos',
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
-    "footer.brandP":"System Time, Luminous, Health y Spot: habitos de bienestar para cada etapa de tu vida.",
+    "footer.brandP":"System Time, Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
     "footer.hVerticales":"System Speciality", "footer.raiz":"Speciality Time", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envios y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compania", "footer.about":"Sobre Renuévate", "footer.sustainability":"Sostenibilidad", "footer.careers":"Trabaja con nosotros",
     "footer.hLegal":"Legal", "footer.privacy":"Aviso de privacidad", "footer.terms":"Terminos y condiciones", "footer.cookies":"Politica de cookies",
-    "footer.copyright":"&copy; 2026 Renuévate. Todos los derechos reservados.", "footer.prototypeNote":"Prototipo de diseno - no es un sitio en produccion",
+    "footer.copyright":"&copy; 2026 Renuévate. Todos los derechos reservados.", "footer.prototypeNote":"Prototipo de diseño - no es un sitio en produccion",
     "chat.subtitle":"En linea . tu asesora de bienestar Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
     "chat.menu.categories":"Categorias", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
     "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.",
@@ -1200,17 +1229,17 @@ var I18N = {
     "chat.q.shipping":"Envios", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
     "chat.a.shipping":"Hacemos envios a todo Mexico, entrega en 2 a 5 dias habiles.",
     "chat.a.verticals":"4 sistemas: System Time, System Luminous, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
-    "chat.a.diagnostic":"Cuentame tu prioridad (energia, piel o rendimiento) y te recomiendo tu sistema.",
+    "chat.a.diagnostic":"Cuentame tu prioridad (energía, piel o rendimiento) y te recomiendo tu sistema.",
     "chat.a.prices":"Precios desde $259 hasta $699 MXN, segun producto.",
     "chat.a.ingredients":"Cada producto muestra sus ingredientes y origen en su ficha.",
     "chat.a.human":"Claro, te conecto con un asesor por WhatsApp.",
     "chat.a.payment":"Aceptamos tarjeta, debito y PayPal. Pago seguro en checkout.",
     "chat.a.tracking":"Te mandamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.",
-    "chat.a.returns":"Estamos formalizando nuestra politica de devoluciones. Escribenos por WhatsApp con tu pedido y lo resolvemos caso por caso.",
+    "chat.a.returns":"Estamos formalizando nuestra política de devoluciones. Escribenos por WhatsApp con tu pedido y lo resolvemos caso por caso.",
     "chat.a.store":"Renuévate es 100% en linea, no tenemos tienda fisica por ahora.",
-    "chat.a.beautyritual":"Un habito Renuévate es una rutina corta y constante (2 a 3 pasos) pensada para un objetivo especifico: energia, piel, cabello o bienestar. Cada sistema (Time, Luminous, Health, Spot) tiene el suyo. Cuentame tu prioridad y te armo el tuyo.",
+    "chat.a.beautyritual":"Un hábito Renuévate es una rutina corta y constante (2 a 3 pasos) pensada para un objetivo especifico: energía, piel, cabello o bienestar. Cada sistema (Time, Luminous, Health, Spot) tiene el suyo. Cuentame tu prioridad y te armo el tuyo.",
     "chat.a.nutritionadvice":"Puedo darte tips generales de bienestar (hidratacion, constancia en tu rutina, descanso), pero no reemplazo a un nutriologo ni doy planes personalizados. Para eso te recomiendo un profesional de salud. Si quieres, cuentame tu prioridad y te sugiero productos de nuestras lineas.",
-    "chat.a.productadvisor":"Claro, soy tu asesora de productos y suplementos. Cuentame tu edad y si buscas algo para mujer u hombre, o dime tu prioridad (energia, piel, cabello, bienestar) y te doy una recomendacion puntual.",
+    "chat.a.productadvisor":"Claro, soy tu asesora de productos y suplementos. Cuentame tu edad y si buscas algo para mujer u hombre, o dime tu prioridad (energía, piel, cabello, bienestar) y te doy una recomendacion puntual.",
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o hola@renuevate.mx.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
@@ -1218,8 +1247,8 @@ var I18N = {
     "chat.a.products":"Vendemos suplementos, cuidado de piel y cabello, y bienestar diario en 4 sistemas: System Time, System Luminous, System Health y System Spot Speciality.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario habil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
-    "chat.a.account":"No necesitas cuenta para comprar. Si inicias sesion con Google o Facebook guardamos tu perfil y tus promociones.",
-    "chat.a.cancelorder":"Escribenos por WhatsApp con tu numero de pedido antes de que se despache y lo cancelamos.",
+    "chat.a.account":"No necesitas cuenta para comprar. Si inicias sesión con Google o Facebook guardamos tu perfil y tus promociones.",
+    "chat.a.cancelorder":"Escribenos por WhatsApp con tu número de pedido antes de que se despache y lo cancelamos.",
     "chat.a.discount":"Los codigos de descuento se aplican en el campo de cupon del checkout.",
     "chat.a.warranty":"Si tu producto llega defectuoso lo cambiamos sin costo. Escribenos por WhatsApp con fotos de tu pedido.",
     "chat.q.payment":"Pagos", "chat.q.returns":"Devoluciones",
@@ -1229,12 +1258,12 @@ var I18N = {
     "chat.a.fallback":"No tengo esa respuesta. Prueba con envios, pagos, devoluciones, o habla con un asesor.",
     "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
     "cart.checkoutNote":"Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.",
-    "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesion para administrar tus metodos de pago guardados.",
+    "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesión para administrar tus metodos de pago guardados.",
     "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Ultimos 4 digitos",
     "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Ano exp.", "account.paypalEmailLabel":"Correo de PayPal",
-    "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el numero de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.",
+    "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.",
     "account.saveLabel":"Guardar metodo de pago", "account.closeLabel":"Cerrar",
-    "auth.tabSignin":"Iniciar sesion", "auth.tabSignup":"Crear cuenta",
+    "auth.tabSignin":"Iniciar sesión", "auth.tabSignup":"Crear cuenta",
     "auth.privacyNote":"Usamos tu correo, telefono o datos de Google/Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick=\"openPrivacyModal()\">Ver aviso de privacidad completo</a>.",
     "nl.accountHint":"¿Ya tienes cuenta o quieres crear una? Usa el icono de perfil arriba a la derecha.",
     "auth.or":"o",
@@ -1243,14 +1272,14 @@ var I18N = {
     "auth.phoneSendCode":"Enviar codigo por SMS",
     "auth.phoneOtpLabel":"Codigo de verificacion",
     "auth.phoneVerify":"Verificar y continuar",
-    "auth.phoneChangeNumber":"Cambiar numero",
+    "auth.phoneChangeNumber":"Cambiar número",
     "auth.privacyLink":"Ver aviso de privacidad completo.",
     "privacy.title":"Aviso de Privacidad", "privacy.updated":"Ultima actualizacion: julio 2026.",
     "terms.title":"Terminos y Condiciones", "terms.updated":"Ultima actualizacion: julio 2026.",
     "cookie.bannerText":"Usamos cookies necesarias para operar el sitio, y cookies opcionales de analitica y marketing si tu lo permites.",
     "cookie.acceptAll":"Aceptar todas", "cookie.necessaryOnly":"Solo necesarias", "cookie.customize":"Personalizar",
     "cookie.modalTitle":"Politica de Cookies", "cookie.modalSubtitle":"Elige que categorias de cookies quieres permitir.",
-    "cookie.necessaryLabel":"Necesarias", "cookie.necessaryDesc":"Indispensables para el funcionamiento del sitio (carrito, sesion, seguridad). Siempre activas.", "cookie.alwaysOn":"Siempre activas",
+    "cookie.necessaryLabel":"Necesarias", "cookie.necessaryDesc":"Indispensables para el funcionamiento del sitio (carrito, sesión, seguridad). Siempre activas.", "cookie.alwaysOn":"Siempre activas",
     "cookie.analyticsLabel":"Analitica", "cookie.analyticsDesc":"Nos ayudan a entender el uso del sitio para mejorarlo (GA4).",
     "cookie.marketingLabel":"Marketing", "cookie.marketingDesc":"Personalizacion de promociones y remarketing.",
     "cookie.save":"Guardar preferencias",
@@ -1278,12 +1307,12 @@ var I18N = {
     "account.title":"Your Renuévate account", "account.p":"Sign in to save your favorite products and your order history.",
     "cart.title":"Your cart", "cart.empty":"Your cart is empty for now.", "cart.cta":"Explore the catalog",
     "vert.eyebrow":"Renuévate", "vert.h2":"The best for you", "vert.suggested":"Suggested",
-    "vert.p":"Each name solves a specific wellness need. They share the same quality standard and the same promise: nothing is sold just to sell.",
+    "vert.p":"Each name solves a specific wellness need. They share the same quality standard and the same conviction: taking care of yourself is an investment in you.",
     "vert.cta":"Discover &#8594;",
     "phil.eyebrow":"Our philosophy", "phil.h2":'We don’t sell products. We sustain <span class="accent">habits</span>.',
     "phil.p":"Renuévate exists for people's real wellness. Each vertical was designed to solve a concrete need, not to compete on price, but on relevance to the life moment of whoever chooses us.",
     "phil.pillar1h":"Verifiable origin", "phil.pillar1p":"Ingredient traceability and regulatory backing in every supplement.",
-    "phil.pillar2h":"Science, not empty promises", "phil.pillar2p":"Clear evidence and technical data sheets, no claims we can't stand behind.",
+    "phil.pillar2h":"Transparency, not empty promises", "phil.pillar2p":"Clear evidence and technical data sheets, no claims we can't stand behind.",
     "phil.pillar3h":"Habits, not transactions", "phil.pillar3p":"Staged routines that support the person's real progress.",
     "phil.pillar4h":"One single standard", "phil.pillar4p":"All 4 brands share the same quality governance and customer service.",
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: wellness first.&rdquo;",
@@ -1392,12 +1421,12 @@ var I18N = {
     "account.title":"Votre compte Renuévate", "account.p":"Connectez-vous pour enregistrer vos produits favoris et votre historique de commandes.",
     "cart.title":"Votre panier", "cart.empty":"Votre panier est vide pour le moment.", "cart.cta":"Explorer le catalogue",
     "vert.eyebrow":"Renuévate", "vert.h2":"Le meilleur pour vous", "vert.suggested":"Suggere",
-    "vert.p":"Chaque nom repond a un besoin de bien-etre precis. Elles partagent le meme standard de qualite et la meme promesse : rien n'est vendu juste pour vendre.",
+    "vert.p":"Chaque nom repond a un besoin de bien-etre precis. Elles partagent le meme standard de qualite et la meme conviction : prendre soin de soi, c'est investir en soi.",
     "vert.cta":"Decouvrir &#8594;",
     "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous ne vendons pas des produits. Nous soutenons des <span class="accent">habitudes</span>.',
     "phil.p":"Renuévate existe pour le bien-etre reel des personnes. Chaque marque a ete concue pour repondre a un besoin concret, sans jouer la carte du prix, mais celle de la pertinence dans le moment de vie de la personne qui nous choisit.",
     "phil.pillar1h":"Origine verifiable", "phil.pillar1p":"Tracabilite des ingredients et appui reglementaire pour chaque complement.",
-    "phil.pillar2h":"La science, pas des promesses vides", "phil.pillar2p":"Preuves et fiches techniques claires, sans allegations que nous ne pouvons pas soutenir.",
+    "phil.pillar2h":"La transparence, pas de promesses vides", "phil.pillar2p":"Preuves et fiches techniques claires, sans allegations que nous ne pouvons pas soutenir.",
     "phil.pillar3h":"Des habitudes, pas des transactions", "phil.pillar3p":"Des routines progressives qui accompagnent le progres reel de la personne.",
     "phil.pillar4h":"Un seul standard", "phil.pillar4p":"Les 4 marques partagent la meme gouvernance qualite et le meme service client.",
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
@@ -1447,7 +1476,7 @@ var I18N = {
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
     "chat.a.security":"Paiement securise et chiffre. Nous ne stockons jamais les donnees de votre carte.",
     "chat.a.account":"Pas besoin de compte pour acheter. En vous connectant avec Google ou Facebook, nous gardons votre profil et vos promotions.",
-    "chat.a.cancelorder":"Ecrivez-nous sur WhatsApp avec votre numero de commande avant l'expedition et nous l'annulons.",
+    "chat.a.cancelorder":"Ecrivez-nous sur WhatsApp avec votre número de commande avant l'expedition et nous l'annulons.",
     "chat.a.discount":"Les codes de reduction s'appliquent dans le champ coupon au checkout.",
     "chat.a.warranty":"Si votre produit arrive defectueux, nous le remplacons gratuitement. Ecrivez-nous sur WhatsApp avec des photos.",
     "chat.q.payment":"Paiement", "chat.q.returns":"Retours",
@@ -1460,7 +1489,7 @@ var I18N = {
     "account.title":"Mon compte et moyens de paiement", "account.subtitle":"Connectez-vous pour gerer vos moyens de paiement enregistres.",
     "account.card":"Carte", "account.paypal":"PayPal", "account.brandLabel":"Marque", "account.last4Label":"4 derniers chiffres",
     "account.expMonthLabel":"Mois exp.", "account.expYearLabel":"Annee exp.", "account.paypalEmailLabel":"Email PayPal",
-    "account.pciNote":"Par securite (PCI-DSS/ISO 27001), ce site ne capture ni ne stocke jamais le numero de carte complet ni le CVV. Seuls les 4 derniers chiffres sont conserves pour identifier votre moyen de paiement.",
+    "account.pciNote":"Par securite (PCI-DSS/ISO 27001), ce site ne capture ni ne stocke jamais le número de carte complet ni le CVV. Seuls les 4 derniers chiffres sont conserves pour identifier votre moyen de paiement.",
     "account.saveLabel":"Enregistrer le moyen de paiement", "account.closeLabel":"Fermer",
     "auth.tabSignin":"Connexion", "auth.tabSignup":"Creer un compte",
     "auth.privacyNote":"Nous utilisons votre email, telephone ou vos donnees Google/Facebook uniquement pour vous identifier et enregistrer vos promotions. <b>Nous ne voyons ni ne stockons jamais votre mot de passe</b> — conforme ISO 27001, minimisation des donnees personnelles. <a onclick=\"openPrivacyModal()\">Voir l'avis de confidentialite complet</a>.",
@@ -1471,7 +1500,7 @@ var I18N = {
     "auth.phoneSendCode":"Envoyer le code par SMS",
     "auth.phoneOtpLabel":"Code de verification",
     "auth.phoneVerify":"Verifier et continuer",
-    "auth.phoneChangeNumber":"Changer de numero",
+    "auth.phoneChangeNumber":"Changer de número",
     "auth.privacyLink":"Voir l'avis de confidentialite complet.",
     "privacy.title":"Avis de confidentialite", "privacy.updated":"Derniere mise a jour : juillet 2026.",
     "terms.title":"Conditions Generales", "terms.updated":"Derniere mise a jour : juillet 2026.",
@@ -1520,19 +1549,19 @@ var DYN = {
        removeItem:function(){ return 'Quitar'; },
        bagUpsellTitle:function(){ return 'Guarda tus productos en una bolsa Renuévate'; },
        bagAddLabel:function(){ return '+ Agregar'; },
-       loginRequired:function(){ return 'Inicia sesion con Google o Facebook para agregar productos al carrito, guardar tu metodo de pago o dejar una resena.'; },
+       loginRequired:function(){ return 'Inicia sesión con Google o Facebook para agregar productos al carrito, guardar tu metodo de pago o dejar una resena.'; },
        paymentSaved:function(){ return 'Metodo de pago guardado.'; },
        loadingReviews:function(){ return 'Cargando resenas...'; },
        shareExperience:function(){ return 'Comparte tu experiencia'; },
        reviewPlaceholder:function(){ return 'Cuentanos que te parecio (opcional)'; },
        submitReview:function(){ return 'Publicar resena'; },
-       loginToReview:function(){ return 'Inicia sesion para dejar tu resena y compartir fotos de tu experiencia.'; },
-       authSigninHeadline:function(){ return 'Inicia sesion para ver tu carrito, tus pedidos y tus promociones.'; },
+       loginToReview:function(){ return 'Inicia sesión para dejar tu resena y compartir fotos de tu experiencia.'; },
+       authSigninHeadline:function(){ return 'Inicia sesión para ver tu carrito, tus pedidos y tus promociones.'; },
        authSignupHeadline:function(){ return 'Crea tu cuenta en segundos y desbloquea tus promociones de bienvenida.'; },
        authNewHereText:function(){ return 'Nuevo en Renuévate?'; },
        authNewHereLink:function(){ return 'Crea tu cuenta'; },
        authAlreadyHaveText:function(){ return 'Ya tienes cuenta?'; },
-       authAlreadyHaveLink:function(){ return 'Inicia sesion'; },
+       authAlreadyHaveLink:function(){ return 'Inicia sesión'; },
        profile:{
          title:'Completa tu perfil',
          subtitle:'Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.',
@@ -1556,7 +1585,7 @@ var DYN = {
            { label:'Suplementos y nutricion', action:function(){ chooseGoal('supplements'); } },
            { label:'Cuidado de la piel', action:function(){ chooseGoal('skin'); } },
            { label:'Cuidado del cabello', action:function(){ chooseGoal('hair'); } },
-           { label:'Maquillaje', action:function(){ chooseGoal('makeup'); } },
+           { label:'Maquíllaje', action:function(){ chooseGoal('makeup'); } },
            { label:'Bienestar integral', action:function(){ chooseGoal('wellness'); } }
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'Para tu piel, que priorizas?' : 'Para afinar, que buscas mas?'; },
@@ -1575,27 +1604,27 @@ var DYN = {
            return [];
          },
          recommendIntro:function(goal){
-           var map = { supplements:'Estos productos pueden apoyar tu energia y bienestar diario:', skin:'Estos productos favorecen tu piel:', hair:'Estos productos ayudan al cuidado de tu cabello:', wellness:'Este es un buen punto de partida para tu bienestar integral:' };
+           var map = { supplements:'Estos productos pueden apoyar tu energía y bienestar diario:', skin:'Estos productos favorecen tu piel:', hair:'Estos productos ayudan al cuidado de tu cabello:', wellness:'Este es un buen punto de partida para tu bienestar integral:' };
            return map[goal] || 'Esto puede ayudarte:';
          },
          fromPrice:function(price){ return 'desde ' + price; },
          crossSell:function(cross){ return '💛 Si quieres complementarlo, muchas clientes agregan <b>' + cross.name + '</b> — ' + cross.desc + ' (desde ' + cross.price + ').'; },
          closeQuestion:function(){ return 'Como seguimos?'; },
-         viewCatalogLabel:function(v){ return 'Ver catalogo de ' + V[v].name; },
-         viewDetailLabel:function(){ return 'Ver en catalogo'; },
+         viewCatalogLabel:function(v){ return 'Ver catálogo de ' + V[v].name; },
+         viewDetailLabel:function(){ return 'Ver en catálogo'; },
          noOffers:function(){ return 'Por ahora no tenemos promociones activas, pero te aviso apenas haya una nueva.'; },
-         cartOpening:function(){ return 'Claro, aqui esta tu carrito.'; },
-         cartNeedsLogin:function(){ return 'Tu carrito existe como demostracion funcional, pero necesitas iniciar sesion para verlo y guardarlo.'; },
+         cartOpening:function(){ return 'Claro, aquí esta tu carrito.'; },
+         cartNeedsLogin:function(){ return 'Tu carrito existe como demostracion funcional, pero necesitas iniciar sesión para verlo y guardarlo.'; },
          talkHumanLabel:function(){ return 'Hablar con un asesor'; },
          restartLabel:function(){ return 'Elegir otra prioridad'; },
-         makeupUnavailable:function(){ return 'Por ahora no tengo maquillaje confirmado en catalogo, y no quiero ofrecerte algo que no pueda garantizar. Puedo mostrarte nuestro cuidado de piel NACAR, o conectarte con un asesor humano.'; },
+         makeupUnavailable:function(){ return 'Por ahora no tengo maquíllaje confirmado en catálogo, y no quiero ofrecerte algo que no pueda garantizar. Puedo mostrarte nuestro cuidado de piel NACAR, o conectarte con un asesor humano.'; },
          makeupFallbackOptions:function(){ return [
            { label:'Ver cuidado de piel NACAR', action:function(){ chooseGoal('skin'); } },
            { label:'Hablar con un asesor', action:function(){ answerTopic('human'); renderChatQuickButtons(); } }
          ]; },
          medicalGuard:function(){ return 'Gracias por contarme. Por tu seguridad, en temas de embarazo, lactancia, alergias o medicamentos no hago recomendaciones — te conecto con un asesor humano; te sugiero tambien consultar a tu profesional de salud.'; },
-         complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu numero de pedido por WhatsApp.'; },
-         certUnknown:function(){ return 'No tengo esa certificacion confirmada en este catalogo. Para no darte informacion incorrecta, te lo valida un asesor humano.'; },
+         complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu número de pedido por WhatsApp.'; },
+         certUnknown:function(){ return 'No tengo esa certificacion confirmada en este catálogo. Para no darte información incorrecta, te lo valida un asesor humano.'; },
          frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; }
        } },
   en:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Right now it is ' + hh + ':' + mm + ' (your device time). Anything else I can help with?'; },
@@ -1754,7 +1783,7 @@ var DYN = {
            { label:'Complements et nutrition', action:function(){ chooseGoal('supplements'); } },
            { label:'Soin de la peau', action:function(){ chooseGoal('skin'); } },
            { label:'Soin des cheveux', action:function(){ chooseGoal('hair'); } },
-           { label:'Maquillage', action:function(){ chooseGoal('makeup'); } },
+           { label:'Maquíllage', action:function(){ chooseGoal('makeup'); } },
            { label:'Bien-etre global', action:function(){ chooseGoal('wellness'); } }
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'Pour votre peau, quelle est votre priorite ?' : 'Pour affiner, que recherchez-vous ?'; },
@@ -1786,13 +1815,13 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Votre panier existe en demonstration fonctionnelle, mais vous devez vous connecter pour le voir et le conserver.'; },
          talkHumanLabel:function(){ return 'Parler a un conseiller'; },
          restartLabel:function(){ return 'Choisir une autre priorite'; },
-         makeupUnavailable:function(){ return "Je n'ai pas encore de maquillage confirme au catalogue, et je ne veux pas vous proposer quelque chose que je ne peux pas garantir. Je peux vous montrer le soin de la peau NACAR, ou vous mettre en relation avec un conseiller humain."; },
+         makeupUnavailable:function(){ return "Je n'ai pas encore de maquíllage confirme au catalogue, et je ne veux pas vous proposer quelque chose que je ne peux pas garantir. Je peux vous montrer le soin de la peau NACAR, ou vous mettre en relation avec un conseiller humain."; },
          makeupFallbackOptions:function(){ return [
            { label:'Voir le soin de la peau NACAR', action:function(){ chooseGoal('skin'); } },
            { label:'Parler a un conseiller', action:function(){ answerTopic('human'); renderChatQuickButtons(); } }
          ]; },
          medicalGuard:function(){ return "Merci de me le dire. Pour votre securite, je ne fais pas de recommandation en cas de grossesse, allaitement, allergies ou medicaments — je vous mets en relation avec un conseiller humain ; pensez aussi a consulter votre professionnel de sante."; },
-         complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre numero de commande sur WhatsApp."; },
+         complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre número de commande sur WhatsApp."; },
          certUnknown:function(){ return "Je n'ai pas cette certification confirmee dans ce catalogue. Pour eviter de vous donner une information incorrecte, un conseiller humain la verifiera."; },
          frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; }
        } }
@@ -2204,14 +2233,14 @@ function verifyPhoneCode(){
 var PRIVACY_CONTENT = {
   es: {
     sections: [
-      { h:'1. Responsable de tus datos', p:'Renuévate (operado por GoNexus Group) es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesion de los Particulares (LFPDPPP) de Mexico.' },
-      { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, resenas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el numero completo ni el CVV).' },
-      { h:'3. Para que los usamos', p:'Identificarte al iniciar sesion, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleanos y tu programa de lealtad, mostrar tus resenas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
-      { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos ademas los controles tecnicos del estandar ISO 27001 sobre estos datos.' },
-      { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesion con ellos (solo reciben la solicitud de autenticacion, nunca tu contrasena de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. Si activas el registro por telefono, Twilio procesa el envio del SMS de verificacion. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
+      { h:'1. Responsable de tus datos', p:'Renuévate (operado por GoNexus Group) es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
+      { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, resenas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el número completo ni el CVV).' },
+      { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleanos y tu programa de lealtad, mostrar tus resenas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
+      { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos además los controles tecnicos del estándar ISO 27001 sobre estos datos.' },
+      { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesión con ellos (solo reciben la solicitud de autenticacion, nunca tu contrasena de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. Si activas el registro por telefono, Twilio procesa el envio del SMS de verificacion. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
       { h:'6. Cuanto tiempo los conservamos', p:'Mientras tu cuenta este activa. Los codigos de verificacion telefonica (OTP) se eliminan automaticamente a los 10 minutos, se hayan usado o no.' },
       { h:'7. Tus derechos (ARCO)', p:'Puedes Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales en cualquier momento, escribiendo al contacto que aparece abajo.' },
-      { h:'8. Seguridad', p:'Nunca capturamos ni guardamos el numero completo de tu tarjeta ni el CVV (control PCI-DSS/ISO 27001 A.8.24). Los codigos OTP se guardan solo como huella criptografica (hash), nunca en texto plano.' },
+      { h:'8. Seguridad', p:'Nunca capturamos ni guardamos el número completo de tu tarjeta ni el CVV (control PCI-DSS/ISO 27001 A.8.24). Los codigos OTP se guardan solo como huella criptografica (hash), nunca en texto plano.' },
       { h:'9. Cambios a este aviso', p:'Podemos actualizar este aviso; la fecha de la version vigente aparece al inicio de esta seccion.' },
       { h:'10. Contacto', p:'Para ejercer tus derechos o resolver dudas sobre tus datos, contacta al area de Tech Ops & Security de GoNexus Group.' },
     ],
@@ -2233,13 +2262,13 @@ var PRIVACY_CONTENT = {
   fr: {
     sections: [
       { h:'1. Responsable de vos donnees', p:'Renuévate (exploite par GoNexus Group) est responsable du traitement de vos donnees personnelles conformement a la loi mexicaine LFPDPPP.' },
-      { h:'2. Donnees que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et donnees masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le numero complet ni le CVV).' },
+      { h:'2. Donnees que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et donnees masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le número complet ni le CVV).' },
       { h:'3. A quoi elles servent', p:'Vous identifier a la connexion, traiter et suivre vos commandes, activer les promotions d\'anniversaire et votre programme de fidelite, afficher vos avis publies, et vous envoyer des communications marketing uniquement si vous avez donne votre consentement explicite.' },
       { h:'4. Fondement legal', p:'Votre consentement expres (case promotions), l\'execution de la relation contractuelle lors d\'une commande, et notre interet legitime a exploiter le site en toute securite. Nous appliquons aussi les controles techniques ISO 27001 a ces donnees.' },
       { h:'5. Avec qui nous les partageons', p:'Google et/ou Facebook agissent comme fournisseurs d\'identite si vous choisissez de vous connecter avec eux (ils recoivent uniquement la demande d\'authentification, jamais un mot de passe Renuévate puisqu\'il n\'en existe pas). MongoDB Atlas est notre sous-traitant de stockage de base de donnees. Si l\'inscription par telephone est activee, Twilio traite l\'envoi du SMS de verification. Nous ne vendons ni ne louons vos donnees a des tiers a des fins publicitaires.' },
       { h:'6. Duree de conservation', p:'Tant que votre compte est actif. Les codes de verification telephonique (OTP) sont automatiquement supprimes apres 10 minutes, utilises ou non.' },
       { h:'7. Vos droits', p:'Vous pouvez Acceder, Rectifier, Annuler ou vous Opposer au traitement de vos donnees personnelles a tout moment, en ecrivant au contact ci-dessous.' },
-      { h:'8. Securite', p:'Nous ne capturons ni ne stockons jamais votre numero de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24). Les codes OTP sont stockes uniquement sous forme de hash cryptographique, jamais en texte clair.' },
+      { h:'8. Securite', p:'Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24). Les codes OTP sont stockes uniquement sous forme de hash cryptographique, jamais en texte clair.' },
       { h:'9. Modifications de cet avis', p:'Nous pouvons mettre a jour cet avis ; la date de la version en vigueur apparait en haut de cette section.' },
       { h:'10. Contact', p:'Pour exercer vos droits ou poser des questions sur vos donnees, contactez l\'equipe Tech Ops & Security de GoNexus Group.' },
     ],
@@ -2270,10 +2299,10 @@ var TERMS_CONTENT = {
     { h:'2. Naturaleza del sitio', p:'Renuévate es una tienda 100% en linea. No operamos tienda fisica ni punto de venta presencial por el momento.' },
     { h:'3. Precios y disponibilidad', p:'Los precios se muestran en pesos mexicanos (MXN) e incluyen impuestos aplicables salvo que se indique lo contrario. Los precios y la disponibilidad de producto pueden cambiar sin previo aviso.' },
     { h:'4. Envios', p:'Realizamos envios a todo Mexico con entrega estimada de 2 a 5 dias habiles. Te enviamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.' },
-    { h:'5. Devoluciones', p:'Estamos formalizando nuestra politica de devoluciones. Mientras tanto, cada caso se resuelve directamente contigo por WhatsApp.' },
-    { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catalogo. Para comprar, puedes iniciar sesion con Google, Facebook o tu telefono. Eres responsable de mantener la confidencialidad de tu acceso.' },
-    { h:'7. Pagos', p:'Aceptamos tarjeta, debito y PayPal. Nunca capturamos ni almacenamos el numero completo de tu tarjeta ni el CVV en nuestros servidores (control PCI-DSS/ISO 27001).' },
-    { h:'8. Propiedad intelectual', p:'El nombre Renuévate, el logotipo, los textos, imagenes y el diseno del sitio son propiedad de GoNexus Group y no pueden reproducirse sin autorizacion.' },
+    { h:'5. Devoluciones', p:'Estamos formalizando nuestra política de devoluciones. Mientras tanto, cada caso se resuelve directamente contigo por WhatsApp.' },
+    { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catálogo. Para comprar, puedes iniciar sesión con Google, Facebook o tu telefono. Eres responsable de mantener la confidencialidad de tu acceso.' },
+    { h:'7. Pagos', p:'Aceptamos tarjeta, debito y PayPal. Nunca capturamos ni almacenamos el número completo de tu tarjeta ni el CVV en nuestros servidores (control PCI-DSS/ISO 27001).' },
+    { h:'8. Propiedad intelectual', p:'El nombre Renuévate, el logotipo, los textos, imagenes y el diseño del sitio son propiedad de GoNexus Group y no pueden reproducirse sin autorizacion.' },
     { h:'9. Uso aceptable', p:'No debes usar el sitio para fines fraudulentos, intentar vulnerar su seguridad, ni extraer masivamente su contenido (scraping) sin autorizacion.' },
     { h:'10. Limitacion de responsabilidad', p:'El sitio se ofrece "tal cual". No garantizamos disponibilidad ininterrumpida y no somos responsables por danos indirectos derivados del uso del sitio, salvo lo que exija la ley aplicable.' },
     { h:'11. Ley aplicable', p:'Estos terminos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier controversia se resolvera ante los tribunales competentes de Mexico.' },
@@ -2299,10 +2328,10 @@ var TERMS_CONTENT = {
     { h:'1. Acceptation des conditions', p:'En utilisant Renuévate (exploite par GoNexus Group) et en passant une commande, vous acceptez ces Conditions Generales et l\'Avis de Confidentialite.' },
     { h:'2. Nature du site', p:'Renuévate est une boutique 100% en ligne. Nous n\'exploitons pas de boutique physique pour le moment.' },
     { h:'3. Prix et disponibilite', p:'Les prix sont affiches en pesos mexicains (MXN) et incluent les taxes applicables sauf indication contraire. Les prix et la disponibilite des produits peuvent changer sans preavis.' },
-    { h:'4. Livraison', p:'Nous livrons partout au Mexique avec une livraison estimee de 2 a 5 jours ouvres. Le numero de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
+    { h:'4. Livraison', p:'Nous livrons partout au Mexique avec une livraison estimee de 2 a 5 jours ouvres. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
     { h:'5. Retours', p:'Nous finalisons notre politique de retours. En attendant, chaque cas est traite directement avec vous via WhatsApp.' },
     { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google, Facebook ou votre telephone. Vous etes responsable de la confidentialite de votre acces.' },
-    { h:'7. Paiements', p:'Carte, debit et PayPal acceptes. Nous ne capturons ni ne stockons jamais votre numero de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
+    { h:'7. Paiements', p:'Carte, debit et PayPal acceptes. Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
     { h:'8. Propriete intellectuelle', p:'Le nom Renuévate, le logo, les textes, images et le design du site appartiennent a GoNexus Group et ne peuvent etre reproduits sans autorisation.' },
     { h:'9. Utilisation acceptable', p:'Vous ne devez pas utiliser le site a des fins frauduleuses, tenter de compromettre sa securite, ni extraire massivement son contenu (scraping) sans autorisation.' },
     { h:'10. Limitation de responsabilite', p:'Le site est fourni "tel quel". Nous ne garantissons pas une disponibilite ininterrompue et ne sommes pas responsables des dommages indirects lies a l\'utilisation du site, sauf disposition legale contraire.' },
@@ -2360,6 +2389,33 @@ function openCookieModal(){
 function closeCookieModal(){
   document.getElementById('cookieModalOverlay').classList.remove('is-open');
 }
+function wireSocialLinks(){
+  var map = {socialInstagram:AZURA_CONFIG.SOCIAL_INSTAGRAM_URL, socialTiktok:AZURA_CONFIG.SOCIAL_TIKTOK_URL, socialFacebook:AZURA_CONFIG.SOCIAL_FACEBOOK_URL};
+  Object.keys(map).forEach(function(id){
+    var el = document.getElementById(id);
+    if (el && map[id] && map[id].indexOf("TU_USUARIO_AQUI") === -1 && map[id].indexOf("TU_PAGINA_AQUI") === -1){
+      el.setAttribute("href", map[id]); el.setAttribute("target", "_blank"); el.setAttribute("rel", "noopener");
+    }
+  });
+}
+document.addEventListener("DOMContentLoaded", wireSocialLinks);
+
+function initHeroVideo(){
+  var v = document.getElementById("heroVideoEl");
+  if (!v) return;
+  var tryPlay = function(){ v.play().catch(function(){}); };
+  tryPlay();
+  if ("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) tryPlay(); else v.pause();
+      });
+    }, { threshold: 0.25 });
+    io.observe(v);
+  }
+}
+document.addEventListener("DOMContentLoaded", initHeroVideo);
+
 function saveCookiePrefs(){
   var a = document.getElementById('cookieAnalyticsToggle');
   var m = document.getElementById('cookieMarketingToggle');
@@ -2640,7 +2696,7 @@ function submitProfileForm(evt){
   okEl.className = 'pm-success';
 
   if (!CURRENT_CUSTOMER.id){
-    errEl.textContent = DYN[currentLang].profile.errorPrefix('sesion no encontrada, vuelve a iniciar sesion');
+    errEl.textContent = DYN[currentLang].profile.errorPrefix('sesión no encontrada, vuelve a iniciar sesión');
     errEl.className = 'pm-error is-visible';
     return;
   }
@@ -2798,7 +2854,7 @@ var CHAT_QUICK_TOPICS = ['identity','shipping','payment','returns','verticals','
 var CHAT_QUICK_KEYMAP = {identity:'chat.q.identity', shipping:'chat.q.shipping', verticals:'chat.q.verticals', diagnostic:'chat.q.diagnostic', human:'chat.q.human', payment:'chat.q.payment', returns:'chat.q.returns'};
 var CHAT_ANSWER_KEYMAP = {greeting:'chat.a.greeting', identity:'chat.a.identity', capability:'chat.a.capability', purpose:'chat.a.purpose', products:'chat.a.products', hours:'chat.a.hours', security:'chat.a.security', account:'chat.a.account', cancelorder:'chat.a.cancelorder', discount:'chat.a.discount', warranty:'chat.a.warranty', shipping:'chat.a.shipping', verticals:'chat.a.verticals', diagnostic:'chat.a.diagnostic', prices:'chat.a.prices', ingredients:'chat.a.ingredients', human:'chat.a.human', payment:'chat.a.payment', tracking:'chat.a.tracking', returns:'chat.a.returns', loyalty:'chat.a.loyalty', contact:'chat.a.contact', sustainability:'chat.a.sustainability', store:'chat.a.store', beautyritual:'chat.a.beautyritual', nutritionadvice:'chat.a.nutritionadvice', productadvisor:'chat.a.productadvisor'};
 
-/* Guardrails: temas medicos, quejas y certificaciones no confirmadas en catalogo */
+/* Guardrails: temas medicos, quejas y certificaciones no confirmadas en catálogo */
 var MEDICAL_TRIGGERS = ['embarazo','embarazada','lactancia','lactando','alergia','alergico','alergica','medicamento','medicacion','receta medica','diabetes','presion alta','enfermedad','tratamiento medico','pregnant','pregnancy','breastfeeding','allergic','allergy','medication','prescription','enceinte','allaitement','allergique','medicament','grossesse'];
 var COMPLAINT_TRIGGERS = ['queja','reclamo','no llego','no ha llegado','pedido dañado','pedido danado','cobro duplicado','cobro doble','mal servicio','problema con mi pedido','no funciona','defectuoso','complaint','order problem','didn\'t arrive','damaged','double charge','plainte','probleme avec ma commande','n\'est pas arrive','endommage'];
 var CERT_TRIGGERS = ['vegano','vegana','vegan','sin gluten','gluten free','cruelty free','crueltyfree','sin crueldad','organico certificado','certificacion organica','organic certified','certification bio','vegetalien'];
@@ -2809,7 +2865,7 @@ var CERT_TRIGGERS = ['vegano','vegana','vegan','sin gluten','gluten free','cruel
    reales de usuarios (ej. "beganos", "debolusion") SIN usar IA generativa, para
    mantener el costo de tokens de Claude en cero para el 95%+ de las preguntas de
    negocio. Solo si esta capa no resuelve nada se justificaria una Capa 3 de IA
-   (no incluida aqui -- decision de costo/arquitectura pendiente, ver respuesta a
+   (no incluida aquí -- decision de costo/arquitectura pendiente, ver respuesta a
    Carlos). */
 function stripAccents(s){
   return String(s).normalize('NFD').replace(new RegExp('[̀-ͯ]', 'g'), '');
@@ -2955,7 +3011,7 @@ function menuCarrito(){
     addChatMsg(DYN[currentLang].julieta.cartOpening(), 'bot');
     setTimeout(function(){ toggleChat(); openCart(); }, 400);
   } else {
-    var loginLabel = I18N[currentLang]['auth.tabSignin'] || 'Iniciar sesion';
+    var loginLabel = I18N[currentLang]['auth.tabSignin'] || 'Iniciar sesión';
     addChatMsg(DYN[currentLang].julieta.cartNeedsLogin() + '<br>' +
       '<button class="chat-wa-btn" style="background:var(--navy)" onclick="toggleChat(); openAuthModal(\'signin\');">' + loginLabel + '</button>', 'bot');
   }

@@ -48,6 +48,15 @@ No hace falta crear la base ni la coleccion a mano: `api/register.js` las crea s
    - `https://tu-proyecto.vercel.app` (lo sabras despues del primer deploy; puedes volver a editarlo)
 6. Crea las credenciales. Copia el **Client ID** (termina en `.apps.googleusercontent.com`). Este es publico por diseno — es seguro que viva en el HTML.
 
+### Arreglar "Error 400: origin_mismatch"
+
+Este error significa que el dominio real desde el que abres el sitio **no esta** en la lista de "Authorized JavaScript origins" del Client ID (paso 5). Es una config de Google Cloud Console, no un bug del codigo. Para arreglarlo:
+
+1. Entra a https://console.cloud.google.com/apis/credentials y abre tu OAuth Client ID.
+2. En **Authorized JavaScript origins**, agrega el dominio EXACTO que ves en la barra de direcciones cuando te sale el error (sin `/` al final, sin ruta, solo `https://dominio.com`). Ojo con: `www.` vs sin `www.`, y `http` vs `https` — Google los trata como origenes distintos.
+3. Si usas un dominio de Vercel tipo preview (`https://azura-site-git-branch-usuario.vercel.app`), cada preview branch tiene una URL distinta — agrega tambien tu dominio de produccion fijo (`https://tu-proyecto.vercel.app` o tu dominio propio) para no tener que repetir esto en cada deploy.
+4. Guarda. El cambio tarda unos minutos (a veces hasta un par de horas) en propagarse — si sigue fallando de inmediato, espera y vuelve a probar antes de asumir que algo mas esta mal.
+
 ---
 
 ## 3. Facebook Login (App ID + App Secret)
@@ -61,6 +70,16 @@ No hace falta crear la base ni la coleccion a mano: `api/register.js` las crea s
 
 **Importante:** el App Secret NUNCA va en el HTML ni en el repositorio — solo como variable de entorno en Vercel (paso 6).
 
+### Arreglar "La opcion de JSSDK esta desactivada"
+
+El sitio usa el SDK de JavaScript de Facebook para el boton de login (`connect.facebook.net/en_US/sdk.js`). Si el producto Facebook Login de tu app no tiene ese canal habilitado, sale este error. Para arreglarlo:
+
+1. Entra a https://developers.facebook.com/apps/ y abre tu app.
+2. En el menu izquierdo ve a **Facebook Login > Configuracion** (bajo "Productos").
+3. Activa el toggle **"Inicio de sesion con el SDK de JavaScript"** (o "Login with the JavaScript SDK" en ingles) a **Si**.
+4. En el mismo panel, confirma que tu dominio de Vercel este agregado en **"Dominios permitidos para el SDK de JavaScript"** (App Domains).
+5. Guarda. Prueba de nuevo el boton de Facebook — no deberia requerir redeploy, es config del lado de Meta.
+
 ---
 
 ## 3bis. Registro por telefono (SMS OTP via Twilio) — opcional, tiene costo
@@ -72,6 +91,23 @@ El modal de login tambien ofrece "Registrarte con tu telefono" como alternativa 
 3. Consigue un numero de telefono Twilio (**Phone Numbers > Buy a number** — con el credito de prueba alcanza para pruebas). Copia el numero en formato E.164 (ej. `+14155551234`).
 4. Guarda los 3 valores — son tu `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` y `TWILIO_FROM_NUMBER` (paso 6, tabla de variables de entorno).
 5. Con cuenta de prueba (trial), Twilio solo permite enviar SMS a numeros que hayas verificado como destinatario de prueba en la consola — para enviar a cualquier numero real hay que pasar a cuenta de pago (agregar tarjeta). Revisa el costo vigente por SMS a Mexico antes de activarlo con clientes reales.
+
+---
+
+## 3ter. WhatsApp OTP (mucho mas barato que SMS) — recomendado
+
+Investigacion de costo (2026): SMS a Mexico via Twilio cuesta aprox. **$0.18 USD/mensaje + $6-15 USD/mes de renta del numero** (~$60-70 USD/mes a 300 envios). WhatsApp via Twilio (como Business Solution Provider de Meta) cuesta aprox. **$0.0084 USD/mensaje, sin renta de numero** — **~20-50x mas barato** al mismo volumen. Dado que dijiste que no quieres gastar, este es el camino correcto: reutiliza tu misma cuenta de Twilio (mismo `TWILIO_ACCOUNT_SID`/`TWILIO_AUTH_TOKEN`), solo agrega 2 variables nuevas.
+
+El codigo ya esta listo (`lib/sendWhatsapp.js`): si configuras las 2 variables de abajo, `api/phone-auth.js` **usa WhatsApp automaticamente** y solo cae a SMS si WhatsApp falla o no esta configurado. No se rompe nada de lo que ya funciona.
+
+Pasos para activarlo:
+
+1. En la consola de Twilio, ve a **Messaging > Try it out > Send a WhatsApp message** para activar el sandbox de pruebas gratis (te da un numero `whatsapp:+14155238886` y un codigo para unirte desde tu propio WhatsApp — sirve para probar antes de pagar nada).
+2. Para produccion real (mensajes a cualquier cliente, no solo tu numero de prueba) necesitas un **WhatsApp Business Profile** aprobado por Meta: en Twilio ve a **Messaging > Senders > WhatsApp senders** y sigue el flujo de registro (piden nombre de negocio, logo, categoria — GoNexus Group / Renuévate).
+3. Crea una plantilla de mensaje categoria **Authentication** en **Content Template Builder** de Twilio (Content API). Meta exige plantillas pre-aprobadas para mensajes de este tipo fuera de la ventana de 24h de conversacion; la aprobacion de Meta tarda **1-3 dias habiles**. Copia el **Content SID** (empieza con `HX...`).
+4. **Importante sobre volumen:** mientras tengas menos de 250 destinatarios unicos distintos en 24 horas (Meta "Tier 1"), **no necesitas pasar por Business Verification completa de Meta** — puedes operar con el registro basico. Solo se vuelve obligatorio al escalar.
+5. Agrega `TWILIO_WHATSAPP_FROM` (tu numero de WhatsApp Business aprobado, formato `whatsapp:+52...`) y `TWILIO_WHATSAPP_CONTENT_SID` (el `HX...` de tu plantilla) en Vercel > Project Settings > Environment Variables. Redeploy.
+6. Prueba el flujo de "Registrarte con tu telefono" en el sitio — el mensaje debe llegar por WhatsApp, no por SMS.
 
 ---
 
@@ -211,3 +247,44 @@ Agregado en `db/`, `lib/` y `api/` — mismo MongoDB Atlas, sin costo adicional.
 **Ya resuelto:** `api/register.js` ahora escribe en la coleccion `customers` (antes escribia en `users`) y regresa `profile_complete` en la respuesta; el frontend usa ese valor para abrir el formulario de perfil automaticamente.
 
 **Pendiente antes de produccion real (ver `db/schema.md` seccion 0):** ninguno de estos endpoints (`register`, `complete-profile`, `orders`) usa sesion de servidor todavia — confian en el `customerId` que manda el navegador. Antes de manejar datos de clientes o dinero real hay que amarrar esto a una sesion/cookie firmada. Tambien falta: checkout/pagos reales, aplicar automaticamente los descuentos cuando `loyalty_progress` llega a `reward_ready`, y el job diario de cumpleaños (`birth_month_day`).
+
+---
+
+## 11. Bug corregido: "Database names cannot contain the character '.'" al registrar por telefono
+
+Causa raiz confirmada (no es un problema de seguridad ni de codigo de usuario): la variable de entorno `MONGODB_DB` en Vercel tiene un valor con un punto o una URL pegada por error, en vez de solo el nombre de la base (`azura`). `api/phone-auth.js` y `api/register.js` ahora **validan el formato antes de conectar** y devuelven un error claro en vez de dejar pasar el error interno crudo de Mongo al usuario. Para terminar de arreglarlo:
+
+1. Ve a Vercel > tu proyecto > **Settings > Environment Variables**.
+2. Busca `MONGODB_DB`. Su valor debe ser exactamente `azura` (o el nombre real de tu base en Atlas) — nada mas. Si ves una URL, un dominio o cualquier cosa con puntos/espacios, corrigelo.
+3. Guarda y **redeploy** (Vercel no reaplica variables de entorno a un deployment ya construido).
+
+---
+
+## 12. Analitica (Vercel Analytics + Google Analytics 4)
+
+- **Vercel Analytics** ya esta agregado en `index.html` y **no requiere ninguna llave** — se activa solo con tener el sitio desplegado en Vercel. Para verlo: en el dashboard de Vercel, pestaña **Analytics** de tu proyecto (en el plan Hobby, Web Analytics basico es gratis).
+- **Google Analytics 4** es opcional y esta apagado por defecto. Para activarlo: crea una propiedad GA4 en https://analytics.google.com/, copia el **Measurement ID** (formato `G-XXXXXXXXXX`) y reemplaza el valor de `GA4_MEASUREMENT_ID` dentro de `AZURA_CONFIG` en `index.html`. El script solo se carga si detecta un ID real (no el placeholder `G-XXXXXXXXXX`).
+
+---
+
+## 13. Redes sociales del footer (Instagram / TikTok / Facebook)
+
+Los iconos del footer ya estan conectados a `AZURA_CONFIG.SOCIAL_INSTAGRAM_URL`, `SOCIAL_TIKTOK_URL` y `SOCIAL_FACEBOOK_URL` dentro de `index.html`. Mientras el valor siga siendo el placeholder (`TU_USUARIO_AQUI` / `TU_PAGINA_AQUI`), los iconos no apuntan a ningun lado (evita mandar clientes a un link roto). Para activarlos:
+
+1. Abre `index.html`, busca `AZURA_CONFIG` (cerca del inicio del `<body>`).
+2. Reemplaza las 3 URLs por las paginas reales de Renuévate.
+3. Guarda, commit, push — no requiere variables de entorno nuevas (son valores publicos del lado del cliente).
+
+---
+
+## 14. Pagos con tarjeta / Google Pay — que se necesita antes de activarlo
+
+**No actives esto sin un procesador real de por medio.** El sitio hoy NO tiene ninguna pasarela de pago conectada (el carrito y "metodos de pago guardados" son un placeholder de demostracion). Para cobrar con tarjeta o Google Pay de forma segura y sin volverte responsable de cumplimiento PCI-DSS nivel 1 (auditoria costosa), la arquitectura recomendada es:
+
+**Principio no negociable:** el sitio nunca debe recibir, ver ni almacenar el numero de tarjeta completo ni el CVV en su propio servidor. Eso ya esta reflejado en el copy actual (`account.pciNote`: "solo se guardan los ultimos 4 digitos"). Cualquier integracion debe mantener esa promesa con arquitectura real, no solo con el texto.
+
+1. **Procesador recomendado (PCI SAQ-A):** Stripe Checkout / Stripe Elements, Mercado Pago Checkout Pro, o Conekta — los 3 ofrecen "hosted fields" o redireccion: el numero de tarjeta viaja directo del navegador del cliente al procesador, nunca toca tu servidor de Vercel. Esto te deja en la categoria PCI mas simple (**SAQ-A**), autoevaluacion anual sin auditoria externa. Meten Google Pay/Apple Pay integrado sin trabajo extra.
+2. **Que se agrega al `.env`** (placeholders ya puestos en `.env.example`): `STRIPE_PUBLISHABLE_KEY` (publica, va tambien en el HTML), `STRIPE_SECRET_KEY` (privada, solo servidor), `STRIPE_WEBHOOK_SECRET` (para confirmar pagos de forma segura via webhook, no confiando en la respuesta del navegador).
+3. **Que falta construir (no existe hoy):** un endpoint `api/checkout.js` que cree una "Payment Intent" o sesion de Checkout del lado del servidor; un webhook `api/stripe-webhook.js` que reciba la confirmacion real del pago (nunca marcar una orden como "pagada" solo porque el navegador dijo que si); actualizar `db/schema.md` para que `orders` tenga un campo `payment_status` con maquina de estados (`pending` → `paid`/`failed`).
+4. **Control ISO 27001 sobre la base de datos:** ya que ningun dato de tarjeta completo toca tu Mongo, el control principal es de **gobierno y acceso** (A.9 - control de acceso): asegurar que `MONGODB_URI` tenga usuario con permisos minimos (no admin), que Atlas tenga IP allowlist o VPC peering en vez de "0.0.0.0/0" para produccion real, y que los backups automaticos de Atlas esten activos (ya vienen en M0/M10+).
+5. **Antes de cobrar dinero real:** validar con tu contador/abogado el tema fiscal (facturacion, RFC del receptor de pagos) — eso es independiente de la arquitectura tecnica y no lo cubre este documento.

@@ -23,14 +23,25 @@
 // POST /api/phone-auth?action=verify  { phone, otp }
 //
 // Variables de entorno requeridas ademas de MONGODB_URI/MONGODB_DB:
-//   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER (ver lib/sendSms.js)
+//   Para SMS:      TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER (ver lib/sendSms.js)
+//   Para WhatsApp:  ademas TWILIO_WHATSAPP_FROM, TWILIO_WHATSAPP_CONTENT_SID (ver lib/sendWhatsapp.js)
+//   Si ambas estan configuradas, se prefiere WhatsApp (mucho mas barato). Si ninguna
+//   esta configurada, este endpoint responde 501 con un mensaje claro (nunca simula un envio).
 
 const { MongoClient } = require('mongodb');
 const crypto = require('crypto');
 const { sendSms } = require('../lib/sendSms');
+const { sendWhatsapp } = require('../lib/sendWhatsapp');
 
 const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB = process.env.MONGODB_DB || 'azura';
+const MONGODB_DB_RAW = process.env.MONGODB_DB || 'azura';
+// Defensa en profundidad: un MONGODB_DB mal configurado en Vercel (ej. con un
+// dominio o URL pegado por error, que trae un ".") revienta el driver de Mongo
+// con un error críptico ("Database names cannot contain the character '.'")
+// que antes se mostraba tal cual al usuario final en el formulario de registro.
+// Validamos el formato aqui y devolvemos un error claro y accionable en su lugar.
+const MONGODB_DB_NAME_RE = /^[^/\\. "$*<>:|?]{1,64}$/;
+const MONGODB_DB = MONGODB_DB_NAME_RE.test(MONGODB_DB_RAW) ? MONGODB_DB_RAW : null;
 
 const OTP_TTL_MS = 10 * 60 * 1000; // 10 minutos
 const RESEND_COOLDOWN_MS = 60 * 1000; // 60 segundos
@@ -39,6 +50,13 @@ const PHONE_RE = /^\+[1-9][0-9]{7,14}$/; // E.164
 
 let cachedClient = null;
 async function getDb() {
+  if (!MONGODB_DB) {
+    throw new Error(
+      `MONGODB_DB tiene un valor invalido ("${MONGODB_DB_RAW}"). Revisa Vercel > Project Settings > ` +
+      'Environment Variables: MONGODB_DB debe ser solo el nombre de la base (ej. "azura"), sin URL, ' +
+      'dominio, puntos ni espacios.'
+    );
+  }
   if (cachedClient) return cachedClient.db(MONGODB_DB);
   if (!MONGODB_URI) throw new Error('Falta MONGODB_URI en las variables de entorno.');
   const client = new MongoClient(MONGODB_URI);
@@ -117,19 +135,39 @@ async function handleRequest(req, res, db) {
 
   await phoneVerifications.insertOne(doc);
 
-  try {
-    await sendSms(phone, `Casa Azura Wellness: tu codigo de verificacion es ${otp}. Vence en 10 minutos. No lo compartas con nadie.`);
-  } catch (smsErr) {
-    if (smsErr.code === 'SMS_NOT_CONFIGURED') {
-      res.status(501).json({ error: smsErr.message });
-      return;
+  // Preferimos WhatsApp sobre SMS por costo (ver lib/sendWhatsapp.js): si las
+  // variables de WhatsApp no estan configuradas, caemos a SMS automaticamente
+  // sin romper el flujo. Si ninguna esta configurada, respondemos 501 explicito.
+  const whatsappConfigured = Boolean(
+    process.env.TWILIO_WHATSAPP_FROM && process.env.TWILIO_WHATSAPP_CONTENT_SID
+  );
+  let channelUsed = null;
+
+  if (whatsappConfigured) {
+    try {
+      await sendWhatsapp(phone, otp);
+      channelUsed = 'whatsapp';
+    } catch (waErr) {
+      console.error('phone-auth.js sendWhatsapp error, fallback a SMS:', waErr);
     }
-    console.error('phone-auth.js sendSms error:', smsErr);
-    res.status(502).json({ error: 'No se pudo enviar el SMS en este momento. Intenta de nuevo en unos minutos.' });
-    return;
   }
 
-  res.status(200).json({ ok: true, message: 'Codigo enviado por SMS.' });
+  if (!channelUsed) {
+    try {
+      await sendSms(phone, `Renuévate: tu código de verificación es ${otp}. Vence en 10 minutos. No lo compartas con nadie.`);
+      channelUsed = 'sms';
+    } catch (smsErr) {
+      if (smsErr.code === 'SMS_NOT_CONFIGURED') {
+        res.status(501).json({ error: smsErr.message });
+        return;
+      }
+      console.error('phone-auth.js sendSms error:', smsErr);
+      res.status(502).json({ error: 'No se pudo enviar el código en este momento. Intenta de nuevo en unos minutos.' });
+      return;
+    }
+  }
+
+  res.status(200).json({ ok: true, message: channelUsed === 'whatsapp' ? 'Código enviado por WhatsApp.' : 'Código enviado por SMS.' });
 }
 
 async function handleVerify(req, res, db) {
