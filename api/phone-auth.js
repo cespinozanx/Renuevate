@@ -271,7 +271,9 @@ module.exports = async (req, res) => {
       res.status(409).json({ error: 'Ya existe una cuenta con ese telefono.' });
       return;
     }
+    // Igual que en register.js: el detalle tecnico (config/infra) solo va al log del
+    // servidor, nunca al navegador.
     console.error('phone-auth.js error:', err);
-    res.status(500).json({ error: err.message || 'Error interno del servidor.' });
+    res.status(500).json({ error: 'No pudimos completar la operación en este momento. Intenta de nuevo en unos minutos.' });
   }
 };

@@ -16,10 +16,22 @@
 const { MongoClient, ObjectId } = require('mongodb');
 
 const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB = process.env.MONGODB_DB || 'azura';
+const MONGODB_DB_RAW = process.env.MONGODB_DB || 'azura';
+// Misma defensa que register.js/phone-auth.js: un MONGODB_DB mal configurado en
+// Vercel (ej. con la connection string completa en vez del nombre de la base)
+// revienta el driver de Mongo con un error interno; lo validamos aqui.
+const MONGODB_DB_NAME_RE = /^[^/\\. "$*<>:|?]{1,64}$/;
+const MONGODB_DB = MONGODB_DB_NAME_RE.test(MONGODB_DB_RAW) ? MONGODB_DB_RAW : null;
 
 let cachedClient = null;
 async function getDb() {
+  if (!MONGODB_DB) {
+    throw new Error(
+      `MONGODB_DB tiene un valor invalido ("${MONGODB_DB_RAW}"). Revisa Vercel > Project Settings > ` +
+      'Environment Variables: MONGODB_DB debe ser solo el nombre de la base (ej. "azura"), sin URL, ' +
+      'dominio, puntos ni espacios.'
+    );
+  }
   if (cachedClient) return cachedClient.db(MONGODB_DB);
   if (!MONGODB_URI) throw new Error('Falta MONGODB_URI en las variables de entorno.');
   const client = new MongoClient(MONGODB_URI);
@@ -117,7 +129,9 @@ module.exports = async (req, res) => {
       res.status(409).json({ error: 'Ese telefono ya esta registrado en otra cuenta.' });
       return;
     }
+    // Igual que en register.js: el detalle tecnico (config/infra) solo va al log del
+    // servidor, nunca al navegador.
     console.error('complete-profile.js error:', err);
-    res.status(500).json({ error: err.message || 'Error interno del servidor.' });
+    res.status(500).json({ error: 'No pudimos guardar tu perfil en este momento. Intenta de nuevo en unos minutos.' });
   }
 };

@@ -189,7 +189,11 @@ module.exports = async (req, res) => {
       res.status(409).json({ error: 'Ya existe una cuenta con ese correo o telefono.' });
       return;
     }
+    // El detalle tecnico real (ej. MONGODB_DB mal configurado, o falta un env var)
+    // solo se registra en el log del servidor (Vercel > Deployments > Functions/Logs).
+    // Nunca se manda al navegador -- puede contener fragmentos de la connection string
+    // u otros datos internos que no deben quedar expuestos a un cliente final.
     console.error('register.js error:', err);
-    res.status(500).json({ error: err.message || 'Error interno del servidor.' });
+    res.status(500).json({ error: 'No pudimos completar tu inicio de sesión en este momento. Intenta de nuevo en unos minutos.' });
   }
 };

@@ -455,6 +455,12 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:66px;}
 .reveal-stagger.is-visible > *:nth-child(3){transition-delay:.27s;}
 .reveal-stagger.is-visible > *:nth-child(4){transition-delay:.38s;}
 .reveal-stagger.is-visible > *:nth-child(5){transition-delay:.49s;}
+/* El video del hero nunca debe arrancar en opacity:0 -- en algunos navegadores/
+   WebView de Android, un <video> con autoplay que inicia su render en un elemento
+   con opacity:0 (como aqui, por ser hijo directo de .reveal-stagger) se queda con
+   el decodificador suspendido y jamas empieza a pintar frames, aunque play() no
+   tire error. Se excluye de la animacion de entrada por esta razon, no solo estetica. */
+.hero-content.reveal-stagger > .hero-video{opacity:1; transform:none; transition:none;}
 @keyframes revealLR{from{opacity:0; transform:translateX(-28px);}to{opacity:1; transform:translateX(0);}}
 .product-card, .routine-card{animation:revealLR .65s ease-out both;}
 .product-card:nth-child(1), .routine-card:nth-child(1){animation-delay:.05s;}
@@ -810,6 +816,7 @@ var AZURA_CONFIG = {
           <span data-i18n="nl.facebook">Continuar con Facebook</span>
         </button>
       </div>
+      <div class="pm-error" id="authSocialError"></div>
       <div class="auth-divider"><span data-i18n="auth.or">o</span></div>
       <button type="button" class="auth-phone-toggle" id="authPhoneToggleBtn" onclick="togglePhoneAuth()" data-i18n="auth.phoneToggle">Continuar con tu telefono</button>
       <div class="auth-phone-form" id="authPhoneStep1" style="display:none;">
@@ -1533,7 +1540,7 @@ var DYN = {
        subscribeOk:'Gracias por suscribirte. En produccion esto se conecta a Klaviyo/CRM mas evento GA4 newsletter_signup.',
        configMissing:function(field){ return 'Falta configurar ' + field + ' en AZURA_CONFIG (ver README de azura-site) antes de que este boton funcione.'; },
        registerOk:function(name){ return 'Listo' + (name ? ', ' + name : '') + '. Tu registro quedo guardado en la base de datos de Renuévate.'; },
-       registerFail:function(msg){ return 'No pudimos guardar tu registro todavia (' + msg + '). Si el sitio ya esta desplegado, revisa las variables de entorno del backend en Vercel.'; },
+       registerFail:function(){ return 'No pudimos completar tu inicio de sesión en este momento. Intenta de nuevo en unos minutos.'; },
        boughtTogether:function(){ return 'Se compra junto con:'; },
        viewComments:function(){ return 'Ver comentarios'; },
        hideComments:function(){ return 'Ocultar comentarios'; },
@@ -1632,7 +1639,7 @@ var DYN = {
        subscribeOk:'Thanks for subscribing. In production this connects to Klaviyo/CRM plus a GA4 newsletter_signup event.',
        configMissing:function(field){ return 'Missing ' + field + ' in AZURA_CONFIG (see azura-site README) before this button will work.'; },
        registerOk:function(name){ return 'Done' + (name ? ', ' + name : '') + '. Your registration was saved to Renuévate\'s database.'; },
-       registerFail:function(msg){ return 'We could not save your registration yet (' + msg + '). If the site is already deployed, check the backend environment variables on Vercel.'; },
+       registerFail:function(){ return 'We could not complete your sign-in right now. Please try again in a few minutes.'; },
        boughtTogether:function(){ return 'Frequently bought together:'; },
        viewComments:function(){ return 'View comments'; },
        hideComments:function(){ return 'Hide comments'; },
@@ -1731,7 +1738,7 @@ var DYN = {
        subscribeOk:'Merci de votre inscription. En production, cela se connecte a Klaviyo/CRM avec un evenement GA4 newsletter_signup.',
        configMissing:function(field){ return field + ' manquant dans AZURA_CONFIG (voir le README de azura-site) avant que ce bouton fonctionne.'; },
        registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de donnees Renuévate.'; },
-       registerFail:function(msg){ return 'Nous n\'avons pas pu enregistrer votre inscription (' + msg + '). Si le site est deja deploye, verifiez les variables d\'environnement du backend sur Vercel.'; },
+       registerFail:function(){ return 'Nous n\'avons pas pu terminer votre connexion pour le moment. Veuillez reessayer dans quelques minutes.'; },
        boughtTogether:function(){ return 'Souvent achete avec:'; },
        viewComments:function(){ return 'Voir les commentaires'; },
        hideComments:function(){ return 'Masquer les commentaires'; },
@@ -2122,6 +2129,9 @@ function onAccountIconClick(){
 function openAuthModal(tab){
   setAuthTab(tab || 'signin');
   document.getElementById('authModalOverlay').classList.add('is-open');
+  // Se re-renderiza el boton de Google con el modal ya visible (ver nota en
+  // initGoogleButton) para que nunca quede en modo icono-solo.
+  initGoogleButton('googleBtnContainer');
 }
 function closeAuthModal(){
   document.getElementById('authModalOverlay').classList.remove('is-open');
@@ -2403,7 +2413,17 @@ document.addEventListener("DOMContentLoaded", wireSocialLinks);
 function initHeroVideo(){
   var v = document.getElementById("heroVideoEl");
   if (!v) return;
-  var tryPlay = function(){ v.play().catch(function(){}); };
+  // Chrome/WebView en Android a veces solo respeta la propiedad JS "muted" en
+  // reproducciones disparadas por play() programatico, no solo el atributo HTML
+  // -- se fija explicito aqui como defensa adicional para autoplay en Android.
+  v.muted = true;
+  v.addEventListener('error', function(){
+    var err = v.error;
+    var codes = {1:'ABORTED', 2:'NETWORK', 3:'DECODE', 4:'SRC_NOT_SUPPORTED'};
+    console.error('[heroVideo] no se pudo reproducir. code=' + (err && err.code) +
+      ' (' + (err && codes[err.code]) + ') currentSrc=' + v.currentSrc);
+  });
+  var tryPlay = function(){ v.play().catch(function(err){ console.warn('[heroVideo] play() rechazado:', err && err.message); }); };
   tryPlay();
   if ("IntersectionObserver" in window){
     var io = new IntersectionObserver(function(entries){
@@ -2646,6 +2666,7 @@ function initGoogleButton(containerId, retries){
   retries = retries || 0;
   var container = document.getElementById(containerId);
   if (!container) return;
+  container.innerHTML = '';
   if (isPlaceholder(AZURA_CONFIG.GOOGLE_CLIENT_ID)){
     container.innerHTML = '<button class="btn-google" onclick="configWarning(\'google\')">' +
       '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47c-.28 1.5-1.13 2.78-2.4 3.63v3.02h3.88c2.27-2.09 3.57-5.17 3.57-8.84Z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.88-3.02c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.26v3.12A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54V6.61H1.26a12 12 0 0 0 0 10.78l4.01-3.12Z"/><path fill="#EA4335" d="M12 4.75c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0A12 12 0 0 0 1.26 6.61l4.01 3.12C6.22 6.86 8.87 4.75 12 4.75Z"/></svg>' +
@@ -2658,8 +2679,16 @@ function initGoogleButton(containerId, retries){
     if (retries < 15){ setTimeout(function(){ initGoogleButton(containerId, retries+1); }, 300); }
     return;
   }
+  // Nota: si el contenedor se mide con ancho 0 (ej. el modal aun tiene display:none),
+  // el boton de Google cae en un modo compacto de solo-icono ("bolita" sin texto) y se
+  // queda asi de forma permanente -- no se vuelve a medir despues. Por eso este init se
+  // vuelve a llamar cada vez que se abre el modal (ver openAuthModal), y aqui se fija un
+  // ancho explicito en px tomado del contenedor ya visible, para que quede del mismo
+  // ancho que el boton de Facebook en vez de un icono suelto.
+  var measuredWidth = Math.round(container.getBoundingClientRect().width);
+  var buttonWidth = measuredWidth >= 200 ? Math.min(400, measuredWidth) : 300;
   google.accounts.id.initialize({ client_id: AZURA_CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
-  google.accounts.id.renderButton(container, { theme:'outline', size:'large', shape:'pill', text:'continue_with' });
+  google.accounts.id.renderButton(container, { theme:'outline', size:'large', shape:'pill', text:'continue_with', width: buttonWidth });
 }
 
 function handleGoogleCredential(response){
@@ -2735,7 +2764,19 @@ function submitProfileForm(evt){
   });
 }
 
+function showAuthSocialError(msg){
+  var el = document.getElementById('authSocialError');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'pm-error is-visible';
+}
+function clearAuthSocialError(){
+  var el = document.getElementById('authSocialError');
+  if (el){ el.textContent = ''; el.className = 'pm-error'; }
+}
+
 function sendToBackend(provider, credential){
+  clearAuthSocialError();
   fetch(AZURA_CONFIG.REGISTER_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -2754,9 +2795,17 @@ function sendToBackend(provider, credential){
       }
       refreshCart();
     }
-    else { alert(DYN[currentLang].registerFail((res.data && res.data.error) || 'error desconocido')); }
+    else {
+      // El backend ya devuelve un mensaje generico y seguro para el usuario final
+      // (nunca detalle interno de config/infra) -- ver api/register.js. El detalle
+      // tecnico real, si existe, solo queda en Vercel > Deployments > Functions/Logs.
+      showAuthSocialError((res.data && res.data.error) || DYN[currentLang].registerFail());
+    }
   })
-  .catch(function(err){ alert(DYN[currentLang].registerFail(err.message)); });
+  .catch(function(err){
+    console.error('sendToBackend network error:', err);
+    showAuthSocialError(DYN[currentLang].registerFail());
+  });
 }
 
 /* ===================== Selector de idioma ===================== */
