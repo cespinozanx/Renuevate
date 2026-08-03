@@ -1223,7 +1223,7 @@ var I18N = {
     "chat.subtitle":"En linea . tu asesora de bienestar Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
     "chat.menu.categories":"Categorias", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
     "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.",
-    "profile.phoneLabel":"Telefono (con codigo de pais)", "profile.phoneHint":"Formato internacional E.164, ej. +52 para Mexico.",
+    "profile.phoneLabel":"Telefono (con codigo de pais)", "profile.phoneHint":"Si eres de Mexico, puedes escribir solo tu numero a 10 digitos. Otros paises: formato internacional, ej. +1 para EE.UU.",
     "profile.birthLabel":"Fecha de nacimiento",
     "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)",
     "profile.consentSmsLabel":"Tambien por SMS", "profile.consentWhatsappLabel":"Tambien por WhatsApp",
@@ -2174,7 +2174,7 @@ function requestPhoneCode(){
 
   var payload = {
     firstName: document.getElementById('authPhoneName').value.trim(),
-    phone: document.getElementById('authPhoneNumber').value.trim(),
+    phone: normalizeMxPhone(document.getElementById('authPhoneNumber').value),
     birthDate: document.getElementById('authPhoneBirth').value,
     marketingConsent: {
       email: document.getElementById('authPhoneConsentEmail').checked,
@@ -2208,7 +2208,9 @@ function verifyPhoneCode(){
   errEl.textContent = ''; errEl.className = 'pm-error';
 
   var payload = {
-    phone: document.getElementById('authPhoneNumber').value.trim(),
+    // Debe usar el mismo telefono normalizado que requestPhoneCode() -- si no,
+    // la busqueda en phone_verifications nunca hace match (se guardo con +52).
+    phone: normalizeMxPhone(document.getElementById('authPhoneNumber').value),
     otp: document.getElementById('authPhoneOtp').value.trim(),
   };
 
@@ -2717,6 +2719,23 @@ function closeProfileModal(){
   var el = document.getElementById('profileModalOverlay');
   if (el) el.classList.remove('is-open');
 }
+// El backend exige formato E.164 (+52...) y la gran mayoria de clientes va a
+// escribir solo su numero local a 10 digitos, sin codigo de pais -- eso es
+// justo lo que tronaba el registro con "Telefono invalido". En vez de rechazar
+// a todo mundo que no sepa que es E.164, se asume Mexico (+52) cuando el
+// usuario no puso "+", que es el mercado del sitio (Cancun . Mexico en el
+// topbar). Si el usuario ya escribio su propio codigo de pais con "+", se
+// respeta tal cual.
+function normalizeMxPhone(raw){
+  var v = (raw || '').trim().replace(/[\s\-().]/g, '');
+  if (!v) return v;
+  if (v.charAt(0) === '+') return v;
+  var digits = v.replace(/\D/g, '');
+  if (digits.length === 10) return '+52' + digits;
+  if (digits.length === 12 && digits.indexOf('52') === 0) return '+' + digits;
+  return digits ? '+' + digits : v;
+}
+
 function submitProfileForm(evt){
   evt.preventDefault();
   var errEl = document.getElementById('pmError');
@@ -2732,7 +2751,7 @@ function submitProfileForm(evt){
 
   var payload = {
     customerId: CURRENT_CUSTOMER.id,
-    phone: document.getElementById('pmPhone').value.trim(),
+    phone: normalizeMxPhone(document.getElementById('pmPhone').value),
     birth_date: document.getElementById('pmBirthDate').value,
     marketing_consent: {
       email: document.getElementById('pmConsentEmail').checked,
