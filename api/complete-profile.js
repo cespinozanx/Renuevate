@@ -109,7 +109,9 @@ module.exports = async (req, res) => {
           updated_at: now,
         },
       },
-      { returnDocument: 'after' }
+      // includeResultMetadata:true -- ver nota en register.js: el driver mongodb v6
+      // cambio el default a false y rompia "result.value".
+      { returnDocument: 'after', includeResultMetadata: true }
     );
 
     if (!result.value) {

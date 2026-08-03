@@ -86,10 +86,12 @@ async function updatePromotion(db, id, patch, adminUser) {
   for (const key of updatable) {
     if (patch[key] !== undefined) $set[key] = patch[key];
   }
+  // includeResultMetadata:true -- ver nota en register.js: el driver mongodb v6
+  // cambio el default a false y rompia "result.value".
   const result = await db.collection('promotions').findOneAndUpdate(
     { _id: new ObjectId(id) },
     { $set },
-    { returnDocument: 'after' }
+    { returnDocument: 'after', includeResultMetadata: true }
   );
   return result.value;
 }
@@ -114,7 +116,7 @@ async function transitionStatus(db, id, targetStatus, adminUser) {
       $set,
       $push: { status_log: { status: targetStatus, by: adminUser || null, at: now } },
     },
-    { returnDocument: 'after' }
+    { returnDocument: 'after', includeResultMetadata: true }
   );
   return result.value;
 }

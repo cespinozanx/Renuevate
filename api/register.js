@@ -169,7 +169,10 @@ module.exports = async (req, res) => {
           source: 'azura-site',
         },
       },
-      { upsert: true, returnDocument: 'after' }
+      // includeResultMetadata:true -- el driver mongodb v6 cambio el default a false,
+      // lo que hace que findOneAndUpdate regrese el documento directo en vez de
+      // { value: documento }. Se fija explicito para no romper "result.value" abajo.
+      { upsert: true, returnDocument: 'after', includeResultMetadata: true }
     );
 
     const customer = result.value;
@@ -189,13 +192,11 @@ module.exports = async (req, res) => {
       res.status(409).json({ error: 'Ya existe una cuenta con ese correo o telefono.' });
       return;
     }
-    // *** MODO DEBUG TEMPORAL (a peticion de Carlos, 2026-08-03) ***
-    // Mientras se diagnostica el error real, se manda el detalle tecnico al navegador
-    // para no tener que estar saltando a Vercel > Runtime Logs en cada intento.
-    // ESTO EXPONE DETALLE INTERNO (posiblemente fragmentos de config/infra) A CUALQUIER
-    // VISITANTE DEL SITIO Y DEBE REVERTIRSE ANTES DE TRAFICO REAL / GO-LIVE.
-    // Revertir a: res.status(500).json({ error: 'No pudimos completar tu inicio de sesión en este momento. Intenta de nuevo en unos minutos.' });
+    // El detalle tecnico real (ej. MONGODB_DB mal configurado, o falta un env var)
+    // solo se registra en el log del servidor (Vercel > Deployments > Functions/Logs).
+    // Nunca se manda al navegador -- puede contener fragmentos de la connection string
+    // u otros datos internos que no deben quedar expuestos a un cliente final.
     console.error('register.js error:', err);
-    res.status(500).json({ error: 'DEBUG: ' + (err && err.message ? err.message : String(err)) });
+    res.status(500).json({ error: 'No pudimos completar tu inicio de sesión en este momento. Intenta de nuevo en unos minutos.' });
   }
 };

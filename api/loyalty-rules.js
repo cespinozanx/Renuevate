@@ -89,7 +89,10 @@ module.exports = async (req, res) => {
       const updatable = ['name', 'required_purchase_count', 'period', 'reward', 'requires_profile'];
       const $set = { updated_at: now };
       for (const key of updatable) if (body[key] !== undefined) $set[key] = body[key];
-      const result = await col.findOneAndUpdate({ _id: new ObjectId(body.id) }, { $set }, { returnDocument: 'after' });
+      // includeResultMetadata:true -- el driver mongodb v6 cambio el default a false,
+      // lo que hace que findOneAndUpdate regrese el documento directo en vez de
+      // { value: documento }, rompiendo "result.value" abajo.
+      const result = await col.findOneAndUpdate({ _id: new ObjectId(body.id) }, { $set }, { returnDocument: 'after', includeResultMetadata: true });
       if (!result.value) { res.status(404).json({ error: 'Regla no encontrada.' }); return; }
       res.status(200).json({ ok: true, rule: result.value });
       return;
@@ -101,7 +104,7 @@ module.exports = async (req, res) => {
       const result = await col.findOneAndUpdate(
         { _id: new ObjectId(body.id) },
         { $set: { status: targetStatus, updated_at: now }, $push: { status_log: { status: targetStatus, by: adminUser, at: now } } },
-        { returnDocument: 'after' }
+        { returnDocument: 'after', includeResultMetadata: true }
       );
       if (!result.value) { res.status(404).json({ error: 'Regla no encontrada.' }); return; }
       res.status(200).json({ ok: true, rule: result.value });
