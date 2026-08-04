@@ -343,6 +343,24 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:66px;}
 .cookie-banner-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
 .cookie-banner-link{background:none; border:none; color:var(--gold); font-size:11.5px; text-decoration:underline; cursor:pointer; letter-spacing:.4px;}
 .cookie-banner-actions .btn{padding:9px 16px; font-size:11px;}
+
+.product-detail-modal{background:#fff; max-width:680px; width:100%; border-radius:4px; padding:0; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:90vh; overflow-y:auto; position:relative;}
+.pd-close{position:absolute; top:14px; right:14px; background:rgba(255,255,255,.9); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; line-height:1; cursor:pointer; color:var(--grey); z-index:2;}
+.pd-media{width:100%; aspect-ratio:16/9; background:var(--beige); display:flex; align-items:center; justify-content:center; overflow:hidden;}
+.pd-media img{width:100%; height:100%; object-fit:cover;}
+.pd-media svg{width:64px; height:64px; opacity:.35;}
+.pd-body{padding:28px 32px 34px;}
+.pd-eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:6px;}
+.pd-body h3{font-size:24px; margin-bottom:6px;}
+.pd-price{font-size:19px; font-weight:700; color:var(--navy); margin-bottom:16px;}
+.pd-section{margin-top:18px;}
+.pd-section h5{font-size:12.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:6px;}
+.pd-section p{font-size:13.5px; line-height:1.65; color:var(--ink);}
+.pd-section ul{margin:0; padding-left:18px;}
+.pd-section ul li{font-size:13.5px; line-height:1.6; color:var(--ink); margin-bottom:3px;}
+.pd-disclaimer{font-size:11.5px; color:var(--grey); font-style:italic; line-height:1.5;}
+.pd-actions{margin-top:24px;}
+.view-detail-link{background:none; border:none; padding:0; margin-top:6px; font-size:12px; color:var(--navy); text-decoration:underline; cursor:pointer; display:inline-block;}
 @media(max-width:600px){ .cookie-banner-inner{flex-direction:column; align-items:flex-start;} }
 .profile-modal h3{font-size:22px; margin-bottom:8px;}
 .profile-modal p.pm-subtitle{color:var(--grey); font-size:13.5px; margin-bottom:20px; line-height:1.5;}
@@ -918,6 +936,33 @@ var AZURA_CONFIG = {
   </div>
 </div>
 
+<div class="profile-modal-overlay" id="productDetailOverlay" onclick="if(event.target===this) closeProductDetail();">
+  <div class="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="pdName">
+    <button class="pd-close" onclick="closeProductDetail()" aria-label="Cerrar">&times;</button>
+    <div class="pd-media" id="pdMedia"></div>
+    <div class="pd-body">
+      <div class="pd-eyebrow" id="pdTag"></div>
+      <h3 id="pdName"></h3>
+      <div class="pd-price" id="pdPrice"></div>
+      <p id="pdLongDesc"></p>
+      <div class="pd-section" id="pdIngredientsBlock" style="display:none;">
+        <h5 id="pdIngredientsLabel">Ingredientes</h5>
+        <ul id="pdIngredientsList"></ul>
+      </div>
+      <div class="pd-section" id="pdUsageBlock" style="display:none;">
+        <h5 id="pdUsageLabel">Modo de uso</h5>
+        <p id="pdUsageText"></p>
+      </div>
+      <div class="pd-section" id="pdDisclaimerBlock" style="display:none;">
+        <p class="pd-disclaimer" id="pdDisclaimerText"></p>
+      </div>
+      <div class="pd-actions">
+        <button class="add-to-cart-btn" id="pdAddToCartBtn" onclick="addToCart(pdCurrentSku); closeProductDetail();"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <div class="cart-panel" id="cartPanel">
   <div class="cart-head">
@@ -1028,10 +1073,26 @@ var V = {
       tag:"Suplementos orgánicos", msg:"El bienestar empieza desde la raíz.", bmLabel:"Speciality Time",
       stats:["96%","30 dias","100%"],
       products:[
-        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamínico", name:"Optimus 30 sobres", desc:"Colina, glicina, complejo B, vitaminas C y E con endulzantes naturales.", price:"$574 MXN", related:[]},
-        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Fórmula micelizada", name:"Omniplus 30 sobres", desc:"Vitaminas A, D, E, complejo B y sábila, sabor naranja.", price:"$755 MXN", related:[]},
-        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entreno", name:"Power Maker 30 sobres", desc:"3g de L-arginina, aminoácidos y vitaminas para tu rutina activa.", price:"$950 MXN", related:[]},
-        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizante", name:"Magnus 30 sobres", desc:"Aminoácidos, vitaminas y cafeína para acompañar tu actividad diaria.", price:"$590 MXN", related:[]}
+        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamínico", name:"Optimus 30 sobres", desc:"Colina, glicina, complejo B, vitaminas C y E con endulzantes naturales.", price:"$574 MXN", related:[],
+          longDesc:"Suplemento alimenticio en polvo sabor a lima-limón. Caja con 30 sobres, contenido neto 240 gramos. Apoya tu nutrición diaria con una fórmula que combina colina, glicina, vitaminas del complejo B, vitaminas C y E, minerales esenciales y endulzantes de origen natural.",
+          ingredients:["Colina y glicina.","Vitaminas del complejo B.","Vitaminas C y E.","Calcio, cobre, cromo, fósforo y zinc.","Endulzado naturalmente con fruto del monje y estevia."],
+          usage:"Puede consumirse en cualquier momento del día como parte de una alimentación equilibrada y un estilo de vida saludable.",
+          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."},
+        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Fórmula micelizada", name:"Omniplus 30 sobres", desc:"Vitaminas A, D, E, complejo B y sábila, sabor naranja.", price:"$755 MXN", related:[],
+          longDesc:"Sabor naranja. Caja con 30 sobres, contenido neto 600 mililitros. Un suplemento alimenticio de alta calidad con una exclusiva combinación de vitaminas, minerales y extractos herbales de origen natural. Su fórmula micelizada y su agradable sabor a naranja lo convierten en una excelente opción para complementar tu nutrición diaria.",
+          ingredients:["Fórmula micelizada de alta calidad.","Concentrado nutritivo con vitaminas y minerales esenciales.","Vitaminas A, D, E y complejo B.","Minerales como calcio, magnesio, zinc, cobre, manganeso, selenio e yodo.","Gel de sábila (Aloe vera) y una selección de extractos herbales.","Endulzado con ingredientes de origen natural."],
+          usage:"Presentación sabor naranja, consúmelo como parte de tu nutrición diaria.",
+          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."},
+        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entreno", name:"Power Maker 30 sobres", desc:"3g de L-arginina, aminoácidos y vitaminas para tu rutina activa.", price:"$950 MXN", related:[],
+          longDesc:"Suplemento alimenticio en polvo sabor naranja. Caja con 30 sobres, contenido neto 300 gramos. Power Maker combina L-arginina, aminoácidos, vitaminas y minerales en un práctico suplemento con delicioso sabor a naranja, diseñado para complementar un estilo de vida activo.",
+          ingredients:["3 g de L-arginina por porción.","Contiene colina y glicina.","Enriquecido con vitaminas B5, C y E.","Aporta minerales como calcio, cobre, cromo, boro y zinc.","Endulzado con ingredientes de origen natural: fruto del monje y estevia."],
+          usage:"Puede consumirse a cualquier hora del día o aproximadamente una hora antes de realizar actividad física. Disfrútalo frío o a temperatura ambiente.",
+          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."},
+        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizante", name:"Magnus 30 sobres", desc:"Aminoácidos, vitaminas y cafeína para acompañar tu actividad diaria.", price:"$590 MXN", related:[],
+          longDesc:"Suplemento alimenticio en polvo sabor cítrico. Caja con 30 sobres, contenido neto 405 gramos. Complementa tu nutrición diaria con una fórmula que combina aminoácidos, vitaminas, minerales y cafeína, diseñada para acompañar un estilo de vida activo.",
+          ingredients:["Contiene aminoácidos como taurina, glicina y fenilalanina.","Enriquecido con vitaminas del complejo B, además de vitaminas C y E.","Aporta minerales esenciales como zinc, cobre y cromo.","Contiene cafeína.","Ideal para complementar una alimentación equilibrada y un estilo de vida activo."],
+          usage:"Consúmelo de acuerdo con las indicaciones del producto como parte de una alimentación balanceada, actividad física regular, una adecuada hidratación y un buen descanso.",
+          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."}
       ],
       routines:[{title:"Rutina esencial", desc:"1 producto ancla para empezar tu bienestar diario."},{title:"Rutina intermedia", desc:"combo energía + digestion para resultados visibles."},{title:"Rutina completa", desc:"protocolo de 30 dias con seguimiento incluido."}]
     },
@@ -1041,10 +1102,26 @@ var V = {
       tag:"Organic supplements", msg:"Wellness starts from the root.", bmLabel:"Speciality Time",
       stats:["96%","30 days","100%"],
       products:[
-        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamin", name:"Optimus 30 sachets", desc:"Choline, glycine, B-complex, vitamins C and E with natural sweeteners.", price:"$574 MXN", related:[]},
-        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Micellized formula", name:"Omniplus 30 sachets", desc:"Vitamins A, D, E, B-complex and aloe vera, orange flavor.", price:"$755 MXN", related:[]},
-        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-workout", name:"Power Maker 30 sachets", desc:"3g of L-arginine, amino acids and vitamins for your active routine.", price:"$950 MXN", related:[]},
-        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizing", name:"Magnus 30 sachets", desc:"Amino acids, vitamins and caffeine to support your daily activity.", price:"$590 MXN", related:[]}
+        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamin", name:"Optimus 30 sachets", desc:"Choline, glycine, B-complex, vitamins C and E with natural sweeteners.", price:"$574 MXN", related:[],
+          longDesc:"Lime-lemon flavored powder supplement. Box of 30 sachets, net content 240 grams. Supports your daily nutrition with a formula combining choline, glycine, B-complex vitamins, vitamins C and E, essential minerals and naturally derived sweeteners.",
+          ingredients:["Choline and glycine.","B-complex vitamins.","Vitamins C and E.","Calcium, copper, chromium, phosphorus and zinc.","Naturally sweetened with monk fruit and stevia."],
+          usage:"Can be consumed at any time of day as part of a balanced diet and a healthy lifestyle.",
+          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."},
+        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Micellized formula", name:"Omniplus 30 sachets", desc:"Vitamins A, D, E, B-complex and aloe vera, orange flavor.", price:"$755 MXN", related:[],
+          longDesc:"Orange flavor. Box of 30 sachets, net content 600 milliliters. A high-quality food supplement with an exclusive combination of vitamins, minerals and naturally derived herbal extracts. Its micellized formula and pleasant orange flavor make it an excellent choice to complement your daily nutrition.",
+          ingredients:["High-quality micellized formula.","Nutritive concentrate with essential vitamins and minerals.","Vitamins A, D, E and B-complex.","Minerals such as calcium, magnesium, zinc, copper, manganese, selenium and iodine.","Aloe vera gel and a selection of herbal extracts.","Sweetened with naturally derived ingredients."],
+          usage:"Orange-flavored presentation, consume it as part of your daily nutrition.",
+          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."},
+        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-workout", name:"Power Maker 30 sachets", desc:"3g of L-arginine, amino acids and vitamins for your active routine.", price:"$950 MXN", related:[],
+          longDesc:"Orange-flavored powder supplement. Box of 30 sachets, net content 300 grams. Power Maker combines L-arginine, amino acids, vitamins and minerals in a convenient supplement with a delicious orange flavor, designed to complement an active lifestyle.",
+          ingredients:["3 g of L-arginine per serving.","Contains choline and glycine.","Enriched with vitamins B5, C and E.","Provides minerals such as calcium, copper, chromium, boron and zinc.","Sweetened with naturally derived ingredients: monk fruit and stevia."],
+          usage:"Can be consumed at any time of day, or about an hour before physical activity. Enjoy it chilled or at room temperature.",
+          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."},
+        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizing", name:"Magnus 30 sachets", desc:"Amino acids, vitamins and caffeine to support your daily activity.", price:"$590 MXN", related:[],
+          longDesc:"Citrus-flavored powder supplement. Box of 30 sachets, net content 405 grams. Complements your daily nutrition with a formula that combines amino acids, vitamins, minerals and caffeine, designed to support an active lifestyle.",
+          ingredients:["Contains amino acids such as taurine, glycine and phenylalanine.","Enriched with B-complex vitamins, plus vitamins C and E.","Provides essential minerals such as zinc, copper and chromium.","Contains caffeine.","Ideal to complement a balanced diet and an active lifestyle."],
+          usage:"Consume according to product directions as part of a balanced diet, regular physical activity, adequate hydration and good rest.",
+          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."}
       ],
       routines:[{title:"Essential routine", desc:"1 anchor product to start your daily wellness."},{title:"Intermediate routine", desc:"energy + digestion combo for visible results."},{title:"Complete routine", desc:"30-day protocol with follow-up included."}]
     },
@@ -1054,10 +1131,26 @@ var V = {
       tag:"Complements organiques", msg:"Le bien-etre commence a la racine.", bmLabel:"Speciality Time",
       stats:["96%","30 jours","100%"],
       products:[
-        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamine", name:"Optimus 30 sachets", desc:"Choline, glycine, complexe B, vitamines C et E avec edulcorants naturels.", price:"$574 MXN", related:[]},
-        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Formule micellaire", name:"Omniplus 30 sachets", desc:"Vitamines A, D, E, complexe B et aloe vera, saveur orange.", price:"$755 MXN", related:[]},
-        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entrainement", name:"Power Maker 30 sachets", desc:"3g de L-arginine, acides amines et vitamines pour votre routine active.", price:"$950 MXN", related:[]},
-        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energisant", name:"Magnus 30 sachets", desc:"Acides amines, vitamines et cafeine pour accompagner votre activite quotidienne.", price:"$590 MXN", related:[]}
+        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamine", name:"Optimus 30 sachets", desc:"Choline, glycine, complexe B, vitamines C et E avec edulcorants naturels.", price:"$574 MXN", related:[],
+          longDesc:"Complement alimentaire en poudre saveur citron vert-citron. Boite de 30 sachets, contenu net 240 grammes. Soutient votre nutrition quotidienne avec une formule combinant choline, glycine, vitamines du complexe B, vitamines C et E, mineraux essentiels et edulcorants d'origine naturelle.",
+          ingredients:["Choline et glycine.","Vitamines du complexe B.","Vitamines C et E.","Calcium, cuivre, chrome, phosphore et zinc.","Edulcore naturellement avec fruit du moine et stevia."],
+          usage:"Peut etre consomme a tout moment de la journee dans le cadre d'une alimentation equilibree et d'un mode de vie sain.",
+          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."},
+        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Formule micellaire", name:"Omniplus 30 sachets", desc:"Vitamines A, D, E, complexe B et aloe vera, saveur orange.", price:"$755 MXN", related:[],
+          longDesc:"Saveur orange. Boite de 30 sachets, contenu net 600 millilitres. Un complement alimentaire de haute qualite avec une combinaison exclusive de vitamines, mineraux et extraits vegetaux d'origine naturelle. Sa formule micellaire et son agreable saveur d'orange en font une excellente option pour completer votre nutrition quotidienne.",
+          ingredients:["Formule micellaire de haute qualite.","Concentre nutritif avec vitamines et mineraux essentiels.","Vitamines A, D, E et complexe B.","Mineraux tels que calcium, magnesium, zinc, cuivre, manganese, selenium et iode.","Gel d'aloe vera et une selection d'extraits vegetaux.","Edulcore avec des ingredients d'origine naturelle."],
+          usage:"Presentation saveur orange, a consommer dans le cadre de votre nutrition quotidienne.",
+          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."},
+        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entrainement", name:"Power Maker 30 sachets", desc:"3g de L-arginine, acides amines et vitamines pour votre routine active.", price:"$950 MXN", related:[],
+          longDesc:"Complement alimentaire en poudre saveur orange. Boite de 30 sachets, contenu net 300 grammes. Power Maker combine L-arginine, acides amines, vitamines et mineraux dans un complement pratique au delicieux gout d'orange, concu pour accompagner un mode de vie actif.",
+          ingredients:["3 g de L-arginine par portion.","Contient choline et glycine.","Enrichi en vitamines B5, C et E.","Apporte des mineraux tels que calcium, cuivre, chrome, bore et zinc.","Edulcore avec des ingredients d'origine naturelle: fruit du moine et stevia."],
+          usage:"Peut etre consomme a tout moment de la journee, ou environ une heure avant une activite physique. A savourer frais ou a temperature ambiante.",
+          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."},
+        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energisant", name:"Magnus 30 sachets", desc:"Acides amines, vitamines et cafeine pour accompagner votre activite quotidienne.", price:"$590 MXN", related:[],
+          longDesc:"Complement alimentaire en poudre saveur agrumes. Boite de 30 sachets, contenu net 405 grammes. Complete votre nutrition quotidienne avec une formule combinant acides amines, vitamines, mineraux et cafeine, concue pour accompagner un mode de vie actif.",
+          ingredients:["Contient des acides amines tels que taurine, glycine et phenylalanine.","Enrichi en vitamines du complexe B, ainsi qu'en vitamines C et E.","Apporte des mineraux essentiels tels que zinc, cuivre et chrome.","Contient de la cafeine.","Ideal pour completer une alimentation equilibree et un mode de vie actif."],
+          usage:"A consommer selon les indications du produit dans le cadre d'une alimentation equilibree, d'une activite physique reguliere, d'une bonne hydratation et d'un bon repos.",
+          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."}
       ],
       routines:[{title:"Routine essentielle", desc:"1 produit phare pour commencer votre bien-etre quotidien."},{title:"Routine intermediaire", desc:"combo energie + digestion pour des resultats visibles."},{title:"Routine complete", desc:"protocole de 30 jours avec suivi inclus."}]
     }
@@ -1554,6 +1647,9 @@ var DYN = {
          {name:'Cliente verificado', stars:5, text:'Se nota la diferencia despues de unas semanas de uso.'}
        ]; },
        addToCart:function(){ return 'Agregar al carrito'; },
+       viewDetail:function(){ return 'Ver detalle'; },
+       ingredientsLabel:function(){ return 'Ingredientes'; },
+       usageLabel:function(){ return 'Modo de uso'; },
        cartEmpty:function(){ return 'Tu carrito esta vacio todavia.'; },
        productUnavailable:function(){ return 'Este producto ya no esta disponible.'; },
        removeItem:function(){ return 'Quitar'; },
@@ -1653,6 +1749,9 @@ var DYN = {
          {name:'Verified customer', stars:5, text:'You notice the difference after a few weeks of use.'}
        ]; },
        addToCart:function(){ return 'Add to cart'; },
+       viewDetail:function(){ return 'View detail'; },
+       ingredientsLabel:function(){ return 'Ingredients'; },
+       usageLabel:function(){ return 'How to use'; },
        cartEmpty:function(){ return 'Your cart is empty for now.'; },
        productUnavailable:function(){ return 'This product is no longer available.'; },
        removeItem:function(){ return 'Remove'; },
@@ -1752,6 +1851,9 @@ var DYN = {
          {name:'Client verifie', stars:5, text:'On remarque la difference apres quelques semaines d\'utilisation.'}
        ]; },
        addToCart:function(){ return 'Ajouter au panier'; },
+       viewDetail:function(){ return 'Voir le detail'; },
+       ingredientsLabel:function(){ return 'Ingredients'; },
+       usageLabel:function(){ return 'Mode d\'emploi'; },
        cartEmpty:function(){ return 'Votre panier est vide pour le moment.'; },
        productUnavailable:function(){ return 'Ce produit n\'est plus disponible.'; },
        removeItem:function(){ return 'Retirer'; },
@@ -2230,6 +2332,7 @@ function verifyPhoneCode(){
       CURRENT_CUSTOMER.profileComplete = Boolean(u.profile_complete);
       CURRENT_CUSTOMER.name = u.name || null;
       updateAccountNameDisplay();
+      saveSessionLocal();
       closeAuthModal();
       resetPhoneAuth();
       document.getElementById('authPhoneStep1').style.display = 'none';
@@ -2546,6 +2649,61 @@ function handleProductImgError(imgEl, vertical){
   if (imgEl && imgEl.parentElement) imgEl.parentElement.innerHTML = iconSvg(vertical);
 }
 
+function openProductDetail(sku){
+  var p = findProductBySku(CURRENT_RENDERED_PRODUCTS, sku);
+  if (!p) return;
+  pdCurrentSku = sku;
+
+  var media = document.getElementById('pdMedia');
+  media.innerHTML = p.img
+    ? '<img src="' + p.img + '" alt="' + p.name + '" onerror="handleProductImgError(this,\'' + currentV + '\')">'
+    : iconSvg(currentV);
+
+  document.getElementById('pdTag').textContent = p.tag || '';
+  document.getElementById('pdName').textContent = p.name || '';
+  document.getElementById('pdPrice').textContent = p.price || '';
+  document.getElementById('pdLongDesc').textContent = p.longDesc || p.desc || '';
+
+  var ingBlock = document.getElementById('pdIngredientsBlock');
+  if (p.ingredients && p.ingredients.length){
+    document.getElementById('pdIngredientsLabel').textContent = DYN[currentLang].ingredientsLabel();
+    var ul = document.getElementById('pdIngredientsList');
+    ul.innerHTML = '';
+    for (var i=0;i<p.ingredients.length;i++){
+      var li = document.createElement('li');
+      li.textContent = p.ingredients[i];
+      ul.appendChild(li);
+    }
+    ingBlock.style.display = '';
+  } else {
+    ingBlock.style.display = 'none';
+  }
+
+  var useBlock = document.getElementById('pdUsageBlock');
+  if (p.usage){
+    document.getElementById('pdUsageLabel').textContent = DYN[currentLang].usageLabel();
+    document.getElementById('pdUsageText').textContent = p.usage;
+    useBlock.style.display = '';
+  } else {
+    useBlock.style.display = 'none';
+  }
+
+  var discBlock = document.getElementById('pdDisclaimerBlock');
+  if (p.disclaimer){
+    document.getElementById('pdDisclaimerText').textContent = p.disclaimer;
+    discBlock.style.display = '';
+  } else {
+    discBlock.style.display = 'none';
+  }
+
+  document.getElementById('pdAddToCartBtn').textContent = DYN[currentLang].addToCart();
+  document.getElementById('productDetailOverlay').classList.add('is-open');
+}
+
+function closeProductDetail(){
+  document.getElementById('productDetailOverlay').classList.remove('is-open');
+}
+
 function iconSvg(v){
   var paths = {
     raiz:'<path d="M12 22V12"/><path d="M12 12C12 6 6 4 4 4c0 6 3 8 8 8Z"/><path d="M12 12c0-6 6-8 8-8 0 6-3 8-8 8Z"/>',
@@ -2559,11 +2717,14 @@ function iconSvg(v){
 var currentV = 'raiz';
 var currentLang = 'es';
 var selectedRoutine = null;
+var CURRENT_RENDERED_PRODUCTS = [];
+var pdCurrentSku = null;
 
 function renderVertical(v){
   currentV = v;
   var vert = V[v];
   var d = vert[currentLang];
+  CURRENT_RENDERED_PRODUCTS = d.products;
   document.documentElement.style.setProperty('--active', getComputedStyle(document.documentElement).getPropertyValue('--'+v));
   document.documentElement.style.setProperty('--active-2', getComputedStyle(document.documentElement).getPropertyValue('--'+v+'-2'));
   document.documentElement.style.setProperty('--active-soft', getComputedStyle(document.documentElement).getPropertyValue('--'+v+'-soft'));
@@ -2607,6 +2768,7 @@ function renderVertical(v){
       ratingHtml +
       '<div class="price">' + p.price + '</div>' +
       relatedHtml +
+      '<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>' +
       '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\')">' + DYN[currentLang].addToCart() + '</button>' +
       '</div></div>';
   }
@@ -2743,6 +2905,38 @@ function updateAccountNameDisplay(){
   }
 }
 
+// Sesion ligera del lado del cliente (localStorage) -- SOLO para que el icono
+// de cuenta y el nombre no desaparezcan al recargar la pagina o abrir una
+// pestana nueva. Esto NO es una sesion de servidor firmada (ver gap conocido
+// en db/schema.md, seccion 0 y 9): sigue siendo el mismo MVP donde el navegador
+// "recuerda" el customerId, ahora tambien entre recargas y no solo dentro de
+// la misma carga de pagina. Antes de trafico real, esto debe amarrarse a una
+// cookie de sesion firmada por el servidor.
+function saveSessionLocal(){
+  try {
+    localStorage.setItem('renuevate_session', JSON.stringify({
+      id: CURRENT_CUSTOMER.id,
+      name: CURRENT_CUSTOMER.name,
+      profileComplete: CURRENT_CUSTOMER.profileComplete,
+    }));
+  } catch (e) { /* localStorage no disponible (modo incognito estricto, etc.) -- no es fatal */ }
+}
+function restoreSessionLocal(){
+  try {
+    var raw = localStorage.getItem('renuevate_session');
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (s && s.id){
+      CURRENT_CUSTOMER.id = s.id;
+      CURRENT_CUSTOMER.name = s.name || null;
+      CURRENT_CUSTOMER.profileComplete = Boolean(s.profileComplete);
+      updateAccountNameDisplay();
+      refreshCart();
+    }
+  } catch (e) { /* sesion guardada corrupta -- se ignora, no se rompe la carga de la pagina */ }
+}
+document.addEventListener('DOMContentLoaded', restoreSessionLocal);
+
 function openProfileModal(){
   var el = document.getElementById('profileModalOverlay');
   if (!el) return;
@@ -2844,6 +3038,7 @@ function sendToBackend(provider, credential){
       CURRENT_CUSTOMER.profileComplete = Boolean(u.profile_complete);
       CURRENT_CUSTOMER.name = u.name || null;
       updateAccountNameDisplay();
+      saveSessionLocal();
       closeAuthModal();
       alert(DYN[currentLang].registerOk(u.name ? u.name : ''));
       if (CURRENT_CUSTOMER.id && !CURRENT_CUSTOMER.profileComplete){
