@@ -9,8 +9,32 @@
 //   node db/seed-products.js
 //
 // Es idempotente: usa upsert por sku, se puede correr varias veces sin duplicar.
+//
+// Nota: al ejecutarlo directo con "node db/seed-products.js" Node no lee el
+// .env por si mismo -- se carga aqui a mano (ver misma logica en collections.js).
 
+const fs = require('fs');
+const path = require('path');
 const { MongoClient } = require('mongodb');
+
+function loadDotEnv() {
+  const envPath = path.join(__dirname, '..', '.env');
+  if (!fs.existsSync(envPath)) return;
+  const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+    const eq = line.indexOf('=');
+    if (eq === -1) continue;
+    const key = line.slice(0, eq).trim();
+    let value = line.slice(eq + 1).trim();
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    if (!(key in process.env)) process.env[key] = value;
+  }
+}
+loadDotEnv();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';

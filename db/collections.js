@@ -9,8 +9,34 @@
 //   node db/collections.js
 //
 // Requiere las mismas variables de entorno que api/register.js (MONGODB_URI, MONGODB_DB).
+//
+// Nota: cuando este script corre bajo "vercel dev" el .env se carga solo. Pero
+// al ejecutarlo directo con "node db/collections.js" (como hace
+// sembrar-productos.bat) Node NO lee el .env por si mismo -- por eso se carga
+// aqui a mano, sin depender de instalar el paquete "dotenv".
 
+const fs = require('fs');
+const path = require('path');
 const { MongoClient } = require('mongodb');
+
+function loadDotEnv() {
+  const envPath = path.join(__dirname, '..', '.env');
+  if (!fs.existsSync(envPath)) return;
+  const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+    const eq = line.indexOf('=');
+    if (eq === -1) continue;
+    const key = line.slice(0, eq).trim();
+    let value = line.slice(eq + 1).trim();
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    if (!(key in process.env)) process.env[key] = value;
+  }
+}
+loadDotEnv();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -415,6 +441,27 @@ const VALIDATORS = {
   },
 };
 
+// Crea el indice si no existe. Si ya existe un indice con el mismo nombre pero
+// una especificacion distinta (p.ej. una corrida anterior lo creo sin
+// "sparse" y ahora si lo pedimos), Mongo responde error 85/86
+// (IndexOptionsConflict / IndexKeySpecsConflict) en vez de actualizarlo solo.
+// En ese caso se borra el indice viejo por nombre y se recrea con la
+// definicion nueva -- asi el script es seguro de correr varias veces aunque
+// el esquema de indices haya cambiado entre corridas.
+async function ensureIndex(collection, keys, options) {
+  try {
+    await collection.createIndex(keys, options);
+  } catch (err) {
+    if (err && (err.code === 85 || err.code === 86)) {
+      console.log(`[collections] indice ${options.name} en ${collection.collectionName} ya existia con otra definicion -- recreando`);
+      await collection.dropIndex(options.name);
+      await collection.createIndex(keys, options);
+    } else {
+      throw err;
+    }
+  }
+}
+
 async function setupCollections(db) {
   const existing = (await db.listCollections().toArray()).map((c) => c.name);
 
@@ -428,45 +475,48 @@ async function setupCollections(db) {
     }
   }
 
-  await db.collection('customers').createIndex({ email: 1 }, { unique: true, sparse: true, name: 'uniq_email' });
-  await db.collection('customers').createIndex({ phone: 1 }, { unique: true, sparse: true, name: 'uniq_phone' });
-  await db.collection('customers').createIndex({ birth_month_day: 1 }, { name: 'idx_birth_month_day' });
+  await ensureIndex(db.collection('customers'), { email: 1 }, { unique: true, sparse: true, name: 'uniq_email' });
+  await ensureIndex(db.collection('customers'), { phone: 1 }, { unique: true, sparse: true, name: 'uniq_phone' });
+  await ensureIndex(db.collection('customers'), { birth_month_day: 1 }, { name: 'idx_birth_month_day' });
 
-  await db.collection('promotions').createIndex({ status: 1 }, { name: 'idx_status' });
-  await db.collection('promotions').createIndex({ type: 1 }, { name: 'idx_type' });
-  await db.collection('promotions').createIndex({ code: 1 }, { unique: true, name: 'uniq_code' });
-  await db.collection('promotions').createIndex(
+  await ensureIndex(db.collection('promotions'), { status: 1 }, { name: 'idx_status' });
+  await ensureIndex(db.collection('promotions'), { type: 1 }, { name: 'idx_type' });
+  await ensureIndex(db.collection('promotions'), { code: 1 }, { unique: true, name: 'uniq_code' });
+  await ensureIndex(
+    db.collection('promotions'),
     { 'schedule.start_at': 1, 'schedule.end_at': 1 },
     { name: 'idx_schedule_range' }
   );
 
-  await db.collection('loyalty_rules').createIndex({ status: 1 }, { name: 'idx_status' });
+  await ensureIndex(db.collection('loyalty_rules'), { status: 1 }, { name: 'idx_status' });
 
-  await db.collection('loyalty_progress').createIndex(
+  await ensureIndex(
+    db.collection('loyalty_progress'),
     { customer_id: 1, loyalty_rule_id: 1 },
     { unique: true, name: 'uniq_customer_rule' }
   );
 
-  await db.collection('promotion_redemptions').createIndex(
+  await ensureIndex(
+    db.collection('promotion_redemptions'),
     { source_id: 1, customer_id: 1, order_id: 1 },
     { unique: true, name: 'uniq_source_customer_order' }
   );
 
-  await db.collection('orders').createIndex({ customer_id: 1, created_at: -1 }, { name: 'idx_customer_orders' });
-  await db.collection('orders').createIndex({ status: 1 }, { name: 'idx_status' });
+  await ensureIndex(db.collection('orders'), { customer_id: 1, created_at: -1 }, { name: 'idx_customer_orders' });
+  await ensureIndex(db.collection('orders'), { status: 1 }, { name: 'idx_status' });
 
-  await db.collection('products').createIndex({ sku: 1 }, { unique: true, name: 'uniq_sku' });
-  await db.collection('products').createIndex({ vertical: 1, status: 1 }, { name: 'idx_vertical_status' });
+  await ensureIndex(db.collection('products'), { sku: 1 }, { unique: true, name: 'uniq_sku' });
+  await ensureIndex(db.collection('products'), { vertical: 1, status: 1 }, { name: 'idx_vertical_status' });
 
-  await db.collection('carts').createIndex({ customer_id: 1 }, { unique: true, name: 'uniq_customer_cart' });
+  await ensureIndex(db.collection('carts'), { customer_id: 1 }, { unique: true, name: 'uniq_customer_cart' });
 
-  await db.collection('product_reviews').createIndex({ sku: 1, status: 1, created_at: -1 }, { name: 'idx_sku_status_created' });
-  await db.collection('product_reviews').createIndex({ customer_id: 1 }, { name: 'idx_customer' });
+  await ensureIndex(db.collection('product_reviews'), { sku: 1, status: 1, created_at: -1 }, { name: 'idx_sku_status_created' });
+  await ensureIndex(db.collection('product_reviews'), { customer_id: 1 }, { name: 'idx_customer' });
 
-  await db.collection('payment_methods').createIndex({ customer_id: 1 }, { name: 'idx_customer' });
+  await ensureIndex(db.collection('payment_methods'), { customer_id: 1 }, { name: 'idx_customer' });
 
-  await db.collection('phone_verifications').createIndex({ phone: 1, created_at: -1 }, { name: 'idx_phone_created' });
-  await db.collection('phone_verifications').createIndex({ expires_at: 1 }, { expireAfterSeconds: 0, name: 'ttl_expires_at' });
+  await ensureIndex(db.collection('phone_verifications'), { phone: 1, created_at: -1 }, { name: 'idx_phone_created' });
+  await ensureIndex(db.collection('phone_verifications'), { expires_at: 1 }, { expireAfterSeconds: 0, name: 'ttl_expires_at' });
 
   console.log('[collections] indices listos.');
 }
