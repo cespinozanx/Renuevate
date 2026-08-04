@@ -55,6 +55,8 @@ nav.main a{font-size:12px; letter-spacing:1.6px; text-transform:uppercase; font-
 nav.main a:hover{border-color:var(--gold); color:var(--navy);}
 nav.main a.active{border-color:var(--active); color:var(--navy);}
 .header-icons{display:flex; align-items:center; gap:20px;}
+.account-name{font-size:12.5px; font-weight:700; color:var(--ink); white-space:nowrap;}
+@media(max-width:520px){ .account-name{display:none !important;} }
 .hamburger{display:none; flex-direction:column; gap:5px; cursor:pointer; padding:6px; margin-left:-6px;}
 .hamburger span{width:24px; height:2px; background:var(--grey);}
 .nav-overlay{display:none; position:fixed; inset:0; background:rgba(30,30,30,.45); z-index:69;}
@@ -485,9 +487,9 @@ var AZURA_CONFIG = {
   CART_ENDPOINT: "/api/cart",
   REVIEWS_ENDPOINT: "/api/reviews",
   PAYMENT_METHODS_ENDPOINT: "/api/payment-methods",
-  SOCIAL_INSTAGRAM_URL: "https://instagram.com/TU_USUARIO_AQUI",
+  SOCIAL_INSTAGRAM_URL: "https://www.instagram.com/renuevate_adita",
   SOCIAL_TIKTOK_URL: "https://tiktok.com/@TU_USUARIO_AQUI",
-  SOCIAL_FACEBOOK_URL: "https://facebook.com/TU_PAGINA_AQUI",
+  SOCIAL_FACEBOOK_URL: "https://www.facebook.com/share/1RigCHj4Ri",
   GA4_MEASUREMENT_ID: "G-XXXXXXXXXX"
 };
 </script>
@@ -553,6 +555,7 @@ var AZURA_CONFIG = {
       <a onclick="scrollToId('filosofia'); closeNav();" data-i18n="nav.filosofia">Nuestra filosofia</a>
     </nav>
     <div class="header-icons">
+      <span class="account-name" id="accountNameLabel" style="display:none;"></span>
       <button class="account-icon-btn" id="accountIconBtn" onclick="onAccountIconClick()" aria-label="Mi cuenta">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
       </button>
@@ -1025,10 +1028,10 @@ var V = {
       tag:"Suplementos orgánicos", msg:"El bienestar empieza desde la raíz.", bmLabel:"Speciality Time",
       stats:["96%","30 dias","100%"],
       products:[
-        {sku:"RAIZ-01", tag:"Multivitaminico", name:"Bienestar Diario 30 caps", desc:"Complejo natural para energía sostenida.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
-        {sku:"RAIZ-02", tag:"Adaptógeno", name:"Equilibrio Ashwagandha", desc:"Apoyo natural ante el estres diario.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
-        {sku:"RAIZ-03", tag:"Digestivo", name:"Fibra Prebiotica Raiz", desc:"Bienestar digestivo de origen vegetal.", price:"$329 MXN", rating:{stars:4.5,count:145}, related:["RAIZ-01"]},
-        {sku:"RAIZ-04", tag:"Inmunidad", name:"Defensa Natural C+Zinc", desc:"Refuerzo natural de las defensas.", price:"$369 MXN", rating:{stars:4.8,count:267}, related:["RAIZ-01"]}
+        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamínico", name:"Optimus 30 sobres", desc:"Colina, glicina, complejo B, vitaminas C y E con endulzantes naturales.", price:"$574 MXN", related:[]},
+        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Fórmula micelizada", name:"Omniplus 30 sobres", desc:"Vitaminas A, D, E, complejo B y sábila, sabor naranja.", price:"$755 MXN", related:[]},
+        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entreno", name:"Power Maker 30 sobres", desc:"3g de L-arginina, aminoácidos y vitaminas para tu rutina activa.", price:"$950 MXN", related:[]},
+        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizante", name:"Magnus 30 sobres", desc:"Aminoácidos, vitaminas y cafeína para acompañar tu actividad diaria.", price:"$590 MXN", related:[]}
       ],
       routines:[{title:"Rutina esencial", desc:"1 producto ancla para empezar tu bienestar diario."},{title:"Rutina intermedia", desc:"combo energía + digestion para resultados visibles."},{title:"Rutina completa", desc:"protocolo de 30 dias con seguimiento incluido."}]
     },
@@ -1038,10 +1041,10 @@ var V = {
       tag:"Organic supplements", msg:"Wellness starts from the root.", bmLabel:"Speciality Time",
       stats:["96%","30 days","100%"],
       products:[
-        {sku:"RAIZ-01", tag:"Multivitamin", name:"Daily Wellness 30 caps", desc:"Natural complex for sustained energy.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
-        {sku:"RAIZ-02", tag:"Adaptogen", name:"Ashwagandha Balance", desc:"Natural support against daily stress.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
-        {sku:"RAIZ-03", tag:"Digestive", name:"Raiz Prebiotic Fiber", desc:"Plant-based digestive wellness.", price:"$329 MXN", rating:{stars:4.5,count:145}, related:["RAIZ-01"]},
-        {sku:"RAIZ-04", tag:"Immunity", name:"Natural Defense C+Zinc", desc:"Natural immune support.", price:"$369 MXN", rating:{stars:4.8,count:267}, related:["RAIZ-01"]}
+        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamin", name:"Optimus 30 sachets", desc:"Choline, glycine, B-complex, vitamins C and E with natural sweeteners.", price:"$574 MXN", related:[]},
+        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Micellized formula", name:"Omniplus 30 sachets", desc:"Vitamins A, D, E, B-complex and aloe vera, orange flavor.", price:"$755 MXN", related:[]},
+        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-workout", name:"Power Maker 30 sachets", desc:"3g of L-arginine, amino acids and vitamins for your active routine.", price:"$950 MXN", related:[]},
+        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizing", name:"Magnus 30 sachets", desc:"Amino acids, vitamins and caffeine to support your daily activity.", price:"$590 MXN", related:[]}
       ],
       routines:[{title:"Essential routine", desc:"1 anchor product to start your daily wellness."},{title:"Intermediate routine", desc:"energy + digestion combo for visible results."},{title:"Complete routine", desc:"30-day protocol with follow-up included."}]
     },
@@ -1051,10 +1054,10 @@ var V = {
       tag:"Complements organiques", msg:"Le bien-etre commence a la racine.", bmLabel:"Speciality Time",
       stats:["96%","30 jours","100%"],
       products:[
-        {sku:"RAIZ-01", tag:"Multivitamine", name:"Bien-etre Quotidien 30 gel.", desc:"Complexe naturel pour une energie durable.", price:"$389 MXN", rating:{stars:4.6,count:312}, related:["RAIZ-04"]},
-        {sku:"RAIZ-02", tag:"Adaptogene", name:"Equilibre Ashwagandha", desc:"Soutien naturel contre le stress quotidien.", price:"$449 MXN", rating:{stars:4.7,count:198}, related:["RAIZ-03"]},
-        {sku:"RAIZ-03", tag:"Digestif", name:"Fibre Prebiotique Raiz", desc:"Bien-etre digestif d'origine vegetale.", price:"$329 MXN", rating:{stars:4.5,count:145}, related:["RAIZ-01"]},
-        {sku:"RAIZ-04", tag:"Immunite", name:"Defense Naturelle C+Zinc", desc:"Renfort naturel des defenses.", price:"$369 MXN", rating:{stars:4.8,count:267}, related:["RAIZ-01"]}
+        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamine", name:"Optimus 30 sachets", desc:"Choline, glycine, complexe B, vitamines C et E avec edulcorants naturels.", price:"$574 MXN", related:[]},
+        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Formule micellaire", name:"Omniplus 30 sachets", desc:"Vitamines A, D, E, complexe B et aloe vera, saveur orange.", price:"$755 MXN", related:[]},
+        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entrainement", name:"Power Maker 30 sachets", desc:"3g de L-arginine, acides amines et vitamines pour votre routine active.", price:"$950 MXN", related:[]},
+        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energisant", name:"Magnus 30 sachets", desc:"Acides amines, vitamines et cafeine pour accompagner votre activite quotidienne.", price:"$590 MXN", related:[]}
       ],
       routines:[{title:"Routine essentielle", desc:"1 produit phare pour commencer votre bien-etre quotidien."},{title:"Routine intermediaire", desc:"combo energie + digestion pour des resultats visibles."},{title:"Routine complete", desc:"protocole de 30 jours avec suivi inclus."}]
     }
@@ -1248,7 +1251,7 @@ var I18N = {
     "chat.a.nutritionadvice":"Puedo darte tips generales de bienestar (hidratacion, constancia en tu rutina, descanso), pero no reemplazo a un nutriologo ni doy planes personalizados. Para eso te recomiendo un profesional de salud. Si quieres, cuentame tu prioridad y te sugiero productos de nuestras lineas.",
     "chat.a.productadvisor":"Claro, soy tu asesora de productos y suplementos. Cuentame tu edad y si buscas algo para mujer u hombre, o dime tu prioridad (energía, piel, cabello, bienestar) y te doy una recomendacion puntual.",
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
-    "chat.a.contact":"Escribenos por WhatsApp, este chat, o hola@renuevate.mx.",
+    "chat.a.contact":"Escribenos por WhatsApp, este chat, o adabueo18@gmail.com.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
     "chat.a.about":"Renuévate es la tienda online del holding de belleza y bienestar con 4 sistemas: System Time, System Luminous, System Health y System Spot Speciality.",
     "chat.a.products":"Vendemos suplementos, cuidado de piel y cabello, y bienestar diario en 4 sistemas: System Time, System Luminous, System Health y System Spot Speciality.",
@@ -1362,7 +1365,7 @@ var I18N = {
     "chat.a.nutritionadvice":"I can share general wellness tips (hydration, staying consistent with your routine, rest), but I'm not a replacement for a nutritionist and I don't give personalized plans. For that, a healthcare professional is best. If you want, tell me your priority and I'll suggest products from our lines.",
     "chat.a.productadvisor":"Sure, I'm your product and supplement advisor. Tell me your age and whether you're looking for something for a woman or a man, or tell me your priority (energy, skin, hair, wellness) and I'll give you a precise recommendation.",
     "chat.a.loyalty":"Every purchase earns Renuévate points, redeemable on your next order.",
-    "chat.a.contact":"Reach us on WhatsApp, this chat, or hola@renuevate.mx.",
+    "chat.a.contact":"Reach us on WhatsApp, this chat, or adabueo18@gmail.com.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
     "chat.a.about":"Renuévate is the online store for a beauty and wellness holding with 4 systems: System Time, System Luminous, System Health and System Spot Speciality.",
     "chat.a.products":"We sell supplements, skin and hair care, and daily wellness across 4 systems: System Time, System Luminous, System Health and System Spot Speciality.",
@@ -1476,7 +1479,7 @@ var I18N = {
     "chat.a.nutritionadvice":"Je peux vous donner des conseils generaux de bien-etre (hydratation, constance dans votre routine, repos), mais je ne remplace pas un nutritionniste et je ne donne pas de plan personnalise. Pour cela, consultez un professionnel de sante. Si vous voulez, dites-moi votre priorite et je vous suggere des produits de nos lignes.",
     "chat.a.productadvisor":"Bien sur, je suis votre conseillere produits et complements. Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, ou dites-moi votre priorite (energie, peau, cheveux, bien-etre) et je vous donne une recommandation precise.",
     "chat.a.loyalty":"Chaque achat cumule des points Renuévate, a utiliser sur la prochaine commande.",
-    "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou hola@renuevate.mx.",
+    "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.",
     "chat.a.sustainability":"Emballages recyclables et ingredients d'origine certifiee.",
     "chat.a.about":"Renuévate est la boutique en ligne du holding beaute et bien-etre avec 4 systemes : System Time, System Luminous, System Health et System Spot Speciality.",
     "chat.a.products":"Nous vendons des complements, des soins de la peau et des cheveux, et du bien-etre quotidien sur 4 systemes : System Time, System Luminous, System Health et System Spot Speciality.",
@@ -2225,6 +2228,8 @@ function verifyPhoneCode(){
       var u = res.data.user || {};
       CURRENT_CUSTOMER.id = u.id || null;
       CURRENT_CUSTOMER.profileComplete = Boolean(u.profile_complete);
+      CURRENT_CUSTOMER.name = u.name || null;
+      updateAccountNameDisplay();
       closeAuthModal();
       resetPhoneAuth();
       document.getElementById('authPhoneStep1').style.display = 'none';
@@ -2319,7 +2324,7 @@ var TERMS_CONTENT = {
     { h:'10. Limitacion de responsabilidad', p:'El sitio se ofrece "tal cual". No garantizamos disponibilidad ininterrumpida y no somos responsables por danos indirectos derivados del uso del sitio, salvo lo que exija la ley aplicable.' },
     { h:'11. Ley aplicable', p:'Estos terminos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier controversia se resolvera ante los tribunales competentes de Mexico.' },
     { h:'12. Cambios a estos terminos', p:'Podemos actualizar estos terminos; la fecha de la version vigente aparece al inicio de esta seccion.' },
-    { h:'13. Contacto', p:'Dudas sobre estos terminos: escribenos por WhatsApp, este chat, o hola@renuevate.mx.' },
+    { h:'13. Contacto', p:'Dudas sobre estos terminos: escribenos por WhatsApp, este chat, o adabueo18@gmail.com.' },
   ] },
   en: { sections: [
     { h:'1. Acceptance of terms', p:'By using Renuévate (operated by GoNexus Group) and placing an order, you accept these Terms and Conditions and the Privacy Notice.' },
@@ -2334,7 +2339,7 @@ var TERMS_CONTENT = {
     { h:'10. Limitation of liability', p:'The site is provided "as is." We do not guarantee uninterrupted availability and are not liable for indirect damages arising from use of the site, except as required by applicable law.' },
     { h:'11. Governing law', p:'These terms are governed by the laws of Mexico. Any dispute will be resolved before the competent courts of Mexico.' },
     { h:'12. Changes to these terms', p:'We may update these terms; the effective date appears at the top of this section.' },
-    { h:'13. Contact', p:'Questions about these terms: message us on WhatsApp, this chat, or hola@renuevate.mx.' },
+    { h:'13. Contact', p:'Questions about these terms: message us on WhatsApp, this chat, or adabueo18@gmail.com.' },
   ] },
   fr: { sections: [
     { h:'1. Acceptation des conditions', p:'En utilisant Renuévate (exploite par GoNexus Group) et en passant une commande, vous acceptez ces Conditions Generales et l\'Avis de Confidentialite.' },
@@ -2349,7 +2354,7 @@ var TERMS_CONTENT = {
     { h:'10. Limitation de responsabilite', p:'Le site est fourni "tel quel". Nous ne garantissons pas une disponibilite ininterrompue et ne sommes pas responsables des dommages indirects lies a l\'utilisation du site, sauf disposition legale contraire.' },
     { h:'11. Loi applicable', p:'Ces conditions sont regies par les lois du Mexique. Tout litige sera resolu devant les tribunaux competents du Mexique.' },
     { h:'12. Modifications de ces conditions', p:'Nous pouvons mettre a jour ces conditions ; la date de la version en vigueur apparait en haut de cette section.' },
-    { h:'13. Contact', p:'Questions sur ces conditions : ecrivez-nous sur WhatsApp, ce chat, ou hola@renuevate.mx.' },
+    { h:'13. Contact', p:'Questions sur ces conditions : ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.' },
   ] },
 };
 
@@ -2533,6 +2538,14 @@ function submitPaymentMethod(evt){
   });
 }
 
+// Usado por el onerror inline de las fotos de producto (ver renderVertical) --
+// separado en su propia funcion en vez de inyectar el SVG completo dentro del
+// atributo HTML, porque iconSvg() regresa comillas dobles que romperian el
+// atributo onerror="..." si se intentaran incrustar directo ahi.
+function handleProductImgError(imgEl, vertical){
+  if (imgEl && imgEl.parentElement) imgEl.parentElement.innerHTML = iconSvg(vertical);
+}
+
 function iconSvg(v){
   var paths = {
     raiz:'<path d="M12 22V12"/><path d="M12 12C12 6 6 4 4 4c0 6 3 8 8 8Z"/><path d="M12 12c0-6 6-8 8-8 0 6-3 8-8 8Z"/>',
@@ -2582,7 +2595,13 @@ function renderVertical(v){
       }
       if (names.length) relatedHtml = '<div class="product-related">' + DYN[currentLang].boughtTogether() + ' <b>' + names.join(', ') + '</b></div>';
     }
-    html += '<div class="product-card"><div class="product-img">' + iconSvg(v) + '</div>' +
+    // Si el producto trae "img" (foto real, ver p.img en el catalogo) se usa esa
+    // foto; si el archivo aun no existe (foto pendiente de subir) el onerror la
+    // reemplaza por el icono generico de la vertical, sin dejar un icono roto.
+    var imgHtml = p.img
+      ? '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy" onerror="handleProductImgError(this,\'' + v + '\')">'
+      : iconSvg(v);
+    html += '<div class="product-card"><div class="product-img">' + imgHtml + '</div>' +
       '<div class="product-body"><div class="p-eyebrow">' + p.tag + '</div>' +
       '<h4>' + p.name + '</h4><p>' + p.desc + '</p>' +
       ratingHtml +
@@ -2706,7 +2725,23 @@ function facebookLogin(){
   }, { scope: 'email' });
 }
 
-var CURRENT_CUSTOMER = { id: null, profileComplete: false };
+var CURRENT_CUSTOMER = { id: null, profileComplete: false, name: null };
+
+// Muestra el nombre de pila junto al icono de cuenta una vez logueado (Google,
+// Facebook o telefono). Antes esto nunca se llamaba desde ningun lado -- el
+// login guardaba CURRENT_CUSTOMER.id pero jamas el nombre, asi que el icono se
+// quedaba mudo despues de iniciar sesion.
+function updateAccountNameDisplay(){
+  var el = document.getElementById('accountNameLabel');
+  if (!el) return;
+  if (CURRENT_CUSTOMER.id && CURRENT_CUSTOMER.name){
+    el.textContent = CURRENT_CUSTOMER.name.split(/\s+/)[0];
+    el.style.display = '';
+  } else {
+    el.textContent = '';
+    el.style.display = 'none';
+  }
+}
 
 function openProfileModal(){
   var el = document.getElementById('profileModalOverlay');
@@ -2807,6 +2842,8 @@ function sendToBackend(provider, credential){
       var u = res.data.user || {};
       CURRENT_CUSTOMER.id = u.id || null;
       CURRENT_CUSTOMER.profileComplete = Boolean(u.profile_complete);
+      CURRENT_CUSTOMER.name = u.name || null;
+      updateAccountNameDisplay();
       closeAuthModal();
       alert(DYN[currentLang].registerOk(u.name ? u.name : ''));
       if (CURRENT_CUSTOMER.id && !CURRENT_CUSTOMER.profileComplete){
