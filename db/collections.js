@@ -408,6 +408,37 @@ const VALIDATORS = {
     },
   },
 
+  // Direcciones de envio del cliente (puede tener varias -- casa, oficina,
+  // etc.). No hay checkout con cobro real todavia (ver cart.checkoutNote en
+  // index.html), asi que por ahora solo alimentan el selector "Enviar a" del
+  // carrito; cuando se integre pago real, la orden guardaria una copia de la
+  // direccion elegida en ese momento (no una referencia viva a esta coleccion,
+  // para que un cambio/borrado posterior no altere pedidos ya hechos).
+  addresses: {
+    $jsonSchema: {
+      bsonType: 'object',
+      additionalProperties: false,
+      required: ['_id', 'customer_id', 'recipient_name', 'phone', 'street', 'neighborhood', 'city', 'state', 'zip', 'is_default', 'created_at'],
+      properties: {
+        _id: {},
+        customer_id: { bsonType: 'objectId' },
+        label: { bsonType: ['string', 'null'], description: 'Casa, Oficina, Otro...' },
+        recipient_name: { bsonType: 'string' },
+        phone: { bsonType: 'string' },
+        street: { bsonType: 'string' },
+        ext_no: { bsonType: ['string', 'null'] },
+        int_no: { bsonType: ['string', 'null'] },
+        neighborhood: { bsonType: 'string' },
+        city: { bsonType: 'string' },
+        state: { bsonType: 'string' },
+        zip: { bsonType: 'string', pattern: '^[0-9]{5}$' },
+        references: { bsonType: ['string', 'null'] },
+        is_default: { bsonType: 'bool' },
+        created_at: { bsonType: 'date' },
+      },
+    },
+  },
+
   // Codigos OTP de un solo uso para registro/login por telefono (ver api/phone-auth.js).
   // NUNCA se guarda el codigo en claro -- solo su hash (SHA-256 + salt aleatorio por
   // registro). `pending_profile` guarda nombre/fecha de nacimiento/consentimiento que el
@@ -514,6 +545,8 @@ async function setupCollections(db) {
   await ensureIndex(db.collection('product_reviews'), { customer_id: 1 }, { name: 'idx_customer' });
 
   await ensureIndex(db.collection('payment_methods'), { customer_id: 1 }, { name: 'idx_customer' });
+
+  await ensureIndex(db.collection('addresses'), { customer_id: 1 }, { name: 'idx_customer' });
 
   await ensureIndex(db.collection('phone_verifications'), { phone: 1, created_at: -1 }, { name: 'idx_phone_created' });
   await ensureIndex(db.collection('phone_verifications'), { expires_at: 1 }, { expireAfterSeconds: 0, name: 'ttl_expires_at' });

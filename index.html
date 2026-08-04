@@ -244,6 +244,19 @@ section{padding:92px 0;}
 .pm-list{margin-bottom:18px;}
 .pm-row{display:flex; justify-content:space-between; align-items:center; border:1px solid var(--line); border-radius:3px; padding:10px 12px; margin-bottom:8px; font-size:13px;}
 .pm-row button{background:none; border:none; color:#B23A3A; cursor:pointer; font-size:11px; text-decoration:underline;}
+.addr-row{border:1px solid var(--line); border-radius:3px; padding:12px 14px; margin-bottom:10px; font-size:13px;}
+.addr-row b{font-size:13px;}
+.addr-row .addr-badge{font-size:10px; color:var(--gold); font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-left:6px;}
+.addr-row p{font-size:12.5px; color:var(--grey); margin:4px 0 0; line-height:1.5;}
+.addr-row-actions{display:flex; gap:14px; margin-top:8px;}
+.addr-row-actions button{background:none; border:none; padding:0; font-size:11px; text-decoration:underline; cursor:pointer;}
+.addr-row-actions .addr-set-default{color:var(--navy);}
+.addr-row-actions .addr-delete{color:#B23A3A;}
+.cart-shipto{border:1px solid var(--line); border-radius:4px; padding:12px 14px; margin-bottom:14px; font-size:12.5px;}
+.cart-shipto-label{font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:10.5px; color:var(--grey); margin-bottom:4px;}
+.cart-shipto-value{font-size:13px; color:var(--ink); line-height:1.4; margin-bottom:6px;}
+.cart-shipto-change{background:none; border:none; padding:0; font-size:11.5px; color:var(--navy); text-decoration:underline; cursor:pointer;}
+.account-logout-link{background:none; border:none; padding:0; font-size:11.5px; color:#B23A3A; text-decoration:underline; cursor:pointer; white-space:nowrap; flex-shrink:0;}
 .pm-type-toggle{display:flex; gap:8px; margin-bottom:14px;}
 .pm-type-toggle button{flex:1; padding:9px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:12px; border-radius:2px;}
 .pm-type-toggle button.sel{border-color:var(--navy); background:var(--navy); color:#fff;}
@@ -505,6 +518,7 @@ var AZURA_CONFIG = {
   CART_ENDPOINT: "/api/cart",
   REVIEWS_ENDPOINT: "/api/reviews",
   PAYMENT_METHODS_ENDPOINT: "/api/payment-methods",
+  ADDRESSES_ENDPOINT: "/api/addresses",
   SOCIAL_INSTAGRAM_URL: "https://www.instagram.com/renuevate_adita",
   SOCIAL_TIKTOK_URL: "https://tiktok.com/@TU_USUARIO_AQUI",
   SOCIAL_FACEBOOK_URL: "https://www.facebook.com/share/1RigCHj4Ri",
@@ -966,12 +980,20 @@ var AZURA_CONFIG = {
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <div class="cart-panel" id="cartPanel">
   <div class="cart-head">
-    <h3 data-i18n="cart.title">Tu carrito</h3>
+    <h3 style="display:flex; align-items:center; gap:9px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M1 1h3l2.6 13.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6L22 6H5"/></svg>
+      <span data-i18n="cart.title">Tu carrito</span>
+    </h3>
     <button class="cart-close" onclick="closeCart()" aria-label="Cerrar carrito">&times;</button>
   </div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-bag-upsell" id="cartBagUpsell" style="display:none;"></div>
   <div class="cart-foot">
+    <div class="cart-shipto" id="cartShipTo" style="display:none;">
+      <div class="cart-shipto-label" data-i18n="cart.shipToLabel">Enviar a</div>
+      <div class="cart-shipto-value" id="cartShipToValue"></div>
+      <button type="button" class="cart-shipto-change" onclick="onAccountIconClick()" data-i18n="cart.shipToChange">Cambiar / agregar dirección</button>
+    </div>
     <div class="cart-subtotal"><span data-i18n="cart.subtotal">Subtotal</span><span id="cartSubtotalValue">$0 MXN</span></div>
     <button class="btn btn-dark" style="width:100%; justify-content:center;" disabled data-i18n="cart.checkout">Proceder al pago</button>
     <div class="cart-checkout-note" data-i18n="cart.checkoutNote">Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.</div>
@@ -980,7 +1002,10 @@ var AZURA_CONFIG = {
 
 <div class="profile-modal-overlay" id="accountModalOverlay">
   <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="accTitle">
-    <h3 id="accTitle" data-i18n="account.title">Mi cuenta y metodos de pago</h3>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+      <h3 id="accTitle" data-i18n="account.title">Mi cuenta y metodos de pago</h3>
+      <button type="button" class="account-logout-link" onclick="logout()" data-i18n="account.logoutLabel">Cerrar sesión</button>
+    </div>
     <p class="pm-subtitle" id="accSubtitle" data-i18n="account.subtitle">Inicia sesión para administrar tus metodos de pago guardados.</p>
     <div id="pmListContainer" class="pm-list"></div>
     <div id="pmFormContainer">
@@ -1027,6 +1052,75 @@ var AZURA_CONFIG = {
         </div>
         <div class="pm-error" id="pmPayError"></div>
         <div class="pm-success" id="pmPaySuccess"></div>
+      </form>
+    </div>
+
+    <hr style="border:none; border-top:1px solid var(--line); margin:28px 0 20px;">
+    <h3 style="font-size:17px; margin-bottom:4px;" data-i18n="account.addressesTitle">Direcciones de envío</h3>
+    <p class="pm-subtitle" data-i18n="account.addressesSubtitle">Guarda una o varias direcciones para tus pedidos.</p>
+    <div id="addrListContainer" class="pm-list"></div>
+    <div id="addrFormContainer">
+      <form id="addressForm" onsubmit="submitAddress(event)">
+        <div class="pm-field">
+          <label data-i18n="account.addrLabelLabel">Etiqueta</label>
+          <select id="addrLabel" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+            <option value="Casa" data-i18n="account.addrLabelHome">Casa</option>
+            <option value="Oficina" data-i18n="account.addrLabelOffice">Oficina</option>
+            <option value="Otro" data-i18n="account.addrLabelOther">Otro</option>
+          </select>
+        </div>
+        <div class="pm-field">
+          <label data-i18n="account.addrRecipientLabel">Nombre de quien recibe</label>
+          <input type="text" id="addrRecipient" style="width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px;">
+        </div>
+        <div class="pm-field">
+          <label data-i18n="account.addrPhoneLabel">Telefono de contacto</label>
+          <input type="tel" id="addrPhone" style="width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px;">
+        </div>
+        <div class="pm-field">
+          <label data-i18n="account.addrStreetLabel">Calle</label>
+          <input type="text" id="addrStreet" style="width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px;">
+        </div>
+        <div style="display:flex; gap:10px;">
+          <div class="pm-field" style="flex:1;">
+            <label data-i18n="account.addrExtLabel">No. exterior</label>
+            <input type="text" id="addrExtNo" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+          </div>
+          <div class="pm-field" style="flex:1;">
+            <label data-i18n="account.addrIntLabel">No. interior (opcional)</label>
+            <input type="text" id="addrIntNo" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+          </div>
+        </div>
+        <div class="pm-field">
+          <label data-i18n="account.addrNeighborhoodLabel">Colonia</label>
+          <input type="text" id="addrNeighborhood" style="width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px;">
+        </div>
+        <div style="display:flex; gap:10px;">
+          <div class="pm-field" style="flex:1;">
+            <label data-i18n="account.addrCityLabel">Ciudad</label>
+            <input type="text" id="addrCity" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+          </div>
+          <div class="pm-field" style="flex:1;">
+            <label data-i18n="account.addrStateLabel">Estado</label>
+            <input type="text" id="addrState" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+          </div>
+          <div class="pm-field" style="flex:1;">
+            <label data-i18n="account.addrZipLabel">C.P.</label>
+            <input type="text" id="addrZip" maxlength="5" pattern="[0-9]{5}" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
+          </div>
+        </div>
+        <div class="pm-field">
+          <label data-i18n="account.addrReferencesLabel">Referencias (opcional)</label>
+          <input type="text" id="addrReferences" style="width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px;">
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; margin-bottom:10px;">
+          <input type="checkbox" id="addrIsDefault"> <span data-i18n="account.addrDefaultLabel">Usar como dirección predeterminada</span>
+        </label>
+        <div class="pm-actions">
+          <button type="submit" class="btn btn-dark" style="flex:1;" data-i18n="account.addrSaveLabel">Guardar dirección</button>
+        </div>
+        <div class="pm-error" id="addrError"></div>
+        <div class="pm-success" id="addrSuccess"></div>
       </form>
     </div>
   </div>
@@ -1361,11 +1455,19 @@ var I18N = {
     "chat.a.fallback":"No tengo esa respuesta. Prueba con envios, pagos, devoluciones, o habla con un asesor.",
     "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
     "cart.checkoutNote":"Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.",
+    "cart.shipToLabel":"Enviar a", "cart.shipToChange":"Cambiar / agregar dirección",
     "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesión para administrar tus metodos de pago guardados.",
     "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Ultimos 4 digitos",
     "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Ano exp.", "account.paypalEmailLabel":"Correo de PayPal",
     "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.",
     "account.saveLabel":"Guardar metodo de pago", "account.closeLabel":"Cerrar",
+    "account.addressesTitle":"Direcciones de envío", "account.addressesSubtitle":"Guarda una o varias direcciones para tus pedidos.",
+    "account.addrLabelLabel":"Etiqueta", "account.addrLabelHome":"Casa", "account.addrLabelOffice":"Oficina", "account.addrLabelOther":"Otro",
+    "account.addrRecipientLabel":"Nombre de quien recibe", "account.addrPhoneLabel":"Telefono de contacto",
+    "account.addrStreetLabel":"Calle", "account.addrExtLabel":"No. exterior", "account.addrIntLabel":"No. interior (opcional)",
+    "account.addrNeighborhoodLabel":"Colonia", "account.addrCityLabel":"Ciudad", "account.addrStateLabel":"Estado", "account.addrZipLabel":"C.P.",
+    "account.addrReferencesLabel":"Referencias (opcional)", "account.addrDefaultLabel":"Usar como dirección predeterminada",
+    "account.addrSaveLabel":"Guardar dirección", "account.logoutLabel":"Cerrar sesión",
     "auth.tabSignin":"Iniciar sesión", "auth.tabSignup":"Crear cuenta",
     "auth.privacyNote":"Usamos tu correo, telefono o datos de Google/Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick=\"openPrivacyModal()\">Ver aviso de privacidad completo</a>.",
     "nl.accountHint":"¿Ya tienes cuenta o quieres crear una? Usa el icono de perfil arriba a la derecha.",
@@ -1475,11 +1577,19 @@ var I18N = {
     "chat.a.fallback":"I don't have that answer. Try shipping, payment, returns, or talk to an advisor.",
     "cart.title":"Your cart", "cart.subtotal":"Subtotal", "cart.checkout":"Proceed to checkout",
     "cart.checkoutNote":"Coming soon: online payment. For now this cart is a working demo, with no real charge.",
+    "cart.shipToLabel":"Ship to", "cart.shipToChange":"Change / add address",
     "account.title":"My account & payment methods", "account.subtitle":"Sign in to manage your saved payment methods.",
     "account.card":"Card", "account.paypal":"PayPal", "account.brandLabel":"Brand", "account.last4Label":"Last 4 digits",
     "account.expMonthLabel":"Exp. month", "account.expYearLabel":"Exp. year", "account.paypalEmailLabel":"PayPal email",
     "account.pciNote":"For security (PCI-DSS/ISO 27001), this site never captures or stores the full card number or CVV. Only the last 4 digits are stored to identify your payment method.",
     "account.saveLabel":"Save payment method", "account.closeLabel":"Close",
+    "account.addressesTitle":"Shipping addresses", "account.addressesSubtitle":"Save one or more addresses for your orders.",
+    "account.addrLabelLabel":"Label", "account.addrLabelHome":"Home", "account.addrLabelOffice":"Office", "account.addrLabelOther":"Other",
+    "account.addrRecipientLabel":"Recipient name", "account.addrPhoneLabel":"Contact phone",
+    "account.addrStreetLabel":"Street", "account.addrExtLabel":"Ext. number", "account.addrIntLabel":"Int. number (optional)",
+    "account.addrNeighborhoodLabel":"Neighborhood", "account.addrCityLabel":"City", "account.addrStateLabel":"State", "account.addrZipLabel":"ZIP code",
+    "account.addrReferencesLabel":"References (optional)", "account.addrDefaultLabel":"Use as default address",
+    "account.addrSaveLabel":"Save address", "account.logoutLabel":"Sign out",
     "auth.tabSignin":"Sign in", "auth.tabSignup":"Create account",
     "auth.privacyNote":"We use your email, phone, or Google/Facebook data only to identify you and save your promotions. <b>We never see or store your password</b> — ISO 27001 compliant, personal data minimization. <a onclick=\"openPrivacyModal()\">See the full privacy notice</a>.",
     "nl.accountHint":"Already have an account or want to create one? Use the profile icon in the top right.",
@@ -1589,11 +1699,19 @@ var I18N = {
     "chat.a.fallback":"Je n'ai pas cette reponse. Essayez livraison, paiement, retours, ou un conseiller.",
     "cart.title":"Votre panier", "cart.subtotal":"Sous-total", "cart.checkout":"Passer au paiement",
     "cart.checkoutNote":"Bientot disponible : paiement en ligne. Pour l'instant ce panier est une demonstration fonctionnelle, sans facturation reelle.",
+    "cart.shipToLabel":"Expedier a", "cart.shipToChange":"Changer / ajouter une adresse",
     "account.title":"Mon compte et moyens de paiement", "account.subtitle":"Connectez-vous pour gerer vos moyens de paiement enregistres.",
     "account.card":"Carte", "account.paypal":"PayPal", "account.brandLabel":"Marque", "account.last4Label":"4 derniers chiffres",
     "account.expMonthLabel":"Mois exp.", "account.expYearLabel":"Annee exp.", "account.paypalEmailLabel":"Email PayPal",
     "account.pciNote":"Par securite (PCI-DSS/ISO 27001), ce site ne capture ni ne stocke jamais le número de carte complet ni le CVV. Seuls les 4 derniers chiffres sont conserves pour identifier votre moyen de paiement.",
     "account.saveLabel":"Enregistrer le moyen de paiement", "account.closeLabel":"Fermer",
+    "account.addressesTitle":"Adresses de livraison", "account.addressesSubtitle":"Enregistrez une ou plusieurs adresses pour vos commandes.",
+    "account.addrLabelLabel":"Etiquette", "account.addrLabelHome":"Domicile", "account.addrLabelOffice":"Bureau", "account.addrLabelOther":"Autre",
+    "account.addrRecipientLabel":"Nom du destinataire", "account.addrPhoneLabel":"Telephone de contact",
+    "account.addrStreetLabel":"Rue", "account.addrExtLabel":"No. exterieur", "account.addrIntLabel":"No. interieur (optionnel)",
+    "account.addrNeighborhoodLabel":"Quartier", "account.addrCityLabel":"Ville", "account.addrStateLabel":"Etat", "account.addrZipLabel":"Code postal",
+    "account.addrReferencesLabel":"References (optionnel)", "account.addrDefaultLabel":"Utiliser comme adresse par defaut",
+    "account.addrSaveLabel":"Enregistrer l'adresse", "account.logoutLabel":"Se deconnecter",
     "auth.tabSignin":"Connexion", "auth.tabSignup":"Creer un compte",
     "auth.privacyNote":"Nous utilisons votre email, telephone ou vos donnees Google/Facebook uniquement pour vous identifier et enregistrer vos promotions. <b>Nous ne voyons ni ne stockons jamais votre mot de passe</b> — conforme ISO 27001, minimisation des donnees personnelles. <a onclick=\"openPrivacyModal()\">Voir l'avis de confidentialite complet</a>.",
     "nl.accountHint":"Vous avez deja un compte ou voulez en creer un ? Utilisez l'icone de profil en haut a droite.",
@@ -1650,6 +1768,10 @@ var DYN = {
        viewDetail:function(){ return 'Ver detalle'; },
        ingredientsLabel:function(){ return 'Ingredientes'; },
        usageLabel:function(){ return 'Modo de uso'; },
+       addrDefaultBadge:function(){ return 'Predeterminada'; },
+       addrSetDefault:function(){ return 'Usar como predeterminada'; },
+       addressSaved:function(){ return 'Dirección guardada.'; },
+       shipToNone:function(){ return 'Aún no tienes direcciones guardadas.'; },
        cartEmpty:function(){ return 'Tu carrito esta vacio todavia.'; },
        productUnavailable:function(){ return 'Este producto ya no esta disponible.'; },
        removeItem:function(){ return 'Quitar'; },
@@ -1752,6 +1874,10 @@ var DYN = {
        viewDetail:function(){ return 'View detail'; },
        ingredientsLabel:function(){ return 'Ingredients'; },
        usageLabel:function(){ return 'How to use'; },
+       addrDefaultBadge:function(){ return 'Default'; },
+       addrSetDefault:function(){ return 'Use as default'; },
+       addressSaved:function(){ return 'Address saved.'; },
+       shipToNone:function(){ return "You don't have any saved addresses yet."; },
        cartEmpty:function(){ return 'Your cart is empty for now.'; },
        productUnavailable:function(){ return 'This product is no longer available.'; },
        removeItem:function(){ return 'Remove'; },
@@ -1854,6 +1980,10 @@ var DYN = {
        viewDetail:function(){ return 'Voir le detail'; },
        ingredientsLabel:function(){ return 'Ingredients'; },
        usageLabel:function(){ return 'Mode d\'emploi'; },
+       addrDefaultBadge:function(){ return 'Par defaut'; },
+       addrSetDefault:function(){ return 'Utiliser par defaut'; },
+       addressSaved:function(){ return 'Adresse enregistree.'; },
+       shipToNone:function(){ return 'Vous n\'avez pas encore d\'adresse enregistree.'; },
        cartEmpty:function(){ return 'Votre panier est vide pour le moment.'; },
        productUnavailable:function(){ return 'Ce produit n\'est plus disponible.'; },
        removeItem:function(){ return 'Retirer'; },
@@ -1949,6 +2079,15 @@ function starsHtml(stars){
 function findProductBySku(products, sku){
   for (var i=0;i<products.length;i++){ if (products[i].sku === sku) return products[i]; }
   return null;
+}
+
+// Formatea montos como "$1,148.00 MXN" (miles con coma, 2 decimales) --
+// usado en el carrito, donde los totales son calculados en JS y antes se
+// mostraban como numero crudo ($1148) sin separador de miles ni centavos.
+function formatMXN(amount){
+  var n = Number(amount);
+  if (isNaN(n)) n = 0;
+  return '$' + n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MXN';
 }
 var reviewPhotoQueue = [];
 var reviewStarsSelected = 5;
@@ -2182,20 +2321,21 @@ function renderCartPanel(cart){
         continue;
       }
       var name = it.name ? (it.name[currentLang] || it.name.es) : it.sku;
-      html += '<div class="cart-line"><div class="cart-line-body"><b>' + name + '</b><span>$' + it.unit_price + ' MXN c/u</span>' +
+      html += '<div class="cart-line"><div class="cart-line-body"><b>' + name + '</b><span>' + formatMXN(it.unit_price) + ' c/u</span>' +
         '<div class="cart-qty"><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty-1) + ')">-</button><span>' + it.qty + '</span><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty+1) + ')">+</button></div>' +
         '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\')">' + DYN[currentLang].removeItem() + '</button>' +
-        '</div><div><b>$' + it.line_total + '</b></div></div>';
+        '</div><div><b>' + formatMXN(it.line_total) + '</b></div></div>';
     }
     itemsEl.innerHTML = html;
   }
-  subtotalEl.textContent = '$' + (cart.subtotal || 0) + ' ' + (cart.currency || 'MXN');
+  subtotalEl.textContent = formatMXN(cart.subtotal || 0);
   renderBagUpsell(cart);
 }
 
 function openCart(){
   if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
   refreshCart();
+  loadAddresses();
   document.getElementById('cartOverlay').classList.add('open');
   document.getElementById('cartPanel').classList.add('open');
   document.body.classList.add('nav-lock');
@@ -2221,9 +2361,26 @@ function openAccountModal(){
   if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
   document.getElementById('accountModalOverlay').classList.add('is-open');
   loadPaymentMethods();
+  loadAddresses();
 }
 function closeAccountModal(){
   document.getElementById('accountModalOverlay').classList.remove('is-open');
+}
+
+// Solo cierra la sesion local (ver saveSessionLocal/restoreSessionLocal) --
+// no hay sesion firmada del lado del servidor todavia (ver db/schema.md
+// seccion 0/9), asi que "cerrar sesion" simplemente olvida quien eres en
+// este navegador y refresca la UI como si nadie hubiera iniciado sesion.
+function logout(){
+  CURRENT_CUSTOMER.id = null;
+  CURRENT_CUSTOMER.name = null;
+  CURRENT_CUSTOMER.profileComplete = false;
+  updateAccountNameDisplay();
+  try { localStorage.removeItem('renuevate_session'); } catch (e) { /* no disponible -- no es fatal */ }
+  closeAccountModal();
+  refreshCart();
+  renderAddressListInAccount([]);
+  updateCartShipTo(null);
 }
 
 /* ===================== Modal de login / crear cuenta (icono del header) ===================== */
@@ -2641,6 +2798,122 @@ function submitPaymentMethod(evt){
   });
 }
 
+/* ===================== Direcciones de envio (conectado a /api/addresses) ===================== */
+// Un cliente puede tener varias direcciones (Casa, Oficina, etc.). loadAddresses()
+// alimenta a la vez la lista del modal "Mi cuenta" (si esta abierto) y el resumen
+// "Enviar a" del carrito -- asi no se duplica el fetch en cada lugar que lo necesita.
+function formatAddressSummary(a){
+  var line1 = a.street + (a.ext_no ? (' ' + a.ext_no) : '') + (a.int_no ? (' Int. ' + a.int_no) : '');
+  var line2 = a.neighborhood + ', ' + a.city + ', ' + a.state + ' ' + a.zip;
+  return line1 + ', ' + line2;
+}
+
+function renderAddressListInAccount(list){
+  var container = document.getElementById('addrListContainer');
+  if (!container) return;
+  if (!list || !list.length){ container.innerHTML = ''; return; }
+  var html = '';
+  for (var i=0;i<list.length;i++){
+    var a = list[i];
+    html += '<div class="addr-row"><b>' + (a.label || DYN[currentLang].addrLabelOther()) + '</b>' +
+      (a.is_default ? ('<span class="addr-badge">' + DYN[currentLang].addrDefaultBadge() + '</span>') : '') +
+      '<p>' + formatAddressSummary(a) + '</p><p>' + a.phone + '</p>' +
+      '<div class="addr-row-actions">' +
+      (a.is_default ? '' : ('<button class="addr-set-default" onclick="setDefaultAddress(\'' + a._id + '\')">' + DYN[currentLang].addrSetDefault() + '</button>')) +
+      '<button class="addr-delete" onclick="deleteAddress(\'' + a._id + '\')">' + DYN[currentLang].removeItem() + '</button>' +
+      '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function updateCartShipTo(list){
+  var wrap = document.getElementById('cartShipTo');
+  var el = document.getElementById('cartShipToValue');
+  if (!wrap || !el) return;
+  if (!CURRENT_CUSTOMER.id){ wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  if (!list || !list.length){
+    el.textContent = DYN[currentLang].shipToNone();
+    return;
+  }
+  var def = list[0];
+  for (var i=0;i<list.length;i++){ if (list[i].is_default){ def = list[i]; break; } }
+  el.textContent = (def.label ? (def.label + ' — ') : '') + formatAddressSummary(def);
+}
+
+function loadAddresses(){
+  if (!CURRENT_CUSTOMER.id){ renderAddressListInAccount([]); updateCartShipTo(null); return; }
+  fetch(AZURA_CONFIG.ADDRESSES_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var list = (data && data.addresses) || [];
+      renderAddressListInAccount(list);
+      updateCartShipTo(list);
+    })
+    .catch(function(){});
+}
+
+function setDefaultAddress(id){
+  fetch(AZURA_CONFIG.ADDRESSES_ENDPOINT, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, id: id, isDefault: true })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(){ loadAddresses(); });
+}
+
+function deleteAddress(id){
+  fetch(AZURA_CONFIG.ADDRESSES_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id) + '&id=' + encodeURIComponent(id), { method: 'DELETE' })
+    .then(function(r){ return r.json(); })
+    .then(function(){ loadAddresses(); });
+}
+
+function submitAddress(evt){
+  evt.preventDefault();
+  var errEl = document.getElementById('addrError');
+  var okEl = document.getElementById('addrSuccess');
+  errEl.className = 'pm-error'; okEl.className = 'pm-success';
+
+  var payload = {
+    customerId: CURRENT_CUSTOMER.id,
+    label: document.getElementById('addrLabel').value,
+    recipientName: document.getElementById('addrRecipient').value.trim(),
+    phone: document.getElementById('addrPhone').value.trim(),
+    street: document.getElementById('addrStreet').value.trim(),
+    extNo: document.getElementById('addrExtNo').value.trim(),
+    intNo: document.getElementById('addrIntNo').value.trim(),
+    neighborhood: document.getElementById('addrNeighborhood').value.trim(),
+    city: document.getElementById('addrCity').value.trim(),
+    state: document.getElementById('addrState').value.trim(),
+    zip: document.getElementById('addrZip').value.trim(),
+    references: document.getElementById('addrReferences').value.trim(),
+    isDefault: document.getElementById('addrIsDefault').checked,
+  };
+
+  fetch(AZURA_CONFIG.ADDRESSES_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
+  .then(function(res){
+    if (res.ok){
+      okEl.textContent = DYN[currentLang].addressSaved();
+      okEl.className = 'pm-success is-visible';
+      document.getElementById('addressForm').reset();
+      loadAddresses();
+    } else {
+      errEl.textContent = (res.data && res.data.error) || 'Error';
+      errEl.className = 'pm-error is-visible';
+    }
+  })
+  .catch(function(err){
+    errEl.textContent = err.message;
+    errEl.className = 'pm-error is-visible';
+  });
+}
+
 // Usado por el onerror inline de las fotos de producto (ver renderVertical) --
 // separado en su propia funcion en vez de inyectar el SVG completo dentro del
 // atributo HTML, porque iconSvg() regresa comillas dobles que romperian el
@@ -2897,7 +3170,11 @@ function updateAccountNameDisplay(){
   var el = document.getElementById('accountNameLabel');
   if (!el) return;
   if (CURRENT_CUSTOMER.id && CURRENT_CUSTOMER.name){
-    el.textContent = CURRENT_CUSTOMER.name.split(/\s+/)[0];
+    var firstName = CURRENT_CUSTOMER.name.split(/\s+/)[0];
+    // Muchos proveedores (Google/Facebook/registro por telefono) regresan el
+    // nombre tal cual lo capturo el usuario -- si lo escribio en minusculas
+    // ("carlos"), aqui se normaliza para mostrar siempre con mayuscula inicial.
+    el.textContent = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     el.style.display = '';
   } else {
     el.textContent = '';
