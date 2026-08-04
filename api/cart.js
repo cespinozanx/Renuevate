@@ -8,6 +8,8 @@
 // GET    /api/cart?customerId=...                        -> carrito con precios actuales
 // POST   /api/cart { customerId, sku, qty }               -> agrega/incrementa
 // PUT    /api/cart { customerId, sku, qty }               -> fija cantidad exacta (qty=0 elimina el item)
+// PUT    /api/cart { customerId, sku, saved: true|false }  -> "Guardar para mas tarde" / regresar al carrito
+//                                                             (no toca qty; un item guardado no cuenta en subtotal)
 // DELETE /api/cart?customerId=...                         -> vacia el carrito completo
 // DELETE /api/cart?customerId=...&sku=...                 -> elimina un item
 //
@@ -37,34 +39,43 @@ function parseCustomerId(raw) {
 
 // Recalcula el carrito contra el catalogo real (products). Si un sku ya no
 // existe o esta inactivo, se marca unavailable:true y se excluye del total,
-// en vez de tronar o cobrar un precio viejo.
+// en vez de tronar o cobrar un precio viejo. Los items marcados saved:true
+// ("Guardar para mas tarde", ver PUT mas abajo) se separan en su propia
+// lista y NUNCA suman al subtotal -- son solo un recordatorio para el
+// cliente, no forman parte de lo que va a pagar.
 async function hydrateCart(db, cartDoc) {
   if (!cartDoc || !cartDoc.items || !cartDoc.items.length) {
-    return { items: [], subtotal: 0, currency: 'MXN' };
+    return { items: [], saved_items: [], subtotal: 0, currency: 'MXN' };
   }
   const skus = cartDoc.items.map((i) => i.sku);
   const products = await db.collection('products').find({ sku: { $in: skus } }).toArray();
   const bySku = new Map(products.map((p) => [p.sku, p]));
 
   let subtotal = 0;
-  const items = cartDoc.items.map((i) => {
+  const items = [];
+  const savedItems = [];
+
+  cartDoc.items.forEach((i) => {
     const product = bySku.get(i.sku);
+    let hydrated;
     if (!product || product.status !== 'active') {
-      return { sku: i.sku, qty: i.qty, unavailable: true };
+      hydrated = { sku: i.sku, qty: i.qty, unavailable: true };
+    } else {
+      const lineTotal = product.unit_price * i.qty;
+      hydrated = {
+        sku: i.sku,
+        qty: i.qty,
+        name: product.name_i18n,
+        unit_price: product.unit_price,
+        line_total: lineTotal,
+        vertical: product.vertical,
+      };
+      if (!i.saved) subtotal += lineTotal;
     }
-    const lineTotal = product.unit_price * i.qty;
-    subtotal += lineTotal;
-    return {
-      sku: i.sku,
-      qty: i.qty,
-      name: product.name_i18n,
-      unit_price: product.unit_price,
-      line_total: lineTotal,
-      vertical: product.vertical,
-    };
+    if (i.saved) savedItems.push(hydrated); else items.push(hydrated);
   });
 
-  return { items, subtotal, currency: 'MXN' };
+  return { items, saved_items: savedItems, subtotal, currency: 'MXN' };
 }
 
 module.exports = async (req, res) => {
@@ -123,11 +134,27 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'PUT') {
-      const { customerId, sku, qty } = req.body || {};
+      const { customerId, sku, qty, saved } = req.body || {};
       const custId = parseCustomerId(customerId);
-      const quantity = Number(qty);
       if (!custId) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
       if (!sku || typeof sku !== 'string') { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
+
+      // Caso "Guardar para mas tarde" / "Mover al carrito": solo cambia la
+      // bandera saved, no toca la cantidad. Se distingue de un cambio de qty
+      // porque el body manda "saved" en vez de "qty".
+      if (saved !== undefined && qty === undefined) {
+        const result = await db.collection('carts').updateOne(
+          { customer_id: custId, status: 'active', 'items.sku': sku },
+          { $set: { 'items.$.saved': Boolean(saved), updated_at: now } }
+        );
+        if (result.matchedCount === 0) { res.status(404).json({ error: `${sku} no esta en el carrito.` }); return; }
+        const cartDoc = await db.collection('carts').findOne({ customer_id: custId, status: 'active' });
+        const hydrated = await hydrateCart(db, cartDoc);
+        res.status(200).json({ ok: true, cart: hydrated });
+        return;
+      }
+
+      const quantity = Number(qty);
       if (!Number.isInteger(quantity) || quantity < 0) { res.status(400).json({ error: 'qty debe ser un entero >= 0.' }); return; }
 
       if (quantity === 0) {

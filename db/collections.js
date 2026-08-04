@@ -343,6 +343,9 @@ const VALIDATORS = {
               qty: { bsonType: 'int', minimum: 1 },
               unit_price_snapshot: { bsonType: ['double', 'int', 'null'] },
               added_at: { bsonType: ['date', 'null'] },
+              // "Guardar para mas tarde" (ver api/cart.js) -- true excluye el
+              // item del subtotal sin borrarlo del carrito.
+              saved: { bsonType: ['bool', 'null'] },
             },
           },
         },

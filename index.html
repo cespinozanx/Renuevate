@@ -215,6 +215,12 @@ section{padding:92px 0;}
 .cart-qty{display:flex; align-items:center; gap:8px;}
 .cart-qty button{width:24px; height:24px; border:1px solid var(--line); background:#fff; cursor:pointer; border-radius:2px; font-size:14px; line-height:1;}
 .cart-line-remove{font-size:11px; color:#B23A3A; background:none; border:none; cursor:pointer; text-decoration:underline; margin-top:4px;}
+.cart-line-actions{display:flex; gap:14px; margin-top:4px;}
+.cart-line-actions .cart-line-remove{margin-top:0;}
+.cart-line-save{font-size:11px; color:var(--navy); background:none; border:none; cursor:pointer; text-decoration:underline; padding:0;}
+.cart-saved-section{margin-top:10px; padding-top:14px; border-top:2px solid var(--line);}
+.cart-saved-title{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--grey); font-weight:700; margin-bottom:6px;}
+.cart-line-saved{opacity:.85;}
 .cart-empty{color:var(--grey); font-size:13.5px; text-align:center; padding:40px 0;}
 .cart-bag-upsell{margin:0 24px 16px; padding:14px; background:var(--cream); border:1px solid var(--line); border-radius:8px;}
 .cart-bag-upsell-title{font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:10px;}
@@ -555,7 +561,7 @@ var AZURA_CONFIG = {
 <div class="topbar">
   <div class="container">
     <div class="topbar-links">
-      <span data-i18n="top.shipping">Envio calculado en checkout . 2 a 5 dias habiles</span>
+      <span data-i18n="top.shipping">Envio calculado en checkout . Entrega en 4 dias habiles</span>
       <span data-i18n="top.location">Cancun . Mexico</span>
       <span data-i18n="top.tagline">Bienestar real, para cada etapa de tu vida</span>
     </div>
@@ -1380,7 +1386,7 @@ var V = {
 /* ===================== Diccionario de idioma para todo el copy estatico ===================== */
 var I18N = {
   es:{
-    "top.shipping":"Envio calculado en checkout . 2 a 5 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
+    "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.raiz":"Suplementos", "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.time":"Speciality Time", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
     "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'El bienestar que <span class="accent">transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
     "hero.p":'Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.',
@@ -1424,7 +1430,7 @@ var I18N = {
     "chat.a.capability":"Te ayudo con envios, pagos, devoluciones, elegir tu sistema o hablar con un asesor.",
     "chat.a.purpose":"Te ayudo a encontrar tu sistema ideal, rapido y sin vueltas.",
     "chat.q.shipping":"Envios", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
-    "chat.a.shipping":"Hacemos envios a todo Mexico, entrega en 2 a 5 dias habiles.",
+    "chat.a.shipping":"Hacemos envios a todo Mexico, entrega en 4 dias habiles.",
     "chat.a.verticals":"4 sistemas: System Time, System Luminous, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
     "chat.a.diagnostic":"Cuentame tu prioridad (energía, piel o rendimiento) y te recomiendo tu sistema.",
     "chat.a.prices":"Precios desde $259 hasta $699 MXN, segun producto.",
@@ -1502,7 +1508,7 @@ var I18N = {
     "faq.q.warranty":"¿Qué pasa si mi producto llega defectuoso?", "faq.q.contact":"¿Cómo los contacto?"
   },
   en:{
-    "top.shipping":"Shipping calculated at checkout . 2 to 5 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
+    "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.raiz":"Supplements", "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.time":"Speciality Time", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
     "hero.eyebrow":"Renuévate . Wellness Holding", "hero.h1":'Wellness that <span class="accent">transforms</span> your life', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
     "hero.p":'Products designed to <span class="accent">accompany</span> every stage of your life.',
@@ -1546,7 +1552,7 @@ var I18N = {
     "chat.a.capability":"I can help with shipping, payment, returns, choosing your system, or a human advisor.",
     "chat.a.purpose":"I help you find your ideal system, fast and simple.",
     "chat.q.shipping":"Shipping", "chat.q.verticals":"Verticals", "chat.q.diagnostic":"How to choose my system", "chat.q.human":"Talk to a human",
-    "chat.a.shipping":"We ship across Mexico, delivery in 2 to 5 business days.",
+    "chat.a.shipping":"We ship across Mexico, delivery in 4 business days.",
     "chat.a.verticals":"4 systems: System Time, System Luminous, System Health and System Spot Speciality. Explore them in the System Speciality menu.",
     "chat.a.diagnostic":"Tell me your priority (energy, skin or performance) and I'll recommend your system.",
     "chat.a.prices":"Prices from $259 to $699 MXN, depending on the product.",
@@ -1624,7 +1630,7 @@ var I18N = {
     "faq.q.warranty":"What happens if my product arrives defective?", "faq.q.contact":"How do I contact you?"
   },
   fr:{
-    "top.shipping":"Livraison calculee au paiement . 2 a 5 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
+    "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.raiz":"Complements", "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.time":"Speciality Time", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
     "hero.eyebrow":"Renuévate . Holding Bien-etre", "hero.h1":'Le bien-etre qui <span class="accent">transforme</span> votre vie', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
     "hero.p":'Des produits concus pour <span class="accent">accompagner</span> chaque etape de votre vie.',
@@ -1668,7 +1674,7 @@ var I18N = {
     "chat.a.capability":"Je peux vous aider avec la livraison, le paiement, les retours, choisir votre systeme, ou un conseiller humain.",
     "chat.a.purpose":"Je vous aide a trouver votre systeme ideal, vite et simplement.",
     "chat.q.shipping":"Livraison", "chat.q.verticals":"Marques", "chat.q.diagnostic":"Comment choisir mon systeme", "chat.q.human":"Parler a un humain",
-    "chat.a.shipping":"Nous livrons partout au Mexique, en 2 a 5 jours ouvres.",
+    "chat.a.shipping":"Nous livrons partout au Mexique, en 4 jours ouvres.",
     "chat.a.verticals":"4 systemes : System Time, System Luminous, System Health et System Spot Speciality. Explorez-les dans le menu System Speciality.",
     "chat.a.diagnostic":"Dites-moi votre priorite (energie, peau, performance) et je recommande votre systeme.",
     "chat.a.prices":"Prix de $259 a $699 MXN, selon le produit.",
@@ -1772,6 +1778,9 @@ var DYN = {
        addrSetDefault:function(){ return 'Usar como predeterminada'; },
        addressSaved:function(){ return 'Dirección guardada.'; },
        shipToNone:function(){ return 'Aún no tienes direcciones guardadas.'; },
+       saveForLater:function(){ return 'Guardar para más tarde'; },
+       moveToCartLabel:function(){ return 'Mover al carrito'; },
+       savedForLaterTitle:function(){ return 'Guardado para más tarde'; },
        cartEmpty:function(){ return 'Tu carrito esta vacio todavia.'; },
        productUnavailable:function(){ return 'Este producto ya no esta disponible.'; },
        removeItem:function(){ return 'Quitar'; },
@@ -1878,6 +1887,9 @@ var DYN = {
        addrSetDefault:function(){ return 'Use as default'; },
        addressSaved:function(){ return 'Address saved.'; },
        shipToNone:function(){ return "You don't have any saved addresses yet."; },
+       saveForLater:function(){ return 'Save for later'; },
+       moveToCartLabel:function(){ return 'Move to cart'; },
+       savedForLaterTitle:function(){ return 'Saved for later'; },
        cartEmpty:function(){ return 'Your cart is empty for now.'; },
        productUnavailable:function(){ return 'This product is no longer available.'; },
        removeItem:function(){ return 'Remove'; },
@@ -1984,6 +1996,9 @@ var DYN = {
        addrSetDefault:function(){ return 'Utiliser par defaut'; },
        addressSaved:function(){ return 'Adresse enregistree.'; },
        shipToNone:function(){ return 'Vous n\'avez pas encore d\'adresse enregistree.'; },
+       saveForLater:function(){ return 'Enregistrer pour plus tard'; },
+       moveToCartLabel:function(){ return 'Deplacer au panier'; },
+       savedForLaterTitle:function(){ return 'Enregistre pour plus tard'; },
        cartEmpty:function(){ return 'Votre panier est vide pour le moment.'; },
        productUnavailable:function(){ return 'Ce produit n\'est plus disponible.'; },
        removeItem:function(){ return 'Retirer'; },
@@ -2304,15 +2319,19 @@ function renderCartPanel(cart){
   var badge = document.getElementById('cartBadge');
   var subtotalEl = document.getElementById('cartSubtotalValue');
   var items = (cart && cart.items) || [];
+  var savedItems = (cart && cart.saved_items) || [];
   var totalQty = items.reduce(function(sum, i){ return sum + (i.qty || 0); }, 0);
 
   if (totalQty > 0){ badge.style.display = 'flex'; badge.textContent = totalQty; }
   else { badge.style.display = 'none'; }
 
-  if (!items.length){
+  if (!items.length && !savedItems.length){
     itemsEl.innerHTML = '<div class="cart-empty">' + DYN[currentLang].cartEmpty() + '</div>';
   } else {
     var html = '';
+    if (!items.length){
+      html += '<div class="cart-empty">' + DYN[currentLang].cartEmpty() + '</div>';
+    }
     for (var i=0;i<items.length;i++){
       var it = items[i];
       if (it.unavailable){
@@ -2323,13 +2342,55 @@ function renderCartPanel(cart){
       var name = it.name ? (it.name[currentLang] || it.name.es) : it.sku;
       html += '<div class="cart-line"><div class="cart-line-body"><b>' + name + '</b><span>' + formatMXN(it.unit_price) + ' c/u</span>' +
         '<div class="cart-qty"><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty-1) + ')">-</button><span>' + it.qty + '</span><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty+1) + ')">+</button></div>' +
-        '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\')">' + DYN[currentLang].removeItem() + '</button>' +
+        '<div class="cart-line-actions"><button class="cart-line-save" onclick="saveForLater(\'' + it.sku + '\')">' + DYN[currentLang].saveForLater() + '</button>' +
+        '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div>' +
         '</div><div><b>' + formatMXN(it.line_total) + '</b></div></div>';
     }
+
+    if (savedItems.length){
+      html += '<div class="cart-saved-section"><div class="cart-saved-title">' + DYN[currentLang].savedForLaterTitle() + ' (' + savedItems.length + ')</div>';
+      for (var s=0;s<savedItems.length;s++){
+        var sv = savedItems[s];
+        if (sv.unavailable){
+          html += '<div class="cart-line cart-line-saved"><div class="cart-line-body"><b>' + sv.sku + '</b><span>' + DYN[currentLang].productUnavailable() + '</span>' +
+            '<button class="cart-line-remove" onclick="removeCartItem(\'' + sv.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div></div>';
+          continue;
+        }
+        var svName = sv.name ? (sv.name[currentLang] || sv.name.es) : sv.sku;
+        html += '<div class="cart-line cart-line-saved"><div class="cart-line-body"><b>' + svName + '</b><span>' + formatMXN(sv.unit_price) + ' c/u &middot; x' + sv.qty + '</span>' +
+          '<div class="cart-line-actions"><button class="cart-line-save" onclick="moveToCart(\'' + sv.sku + '\')">' + DYN[currentLang].moveToCartLabel() + '</button>' +
+          '<button class="cart-line-remove" onclick="removeCartItem(\'' + sv.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div>' +
+          '</div></div>';
+      }
+      html += '</div>';
+    }
+
     itemsEl.innerHTML = html;
   }
   subtotalEl.textContent = formatMXN(cart.subtotal || 0);
   renderBagUpsell(cart);
+}
+
+function saveForLater(sku){
+  if (!CURRENT_CUSTOMER.id) return;
+  fetch(AZURA_CONFIG.CART_ENDPOINT, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, saved: true })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
+}
+
+function moveToCart(sku){
+  if (!CURRENT_CUSTOMER.id) return;
+  fetch(AZURA_CONFIG.CART_ENDPOINT, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, saved: false })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
 }
 
 function openCart(){
@@ -2575,7 +2636,7 @@ var TERMS_CONTENT = {
     { h:'1. Aceptacion de los terminos', p:'Al usar Renuévate (operado por GoNexus Group) y realizar una compra, aceptas estos Terminos y Condiciones y el Aviso de Privacidad.' },
     { h:'2. Naturaleza del sitio', p:'Renuévate es una tienda 100% en linea. No operamos tienda fisica ni punto de venta presencial por el momento.' },
     { h:'3. Precios y disponibilidad', p:'Los precios se muestran en pesos mexicanos (MXN) e incluyen impuestos aplicables salvo que se indique lo contrario. Los precios y la disponibilidad de producto pueden cambiar sin previo aviso.' },
-    { h:'4. Envios', p:'Realizamos envios a todo Mexico con entrega estimada de 2 a 5 dias habiles. Te enviamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.' },
+    { h:'4. Envios', p:'Realizamos envios a todo Mexico con entrega estimada de 4 dias habiles. Te enviamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.' },
     { h:'5. Devoluciones', p:'Estamos formalizando nuestra política de devoluciones. Mientras tanto, cada caso se resuelve directamente contigo por WhatsApp.' },
     { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catálogo. Para comprar, puedes iniciar sesión con Google, Facebook o tu telefono. Eres responsable de mantener la confidencialidad de tu acceso.' },
     { h:'7. Pagos', p:'Aceptamos tarjeta, debito y PayPal. Nunca capturamos ni almacenamos el número completo de tu tarjeta ni el CVV en nuestros servidores (control PCI-DSS/ISO 27001).' },
@@ -2590,7 +2651,7 @@ var TERMS_CONTENT = {
     { h:'1. Acceptance of terms', p:'By using Renuévate (operated by GoNexus Group) and placing an order, you accept these Terms and Conditions and the Privacy Notice.' },
     { h:'2. Nature of the site', p:'Renuévate is a 100% online store. We do not operate a physical store or point of sale at this time.' },
     { h:'3. Pricing and availability', p:'Prices are shown in Mexican pesos (MXN) and include applicable taxes unless stated otherwise. Prices and product availability may change without notice.' },
-    { h:'4. Shipping', p:'We ship across Mexico with an estimated delivery of 2 to 5 business days. We send your tracking number by email and WhatsApp once your order ships.' },
+    { h:'4. Shipping', p:'We ship across Mexico with an estimated delivery of 4 business days. We send your tracking number by email and WhatsApp once your order ships.' },
     { h:'5. Returns', p:'We are still formalizing our returns policy. In the meantime, each case is resolved directly with you via WhatsApp.' },
     { h:'6. Accounts and access', p:'You do not need an account to browse the catalog. To purchase, you can sign in with Google, Facebook, or your phone. You are responsible for keeping your access confidential.' },
     { h:'7. Payments', p:'We accept card, debit, and PayPal. We never capture or store your full card number or CVV on our servers (PCI-DSS/ISO 27001 control).' },
@@ -2605,7 +2666,7 @@ var TERMS_CONTENT = {
     { h:'1. Acceptation des conditions', p:'En utilisant Renuévate (exploite par GoNexus Group) et en passant une commande, vous acceptez ces Conditions Generales et l\'Avis de Confidentialite.' },
     { h:'2. Nature du site', p:'Renuévate est une boutique 100% en ligne. Nous n\'exploitons pas de boutique physique pour le moment.' },
     { h:'3. Prix et disponibilite', p:'Les prix sont affiches en pesos mexicains (MXN) et incluent les taxes applicables sauf indication contraire. Les prix et la disponibilite des produits peuvent changer sans preavis.' },
-    { h:'4. Livraison', p:'Nous livrons partout au Mexique avec une livraison estimee de 2 a 5 jours ouvres. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
+    { h:'4. Livraison', p:'Nous livrons partout au Mexique avec une livraison estimee de 4 jours ouvres. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
     { h:'5. Retours', p:'Nous finalisons notre politique de retours. En attendant, chaque cas est traite directement avec vous via WhatsApp.' },
     { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google, Facebook ou votre telephone. Vous etes responsable de la confidentialite de votre acces.' },
     { h:'7. Paiements', p:'Carte, debit et PayPal acceptes. Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
