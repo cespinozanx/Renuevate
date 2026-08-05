@@ -149,6 +149,18 @@ const PRODUCTS = [
   { sku: 'ROBLE-04', vertical: 'roble', price: '$389 MXN', rating: { stars: 4.4, count: 176 }, related: ['ROBLE-03'],
     name_i18n: { es: 'Shampoo Anticaida Roble', en: 'Roble Anti-Hair-Loss Shampoo', fr: 'Shampoing Anti-Chute Roble' },
     description_i18n: { es: 'Fortalece desde la raiz.', en: 'Strengthens from the root.', fr: 'Renforce depuis la racine.' } },
+
+  // Accesorios de carrito (upsell de bolsas, ver BAG_MODELS en index.html).
+  // vertical:'accessory' a proposito -- no pertenecen a ninguno de los 4
+  // sistemas, asi que nunca aparecen en el grid de productos por vertical,
+  // solo en el panel del carrito. Antes de este seed no existian en Mongo,
+  // por eso addToCart('BAG-...') tronaba con "producto no existe".
+  { sku: 'BAG-LINO-BEIGE', vertical: 'accessory', price: '$249 MXN', related: [],
+    name_i18n: { es: 'Bolsa Lino Beige', en: 'Beige Linen Bag', fr: 'Sac Lin Beige' },
+    description_i18n: { es: 'Compacta, ideal para tu rutina de 2 a 4 productos.', en: 'Compact, ideal for a 2 to 4 product routine.', fr: 'Compact, ideal pour 2 a 4 produits.' } },
+  { sku: 'BAG-TERRACOTA', vertical: 'accessory', price: '$329 MXN', related: [],
+    name_i18n: { es: 'Bolsa Terracota XL', en: 'Terracotta XL Bag', fr: 'Sac Terracotta XL' },
+    description_i18n: { es: 'Mas espacio, para viajar con tu sistema completo.', en: 'More room, to travel with your full system.', fr: "Plus d'espace pour voyager avec votre systeme complet." } },
 ];
 
 async function main() {

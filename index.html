@@ -15,7 +15,7 @@
   --navy:#1E1E1E; --navy-2:#2A2A2A; --gold:#C6A86B; --cream:#F8F7F3; --beige:#EFE9E1; --ink:#1E1E1E; --grey:#5E5E5E; --line:#D9D9D9;
   /* Verticales - color de acento propio sobre la misma base holding */
   --raiz:#6D8F6C; --raiz-2:#9CAF7E; --raiz-soft:#F2F5EE;
-  --nacar:#DBAC5B; --nacar-2:#000000; --nacar-soft:#FDD07A;
+  --nacar:#DBAC5B; --nacar-2:#000000; --nacar-soft:#FBF1DE;
   --vigor:#456B8A; --vigor-2:#2F4E66; --vigor-soft:#EBF1F5;
   --roble:#2F3A44; --roble-2:#5B6B76; --roble-soft:#EEF0F1;
   --active: var(--raiz); --active-2: var(--raiz-2); --active-soft: var(--raiz-soft);
@@ -268,8 +268,8 @@ section{padding:92px 0;}
 .pm-type-toggle button.sel{border-color:var(--navy); background:var(--navy); color:#fff;}
 .pm-pci-note{font-size:10.5px; color:var(--grey); margin:10px 0; line-height:1.5; background:var(--cream); padding:10px; border-radius:3px;}
 
-.routine-block{background:var(--active-soft); border-radius:6px; padding:46px; margin-bottom:20px;}
-.routine-head{text-align:center; max-width:520px; margin:0 auto 36px;}
+.routine-block{background:linear-gradient(180deg, var(--active-soft) 0%, #fff 100%); border-radius:6px; padding:34px 34px 30px; margin-bottom:20px;}
+.routine-head{text-align:center; max-width:520px; margin:0 auto 24px;}
 .routine-cards{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
 .routine-card{background:#fff; border-radius:4px; padding:26px; text-align:center; cursor:pointer; border:2px solid transparent; transition:.2s;}
 .routine-card.sel{border-color:var(--active);}
@@ -344,6 +344,17 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .privacy-modal{background:#fff; max-width:640px; width:100%; border-radius:4px; padding:36px 34px; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:88vh; overflow-y:auto; position:relative;}
 .privacy-modal h3{font-size:23px; margin-bottom:4px;}
 .privacy-modal .pm-subtitle{color:var(--grey); font-size:12.5px; margin-bottom:22px;}
+.coming-soon-modal{max-width:400px; text-align:center;}
+.coming-soon-modal .cs-icon{width:56px; height:56px; border-radius:50%; background:var(--cream); color:var(--gold); display:flex; align-items:center; justify-content:center; margin:0 auto 18px;}
+.coming-soon-modal .eyebrow{display:block; margin-bottom:8px;}
+.coming-soon-modal h3{font-size:21px;}
+.coming-soon-modal .pm-subtitle{margin-bottom:24px; line-height:1.6;}
+.subscribe-thanks-modal{max-width:400px; text-align:center;}
+.subscribe-thanks-modal .logo{font-size:24px; margin-bottom:2px;}
+.subscribe-thanks-modal .logo-sub{font-size:10.5px; letter-spacing:2px; text-transform:uppercase; color:var(--grey); margin-bottom:20px;}
+.subscribe-thanks-modal .cs-icon{width:52px; height:52px; border-radius:50%; background:var(--cream); color:var(--gold); display:flex; align-items:center; justify-content:center; margin:0 auto 18px;}
+.subscribe-thanks-modal h3{font-size:20px; margin-bottom:10px;}
+.subscribe-thanks-modal .pm-subtitle{margin-bottom:22px; line-height:1.6;}
 .privacy-modal .priv-section{margin-bottom:18px;}
 .privacy-modal .priv-section h4{font-size:14px; margin-bottom:6px; color:var(--navy);}
 .privacy-modal .priv-section p{font-size:13px; line-height:1.65; color:var(--ink);}
@@ -628,7 +639,7 @@ var AZURA_CONFIG = {
       <h1 data-i18n-html="hero.h1">El bienestar que <span class="accent">transforma</span> tu vida</h1>
       <p data-i18n-html="hero.p">Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.</p>
       <div class="hero-cta hero-cta-sm">
-        <a class="btn btn-dark" onclick="scrollToId('verticales')" data-i18n="hero.cta1">Explorar el catálogo</a>
+        <a class="btn btn-dark" onclick="goVertical(currentV)" data-i18n="hero.cta1">Explorar el catálogo</a>
         <a class="btn btn-outline" onclick="scrollToId('filosofia')" data-i18n="hero.cta2">Nuestra filosofia</a>
       </div>
     </div>
@@ -725,7 +736,7 @@ var AZURA_CONFIG = {
         <div class="eyebrow" data-i18n="zoom.featured">Sistema destacado</div>
         <h3 id="zoomBannerTitle">System Time Speciality: bienestar diario</h3>
         <p id="zoomBannerText">Una rutina de tres pasos pensada para sostener tu energía y equilibrio desde el interior, con ingredientes de origen natural certificado.</p>
-        <a class="btn btn-vertical" style="margin-top:22px;" data-i18n="zoom.knowRitual">Conocer el sistema</a>
+        <a class="btn btn-vertical" style="margin-top:22px; cursor:pointer;" onclick="openComingSoon()" data-i18n="zoom.knowRitual">Conocer el sistema</a>
       </div>
       <div class="zoom-stats reveal-stagger">
         <div><b id="stat1">96%</b><span data-i18n="zoom.stat1Label">SATISFACCION*</span></div>
@@ -792,7 +803,7 @@ var AZURA_CONFIG = {
       <a onclick="openFaqModal()" data-i18n="footer.faq">Preguntas frecuentes</a>
       <a onclick="openChat()" data-i18n="footer.chat">Chatea con el asistente</a>
     </div>
-    <div><h5 data-i18n="footer.hCompania">Compania</h5>
+    <div><h5 data-i18n="footer.hCompania">Compañía</h5>
       <a data-i18n="footer.about">Sobre Renuévate</a>
       <a data-i18n="footer.sustainability">Sostenibilidad</a>
       <a data-i18n="footer.careers">Trabaja con nosotros</a>
@@ -809,7 +820,7 @@ var AZURA_CONFIG = {
       <span data-i18n="footer.prototypeNote">Diseñado en México, para tu bienestar.</span>
     </div>
     <select class="lang-select" id="langSelect" onchange="applyLanguage(this.value)" aria-label="Idioma / Language / Langue">
-      <option value="es">ES · Espanol</option>
+      <option value="es">ES · Español</option>
       <option value="en">EN · English</option>
       <option value="fr">FR · Francais</option>
     </select>
@@ -819,7 +830,7 @@ var AZURA_CONFIG = {
 <div class="profile-modal-overlay" id="profileModalOverlay">
   <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
     <h3 id="pmTitle" data-i18n="profile.title">Completa tu perfil</h3>
-    <p class="pm-subtitle" data-i18n="profile.subtitle">Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.</p>
+    <p class="pm-subtitle" data-i18n="profile.subtitle">Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.</p>
     <form id="profileForm" onsubmit="submitProfileForm(event)">
       <div class="pm-field">
         <label for="pmPhone" data-i18n="profile.phoneLabel">Telefono (con codigo de pais)</label>
@@ -830,7 +841,7 @@ var AZURA_CONFIG = {
         <label for="pmBirthDate" data-i18n="profile.birthLabel">Fecha de nacimiento</label>
         <input type="date" id="pmBirthDate" name="pmBirthDate" required>
       </div>
-      <label class="pm-consent"><input type="checkbox" id="pmConsentEmail" required> <span data-i18n="profile.consentEmailLabel">Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)</span></label>
+      <label class="pm-consent"><input type="checkbox" id="pmConsentEmail" required> <span data-i18n="profile.consentEmailLabel">Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)</span></label>
       <label class="pm-consent"><input type="checkbox" id="pmConsentSms"> <span data-i18n="profile.consentSmsLabel">Tambien por SMS</span></label>
       <label class="pm-consent"><input type="checkbox" id="pmConsentWhatsapp"> <span data-i18n="profile.consentWhatsappLabel">Tambien por WhatsApp</span></label>
       <div class="pm-actions">
@@ -878,7 +889,7 @@ var AZURA_CONFIG = {
           <label for="authPhoneBirth" data-i18n="profile.birthLabel">Fecha de nacimiento</label>
           <input type="date" id="authPhoneBirth">
         </div>
-        <label class="pm-consent"><input type="checkbox" id="authPhoneConsentEmail" required> <span data-i18n="profile.consentEmailLabel">Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)</span></label>
+        <label class="pm-consent"><input type="checkbox" id="authPhoneConsentEmail" required> <span data-i18n="profile.consentEmailLabel">Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)</span></label>
         <label class="pm-consent"><input type="checkbox" id="authPhoneConsentSms"> <span data-i18n="profile.consentSmsLabel">Tambien por SMS</span></label>
         <button type="button" class="btn btn-outline" style="width:100%; justify-content:center;" onclick="requestPhoneCode()" data-i18n="auth.phoneSendCode">Enviar codigo por SMS</button>
         <div class="pm-error" id="authPhoneError"></div>
@@ -958,6 +969,33 @@ var AZURA_CONFIG = {
     <h3 id="faqTitle" data-i18n="faq.title">Preguntas Frecuentes</h3>
     <p class="pm-subtitle" data-i18n="faq.subtitle">Todo lo que hoy responde Julieta, en un solo lugar.</p>
     <div id="faqBody"></div>
+  </div>
+</div>
+
+<div class="profile-modal-overlay" id="comingSoonOverlay" onclick="if(event.target===this) closeComingSoon();">
+  <div class="privacy-modal coming-soon-modal" role="dialog" aria-modal="true" aria-labelledby="comingSoonTitle">
+    <button class="privacy-modal-close" onclick="closeComingSoon()" aria-label="Cerrar">&times;</button>
+    <div class="cs-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v3"/><path d="M12 19v3"/><path d="M4.2 4.2l2.1 2.1"/><path d="M17.7 17.7l2.1 2.1"/><path d="M2 12h3"/><path d="M19 12h3"/><path d="M4.2 19.8l2.1-2.1"/><path d="M17.7 6.3l2.1-2.1"/></svg>
+    </div>
+    <span class="eyebrow" data-i18n="comingSoon.eyebrow">Contenido en preparación</span>
+    <h3 id="comingSoonTitle" data-i18n="comingSoon.title">Estamos afinando este contenido</h3>
+    <p class="pm-subtitle" data-i18n="comingSoon.body">Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.</p>
+    <button type="button" class="btn btn-dark" style="width:100%; border:none; cursor:pointer;" onclick="closeComingSoon()" data-i18n="comingSoon.cta">Entendido</button>
+  </div>
+</div>
+
+<div class="profile-modal-overlay" id="subscribeThanksOverlay" onclick="if(event.target===this) closeSubscribeThanks();">
+  <div class="privacy-modal subscribe-thanks-modal" role="dialog" aria-modal="true" aria-labelledby="subscribeThanksTitle">
+    <button class="privacy-modal-close" onclick="closeSubscribeThanks()" aria-label="Cerrar">&times;</button>
+    <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
+    <div class="logo-sub">. Holding de Bienestar</div>
+    <div class="cs-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h3 id="subscribeThanksTitle" data-i18n="subscribeThanks.title">Gracias por suscribirte</h3>
+    <p class="pm-subtitle" data-i18n="subscribeThanks.body">Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.</p>
+    <button type="button" class="btn btn-dark" style="width:100%; border:none; cursor:pointer;" onclick="closeSubscribeThanks()" data-i18n="subscribeThanks.cta">Entendido</button>
   </div>
 </div>
 
@@ -1045,7 +1083,7 @@ var AZURA_CONFIG = {
               <input type="number" id="pmExpMonth" min="1" max="12" placeholder="MM" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
             </div>
             <div class="pm-field" style="flex:1;">
-              <label data-i18n="account.expYearLabel">Ano exp.</label>
+              <label data-i18n="account.expYearLabel">Año exp.</label>
               <input type="number" id="pmExpYear" min="2024" placeholder="YYYY" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
             </div>
           </div>
@@ -1346,7 +1384,7 @@ var V = {
   },
   roble: {
     name:"System Spot Speciality",
-    es:{ full:"System Spot Speciality - Cuidado para hombre", sub:"Grooming funcional, sin complicaciones ni infantilizar al usuario.",
+    es:{ full:"System Spot Speciality - Cuidado para hombre", sub:"Grooming práctico y sin rodeos, pensado para tu rutina diaria.",
       bannerTitle:"System Spot Speciality: cuidado esencial",
       bannerText:"Una rutina de cuidado simple y efectiva, pensada para integrarse en menos de cinco minutos al dia.",
       tag:"Cuidado para hombre", msg:"Fuerza que se cuida a si misma.", bmLabel:"Speciality Spot",
@@ -1359,7 +1397,7 @@ var V = {
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza facial diaria."},{title:"Rutina intermedia", desc:"suma cuidado de barba."},{title:"Rutina completa", desc:"protocolo facial + corporal + capilar."}]
     },
-    en:{ full:"System Spot Speciality - Men's Care", sub:"Functional grooming, uncomplicated and never dumbed down.",
+    en:{ full:"System Spot Speciality - Men's Care", sub:"Practical, no-nonsense grooming, built for your daily routine.",
       bannerTitle:"The System Spot Speciality essential care",
       bannerText:"A simple, effective care routine designed to fit into less than five minutes a day.",
       tag:"Men's care", msg:"Strength that takes care of itself.", bmLabel:"Speciality Spot",
@@ -1372,7 +1410,7 @@ var V = {
       ],
       routines:[{title:"Essential routine", desc:"daily facial cleansing."},{title:"Intermediate routine", desc:"adds beard care."},{title:"Complete routine", desc:"facial + body + hair protocol."}]
     },
-    fr:{ full:"System Spot Speciality - Soin pour Homme", sub:"Grooming fonctionnel, sans complications ni infantilisation.",
+    fr:{ full:"System Spot Speciality - Soin pour Homme", sub:"Grooming pratique et sans detour, pense pour votre routine quotidienne.",
       bannerTitle:"Le System Spot Speciality de soin essentiel",
       bannerText:"Une routine de soin simple et efficace, concue pour tenir en moins de cinq minutes par jour.",
       tag:"Soin pour homme", msg:"Une force qui prend soin d'elle-meme.", bmLabel:"Speciality Spot",
@@ -1410,22 +1448,24 @@ var I18N = {
     "phil.pillar4h":"Un solo estándar", "phil.pillar4p":"Las cuatro marcas comparten un mismo estándar de calidad y servicio.",
     "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;",
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
+    "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
     "zoom.routineEyebrow":"Que rutina es para ti?", "zoom.routineH2":"Encuentra tu combo ideal", "zoom.routineP":"Selecciona tu nivel de experiencia y te sugerimos la rutina adecuada.",
     "nl.eyebrow":"Unete a Renuévate", "nl.h2":'Recibe <span class="accent">novedades</span> y acceso anticipado a tus sistemas favoritos',
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
+    "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
     "footer.brandP":"System Time, Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
     "footer.hVerticales":"System Speciality", "footer.raiz":"Speciality Time", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envios y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
-    "footer.hCompania":"Compania", "footer.about":"Sobre Renuévate", "footer.sustainability":"Sostenibilidad", "footer.careers":"Trabaja con nosotros",
+    "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate", "footer.sustainability":"Sostenibilidad", "footer.careers":"Trabaja con nosotros",
     "footer.hLegal":"Legal", "footer.privacy":"Aviso de privacidad", "footer.terms":"Términos y condiciones", "footer.cookies":"Política de cookies",
     "footer.copyright":"&copy; 2026 Renuévate. Todos los derechos reservados.", "footer.prototypeNote":"Diseñado en México, para tu bienestar.",
     "chat.subtitle":"En linea . tu asesora de bienestar Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
     "chat.menu.categories":"Categorias", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
-    "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.",
+    "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.",
     "profile.phoneLabel":"Telefono (con codigo de pais)", "profile.phoneHint":"Si eres de Mexico, puedes escribir solo tu numero a 10 digitos. Otros paises: formato internacional, ej. +1 para EE.UU.",
     "profile.birthLabel":"Fecha de nacimiento",
-    "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)",
+    "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)",
     "profile.consentSmsLabel":"Tambien por SMS", "profile.consentWhatsappLabel":"Tambien por WhatsApp",
     "profile.submitLabel":"Guardar perfil", "profile.skipLabel":"Ahora no", "profile.phonePlaceholder":"+525512345678",
     "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de bienestar Renuévate. ¿En que te ayudo hoy?",
@@ -1459,16 +1499,16 @@ var I18N = {
     "chat.a.discount":"Los codigos de descuento se aplican en el campo de cupon del checkout.",
     "chat.a.warranty":"Si tu producto llega defectuoso lo cambiamos sin costo. Escribenos por WhatsApp con fotos de tu pedido.",
     "chat.q.payment":"Pagos", "chat.q.returns":"Devoluciones",
-    "chat.a.recommend.needAge":"Para afinar tu recomendacion, cuentame tu edad. Por ejemplo: tengo 40 anos.",
+    "chat.a.recommend.needAge":"Para afinar tu recomendacion, cuentame tu edad. Por ejemplo: tengo 40 años.",
     "chat.a.recommend.needGender":"Para afinar tu recomendacion, cuentame si buscas algo para mujer u hombre.",
-    "chat.a.recommend.needBoth":"Cuentame tu edad y si buscas algo para mujer u hombre y te doy una recomendacion puntual. Por ejemplo: tengo 40 anos, soy mujer.",
+    "chat.a.recommend.needBoth":"Cuentame tu edad y si buscas algo para mujer u hombre y te doy una recomendacion puntual. Por ejemplo: tengo 40 años, soy mujer.",
     "chat.a.fallback":"No tengo esa respuesta. Prueba con envios, pagos, devoluciones, o habla con un asesor.",
     "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
     "cart.checkoutNote":"Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.",
     "cart.shipToLabel":"Enviar a", "cart.shipToChange":"Cambiar / agregar dirección",
     "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesión para administrar tus metodos de pago guardados.",
     "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Ultimos 4 digitos",
-    "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Ano exp.", "account.paypalEmailLabel":"Correo de PayPal",
+    "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Año exp.", "account.paypalEmailLabel":"Correo de PayPal",
     "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.",
     "account.saveLabel":"Guardar metodo de pago", "account.closeLabel":"Cerrar",
     "account.addressesTitle":"Direcciones de envío", "account.addressesSubtitle":"Guarda una o varias direcciones para tus pedidos.",
@@ -1531,10 +1571,12 @@ var I18N = {
     "phil.pillar4h":"One single standard", "phil.pillar4p":"All 4 brands share the same quality governance and customer service.",
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: wellness first.&rdquo;",
     "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
+    "comingSoon.eyebrow":"Content coming soon", "comingSoon.title":"We're polishing this content", "comingSoon.body":"There's nothing wrong with this Renuévate section: we're still refining the full detail of this system so we can show it to you properly. Check back soon.", "comingSoon.cta":"Got it",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"TO SEE RESULTS*", "zoom.stat3Label":"VERIFIED ORIGIN",
     "zoom.routineEyebrow":"Which routine is right for you?", "zoom.routineH2":"Find your ideal combo", "zoom.routineP":"Select your experience level and we'll suggest the right routine.",
     "nl.eyebrow":"Join Renuévate", "nl.h2":'Get <span class="accent">news</span> and early access to your favorite systems',
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
+    "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
     "footer.brandP":"System Time, Luminous, Health and Spot: wellness habits for every stage of your life.",
     "footer.hVerticales":"System Speciality", "footer.raiz":"Speciality Time", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
@@ -1652,10 +1694,12 @@ var I18N = {
     "phil.pillar4h":"Un seul standard", "phil.pillar4p":"Les 4 marques partagent la meme gouvernance qualite et le meme service client.",
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Systeme phare", "zoom.knowRitual":"Decouvrir le systeme",
+    "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce systeme pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RESULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
     "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo ideal", "zoom.routineP":"Selectionnez votre niveau d'experience et nous vous suggerons la routine adaptee.",
     "nl.eyebrow":"Rejoindre Renuévate", "nl.h2":'Recevez des <span class="accent">nouveautes</span> et un acces anticipe a vos systemes favoris',
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
+    "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un acces anticipe a nos systemes.", "subscribeThanks.cta":"Compris",
     "footer.brandP":"System Time, Luminous, Health et Spot : des habitudes de bien-etre pour chaque etape de votre vie.",
     "footer.hVerticales":"System Speciality", "footer.raiz":"Speciality Time", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre systeme", "footer.shipping":"Livraison et retours", "footer.faq":"Questions frequentes", "footer.chat":"Discuter avec l'assistant",
@@ -1790,7 +1834,7 @@ var DYN = {
        bagAddLabel:function(){ return '+ Agregar'; },
        loginRequired:function(){ return 'Inicia sesión con Google o Facebook para agregar productos al carrito, guardar tu metodo de pago o dejar una resena.'; },
        paymentSaved:function(){ return 'Metodo de pago guardado.'; },
-       loadingReviews:function(){ return 'Cargando resenas...'; },
+       loadingReviews:function(){ return 'Cargando reseñas...'; },
        shareExperience:function(){ return 'Comparte tu experiencia'; },
        reviewPlaceholder:function(){ return 'Cuentanos que te parecio (opcional)'; },
        submitReview:function(){ return 'Publicar resena'; },
@@ -1803,21 +1847,21 @@ var DYN = {
        authAlreadyHaveLink:function(){ return 'Inicia sesión'; },
        profile:{
          title:'Completa tu perfil',
-         subtitle:'Con esto activamos tus promociones de cumpleanos y tu programa de lealtad.',
+         subtitle:'Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.',
          phoneLabel:'Telefono (con codigo de pais)',
          phonePlaceholder:'+525512345678',
          phoneHint:'Formato internacional E.164, ej. +52 para Mexico.',
          birthLabel:'Fecha de nacimiento',
-         consentEmailLabel:'Acepto recibir promociones por correo (requerido para cumpleanos y lealtad)',
+         consentEmailLabel:'Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)',
          consentSmsLabel:'Tambien por SMS',
          consentWhatsappLabel:'Tambien por WhatsApp',
          submitLabel:'Guardar perfil',
          skipLabel:'Ahora no',
-         successMsg:'Perfil completo. Ya calificas a promociones de cumpleanos y lealtad.',
-         successPartial:'Guardado. Sin el consentimiento de correo no calificas a promociones de cumpleanos ni lealtad todavia.',
+         successMsg:'Perfil completo. Ya calificas a promociones de cumpleaños y lealtad.',
+         successPartial:'Guardado. Sin el consentimiento de correo no calificas a promociones de cumpleaños ni lealtad todavia.',
          errorPrefix:function(msg){ return 'No pudimos guardar tu perfil (' + msg + ').'; },
        },
-       recommend:function(age,gender,v1,v2){ return 'Con ' + age + ' anos, te recomiendo empezar por <b>' + v1 + '</b> y complementarlo con <b>' + v2 + '</b> para tu bienestar diario. Te llevo a conocer ' + v1 + '...'; },
+       recommend:function(age,gender,v1,v2){ return 'Con ' + age + ' años, te recomiendo empezar por <b>' + v1 + '</b> y complementarlo con <b>' + v2 + '</b> para tu bienestar diario. Te llevo a conocer ' + v1 + '...'; },
        julieta:{
          goalQuestion:function(){ return 'Cual es tu prioridad hoy? 🌿'; },
          goalOptions:function(){ return [
@@ -2285,9 +2329,17 @@ function addToCart(sku){
   .then(function(r){ return r.json(); })
   .then(function(data){
     if (data && data.ok){ renderCartPanel(data.cart); openCart(); }
-    else { alert((data && data.error) || 'Error al agregar al carrito.'); }
+    else {
+      // Modelo de negocio: compra bajo demanda (just-in-time) -- el cliente
+      // nunca deberia ver un mensaje tecnico de "producto no existe / sin
+      // inventario". Si esto ocurre es un problema de catalogo (sku no
+      // sembrado en Mongo, ver db/seed-products.js), no de stock real -- se
+      // registra en consola para diagnostico interno en vez de interrumpir
+      // al cliente con un alert().
+      console.error('addToCart: no se pudo agregar', sku, data && data.error);
+    }
   })
-  .catch(function(err){ alert(err.message); });
+  .catch(function(err){ console.error('addToCart: error de red', err); });
 }
 
 function refreshCart(){
@@ -2574,8 +2626,8 @@ var PRIVACY_CONTENT = {
   es: {
     sections: [
       { h:'1. Responsable de tus datos', p:'Renuévate (operado por GoNexus Group) es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
-      { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, resenas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el número completo ni el CVV).' },
-      { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleanos y tu programa de lealtad, mostrar tus resenas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
+      { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, reseñas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el número completo ni el CVV).' },
+      { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleaños y tu programa de lealtad, mostrar tus reseñas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
       { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos además los controles tecnicos del estándar ISO 27001 sobre estos datos.' },
       { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesión con ellos (solo reciben la solicitud de autenticacion, nunca tu contrasena de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. Si activas el registro por telefono, Twilio procesa el envio del SMS de verificacion. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
       { h:'6. Cuanto tiempo los conservamos', p:'Mientras tu cuenta este activa. Los codigos de verificacion telefonica (OTP) se eliminan automaticamente a los 10 minutos, se hayan usado o no.' },
@@ -2797,6 +2849,13 @@ function openFaqModal(){
 }
 function closeFaqModal(){
   document.getElementById('faqModalOverlay').classList.remove('is-open');
+}
+
+function openComingSoon(){
+  document.getElementById('comingSoonOverlay').classList.add('is-open');
+}
+function closeComingSoon(){
+  document.getElementById('comingSoonOverlay').classList.remove('is-open');
 }
 
 function loadPaymentMethods(){
@@ -3166,8 +3225,14 @@ document.addEventListener('click', function(e){
 
 function subscribeForm(e){
   e.preventDefault();
-  alert(DYN[currentLang].subscribeOk);
+  openSubscribeThanks();
   return false;
+}
+function openSubscribeThanks(){
+  document.getElementById('subscribeThanksOverlay').classList.add('is-open');
+}
+function closeSubscribeThanks(){
+  document.getElementById('subscribeThanksOverlay').classList.remove('is-open');
 }
 
 /* ===================== Login real Google / Facebook -> /api/register (MongoDB) ===================== */
