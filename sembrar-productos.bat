@@ -4,9 +4,10 @@ REM Doble clic para cargar/actualizar en tu MongoDB Atlas real:
 REM   1) node db/collections.js   -> crea (si faltan) las colecciones con sus
 REM      validadores e indices: products, carts, product_reviews,
 REM      payment_methods, phone_verifications, etc.
-REM   2) node db/seed-products.js -> inserta/actualiza (upsert, no duplica) los
-REM      4 productos reales: Optimus, Omniplus, Power Maker, Magnus, y
-REM      desactiva (sin borrar) los 4 productos de demostracion RAIZ-01..04.
+REM   2) node db/seed-products.js -> inserta/actualiza (upsert, no duplica) el
+REM      catalogo de Renuevate (Nacar, Vigor, Roble + accesorios), y desactiva
+REM      (sin borrar) los 4 demos RAIZ-01..04 y los 4 productos de Suplementos
+REM      (Optimus, Omniplus, Power Maker, Magnus) que se mudaron al sitio nuevo.
 REM
 REM Requisito unico: tener Node.js instalado y un archivo .env en esta misma
 REM carpeta con tu MONGODB_URI y MONGODB_DB reales (los mismos que usa
@@ -30,7 +31,7 @@ if errorlevel 1 (
 
 echo.
 echo ============================================
-echo  Paso 2 de 2: cargando los 4 productos reales
+echo  Paso 2 de 2: cargando el catalogo de Renuevate
 echo ============================================
 call node db\seed-products.js
 if errorlevel 1 (
@@ -41,5 +42,5 @@ if errorlevel 1 (
 )
 
 echo.
-echo Listo. Los productos reales ya estan en tu base de datos Atlas.
+echo Listo. El catalogo de Renuevate ya esta en tu base de datos Atlas.
 pause

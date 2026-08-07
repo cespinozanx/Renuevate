@@ -45,69 +45,16 @@ function parsePrice(str) {
   return match ? Number(match[0]) : 0;
 }
 
-// Productos reales de Carlos (2026-08-03), reemplazan los 4 placeholders RAIZ-01..04.
-// `long_description_es` / `usage_es` / `disclaimer_es` no estan validados por el
-// $jsonSchema de `products` (products no tiene additionalProperties:false), asi
-// que se guardan igual para cuando exista una vista de detalle de producto --
-// por ahora el frontend solo pinta `description_i18n` (texto corto) en la tarjeta.
-// `image` sigue la convencion acordada con Carlos: el nombre del producto en
-// minusculas, sin espacios, en media/products/ -- mismo valor que el campo
-// "img" del catalogo estatico en index.html.
-const REAL_PRODUCTS = [
-  { sku: 'OPTIMUS', vertical: 'raiz', price: '$574 MXN', image: 'media/products/optimus.jpg', related: [],
-    name_i18n: { es: 'Optimus 30 sobres', en: 'Optimus 30 sachets', fr: 'Optimus 30 sachets' },
-    description_i18n: {
-      es: 'Colina, glicina, complejo B, vitaminas C y E con endulzantes naturales.',
-      en: 'Choline, glycine, B-complex, vitamins C and E with natural sweeteners.',
-      fr: 'Choline, glycine, complexe B, vitamines C et E avec edulcorants naturels.' },
-    long_description_es: 'Suplemento alimenticio en polvo sabor a lima-limon. Caja con 30 sobres, contenido neto 240 gramos. Apoya tu nutricion diaria con una formula que combina colina, glicina, vitaminas del complejo B, vitaminas C y E, minerales esenciales y endulzantes de origen natural. Una opcion practica para complementar un estilo de vida saludable y acompanarte en tu rutina diaria.',
-    ingredients_es: ['Colina y glicina.', 'Vitaminas del complejo B.', 'Vitaminas C y E.', 'Calcio, cobre, cromo, fosforo y zinc.', 'Endulzado naturalmente con fruto del monje y estevia.'],
-    usage_es: 'Puede consumirse en cualquier momento del dia como parte de una alimentacion equilibrada y un estilo de vida saludable.',
-    disclaimer_es: 'Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza.' },
-
-  { sku: 'OMNIPLUS', vertical: 'raiz', price: '$755 MXN', image: 'media/products/omniplus.jpg', related: [],
-    name_i18n: { es: 'Omniplus 30 sobres', en: 'Omniplus 30 sachets', fr: 'Omniplus 30 sachets' },
-    description_i18n: {
-      es: 'Vitaminas A, D, E, complejo B y sabila, sabor naranja.',
-      en: 'Vitamins A, D, E, B-complex and aloe vera, orange flavor.',
-      fr: 'Vitamines A, D, E, complexe B et aloe vera, saveur orange.' },
-    long_description_es: 'Sabor naranja. Caja con 30 sobres, contenido neto 600 mililitros. Un suplemento alimenticio de alta calidad con una exclusiva combinacion de vitaminas, minerales y extractos herbales de origen natural. Su formula micelizada y su agradable sabor a naranja lo convierten en una excelente opcion para complementar tu nutricion diaria.',
-    ingredients_es: ['Formula micelizada de alta calidad.', 'Concentrado nutritivo con vitaminas y minerales esenciales.', 'Vitaminas A, D, E y complejo B.', 'Minerales como calcio, magnesio, zinc, cobre, manganeso, selenio e yodo.', 'Gel de sabila (Aloe vera) y una seleccion de extractos herbales.', 'Endulzado con ingredientes de origen natural.'],
-    usage_es: 'Sabor naranja.',
-    disclaimer_es: 'Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza.' },
-
-  { sku: 'POWERMAKER', vertical: 'raiz', price: '$950 MXN', image: 'media/products/powermaker.jpg', related: [],
-    name_i18n: { es: 'Power Maker 30 sobres', en: 'Power Maker 30 sachets', fr: 'Power Maker 30 sachets' },
-    description_i18n: {
-      es: '3g de L-arginina, aminoacidos y vitaminas para tu rutina activa.',
-      en: '3g of L-arginine, amino acids and vitamins for your active routine.',
-      fr: '3g de L-arginine, acides amines et vitamines pour votre routine active.' },
-    long_description_es: 'Suplemento alimenticio en polvo sabor naranja. Caja con 30 sobres, contenido neto 300 gramos. Power Maker combina L-arginina, aminoacidos, vitaminas y minerales en un practico suplemento alimenticio con delicioso sabor a naranja, disenado para complementar un estilo de vida activo.',
-    ingredients_es: ['3 g de L-arginina por porcion.', 'Contiene colina y glicina.', 'Enriquecido con vitaminas B5, C y E.', 'Aporta minerales como calcio, cobre, cromo, boro y zinc.', 'Endulzado con ingredientes de origen natural: fruto del monje y estevia.'],
-    usage_es: 'Puede consumirse a cualquier hora del dia o aproximadamente una hora antes de realizar actividad fisica. Disfrutalo frio o a temperatura ambiente.',
-    disclaimer_es: 'Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza.' },
-
-  { sku: 'MAGNUS', vertical: 'raiz', price: '$590 MXN', image: 'media/products/magnus.jpg', related: [],
-    name_i18n: { es: 'Magnus 30 sobres', en: 'Magnus 30 sachets', fr: 'Magnus 30 sachets' },
-    description_i18n: {
-      es: 'Aminoacidos, vitaminas y cafeina para acompanar tu actividad diaria.',
-      en: 'Amino acids, vitamins and caffeine to support your daily activity.',
-      fr: 'Acides amines, vitamines et cafeine pour accompagner votre activite quotidienne.' },
-    long_description_es: 'Suplemento alimenticio en polvo sabor citrico. Caja con 30 sobres, contenido neto 405 gramos. Complementa tu nutricion diaria con una formula que combina aminoacidos, vitaminas, minerales y cafeina, disenada para acompanar un estilo de vida activo.',
-    ingredients_es: ['Contiene aminoacidos como taurina, glicina y fenilalanina.', 'Enriquecido con vitaminas del complejo B, ademas de vitaminas C y E.', 'Aporta minerales esenciales como zinc, cobre y cromo.', 'Contiene cafeina.', 'Ideal para complementar una alimentacion equilibrada y un estilo de vida activo.'],
-    usage_es: 'Consumelo de acuerdo con las indicaciones del producto como parte de una alimentacion balanceada, actividad fisica regular, una adecuada hidratacion y un buen descanso.',
-    disclaimer_es: 'Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza.' },
-];
-
-// Skus viejos de demostracion que este seed ya NO siembra (se reemplazaron por
-// los 4 reales de arriba). Se desactivan en vez de borrarse -- por si algun
-// carrito/orden de prueba ya los referencia, no truena una validacion contra
-// un sku que desaparecio de golpe.
-const RETIRED_DEMO_SKUS = ['RAIZ-01', 'RAIZ-02', 'RAIZ-03', 'RAIZ-04'];
+// Skus que este seed ya NO siembra en Renuévate porque la vertical Raiz
+// (Suplementos: Optimus/Omniplus/Power Maker/Magnus) se separo a su propio
+// sitio/marca -- ver decision de division de sitios (2026-08-06). Se
+// desactivan en vez de borrarse, por si algun carrito/orden ya los
+// referencia en esta base, no truena una validacion contra un sku que
+// desaparecio de golpe. Los mismos 4 productos se siembran activos en la
+// base de datos del sitio nuevo (ver seed-products.js de ese repo).
+const RETIRED_DEMO_SKUS = ['RAIZ-01', 'RAIZ-02', 'RAIZ-03', 'RAIZ-04', 'OPTIMUS', 'OMNIPLUS', 'POWERMAKER', 'MAGNUS'];
 
 const PRODUCTS = [
-  ...REAL_PRODUCTS,
-
   // NACAR
   { sku: 'NACAR-01', vertical: 'nacar', price: '$549 MXN', rating: { stars: 4.7, count: 410 }, related: ['NACAR-02'],
     name_i18n: { es: 'Luz Nacar Vitamina C', en: 'Nacar Glow Vitamin C', fr: 'Eclat Nacar Vitamine C' },

@@ -14,11 +14,10 @@
   /* Holding corporativo - paleta madre (estilo Aesop / Jo Malone / Chanel) */
   --navy:#1E1E1E; --navy-2:#2A2A2A; --gold:#C6A86B; --cream:#F8F7F3; --beige:#EFE9E1; --ink:#1E1E1E; --grey:#5E5E5E; --line:#D9D9D9;
   /* Verticales - color de acento propio sobre la misma base holding */
-  --raiz:#6D8F6C; --raiz-2:#9CAF7E; --raiz-soft:#F2F5EE;
   --nacar:#DBAC5B; --nacar-2:#000000; --nacar-soft:#FBF1DE;
   --vigor:#456B8A; --vigor-2:#2F4E66; --vigor-soft:#EBF1F5;
   --roble:#2F3A44; --roble-2:#5B6B76; --roble-soft:#EEF0F1;
-  --active: var(--raiz); --active-2: var(--raiz-2); --active-soft: var(--raiz-soft);
+  --active: var(--nacar); --active-2: var(--nacar-2); --active-soft: var(--nacar-soft);
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html{scroll-behavior:smooth;}
@@ -116,12 +115,11 @@ section{padding:92px 0;}
 .brand-map .bm-verticals{display:flex; justify-content:center; gap:28px; flex-wrap:wrap;}
 .brand-map .bm-verticals span{font-size:11px; letter-spacing:1.6px; font-weight:700; color:var(--grey); position:relative; padding-left:16px; text-transform:uppercase;}
 .brand-map .bm-verticals span::before{content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:8px; height:8px; border-radius:50%;}
-.brand-map .bm-verticals span.bm-raiz::before{background:var(--raiz);}
 .brand-map .bm-verticals span.bm-nacar::before{background:var(--nacar);}
 .brand-map .bm-verticals span.bm-vigor::before{background:var(--vigor);}
 .brand-map .bm-verticals span.bm-roble::before{background:var(--roble);}
 
-.verticals-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
+.verticals-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
 .v-card{position:relative; border-radius:4px; overflow:hidden; cursor:pointer; min-height:350px; display:flex; flex-direction:column; justify-content:flex-end; padding:28px 24px; color:var(--ink); transition:transform .25s ease, box-shadow .25s ease; box-shadow:0 6px 18px rgba(0,0,0,.06); background:#F8F7F3; border:1px solid var(--line); border-top:4px solid var(--line);}
 .v-card:hover{transform:translateY(-6px); box-shadow:0 18px 32px rgba(0,0,0,.12);}
 .v-card .v-icon{width:36px; height:36px; margin-bottom:16px; opacity:1; color:var(--grey);}
@@ -129,8 +127,6 @@ section{padding:92px 0;}
 .v-card .v-tag{font-size:11.5px; text-transform:uppercase; letter-spacing:2px; opacity:.85; margin:7px 0 15px; color:var(--grey);}
 .v-card .v-msg{font-size:14px; opacity:1; margin-bottom:18px; font-style:italic; font-family:'Playfair Display',serif; font-weight:500; color:var(--grey);}
 .v-card .v-cta{font-size:11.5px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; display:inline-flex; align-items:center; gap:6px;}
-.v-card.raiz{border-top-color:var(--raiz);}
-.v-card.raiz .v-icon, .v-card.raiz .v-cta, .v-card.raiz .v-msg{color:var(--raiz);}
 .v-card.nacar{border-top-color:var(--nacar);}
 .v-card.nacar .v-icon, .v-card.nacar .v-cta, .v-card.nacar .v-msg{color:#B8873A;}
 .v-card.vigor{border-top-color:var(--vigor);}
@@ -151,7 +147,6 @@ section{padding:92px 0;}
 .zoom-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:52px; flex-wrap:wrap;}
 .zoom-tab{padding:10px 24px; border-radius:30px; border:1px solid var(--line); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700; cursor:pointer; color:var(--grey); background:#fff;}
 .zoom-tab.active{background:#F8F7F3;}
-.zoom-tab[data-v="raiz"].active{border-color:var(--raiz); color:var(--raiz);}
 .zoom-tab[data-v="nacar"].active{border-color:var(--nacar); color:#B8873A;}
 .zoom-tab[data-v="vigor"].active{border-color:var(--vigor); color:var(--vigor);}
 .zoom-tab[data-v="roble"].active{border-color:var(--roble); color:var(--roble);}
@@ -408,7 +403,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .pm-actions{display:flex; gap:10px; margin-top:22px;}
 .pm-error{color:#B23A3A; font-size:12.5px; margin-top:10px; display:none;}
 .pm-error.is-visible{display:block;}
-.pm-success{color:var(--raiz); font-size:12.5px; margin-top:10px; display:none;}
+.pm-success{color:#3F7A4D; font-size:12.5px; margin-top:10px; display:none;}
 .pm-success.is-visible{display:block;}
 .chat-panel{position:fixed; bottom:160px; right:24px; width:340px; max-width:88vw; height:440px; background:#fff; border-radius:10px; box-shadow:0 18px 44px rgba(0,0,0,.28); z-index:61; display:none; flex-direction:column; overflow:hidden; border:1px solid var(--line);}
 .chat-panel.open{display:flex;}
@@ -594,12 +589,10 @@ var AZURA_CONFIG = {
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
       <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
-      <a data-v="raiz" onclick="goVertical('raiz'); closeNav();" data-i18n="nav.raiz">Suplementos</a>
       <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.nacar">Belleza</a>
       <div class="nav-dropdown" id="navSystemDropdown">
         <a class="nav-dropdown-trigger" onclick="toggleSystemDropdown(event)" data-i18n="nav.system">System Speciality <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
-          <a data-v="raiz" onclick="goVertical('raiz'); closeNav();" data-i18n="nav.system.time">Speciality Time</a>
           <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.system.luminous">Speciality Luminous</a>
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">Speciality Health</a>
           <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
@@ -661,20 +654,12 @@ var AZURA_CONFIG = {
       <div class="bm-holding">RENUÉVATE</div>
       <div class="bm-line"></div>
       <div class="bm-verticals">
-        <span class="bm-raiz" id="bmRaiz">Time &middot; Speciality</span>
         <span class="bm-nacar" id="bmNacar">Luminous &middot; Speciality</span>
         <span class="bm-vigor" id="bmVigor">Health &middot; Speciality</span>
         <span class="bm-roble" id="bmRoble">Spot &middot; Speciality</span>
       </div>
     </div>
     <div class="verticals-grid reveal-stagger">
-      <div class="v-card raiz" onclick="goVertical('raiz')">
-        <svg class="v-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22V12"/><path d="M12 12C12 6 6 4 4 4c0 6 3 8 8 8Z"/><path d="M12 12c0-6 6-8 8-8 0 6-3 8-8 8Z"/></svg>
-        <div class="v-tag" id="vtagRaiz">Suplementos orgánicos</div>
-        <h3>System Time Speciality</h3>
-        <p class="v-msg" id="vmsgRaiz">El bienestar empieza desde la raíz.</p>
-        <span class="v-cta" id="vctaRaiz">Descubrir &#8594;</span>
-      </div>
       <div class="v-card nacar" onclick="goVertical('nacar')">
         <svg class="v-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c4 3 7 6 7 10a7 7 0 0 1-14 0c0-4 3-7 7-10Z"/></svg>
         <div class="v-tag" id="vtagNacar">Belleza para mujer</div>
@@ -722,12 +707,11 @@ var AZURA_CONFIG = {
   <div class="container">
     <div class="section-head reveal-stagger">
       <div class="eyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
-      <h2 id="zoomTitle">System Time Speciality - Suplementos orgánicos</h2>
-      <p id="zoomSubtitle">Ingredientes con origen verificado, pensados para el bienestar diario.</p>
+      <h2 id="zoomTitle">System Luminous Speciality - Belleza para mujer</h2>
+      <p id="zoomSubtitle">Hábitos de belleza con respaldo dermocosmético y textura premium.</p>
     </div>
     <div class="zoom-tabs reveal-stagger">
-      <div class="zoom-tab active" data-v="raiz" onclick="goVertical('raiz')">Time</div>
-      <div class="zoom-tab" data-v="nacar" onclick="goVertical('nacar')">Luminous</div>
+      <div class="zoom-tab active" data-v="nacar" onclick="goVertical('nacar')">Luminous</div>
       <div class="zoom-tab" data-v="vigor" onclick="goVertical('vigor')">Health</div>
       <div class="zoom-tab" data-v="roble" onclick="goVertical('roble')">Spot</div>
     </div>
@@ -735,14 +719,14 @@ var AZURA_CONFIG = {
     <div class="zoom-banner reveal-stagger">
       <div>
         <div class="eyebrow" data-i18n="zoom.featured">Sistema destacado</div>
-        <h3 id="zoomBannerTitle">System Time Speciality: bienestar diario</h3>
-        <p id="zoomBannerText">Una rutina de tres pasos pensada para sostener tu energía y equilibrio desde el interior, con ingredientes de origen natural certificado.</p>
+        <h3 id="zoomBannerTitle">System Luminous Speciality: luminosidad</h3>
+        <p id="zoomBannerText">Una rutina facial y capilar de tres pasos para una piel con brillo saludable, sin ingredientes agresivos.</p>
         <a class="btn btn-vertical" style="margin-top:22px; cursor:pointer;" onclick="openComingSoon()" data-i18n="zoom.knowRitual">Conocer el sistema</a>
       </div>
       <div class="zoom-stats reveal-stagger">
-        <div><b id="stat1">96%</b><span data-i18n="zoom.stat1Label">SATISFACCION*</span></div>
-        <div><b id="stat2">30 dias</b><span data-i18n="zoom.stat2Label">PARA VER RESULTADOS*</span></div>
-        <div><b id="stat3">100%</b><span data-i18n="zoom.stat3Label">ORIGEN VERIFICADO</span></div>
+        <div><b id="stat1">94%</b><span data-i18n="zoom.stat1Label">SATISFACCION*</span></div>
+        <div><b id="stat2">14 dias</b><span data-i18n="zoom.stat2Label">PARA VER RESULTADOS*</span></div>
+        <div><b id="stat3">+87%</b><span data-i18n="zoom.stat3Label">ORIGEN VERIFICADO</span></div>
       </div>
     </div>
 
@@ -793,7 +777,6 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div><h5 data-i18n="footer.hVerticales">System Speciality</h5>
-      <a onclick="goVertical('raiz')" data-i18n="footer.raiz">Speciality Time</a>
       <a onclick="goVertical('nacar')" data-i18n="footer.nacar">Speciality Luminous</a>
       <a onclick="goVertical('vigor')" data-i18n="footer.vigor">Speciality Health</a>
       <a onclick="goVertical('roble')" data-i18n="footer.roble">Speciality Spot</a>
@@ -1212,96 +1195,6 @@ var AZURA_CONFIG = {
 <script>
 /* ===================== Catalogo por vertical, con contenido por idioma ===================== */
 var V = {
-  raiz: {
-    name:"System Time Speciality",
-    es:{ full:"System Time Speciality - Suplementos orgánicos", sub:"Ingredientes con origen verificado, pensados para el bienestar diario.",
-      bannerTitle:"System Time Speciality: bienestar diario",
-      bannerText:"Una rutina de tres pasos pensada para sostener tu energía y equilibrio desde el interior, con ingredientes de origen natural certificado.",
-      tag:"Suplementos orgánicos", msg:"El bienestar empieza desde la raíz.", bmLabel:"Speciality Time",
-      stats:["96%","30 dias","100%"],
-      products:[
-        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamínico", name:"Optimus 30 sobres", desc:"Colina, glicina, complejo B, vitaminas C y E con endulzantes naturales.", price:"$574 MXN", related:[],
-          longDesc:"Suplemento alimenticio en polvo sabor a lima-limón. Caja con 30 sobres, contenido neto 240 gramos. Apoya tu nutrición diaria con una fórmula que combina colina, glicina, vitaminas del complejo B, vitaminas C y E, minerales esenciales y endulzantes de origen natural.",
-          ingredients:["Colina y glicina.","Vitaminas del complejo B.","Vitaminas C y E.","Calcio, cobre, cromo, fósforo y zinc.","Endulzado naturalmente con fruto del monje y estevia."],
-          usage:"Puede consumirse en cualquier momento del día como parte de una alimentación equilibrada y un estilo de vida saludable.",
-          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."},
-        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Fórmula micelizada", name:"Omniplus 30 sobres", desc:"Vitaminas A, D, E, complejo B y sábila, sabor naranja.", price:"$755 MXN", related:[],
-          longDesc:"Sabor naranja. Caja con 30 sobres, contenido neto 600 mililitros. Un suplemento alimenticio de alta calidad con una exclusiva combinación de vitaminas, minerales y extractos herbales de origen natural. Su fórmula micelizada y su agradable sabor a naranja lo convierten en una excelente opción para complementar tu nutrición diaria.",
-          ingredients:["Fórmula micelizada de alta calidad.","Concentrado nutritivo con vitaminas y minerales esenciales.","Vitaminas A, D, E y complejo B.","Minerales como calcio, magnesio, zinc, cobre, manganeso, selenio e yodo.","Gel de sábila (Aloe vera) y una selección de extractos herbales.","Endulzado con ingredientes de origen natural."],
-          usage:"Presentación sabor naranja, consúmelo como parte de tu nutrición diaria.",
-          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."},
-        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entreno", name:"Power Maker 30 sobres", desc:"3g de L-arginina, aminoácidos y vitaminas para tu rutina activa.", price:"$950 MXN", related:[],
-          longDesc:"Suplemento alimenticio en polvo sabor naranja. Caja con 30 sobres, contenido neto 300 gramos. Power Maker combina L-arginina, aminoácidos, vitaminas y minerales en un práctico suplemento con delicioso sabor a naranja, diseñado para complementar un estilo de vida activo.",
-          ingredients:["3 g de L-arginina por porción.","Contiene colina y glicina.","Enriquecido con vitaminas B5, C y E.","Aporta minerales como calcio, cobre, cromo, boro y zinc.","Endulzado con ingredientes de origen natural: fruto del monje y estevia."],
-          usage:"Puede consumirse a cualquier hora del día o aproximadamente una hora antes de realizar actividad física. Disfrútalo frío o a temperatura ambiente.",
-          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."},
-        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizante", name:"Magnus 30 sobres", desc:"Aminoácidos, vitaminas y cafeína para acompañar tu actividad diaria.", price:"$590 MXN", related:[],
-          longDesc:"Suplemento alimenticio en polvo sabor cítrico. Caja con 30 sobres, contenido neto 405 gramos. Complementa tu nutrición diaria con una fórmula que combina aminoácidos, vitaminas, minerales y cafeína, diseñada para acompañar un estilo de vida activo.",
-          ingredients:["Contiene aminoácidos como taurina, glicina y fenilalanina.","Enriquecido con vitaminas del complejo B, además de vitaminas C y E.","Aporta minerales esenciales como zinc, cobre y cromo.","Contiene cafeína.","Ideal para complementar una alimentación equilibrada y un estilo de vida activo."],
-          usage:"Consúmelo de acuerdo con las indicaciones del producto como parte de una alimentación balanceada, actividad física regular, una adecuada hidratación y un buen descanso.",
-          disclaimer:"Este producto no es un medicamento. Su consumo es responsabilidad de quien lo recomienda y de quien lo utiliza."}
-      ],
-      routines:[{title:"Rutina esencial", desc:"1 producto ancla para empezar tu bienestar diario."},{title:"Rutina intermedia", desc:"combo energía + digestion para resultados visibles."},{title:"Rutina completa", desc:"protocolo de 30 dias con seguimiento incluido."}]
-    },
-    en:{ full:"System Time Speciality - Organic Supplements", sub:"Verified-origin ingredients, designed for everyday wellness.",
-      bannerTitle:"The System Time Speciality daily wellness",
-      bannerText:"A three-step routine designed to support your energy and balance from within, with certified natural-origin ingredients.",
-      tag:"Organic supplements", msg:"Wellness starts from the root.", bmLabel:"Speciality Time",
-      stats:["96%","30 days","100%"],
-      products:[
-        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamin", name:"Optimus 30 sachets", desc:"Choline, glycine, B-complex, vitamins C and E with natural sweeteners.", price:"$574 MXN", related:[],
-          longDesc:"Lime-lemon flavored powder supplement. Box of 30 sachets, net content 240 grams. Supports your daily nutrition with a formula combining choline, glycine, B-complex vitamins, vitamins C and E, essential minerals and naturally derived sweeteners.",
-          ingredients:["Choline and glycine.","B-complex vitamins.","Vitamins C and E.","Calcium, copper, chromium, phosphorus and zinc.","Naturally sweetened with monk fruit and stevia."],
-          usage:"Can be consumed at any time of day as part of a balanced diet and a healthy lifestyle.",
-          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."},
-        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Micellized formula", name:"Omniplus 30 sachets", desc:"Vitamins A, D, E, B-complex and aloe vera, orange flavor.", price:"$755 MXN", related:[],
-          longDesc:"Orange flavor. Box of 30 sachets, net content 600 milliliters. A high-quality food supplement with an exclusive combination of vitamins, minerals and naturally derived herbal extracts. Its micellized formula and pleasant orange flavor make it an excellent choice to complement your daily nutrition.",
-          ingredients:["High-quality micellized formula.","Nutritive concentrate with essential vitamins and minerals.","Vitamins A, D, E and B-complex.","Minerals such as calcium, magnesium, zinc, copper, manganese, selenium and iodine.","Aloe vera gel and a selection of herbal extracts.","Sweetened with naturally derived ingredients."],
-          usage:"Orange-flavored presentation, consume it as part of your daily nutrition.",
-          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."},
-        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-workout", name:"Power Maker 30 sachets", desc:"3g of L-arginine, amino acids and vitamins for your active routine.", price:"$950 MXN", related:[],
-          longDesc:"Orange-flavored powder supplement. Box of 30 sachets, net content 300 grams. Power Maker combines L-arginine, amino acids, vitamins and minerals in a convenient supplement with a delicious orange flavor, designed to complement an active lifestyle.",
-          ingredients:["3 g of L-arginine per serving.","Contains choline and glycine.","Enriched with vitamins B5, C and E.","Provides minerals such as calcium, copper, chromium, boron and zinc.","Sweetened with naturally derived ingredients: monk fruit and stevia."],
-          usage:"Can be consumed at any time of day, or about an hour before physical activity. Enjoy it chilled or at room temperature.",
-          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."},
-        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energizing", name:"Magnus 30 sachets", desc:"Amino acids, vitamins and caffeine to support your daily activity.", price:"$590 MXN", related:[],
-          longDesc:"Citrus-flavored powder supplement. Box of 30 sachets, net content 405 grams. Complements your daily nutrition with a formula that combines amino acids, vitamins, minerals and caffeine, designed to support an active lifestyle.",
-          ingredients:["Contains amino acids such as taurine, glycine and phenylalanine.","Enriched with B-complex vitamins, plus vitamins C and E.","Provides essential minerals such as zinc, copper and chromium.","Contains caffeine.","Ideal to complement a balanced diet and an active lifestyle."],
-          usage:"Consume according to product directions as part of a balanced diet, regular physical activity, adequate hydration and good rest.",
-          disclaimer:"This product is not a medicine. Its use is the responsibility of whoever recommends it and whoever consumes it."}
-      ],
-      routines:[{title:"Essential routine", desc:"1 anchor product to start your daily wellness."},{title:"Intermediate routine", desc:"energy + digestion combo for visible results."},{title:"Complete routine", desc:"30-day protocol with follow-up included."}]
-    },
-    fr:{ full:"System Time Speciality - Complements Organiques", sub:"Ingredients d'origine verifiee, concus pour le bien-etre quotidien.",
-      bannerTitle:"Le System Time Speciality de bien-etre quotidien",
-      bannerText:"Une routine en trois etapes concue pour soutenir votre energie et votre equilibre de l'interieur, avec des ingredients d'origine naturelle certifies.",
-      tag:"Complements organiques", msg:"Le bien-etre commence a la racine.", bmLabel:"Speciality Time",
-      stats:["96%","30 jours","100%"],
-      products:[
-        {sku:"OPTIMUS", img:"media/products/optimus.jpg", tag:"Multivitamine", name:"Optimus 30 sachets", desc:"Choline, glycine, complexe B, vitamines C et E avec edulcorants naturels.", price:"$574 MXN", related:[],
-          longDesc:"Complement alimentaire en poudre saveur citron vert-citron. Boite de 30 sachets, contenu net 240 grammes. Soutient votre nutrition quotidienne avec une formule combinant choline, glycine, vitamines du complexe B, vitamines C et E, mineraux essentiels et edulcorants d'origine naturelle.",
-          ingredients:["Choline et glycine.","Vitamines du complexe B.","Vitamines C et E.","Calcium, cuivre, chrome, phosphore et zinc.","Edulcore naturellement avec fruit du moine et stevia."],
-          usage:"Peut etre consomme a tout moment de la journee dans le cadre d'une alimentation equilibree et d'un mode de vie sain.",
-          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."},
-        {sku:"OMNIPLUS", img:"media/products/omniplus.jpg", tag:"Formule micellaire", name:"Omniplus 30 sachets", desc:"Vitamines A, D, E, complexe B et aloe vera, saveur orange.", price:"$755 MXN", related:[],
-          longDesc:"Saveur orange. Boite de 30 sachets, contenu net 600 millilitres. Un complement alimentaire de haute qualite avec une combinaison exclusive de vitamines, mineraux et extraits vegetaux d'origine naturelle. Sa formule micellaire et son agreable saveur d'orange en font une excellente option pour completer votre nutrition quotidienne.",
-          ingredients:["Formule micellaire de haute qualite.","Concentre nutritif avec vitamines et mineraux essentiels.","Vitamines A, D, E et complexe B.","Mineraux tels que calcium, magnesium, zinc, cuivre, manganese, selenium et iode.","Gel d'aloe vera et une selection d'extraits vegetaux.","Edulcore avec des ingredients d'origine naturelle."],
-          usage:"Presentation saveur orange, a consommer dans le cadre de votre nutrition quotidienne.",
-          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."},
-        {sku:"POWERMAKER", img:"media/products/powermaker.jpg", tag:"Pre-entrainement", name:"Power Maker 30 sachets", desc:"3g de L-arginine, acides amines et vitamines pour votre routine active.", price:"$950 MXN", related:[],
-          longDesc:"Complement alimentaire en poudre saveur orange. Boite de 30 sachets, contenu net 300 grammes. Power Maker combine L-arginine, acides amines, vitamines et mineraux dans un complement pratique au delicieux gout d'orange, concu pour accompagner un mode de vie actif.",
-          ingredients:["3 g de L-arginine par portion.","Contient choline et glycine.","Enrichi en vitamines B5, C et E.","Apporte des mineraux tels que calcium, cuivre, chrome, bore et zinc.","Edulcore avec des ingredients d'origine naturelle: fruit du moine et stevia."],
-          usage:"Peut etre consomme a tout moment de la journee, ou environ une heure avant une activite physique. A savourer frais ou a temperature ambiante.",
-          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."},
-        {sku:"MAGNUS", img:"media/products/magnus.jpg", tag:"Energisant", name:"Magnus 30 sachets", desc:"Acides amines, vitamines et cafeine pour accompagner votre activite quotidienne.", price:"$590 MXN", related:[],
-          longDesc:"Complement alimentaire en poudre saveur agrumes. Boite de 30 sachets, contenu net 405 grammes. Complete votre nutrition quotidienne avec une formule combinant acides amines, vitamines, mineraux et cafeine, concue pour accompagner un mode de vie actif.",
-          ingredients:["Contient des acides amines tels que taurine, glycine et phenylalanine.","Enrichi en vitamines du complexe B, ainsi qu'en vitamines C et E.","Apporte des mineraux essentiels tels que zinc, cuivre et chrome.","Contient de la cafeine.","Ideal pour completer une alimentation equilibree et un mode de vie actif."],
-          usage:"A consommer selon les indications du produit dans le cadre d'une alimentation equilibree, d'une activite physique reguliere, d'une bonne hydratation et d'un bon repos.",
-          disclaimer:"Ce produit n'est pas un medicament. Son usage releve de la responsabilite de la personne qui le recommande et de celle qui le consomme."}
-      ],
-      routines:[{title:"Routine essentielle", desc:"1 produit phare pour commencer votre bien-etre quotidien."},{title:"Routine intermediaire", desc:"combo energie + digestion pour des resultats visibles."},{title:"Routine complete", desc:"protocole de 30 jours avec suivi inclus."}]
-    }
-  },
   nacar: {
     name:"System Luminous Speciality",
     es:{ full:"System Luminous Speciality - Belleza para mujer", sub:"Habitos de belleza con respaldo dermocosmetico y textura premium.",
@@ -1434,7 +1327,7 @@ var V = {
 var I18N = {
   es:{
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
-    "nav.raiz":"Suplementos", "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.time":"Speciality Time", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
+    "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
     "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'El bienestar que <span class="accent">transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
     "hero.p":'Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.',
     "hero.cta1":"Explorar el catálogo", "hero.cta2":"Nuestra filosofia",
@@ -1458,8 +1351,8 @@ var I18N = {
     "nl.eyebrow":"Unete a Renuévate", "nl.h2":'Recibe <span class="accent">novedades</span> y acceso anticipado a tus sistemas favoritos',
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
-    "footer.brandP":"System Time, Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
-    "footer.hVerticales":"System Speciality", "footer.raiz":"Speciality Time", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.brandP":"System Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envios y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate", "footer.sustainability":"Sostenibilidad", "footer.careers":"Trabaja con nosotros",
     "footer.hLegal":"Legal", "footer.privacy":"Aviso de privacidad", "footer.terms":"Términos y condiciones", "footer.cookies":"Política de cookies",
@@ -1479,7 +1372,7 @@ var I18N = {
     "chat.a.purpose":"Te ayudo a encontrar tu sistema ideal, rapido y sin vueltas.",
     "chat.q.shipping":"Envios", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
     "chat.a.shipping":"Hacemos envios a todo Mexico, entrega en 4 dias habiles.",
-    "chat.a.verticals":"4 sistemas: System Time, System Luminous, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
+    "chat.a.verticals":"3 sistemas: System Luminous, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
     "chat.a.diagnostic":"Cuentame tu prioridad (energía, piel o rendimiento) y te recomiendo tu sistema.",
     "chat.a.prices":"Precios desde $259 hasta $699 MXN, segun producto.",
     "chat.a.ingredients":"Cada producto muestra sus ingredientes y origen en su ficha.",
@@ -1490,12 +1383,12 @@ var I18N = {
     "chat.a.store":"Renuévate es 100% en linea, no tenemos tienda fisica por ahora.",
     "chat.a.beautyritual":"Un hábito Renuévate es una rutina corta y constante (2 a 3 pasos) pensada para un objetivo especifico: energía, piel, cabello o bienestar. Cada sistema (Time, Luminous, Health, Spot) tiene el suyo. Cuentame tu prioridad y te armo el tuyo.",
     "chat.a.nutritionadvice":"Puedo darte tips generales de bienestar (hidratacion, constancia en tu rutina, descanso), pero no reemplazo a un nutriologo ni doy planes personalizados. Para eso te recomiendo un profesional de salud. Si quieres, cuentame tu prioridad y te sugiero productos de nuestras lineas.",
-    "chat.a.productadvisor":"Claro, soy tu asesora de productos y suplementos. Cuentame tu edad y si buscas algo para mujer u hombre, o dime tu prioridad (energía, piel, cabello, bienestar) y te doy una recomendacion puntual.",
+    "chat.a.productadvisor":"Claro, soy tu asesora de productos. Cuentame tu edad y si buscas algo para mujer u hombre, o dime tu prioridad (piel, cabello, bienestar) y te doy una recomendacion puntual.",
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o adabueo18@gmail.com.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
-    "chat.a.about":"Renuévate es la tienda online del holding de belleza y bienestar con 4 sistemas: System Time, System Luminous, System Health y System Spot Speciality.",
-    "chat.a.products":"Vendemos suplementos, cuidado de piel y cabello, y bienestar diario en 4 sistemas: System Time, System Luminous, System Health y System Spot Speciality.",
+    "chat.a.about":"Renuévate es la tienda online del holding de belleza y bienestar con 3 sistemas: System Luminous, System Health y System Spot Speciality.",
+    "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System Luminous, System Health y System Spot Speciality.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario habil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
     "chat.a.account":"No necesitas cuenta para comprar. Si inicias sesión con Google o Facebook guardamos tu perfil y tus promociones.",
@@ -1546,7 +1439,7 @@ var I18N = {
     "faq.title":"Preguntas Frecuentes", "faq.subtitle":"Todo lo que hoy responde Julieta, en un solo lugar.",
     "faq.q.about":"¿Qué es Renuévate?", "faq.q.products":"¿Qué productos venden?",
     "faq.q.beautyritual":"¿Qué es un hábito Renuévate?", "faq.q.nutritionadvice":"¿Dan asesoría de nutrición?",
-    "faq.q.productadvisor":"¿Me ayudan a elegir un producto o suplemento?", "faq.q.diagnostic":"¿Cómo elijo mi sistema ideal?",
+    "faq.q.productadvisor":"¿Me ayudan a elegir un producto?", "faq.q.diagnostic":"¿Cómo elijo mi sistema ideal?",
     "faq.q.prices":"¿Cuáles son los precios?", "faq.q.ingredients":"¿Puedo ver los ingredientes de cada producto?",
     "faq.q.shipping":"¿Hacen envíos? ¿Cuánto tardan?", "faq.q.tracking":"¿Cómo rastreo mi pedido?",
     "faq.q.returns":"¿Cuál es la política de devoluciones?", "faq.q.cancelorder":"¿Puedo cancelar mi pedido?",
@@ -1558,7 +1451,7 @@ var I18N = {
   },
   en:{
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
-    "nav.raiz":"Supplements", "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.time":"Speciality Time", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
+    "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
     "hero.eyebrow":"Renuévate . Wellness Holding", "hero.h1":'Wellness that <span class="accent">transforms</span> your life', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
     "hero.p":'Products designed to <span class="accent">accompany</span> every stage of your life.',
     "hero.cta1":"Explore the catalog", "hero.cta2":"Our philosophy",
@@ -1582,8 +1475,8 @@ var I18N = {
     "nl.eyebrow":"Join Renuévate", "nl.h2":'Get <span class="accent">news</span> and early access to your favorite systems',
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
     "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
-    "footer.brandP":"System Time, Luminous, Health and Spot: wellness habits for every stage of your life.",
-    "footer.hVerticales":"System Speciality", "footer.raiz":"Speciality Time", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.brandP":"System Luminous, Health and Spot: wellness habits for every stage of your life.",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
     "footer.hCompania":"Company", "footer.about":"About Renuévate", "footer.sustainability":"Sustainability", "footer.careers":"Work with us",
     "footer.hLegal":"Legal", "footer.privacy":"Privacy notice", "footer.terms":"Terms & conditions", "footer.cookies":"Cookie policy",
@@ -1603,7 +1496,7 @@ var I18N = {
     "chat.a.purpose":"I help you find your ideal system, fast and simple.",
     "chat.q.shipping":"Shipping", "chat.q.verticals":"Verticals", "chat.q.diagnostic":"How to choose my system", "chat.q.human":"Talk to a human",
     "chat.a.shipping":"We ship across Mexico, delivery in 4 business days.",
-    "chat.a.verticals":"4 systems: System Time, System Luminous, System Health and System Spot Speciality. Explore them in the System Speciality menu.",
+    "chat.a.verticals":"3 systems: System Luminous, System Health and System Spot Speciality. Explore them in the System Speciality menu.",
     "chat.a.diagnostic":"Tell me your priority (energy, skin or performance) and I'll recommend your system.",
     "chat.a.prices":"Prices from $259 to $699 MXN, depending on the product.",
     "chat.a.ingredients":"Each product page shows its ingredients and origin.",
@@ -1614,12 +1507,12 @@ var I18N = {
     "chat.a.store":"Renuévate is 100% online, we don't have a physical store for now.",
     "chat.a.beautyritual":"A Renuévate habit is a short, consistent routine (2 to 3 steps) built around a specific goal: energy, skin, hair or wellness. Each system (Time, Luminous, Health, Spot) has its own. Tell me your priority and I'll build yours.",
     "chat.a.nutritionadvice":"I can share general wellness tips (hydration, staying consistent with your routine, rest), but I'm not a replacement for a nutritionist and I don't give personalized plans. For that, a healthcare professional is best. If you want, tell me your priority and I'll suggest products from our lines.",
-    "chat.a.productadvisor":"Sure, I'm your product and supplement advisor. Tell me your age and whether you're looking for something for a woman or a man, or tell me your priority (energy, skin, hair, wellness) and I'll give you a precise recommendation.",
+    "chat.a.productadvisor":"Sure, I'm your product advisor. Tell me your age and whether you're looking for something for a woman or a man, or tell me your priority (skin, hair, wellness) and I'll give you a precise recommendation.",
     "chat.a.loyalty":"Every purchase earns Renuévate points, redeemable on your next order.",
     "chat.a.contact":"Reach us on WhatsApp, this chat, or adabueo18@gmail.com.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
-    "chat.a.about":"Renuévate is the online store for a beauty and wellness holding with 4 systems: System Time, System Luminous, System Health and System Spot Speciality.",
-    "chat.a.products":"We sell supplements, skin and hair care, and daily wellness across 4 systems: System Time, System Luminous, System Health and System Spot Speciality.",
+    "chat.a.about":"Renuévate is the online store for a beauty and wellness holding with 3 systems: System Luminous, System Health and System Spot Speciality.",
+    "chat.a.products":"We sell skin and hair care, and daily wellness across 3 systems: System Luminous, System Health and System Spot Speciality.",
     "chat.a.hours":"The site takes orders 24/7. A human advisor is available on WhatsApp during business hours.",
     "chat.a.security":"Secure encrypted payment. We never store your card details on our servers.",
     "chat.a.account":"You don't need an account to buy. If you sign in with Google or Facebook we save your profile and promotions.",
@@ -1670,7 +1563,7 @@ var I18N = {
     "faq.title":"Frequently Asked Questions", "faq.subtitle":"Everything Julieta answers today, in one place.",
     "faq.q.about":"What is Renuévate?", "faq.q.products":"What products do you sell?",
     "faq.q.beautyritual":"What is a Renuévate habit?", "faq.q.nutritionadvice":"Do you offer nutrition advice?",
-    "faq.q.productadvisor":"Can you help me choose a product or supplement?", "faq.q.diagnostic":"How do I choose my ideal system?",
+    "faq.q.productadvisor":"Can you help me choose a product?", "faq.q.diagnostic":"How do I choose my ideal system?",
     "faq.q.prices":"What are your prices?", "faq.q.ingredients":"Can I see the ingredients for each product?",
     "faq.q.shipping":"Do you ship? How long does it take?", "faq.q.tracking":"How do I track my order?",
     "faq.q.returns":"What is your returns policy?", "faq.q.cancelorder":"Can I cancel my order?",
@@ -1682,7 +1575,7 @@ var I18N = {
   },
   fr:{
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
-    "nav.raiz":"Complements", "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.time":"Speciality Time", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
+    "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
     "hero.eyebrow":"Renuévate . Holding Bien-etre", "hero.h1":'Le bien-etre qui <span class="accent">transforme</span> votre vie', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
     "hero.p":'Des produits concus pour <span class="accent">accompagner</span> chaque etape de votre vie.',
     "hero.cta1":"Explorer le catalogue", "hero.cta2":"Notre philosophie",
@@ -1706,8 +1599,8 @@ var I18N = {
     "nl.eyebrow":"Rejoindre Renuévate", "nl.h2":'Recevez des <span class="accent">nouveautes</span> et un acces anticipe a vos systemes favoris',
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
     "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un acces anticipe a nos systemes.", "subscribeThanks.cta":"Compris",
-    "footer.brandP":"System Time, Luminous, Health et Spot : des habitudes de bien-etre pour chaque etape de votre vie.",
-    "footer.hVerticales":"System Speciality", "footer.raiz":"Speciality Time", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.brandP":"System Luminous, Health et Spot : des habitudes de bien-etre pour chaque etape de votre vie.",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre systeme", "footer.shipping":"Livraison et retours", "footer.faq":"Questions frequentes", "footer.chat":"Discuter avec l'assistant",
     "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate", "footer.sustainability":"Durabilite", "footer.careers":"Travailler avec nous",
     "footer.hLegal":"Mentions legales", "footer.privacy":"Politique de confidentialite", "footer.terms":"Conditions generales", "footer.cookies":"Politique de cookies",
@@ -1727,7 +1620,7 @@ var I18N = {
     "chat.a.purpose":"Je vous aide a trouver votre systeme ideal, vite et simplement.",
     "chat.q.shipping":"Livraison", "chat.q.verticals":"Marques", "chat.q.diagnostic":"Comment choisir mon systeme", "chat.q.human":"Parler a un humain",
     "chat.a.shipping":"Nous livrons partout au Mexique, en 4 jours ouvres.",
-    "chat.a.verticals":"4 systemes : System Time, System Luminous, System Health et System Spot Speciality. Explorez-les dans le menu System Speciality.",
+    "chat.a.verticals":"3 systemes : System Luminous, System Health et System Spot Speciality. Explorez-les dans le menu System Speciality.",
     "chat.a.diagnostic":"Dites-moi votre priorite (energie, peau, performance) et je recommande votre systeme.",
     "chat.a.prices":"Prix de $259 a $699 MXN, selon le produit.",
     "chat.a.ingredients":"Chaque fiche produit affiche ses ingredients et son origine.",
@@ -1738,12 +1631,12 @@ var I18N = {
     "chat.a.store":"Renuévate est 100% en ligne, nous n'avons pas de boutique physique pour le moment.",
     "chat.a.beautyritual":"Une habitude Renuévate est une routine courte et constante (2 a 3 etapes) pensee pour un objectif precis : energie, peau, cheveux ou bien-etre. Chaque systeme (Time, Luminous, Health, Spot) a le sien. Dites-moi votre priorite et je construis le votre.",
     "chat.a.nutritionadvice":"Je peux vous donner des conseils generaux de bien-etre (hydratation, constance dans votre routine, repos), mais je ne remplace pas un nutritionniste et je ne donne pas de plan personnalise. Pour cela, consultez un professionnel de sante. Si vous voulez, dites-moi votre priorite et je vous suggere des produits de nos lignes.",
-    "chat.a.productadvisor":"Bien sur, je suis votre conseillere produits et complements. Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, ou dites-moi votre priorite (energie, peau, cheveux, bien-etre) et je vous donne une recommandation precise.",
+    "chat.a.productadvisor":"Bien sur, je suis votre conseillere produits. Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, ou dites-moi votre priorite (peau, cheveux, bien-etre) et je vous donne une recommandation precise.",
     "chat.a.loyalty":"Chaque achat cumule des points Renuévate, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.",
     "chat.a.sustainability":"Emballages recyclables et ingredients d'origine certifiee.",
-    "chat.a.about":"Renuévate est la boutique en ligne du holding beaute et bien-etre avec 4 systemes : System Time, System Luminous, System Health et System Spot Speciality.",
-    "chat.a.products":"Nous vendons des complements, des soins de la peau et des cheveux, et du bien-etre quotidien sur 4 systemes : System Time, System Luminous, System Health et System Spot Speciality.",
+    "chat.a.about":"Renuévate est la boutique en ligne du holding beaute et bien-etre avec 3 systemes : System Luminous, System Health et System Spot Speciality.",
+    "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systemes : System Luminous, System Health et System Spot Speciality.",
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
     "chat.a.security":"Paiement securise et chiffre. Nous ne stockons jamais les donnees de votre carte.",
     "chat.a.account":"Pas besoin de compte pour acheter. En vous connectant avec Google ou Facebook, nous gardons votre profil et vos promotions.",
@@ -1794,7 +1687,7 @@ var I18N = {
     "faq.title":"Questions Frequentes", "faq.subtitle":"Tout ce que Julieta repond aujourd'hui, au meme endroit.",
     "faq.q.about":"Qu'est-ce que Renuévate ?", "faq.q.products":"Quels produits vendez-vous ?",
     "faq.q.beautyritual":"Qu'est-ce qu'une habitude Renuévate ?", "faq.q.nutritionadvice":"Offrez-vous des conseils en nutrition ?",
-    "faq.q.productadvisor":"Pouvez-vous m'aider a choisir un produit ou complement ?", "faq.q.diagnostic":"Comment choisir mon systeme ideal ?",
+    "faq.q.productadvisor":"Pouvez-vous m'aider a choisir un produit ?", "faq.q.diagnostic":"Comment choisir mon systeme ideal ?",
     "faq.q.prices":"Quels sont vos prix ?", "faq.q.ingredients":"Puis-je voir les ingredients de chaque produit ?",
     "faq.q.shipping":"Livrez-vous ? Combien de temps cela prend-il ?", "faq.q.tracking":"Comment suivre ma commande ?",
     "faq.q.returns":"Quelle est votre politique de retours ?", "faq.q.cancelorder":"Puis-je annuler ma commande ?",
@@ -1872,7 +1765,6 @@ var DYN = {
        julieta:{
          goalQuestion:function(){ return 'Cual es tu prioridad hoy? 🌿'; },
          goalOptions:function(){ return [
-           { label:'Suplementos y nutricion', action:function(){ chooseGoal('supplements'); } },
            { label:'Cuidado de la piel', action:function(){ chooseGoal('skin'); } },
            { label:'Cuidado del cabello', action:function(){ chooseGoal('hair'); } },
            { label:'Maquíllaje', action:function(){ chooseGoal('makeup'); } },
@@ -1880,12 +1772,6 @@ var DYN = {
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'Para tu piel, que priorizas?' : 'Para afinar, que buscas mas?'; },
          refineOptions:function(goal){
-           if (goal === 'supplements'){ return [
-             { label:'Energia y rendimiento', action:function(){ showRecommendation('supplements','energy'); } },
-             { label:'Defensas e inmunidad', action:function(){ showRecommendation('supplements','immunity'); } },
-             { label:'Digestion', action:function(){ showRecommendation('supplements','digestion'); } },
-             { label:'Estres y equilibrio', action:function(){ showRecommendation('supplements','stress'); } }
-           ]; }
            if (goal === 'skin'){ return [
              { label:'Luminosidad', action:function(){ showRecommendation('skin','glow'); } },
              { label:'Hidratacion profunda', action:function(){ showRecommendation('skin','hydration'); } },
@@ -1894,7 +1780,7 @@ var DYN = {
            return [];
          },
          recommendIntro:function(goal){
-           var map = { supplements:'Estos productos pueden apoyar tu energía y bienestar diario:', skin:'Estos productos favorecen tu piel:', hair:'Estos productos ayudan al cuidado de tu cabello:', wellness:'Este es un buen punto de partida para tu bienestar integral:' };
+           var map = { skin:'Estos productos favorecen tu piel:', hair:'Estos productos ayudan al cuidado de tu cabello:', wellness:'Este es un buen punto de partida para tu bienestar integral:' };
            return map[goal] || 'Esto puede ayudarte:';
          },
          fromPrice:function(price){ return 'desde ' + price; },
@@ -1981,7 +1867,6 @@ var DYN = {
        julieta:{
          goalQuestion:function(){ return "What's your priority today? 🌿"; },
          goalOptions:function(){ return [
-           { label:'Supplements & nutrition', action:function(){ chooseGoal('supplements'); } },
            { label:'Skin care', action:function(){ chooseGoal('skin'); } },
            { label:'Hair care', action:function(){ chooseGoal('hair'); } },
            { label:'Makeup', action:function(){ chooseGoal('makeup'); } },
@@ -1989,12 +1874,6 @@ var DYN = {
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'For your skin, what matters most?' : "Let's narrow it down, what are you after?"; },
          refineOptions:function(goal){
-           if (goal === 'supplements'){ return [
-             { label:'Energy & performance', action:function(){ showRecommendation('supplements','energy'); } },
-             { label:'Immunity', action:function(){ showRecommendation('supplements','immunity'); } },
-             { label:'Digestion', action:function(){ showRecommendation('supplements','digestion'); } },
-             { label:'Stress & balance', action:function(){ showRecommendation('supplements','stress'); } }
-           ]; }
            if (goal === 'skin'){ return [
              { label:'Radiance', action:function(){ showRecommendation('skin','glow'); } },
              { label:'Deep hydration', action:function(){ showRecommendation('skin','hydration'); } },
@@ -2003,7 +1882,7 @@ var DYN = {
            return [];
          },
          recommendIntro:function(goal){
-           var map = { supplements:'These can help support your energy and daily wellness:', skin:'These favor your skin:', hair:'These help take care of your hair:', wellness:'A great starting point for your overall wellness:' };
+           var map = { skin:'These favor your skin:', hair:'These help take care of your hair:', wellness:'A great starting point for your overall wellness:' };
            return map[goal] || 'This can help:';
          },
          fromPrice:function(price){ return 'from ' + price; },
@@ -2090,7 +1969,6 @@ var DYN = {
        julieta:{
          goalQuestion:function(){ return 'Quelle est votre priorite aujourd\'hui ? 🌿'; },
          goalOptions:function(){ return [
-           { label:'Complements et nutrition', action:function(){ chooseGoal('supplements'); } },
            { label:'Soin de la peau', action:function(){ chooseGoal('skin'); } },
            { label:'Soin des cheveux', action:function(){ chooseGoal('hair'); } },
            { label:'Maquíllage', action:function(){ chooseGoal('makeup'); } },
@@ -2098,12 +1976,6 @@ var DYN = {
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'Pour votre peau, quelle est votre priorite ?' : 'Pour affiner, que recherchez-vous ?'; },
          refineOptions:function(goal){
-           if (goal === 'supplements'){ return [
-             { label:'Energie et performance', action:function(){ showRecommendation('supplements','energy'); } },
-             { label:'Defenses et immunite', action:function(){ showRecommendation('supplements','immunity'); } },
-             { label:'Digestion', action:function(){ showRecommendation('supplements','digestion'); } },
-             { label:'Stress et equilibre', action:function(){ showRecommendation('supplements','stress'); } }
-           ]; }
            if (goal === 'skin'){ return [
              { label:'Eclat', action:function(){ showRecommendation('skin','glow'); } },
              { label:'Hydratation profonde', action:function(){ showRecommendation('skin','hydration'); } },
@@ -2112,7 +1984,7 @@ var DYN = {
            return [];
          },
          recommendIntro:function(goal){
-           var map = { supplements:'Ces produits peuvent soutenir votre energie et bien-etre quotidien :', skin:'Ces produits favorisent votre peau :', hair:'Ces produits aident a prendre soin de vos cheveux :', wellness:'Un bon point de depart pour votre bien-etre global :' };
+           var map = { skin:'Ces produits favorisent votre peau :', hair:'Ces produits aident a prendre soin de vos cheveux :', wellness:'Un bon point de depart pour votre bien-etre global :' };
            return map[goal] || 'Ceci peut vous aider :';
          },
          fromPrice:function(price){ return 'a partir de ' + price; },
@@ -3115,7 +2987,6 @@ function closeProductDetail(){
 
 function iconSvg(v){
   var paths = {
-    raiz:'<path d="M12 22V12"/><path d="M12 12C12 6 6 4 4 4c0 6 3 8 8 8Z"/><path d="M12 12c0-6 6-8 8-8 0 6-3 8-8 8Z"/>',
     nacar:'<path d="M12 3c4 3 7 6 7 10a7 7 0 0 1-14 0c0-4 3-7 7-10Z"/>',
     vigor:'<polygon points="13 2 3 14 11 14 9 22 21 10 13 10 13 2"/>',
     roble:'<path d="M12 2 3 7l9 5 9-5-9-5Z"/><path d="M3 7v10l9 5 9-5V7"/><path d="M12 12v10"/>'
@@ -3123,7 +2994,7 @@ function iconSvg(v){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' + paths[v] + '</svg>';
 }
 
-var currentV = 'raiz';
+var currentV = 'nacar';
 var currentLang = 'es';
 var selectedRoutine = null;
 var CURRENT_RENDERED_PRODUCTS = [];
@@ -3496,13 +3367,12 @@ function applyLanguage(lang){
     if (dict[hkey] !== undefined) htmlEls[j].innerHTML = dict[hkey];
   }
 
-  document.getElementById('bmRaiz').textContent = V.raiz[lang].bmLabel;
   document.getElementById('bmNacar').textContent = V.nacar[lang].bmLabel;
   document.getElementById('bmVigor').textContent = V.vigor[lang].bmLabel;
   document.getElementById('bmRoble').textContent = V.roble[lang].bmLabel;
 
-  var verts = ['raiz','nacar','vigor','roble'];
-  var caps = ['Raiz','Nacar','Vigor','Roble'];
+  var verts = ['nacar','vigor','roble'];
+  var caps = ['Nacar','Vigor','Roble'];
   for (var k=0;k<verts.length;k++){
     document.getElementById('vtag'+caps[k]).textContent = V[verts[k]][lang].tag;
     document.getElementById('vmsg'+caps[k]).textContent = V[verts[k]][lang].msg;
@@ -3546,7 +3416,7 @@ var CHAT_KEYWORDS = {
   capability:['como me ayudas','como puedes ayudarme','que puedes hacer','que haces','que hace este chat','en que me ayudas','como me pueden ayudar','en que nos pueden ayudar','como pueden ayudarme','en que me pueden apoyar','how can you help','how can you guys help','what can you do','what do you do','how can i get help','comment peux tu m\'aider','comment pouvez vous m\'aider','comment pouvez-vous m\'aider','que peux tu faire','que fais tu'],
   beautyritual:['ritual de belleza','rituales de belleza','que es un ritual','como armo mi ritual','beauty ritual','skincare ritual','what is a ritual','routine de beaute','quel est le rituel'],
   nutritionadvice:['consejo de nutricion','consejos de nutricion','recomendacion nutricional','como mejorar mi alimentacion','tips de nutricion','asesoria nutricional','nutrition advice','nutrition tips','general nutrition','conseil nutrition','conseils nutritionnels'],
-  productadvisor:['asesor de productos','asesor de suplementos','ayudame a elegir un producto','ayudame a elegir un suplemento','que suplemento me recomiendas','product advisor','help me choose a product','which supplement should i take','conseiller produit','quel complement me recommandez vous'],
+  productadvisor:['asesor de productos','ayudame a elegir un producto','product advisor','help me choose a product','conseiller produit'],
   purpose:['para que sirves','cual es tu funcion','para que es el sitio','para que es esta pagina','para que es esta web','que es este sitio','que es renuevate','de que trata este sitio','de que trata esta pagina','sobre renuevate','what are you for','what is your purpose','what is this site for','what is this website about','what is renuevate','about renuevate','a quoi sers tu','a quoi tu sers','a quoi sert ce site','qu\'est-ce que ce site','qu\'est-ce qu\'renuevate','a propos d\'renuevate'],
   products:['que venden','que productos tienen','que productos venden','que vendes','productos tienen','what do you sell','your products','what products do you have','do you sell','que vendez vous','quels produits','vous vendez quoi'],
   hours:['horario','horario de atencion','horas de atencion','a que hora abren','business hours','opening hours','are you open','what time do you open','heures d\'ouverture','horaires','vous ouvrez a quelle heure'],
@@ -3556,7 +3426,7 @@ var CHAT_KEYWORDS = {
   discount:['codigo de descuento','cupon','cupones','codigo promocional','codigo de promocion','discount code','promo code','coupon','discount codes','code promo','code de reduction','avez vous des codes'],
   warranty:['garantia','garantia del producto','tiene garantia','warranty','guarantee','is it guaranteed','garantie','est-ce garanti'],
   shipping:['envio','envios','shipping','envoi','livraison','entrega','delivery'],
-  verticals:['vertical','verticales','marca','marcas','raiz','nacar','vigor','roble','brand','brands'],
+  verticals:['vertical','verticales','marca','marcas','nacar','vigor','roble','brand','brands'],
   diagnostic:['diagnostico','diagnostic','quiz','cuestionario','questionnaire','assessment'],
   prices:['precio','precios','price','prices','prix','costo','cost'],
   ingredients:['ingrediente','ingredientes','ingredient','ingredients','composicion'],
@@ -3659,7 +3529,7 @@ function waButtonHtml(label){
 /* Comparacion real entre dos lineas de producto (hallazgo #8 del QA: antes solo
    listaba las 4 marcas sin comparar nada). Reutiliza el tagline real de cada
    vertical (V[v][lang].tag/msg) en vez de un texto generico. */
-var VERTICAL_NAMES = ['raiz','nacar','vigor','roble'];
+var VERTICAL_NAMES = ['nacar','vigor','roble'];
 var COMPARE_TRIGGERS = ['diferencia','diferencias','comparar','comparacion','versus','difference','compare','comparison','differe','comparer'];
 var COMPARE_AND = { es:'y', en:'and', fr:'et' };
 function detectTwoVerticals(norm){
@@ -3823,29 +3693,22 @@ function matchTopic(text){
 function withV(p, v){ return { name: p.name, desc: p.desc, price: p.price, v: v }; }
 
 function pickProducts(goal, refine){
-  var raiz = V.raiz[currentLang].products, nacar = V.nacar[currentLang].products, vigor = V.vigor[currentLang].products, roble = V.roble[currentLang].products;
-  if (goal === 'supplements'){
-    if (refine === 'immunity') return [withV(raiz[3],'raiz'), withV(raiz[0],'raiz')];
-    if (refine === 'digestion') return [withV(raiz[2],'raiz'), withV(raiz[0],'raiz')];
-    if (refine === 'stress') return [withV(raiz[1],'raiz'), withV(raiz[0],'raiz')];
-    return [withV(vigor[0],'vigor'), withV(raiz[0],'raiz'), withV(vigor[1],'vigor')];
-  }
+  var nacar = V.nacar[currentLang].products, vigor = V.vigor[currentLang].products, roble = V.roble[currentLang].products;
   if (goal === 'skin'){
     if (refine === 'hydration') return [withV(nacar[1],'nacar'), withV(nacar[0],'nacar')];
     if (refine === 'eyearea') return [withV(nacar[3],'nacar'), withV(nacar[1],'nacar')];
     return [withV(nacar[0],'nacar'), withV(nacar[1],'nacar'), withV(nacar[3],'nacar')];
   }
   if (goal === 'hair') return [withV(nacar[2],'nacar'), withV(roble[3],'roble')];
-  if (goal === 'wellness') return [withV(raiz[0],'raiz'), withV(nacar[1],'nacar'), withV(vigor[3],'vigor')];
+  if (goal === 'wellness') return [withV(nacar[1],'nacar'), withV(vigor[3],'vigor'), withV(roble[1],'roble')];
   return [];
 }
 
 function crossSellPick(goal){
-  var nacar = V.nacar[currentLang].products, raiz = V.raiz[currentLang].products, vigor = V.vigor[currentLang].products, roble = V.roble[currentLang].products;
-  if (goal === 'supplements') return withV(nacar[1],'nacar');
-  if (goal === 'skin') return withV(raiz[0],'raiz');
+  var nacar = V.nacar[currentLang].products, vigor = V.vigor[currentLang].products, roble = V.roble[currentLang].products;
+  if (goal === 'skin') return withV(vigor[1],'vigor');
   if (goal === 'hair') return withV(nacar[0],'nacar');
-  if (goal === 'wellness') return withV(vigor[1],'vigor');
+  if (goal === 'wellness') return withV(roble[1],'roble');
   return null;
 }
 
@@ -3871,7 +3734,7 @@ function askRefine(goal){
   renderDynamicOptions(j.refineOptions(goal));
 }
 function vColor(v){
-  var map = { raiz:'#6D8F6C', nacar:'#B8873A', vigor:'#456B8A', roble:'#2F3A44' };
+  var map = { nacar:'#B8873A', vigor:'#456B8A', roble:'#2F3A44' };
   return map[v] || '#5E5E5E';
 }
 function productCardHtml(p, j){
@@ -3906,8 +3769,8 @@ function showCrossSell(goal){
 function showCloseOptions(goal){
   var j = DYN[currentLang].julieta;
   addChatMsg(j.closeQuestion(), 'bot');
-  var vertMap = { supplements:'raiz', skin:'nacar', hair:'nacar', wellness:'raiz' };
-  var vert = vertMap[goal] || 'raiz';
+  var vertMap = { skin:'nacar', hair:'nacar', wellness:'vigor' };
+  var vert = vertMap[goal] || 'nacar';
   renderDynamicOptions([
     { label: j.viewCatalogLabel(vert), action: function(){ closeAllPanels(); goVertical(vert); renderChatQuickButtons(); } },
     { label: j.talkHumanLabel(), action: function(){ answerTopic('human'); renderChatQuickButtons(); } },
@@ -3956,15 +3819,15 @@ function extractProfile(text){
 }
 function pickVerticals(age, gender){
   if (gender === 'f'){
-    if (age !== null && age >= 45) return ['raiz','nacar'];
-    if (age !== null && age >= 30) return ['nacar','raiz'];
+    if (age !== null && age >= 45) return ['nacar','vigor'];
+    if (age !== null && age >= 30) return ['nacar','vigor'];
     return ['nacar','vigor'];
   }
   if (gender === 'm'){
     if (age !== null && age >= 30) return ['roble','vigor'];
     return ['vigor','roble'];
   }
-  return ['raiz','vigor'];
+  return ['nacar','vigor'];
 }
 function answerRecommendation(profile){
   var dict = I18N[currentLang];

@@ -10,7 +10,7 @@
 // moderacion -- recomendado antes de abrir el sitio a trafico publico real,
 // para evitar contenido abusivo o spam visible sin revision humana.
 //
-// GET  /api/reviews?sku=RAIZ-01           -> resenas publicadas de ese sku
+// GET  /api/reviews?sku=NACAR-01          -> resenas publicadas de ese sku
 // POST /api/reviews { customerId, sku, stars, text, displayName, photos:[dataUrl,...] }
 
 const { MongoClient, ObjectId } = require('mongodb');

@@ -6,8 +6,8 @@
 // un sku o mostrar un precio, nunca confian en lo que manda el navegador.
 //
 // GET /api/products              -> todos los productos activos
-// GET /api/products?vertical=raiz -> solo esa vertical
-// GET /api/products?sku=RAIZ-01   -> un producto puntual
+// GET /api/products?vertical=nacar -> solo esa vertical
+// GET /api/products?sku=NACAR-01   -> un producto puntual
 
 const { MongoClient } = require('mongodb');
 

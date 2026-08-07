@@ -295,7 +295,7 @@ const VALIDATORS = {
       required: ['sku', 'vertical', 'name_i18n', 'unit_price', 'currency', 'status', 'created_at', 'updated_at'],
       properties: {
         sku: { bsonType: 'string' },
-        vertical: { enum: ['raiz', 'nacar', 'vigor', 'roble'] },
+        vertical: { enum: ['raiz', 'nacar', 'vigor', 'roble', 'accessory'] },
         name_i18n: {
           bsonType: 'object',
           required: ['es', 'en', 'fr'],
