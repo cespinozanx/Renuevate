@@ -73,33 +73,30 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
   .nav-dropdown-menu{position:absolute; top:100%; left:50%; transform:translateX(-50%); background:#fff; box-shadow:0 10px 28px rgba(0,0,0,.14); padding:12px 18px; min-width:210px; border-radius:6px; z-index:80; margin-top:14px;}
   .nav-dropdown-menu a{padding:8px 4px !important; white-space:nowrap; border-bottom:none !important;}
 }
-.hero-video{width:100%; max-width:520px; margin:0 auto 14px;}
-.hero-video-frame{position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#1E1E1E url('media/hero-mobile-poster.jpg') center/cover no-repeat; box-shadow:0 14px 32px rgba(30,30,30,.16);}
+.hero-video-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#1E1E1E url('media/hero-mobile-poster.jpg') center/cover no-repeat; z-index:0;}
 .hero-video-el{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:0; display:block;}
+.hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(20,18,14,.22) 0%, rgba(20,18,14,.08) 38%, rgba(20,18,14,.62) 100%);}
 @media(prefers-reduced-motion:reduce){ .hero-video-el{display:none;} }
 @media(min-width:761px){
-  .hero-video{max-width:720px;}
-  .hero-video-frame{aspect-ratio:21/9; background-image:url('media/hero-desktop-poster.jpg');}
+  .hero-video-frame{background-image:url('media/hero-desktop-poster.jpg');}
 }
 .hero-cta.hero-cta-sm .btn{padding:9px 18px; font-size:10.5px; letter-spacing:1.2px;}
-.vert-heading-row{display:flex; align-items:baseline; justify-content:center; gap:10px; flex-wrap:wrap;}
-.suggested-tag{display:inline-block; font-size:14px; letter-spacing:.5px; text-transform:none; color:var(--gold); font-weight:600; font-style:italic; margin-top:0;}
 
 body.nav-lock{overflow:hidden;}
 
 .lang-select-top{background:transparent; color:var(--ink); border:1px solid var(--line); border-radius:2px; font-size:11px; letter-spacing:.6px; padding:5px 6px; cursor:pointer; font-family:'Manrope',sans-serif;}
 
-.hero{position:relative; min-height:auto; padding:34px 0 44px; display:flex; align-items:center; overflow:hidden; background:linear-gradient(160deg,#FFFFFF 0%, #F8F7F3 55%, #F1EFEA 100%);}
-.hero::before{content:""; position:absolute; inset:0; background:
-  radial-gradient(circle at 12% 20%, rgba(198,168,107,.14), transparent 42%),
-  radial-gradient(circle at 88% 78%, rgba(109,143,108,.08), transparent 45%);}
-.hero-grid{position:relative; z-index:2; display:flex; justify-content:center; width:100%;}
-.hero-content{color:var(--ink); max-width:640px; text-align:center;}
-.hero-content .eyebrow{color:var(--gold);}
-.hero-content h1{font-size:clamp(34px,4.6vw,54px); line-height:1.12; margin:20px 0 22px; color:var(--navy); font-weight:600;}
-.hero-content h1 .accent{color:var(--gold); border-color:var(--gold);}
-.hero-content p{font-size:17px; color:var(--grey); max-width:520px; margin:0 auto 34px; font-weight:400;}
+.hero{position:relative; min-height:68vh; padding:0; display:flex; align-items:flex-end; overflow:hidden; background:#1E1E1E;}
+.hero-grid{position:relative; z-index:2; display:flex; justify-content:center; width:100%; padding-bottom:52px;}
+.hero-content{color:#fff; max-width:640px; text-align:center;}
+.hero-content .eyebrow{color:#F0DCA0;}
+.hero-content h1{font-size:clamp(36px,5.4vw,64px); line-height:1.1; margin:20px 0 22px; color:#fff; font-weight:600; text-shadow:0 3px 22px rgba(0,0,0,.35);}
+.hero-content h1 .accent{color:#F0DCA0; border-color:#F0DCA0;}
+.hero-content p{font-size:17px; color:rgba(255,255,255,.92); max-width:520px; margin:0 auto 34px; font-weight:400;}
 .hero-cta{display:flex; gap:16px; flex-wrap:wrap; justify-content:center;}
+@media(min-width:761px){
+  .hero{min-height:86vh;}
+}
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
 .btn-ghost:hover{background:rgba(255,255,255,.1);}
 
@@ -503,12 +500,10 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .reveal-stagger.is-visible > *:nth-child(3){transition-delay:.27s;}
 .reveal-stagger.is-visible > *:nth-child(4){transition-delay:.38s;}
 .reveal-stagger.is-visible > *:nth-child(5){transition-delay:.49s;}
-/* El video del hero nunca debe arrancar en opacity:0 -- en algunos navegadores/
-   WebView de Android, un <video> con autoplay que inicia su render en un elemento
-   con opacity:0 (como aqui, por ser hijo directo de .reveal-stagger) se queda con
-   el decodificador suspendido y jamas empieza a pintar frames, aunque play() no
-   tire error. Se excluye de la animacion de entrada por esta razon, no solo estetica. */
-.hero-content.reveal-stagger > .hero-video{opacity:1; transform:none; transition:none;}
+/* Nota: el video del hero ya no vive dentro de .hero-content (ver seccion hero
+   mas abajo, ahora es full-bleed a nivel de .hero) por lo que nunca entra al
+   ciclo de opacity:0 de .reveal-stagger -- ya no necesita una regla de excepcion
+   aqui. Si el video se vuelve a anidar en .hero-content, revisar este comentario. */
 @keyframes revealLR{from{opacity:0; transform:translateX(-28px);}to{opacity:1; transform:translateX(0);}}
 .product-card, .routine-card{animation:revealLR .65s ease-out both;}
 .product-card:nth-child(1), .routine-card:nth-child(1){animation-delay:.05s;}
@@ -619,22 +614,21 @@ var AZURA_CONFIG = {
 </header>
 
 <section class="hero">
+  <div class="hero-video-frame" id="heroVideoFrame">
+    <video class="hero-video-el" id="heroVideoEl" autoplay muted loop playsinline preload="auto" aria-label="Video de marca Renuévate">
+      <source src="media/hero-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
+      <source src="media/hero-desktop.mp4" type="video/mp4">
+    </video>
+    <div class="hero-scrim"></div>
+  </div>
   <div class="container hero-grid">
     <div class="hero-content reveal-stagger">
-      <div class="hero-video">
-        <div class="hero-video-frame" id="heroVideoFrame">
-          <video class="hero-video-el" id="heroVideoEl" autoplay muted loop playsinline preload="auto" aria-label="Video de marca Renuévate">
-            <source src="media/hero-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
-            <source src="media/hero-desktop.mp4" type="video/mp4">
-          </video>
-        </div>
-      </div>
       <div class="eyebrow" data-i18n="hero.eyebrow">Renuévate . Holding de Bienestar</div>
-      <h1 data-i18n-html="hero.h1">El bienestar que <span class="accent">transforma</span> tu vida</h1>
-      <p data-i18n-html="hero.p">Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.</p>
+      <h1 data-i18n-html="hero.h1"><span class="accent">Transforma</span> tu vida</h1>
+      <p data-i18n-html="hero.p">Pensando en <span class="accent">acompañarte</span> en cada etapa de tu vida.</p>
       <div class="hero-cta hero-cta-sm">
         <a class="btn btn-dark" onclick="goVertical(currentV)" data-i18n="hero.cta1">Explorar el catálogo</a>
-        <a class="btn btn-outline" onclick="scrollToId('filosofia')" data-i18n="hero.cta2">Nuestra filosofia</a>
+        <a class="btn btn-ghost" onclick="scrollToId('filosofia')" data-i18n="hero.cta2">Nuestra filosofia</a>
       </div>
     </div>
   </div>
@@ -643,12 +637,8 @@ var AZURA_CONFIG = {
 <section id="verticales">
   <div class="container">
     <div class="section-head reveal-stagger">
-      <div class="eyebrow" data-i18n="vert.eyebrow">Renuévate</div>
-      <div class="vert-heading-row">
-        <h2 data-i18n="vert.h2">Lo mejor para ti</h2>
-        <span class="suggested-tag" data-i18n="vert.suggested">Sugerido</span>
-      </div>
-      <p data-i18n="vert.p">Cada nombre resuelve una necesidad específica de bienestar. Comparten el mismo estándar de calidad y la misma convicción: consentirte es invertir en ti.</p>
+      <h2 data-i18n="vert.h2">Lo mejor para ti</h2>
+      <p data-i18n="vert.p">Cada ingrediente resuelve una necesidad específica, compartiendo la misma esencia y convicción: consentirte es invertir en ti.</p>
     </div>
     <div class="brand-map reveal">
       <div class="bm-holding">RENUÉVATE</div>
@@ -768,7 +758,7 @@ var AZURA_CONFIG = {
         <img src="media/logo-icon.png" alt="Renuévate" class="footer-logo-icon" loading="lazy">
         <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
       </div>
-      <p data-i18n="footer.brandP">System Time, Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.</p>
+      <p data-i18n="footer.brandP">System Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.</p>
       <div class="footer-social">
         <a href="#" id="socialInstagram" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
         <a href="#" id="socialTiktok" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M9 12a4 4 0 1 0 4 4V4c1 2 3 3 5 3"/></svg></a>
@@ -1328,15 +1318,15 @@ var I18N = {
   es:{
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
-    "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'El bienestar que <span class="accent">transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
-    "hero.p":'Productos pensados para <span class="accent">acompañar</span> cada etapa de tu vida.',
+    "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'<span class="accent">Transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
+    "hero.p":'Pensando en <span class="accent">acompañarte</span> en cada etapa de tu vida.',
     "hero.cta1":"Explorar el catálogo", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
     "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su sistema...",
     "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesión para guardar tus productos favoritos y tu historial de pedidos.",
     "cart.title":"Tu carrito", "cart.empty":"Tu carrito esta vacio por ahora.", "cart.cta":"Explorar catálogo",
-    "vert.eyebrow":"Renuévate", "vert.h2":"Lo mejor para ti", "vert.suggested":"Sugerido",
-    "vert.p":"Cada nombre resuelve una necesidad específica de bienestar. Comparten el mismo estándar de calidad y la misma convicción: consentirte es invertir en ti.",
+    "vert.h2":"Lo mejor para ti",
+    "vert.p":"Cada ingrediente resuelve una necesidad específica, compartiendo la misma esencia y convicción: consentirte es invertir en ti.",
     "vert.cta":"Descubrir &#8594;",
     "phil.eyebrow":"Nuestra filosofía", "phil.h2":'Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.',
     "phil.p":"Renuévate existe para el bienestar real de las personas. Cada marca de nuestro portafolio fue creada para resolver una necesidad específica, no para competir por precio, sino por relevancia en la etapa de vida de quien nos elige.",
@@ -1452,15 +1442,15 @@ var I18N = {
   en:{
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
-    "hero.eyebrow":"Renuévate . Wellness Holding", "hero.h1":'Wellness that <span class="accent">transforms</span> your life', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
-    "hero.p":'Products designed to <span class="accent">accompany</span> every stage of your life.',
+    "hero.eyebrow":"Renuévate . Wellness Holding", "hero.h1":'<span class="accent">Transform</span> your life', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
+    "hero.p":'Here to <span class="accent">walk beside you</span> through every stage of your life.',
     "hero.cta1":"Explore the catalog", "hero.cta2":"Our philosophy",
     "hero.visualCaption":"Four wellness systems, one single standard of origin and quality.",
     "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its system...",
     "account.title":"Your Renuévate account", "account.p":"Sign in to save your favorite products and your order history.",
     "cart.title":"Your cart", "cart.empty":"Your cart is empty for now.", "cart.cta":"Explore the catalog",
-    "vert.eyebrow":"Renuévate", "vert.h2":"The best for you", "vert.suggested":"Suggested",
-    "vert.p":"Each name solves a specific wellness need. They share the same quality standard and the same conviction: taking care of yourself is an investment in you.",
+    "vert.h2":"The best for you",
+    "vert.p":"Each ingredient solves a specific need, sharing the same essence and conviction: taking care of yourself is an investment in you.",
     "vert.cta":"Discover &#8594;",
     "phil.eyebrow":"Our philosophy", "phil.h2":'We think about your wellbeing. We sustain <span class="accent">habits</span>.',
     "phil.p":"Renuévate exists for people's real wellness. Each vertical was designed to solve a concrete need, not to compete on price, but on relevance to the life moment of whoever chooses us.",
@@ -1576,15 +1566,15 @@ var I18N = {
   fr:{
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
-    "hero.eyebrow":"Renuévate . Holding Bien-etre", "hero.h1":'Le bien-etre qui <span class="accent">transforme</span> votre vie', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
-    "hero.p":'Des produits concus pour <span class="accent">accompagner</span> chaque etape de votre vie.',
+    "hero.eyebrow":"Renuévate . Holding Bien-etre", "hero.h1":'<span class="accent">Transforme</span> votre vie', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
+    "hero.p":'Pense pour <span class="accent">vous accompagner</span> a chaque etape de votre vie.',
     "hero.cta1":"Explorer le catalogue", "hero.cta2":"Notre philosophie",
     "hero.visualCaption":"Quatre systemes de bien-etre, un seul standard d'origine et de qualite.",
     "search.placeholder":"Recherchez un produit ou un systeme...", "search.btn":"Rechercher", "search.notfound":"Aucun resultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture du systeme...",
     "account.title":"Votre compte Renuévate", "account.p":"Connectez-vous pour enregistrer vos produits favoris et votre historique de commandes.",
     "cart.title":"Votre panier", "cart.empty":"Votre panier est vide pour le moment.", "cart.cta":"Explorer le catalogue",
-    "vert.eyebrow":"Renuévate", "vert.h2":"Le meilleur pour vous", "vert.suggested":"Suggere",
-    "vert.p":"Chaque nom repond a un besoin de bien-etre precis. Elles partagent le meme standard de qualite et la meme conviction : prendre soin de soi, c'est investir en soi.",
+    "vert.h2":"Le meilleur pour vous",
+    "vert.p":"Chaque ingredient repond a un besoin precis, partageant la meme essence et la meme conviction : prendre soin de soi, c'est investir en soi.",
     "vert.cta":"Decouvrir &#8594;",
     "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous pensons a votre bien-etre. Nous soutenons des <span class="accent">habitudes</span>.',
     "phil.p":"Renuévate existe pour le bien-etre reel des personnes. Chaque marque a ete concue pour repondre a un besoin concret, sans jouer la carte du prix, mais celle de la pertinence dans le moment de vie de la personne qui nous choisit.",
