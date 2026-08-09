@@ -192,7 +192,7 @@ git push -u origin main
    | `TWILIO_AUTH_TOKEN` | (opcional, paso 3bis) |
    | `TWILIO_FROM_NUMBER` | (opcional, paso 3bis) |
 
-5. Dale **Deploy**. En 1-2 minutos tendras una URL tipo `https://azura-wellness-site.vercel.app`.
+5. Dale **Deploy**. En 1-2 minutos tendras una URL tipo `https://renuevatehoy.vercel.app`.
 6. Vuelve al paso 2 (Google Cloud) y al paso 3 (Facebook) y agrega esa URL real a los origenes/dominios autorizados.
 
 Listo — el sitio ya esta en linea, gratis, con login real guardando en tu base de datos.

@@ -31,7 +31,7 @@
 //
 // Variables de entorno requeridas:
 //   MERCADOPAGO_ACCESS_TOKEN   Access Token (prueba o produccion) de tu cuenta de Mercado Pago
-//   SITE_URL                   ej. https://azura-wellness-site.vercel.app (para back_urls y el webhook)
+//   SITE_URL                   ej. https://renuevatehoy.vercel.app (para back_urls y el webhook)
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { recordPurchaseForLoyalty } = require('../lib/promotionsEngine');
@@ -50,7 +50,7 @@ async function getDb() {
 }
 
 function siteUrl() {
-  const raw = process.env.SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://azura-wellness-site.vercel.app');
+  const raw = process.env.SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://renuevatehoy.vercel.app');
   return raw.replace(/\/$/, '');
 }
 
