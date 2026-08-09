@@ -162,6 +162,15 @@ section{padding:92px 0;}
 .zoom-section.catalog-mode .zoom-tabs,
 .zoom-section.catalog-mode .zoom-banner,
 .zoom-section.catalog-mode .routine-block{display:none;}
+/* Cuando se ve el catalogo o un System Speciality especifico (goVertical /
+   openBeautyCatalog), el resto de la home (hero, verticales, filosofia,
+   newsletter) se oculta por completo -- ya no es un scroll largo de una sola
+   pagina, se siente como una pagina propia. goHome() quita esta clase y
+   vuelve a mostrar todo. Sin esto, aunque #zoom se revelaba correctamente,
+   el usuario seguia topandose con el resto de la home al hacer scroll. */
+body.viewing-product-page .home-only{display:none;}
+.zoom-back-link{display:inline-block; margin-bottom:18px; cursor:pointer; color:var(--grey); font-size:14px; letter-spacing:.02em;}
+.zoom-back-link:hover{color:var(--ink);}
 .zoom-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:52px; flex-wrap:wrap;}
 .zoom-tab{padding:10px 24px; border-radius:30px; border:1px solid var(--line); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700; cursor:pointer; color:var(--grey); background:#fff;}
 .zoom-tab.active{background:#F8F7F3;}
@@ -648,7 +657,7 @@ var AZURA_CONFIG = {
 <header class="site" id="siteHeader">
   <div class="container nav-row">
     <div class="hamburger" id="hamburgerBtn" onclick="toggleNav()" role="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><span></span><span></span><span></span></div>
-    <div class="logo-wrap">
+    <div class="logo-wrap" onclick="goHome()" style="cursor:pointer;">
       <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
       <div class="logo-sub">. Holding de Bienestar</div>
     </div>
@@ -664,7 +673,7 @@ var AZURA_CONFIG = {
           <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
         </div>
       </div>
-      <a onclick="scrollToId('filosofia'); closeNav();" data-i18n="nav.filosofia">Nuestra filosofia</a>
+      <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
     </nav>
     <div class="header-icons">
       <span class="account-name" id="accountNameLabel" style="display:none;"></span>
@@ -684,7 +693,7 @@ var AZURA_CONFIG = {
   </div>
 </header>
 
-<section class="hero">
+<section class="hero home-only">
   <div class="hero-video-frame" id="heroVideoFrame">
     <video class="hero-video-el" id="heroVideoEl" autoplay muted loop playsinline preload="auto" aria-label="Video de marca Renuévate">
       <source src="media/hero-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
@@ -705,7 +714,7 @@ var AZURA_CONFIG = {
   </div>
 </section>
 
-<section id="verticales">
+<section id="verticales" class="home-only">
   <div class="container">
     <div class="section-head reveal-stagger">
       <h2 data-i18n="vert.h2">Lo mejor para ti</h2>
@@ -761,7 +770,7 @@ var AZURA_CONFIG = {
   </div>
 </section>
 
-<section class="philosophy" id="filosofia">
+<section class="philosophy home-only" id="filosofia">
   <div class="container phil-grid">
     <div class="reveal-stagger">
       <div class="eyebrow" data-i18n="phil.eyebrow">Nuestra filosofía</div>
@@ -781,6 +790,7 @@ var AZURA_CONFIG = {
 
 <section class="zoom-section zoom-hidden" id="zoom">
   <div class="container">
+    <a class="zoom-back-link" onclick="goHome()" data-i18n-html="zoom.backHome">&#8592; Volver a inicio</a>
     <div class="section-head reveal-stagger">
       <div class="eyebrow" id="zoomEyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
       <h2 id="zoomTitle">System Luminous Speciality - Belleza para mujer</h2>
@@ -825,7 +835,7 @@ var AZURA_CONFIG = {
   </div>
 </section>
 
-<section class="newsletter" id="newsletter">
+<section class="newsletter home-only" id="newsletter">
   <div class="container reveal-stagger">
     <div class="eyebrow" data-i18n="nl.eyebrow">Unete a Renuévate</div>
     <h2 style="font-size:27px; margin-top:12px;" data-i18n-html="nl.h2">Recibe <span class="accent">novedades</span> y acceso anticipado a tus sistemas favoritos</h2>
@@ -859,7 +869,7 @@ var AZURA_CONFIG = {
       <a onclick="goVertical('roble')" data-i18n="footer.roble">Speciality Spot</a>
     </div>
     <div><h5 data-i18n="footer.hAyuda">Ayuda</h5>
-      <a onclick="scrollToId('verticales')" data-i18n="footer.diag">Como elegir tu sistema</a>
+      <a onclick="goToHomeSection('verticales')" data-i18n="footer.diag">Como elegir tu sistema</a>
       <a onclick="openTermsModal()" data-i18n="footer.shipping">Envios y devoluciones</a>
       <a onclick="openFaqModal()" data-i18n="footer.faq">Preguntas frecuentes</a>
       <a onclick="openChat()" data-i18n="footer.chat">Chatea con el asistente</a>
@@ -1477,6 +1487,7 @@ var I18N = {
     "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;",
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
     "catalog.eyebrow":"Catalogo", "catalog.title":"Catalogo Belleza", "catalog.subtitle":"Todos los productos de System Luminous, en un solo lugar.",
+    "zoom.backHome":"&#8592; Volver a inicio",
     "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
     "zoom.routineEyebrow":"Que rutina es para ti?", "zoom.routineH2":"Encuentra tu combo ideal", "zoom.routineP":"Selecciona tu nivel de experiencia y te sugerimos la rutina adecuada.",
@@ -1602,6 +1613,7 @@ var I18N = {
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: wellness first.&rdquo;",
     "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
     "catalog.eyebrow":"Catalog", "catalog.title":"Beauty Catalog", "catalog.subtitle":"Every System Luminous product, in one place.",
+    "zoom.backHome":"&#8592; Back to home",
     "comingSoon.eyebrow":"Content coming soon", "comingSoon.title":"We're polishing this content", "comingSoon.body":"There's nothing wrong with this Renuévate section: we're still refining the full detail of this system so we can show it to you properly. Check back soon.", "comingSoon.cta":"Got it",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"TO SEE RESULTS*", "zoom.stat3Label":"VERIFIED ORIGIN",
     "zoom.routineEyebrow":"Which routine is right for you?", "zoom.routineH2":"Find your ideal combo", "zoom.routineP":"Select your experience level and we'll suggest the right routine.",
@@ -1727,6 +1739,7 @@ var I18N = {
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Systeme phare", "zoom.knowRitual":"Decouvrir le systeme",
     "catalog.eyebrow":"Catalogue", "catalog.title":"Catalogue Beaute", "catalog.subtitle":"Tous les produits System Luminous, au meme endroit.",
+    "zoom.backHome":"&#8592; Retour a l'accueil",
     "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce systeme pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RESULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
     "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo ideal", "zoom.routineP":"Selectionnez votre niveau d'experience et nous vous suggerons la routine adaptee.",
@@ -3480,10 +3493,44 @@ function goVertical(v){
     document.getElementById('zoomEyebrow').textContent = I18N[currentLang]['zoom.eyebrow'];
   }
   catalogModeActive = false;
+  // Se oculta el resto de la home (hero/verticales/filosofia/newsletter, ver
+  // clase .home-only) para que System Speciality y el catalogo se sientan
+  // como su propia pagina -- ya no basta con mostrar/ocultar #zoom, porque
+  // seguia viviendo en el mismo scroll largo de la home (bug reportado: "si
+  // hago scroll en la pagina principal sigo viendo el catalogo"). goHome()
+  // revierte esto.
+  document.body.classList.add('viewing-product-page');
+  window.scrollTo({top:0, behavior:'auto'});
   scrollToId('zoom');
   closeNav();
 }
 function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// Regresa de la vista de catalogo/System Speciality a la home completa.
+// Punto de salida unico: boton "Volver a inicio" dentro de #zoom, el logo del
+// header, y el link "Nuestra filosofia" del nav (que primero debe traer de
+// vuelta el resto de la home antes de poder desplazarse hasta esa seccion,
+// ya que .home-only la mantiene oculta mientras viewing-product-page este activo).
+function resetToHomeState(){
+  document.body.classList.remove('viewing-product-page');
+  var zoomSection = document.getElementById('zoom');
+  zoomSection.classList.add('zoom-hidden');
+  zoomSection.classList.remove('catalog-mode');
+  catalogModeActive = false;
+  closeNav();
+}
+function goHome(){
+  resetToHomeState();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+// Helper generico para links del nav/footer que apuntan a una seccion de la
+// home (filosofia, verticales) -- primero se asegura de que la home este
+// visible (por si veniamos de catalogo/System Speciality) y luego hace scroll.
+function goToHomeSection(id){
+  resetToHomeState();
+  scrollToId(id);
+}
+function goToFilosofia(){ goToHomeSection('filosofia'); }
 
 // Pagina de "solo catalogo": reusa la ficha #zoom (mismo grid de productos,
 // panel de comentarios y banner de recomendacion) pero oculta los tabs
@@ -3501,6 +3548,11 @@ function openBeautyCatalog(){
   zoomSection.classList.add('catalog-mode');
   catalogModeActive = true;
   applyCatalogPageLabels();
+  // Misma logica que goVertical(): el catalogo tambien debe verse como su
+  // propia pagina, sin arrastrar hero/verticales/filosofia/newsletter al
+  // hacer scroll.
+  document.body.classList.add('viewing-product-page');
+  window.scrollTo({top:0, behavior:'auto'});
   scrollToId('zoom');
   closeNav();
 }
