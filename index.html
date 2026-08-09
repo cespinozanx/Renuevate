@@ -354,6 +354,44 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .subscribe-thanks-modal .cs-icon{width:52px; height:52px; border-radius:50%; background:var(--cream); color:var(--gold); display:flex; align-items:center; justify-content:center; margin:0 auto 18px;}
 .subscribe-thanks-modal h3{font-size:20px; margin-bottom:10px;}
 .subscribe-thanks-modal .pm-subtitle{margin-bottom:22px; line-height:1.6;}
+
+/* ===================== Belleza: modal de eleccion + cuestionario de diagnostico ===================== */
+.beauty-choice-modal{max-width:560px; text-align:center;}
+.beauty-choice-modal .cs-icon{width:52px; height:52px; border-radius:50%; background:var(--nacar-soft); color:#B8873A; display:flex; align-items:center; justify-content:center; margin:0 auto 18px;}
+.beauty-choice-modal .eyebrow{display:block; margin-bottom:8px;}
+.beauty-choice-modal h3{font-size:21px;}
+.beauty-choice-modal .pm-subtitle{margin-bottom:8px; line-height:1.6;}
+.beauty-choice-options{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;}
+.beauty-choice-card{border:1px solid var(--line); border-radius:6px; padding:22px 18px; cursor:pointer; text-align:left; transition:box-shadow .2s, border-color .2s; background:#fff;}
+.beauty-choice-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08); border-color:var(--nacar);}
+.beauty-choice-card .bc-icon{width:38px; height:38px; border-radius:50%; background:var(--nacar-soft); color:#B8873A; display:flex; align-items:center; justify-content:center; margin-bottom:12px;}
+.beauty-choice-card h4{font-family:'Playfair Display',serif; font-size:15.5px; margin-bottom:6px;}
+.beauty-choice-card p{font-size:12px; color:var(--grey); line-height:1.5; margin:0;}
+@media (max-width:640px){ .beauty-choice-options{grid-template-columns:1fr;} }
+
+.beauty-quiz-modal{max-width:560px;}
+.bq-progress{display:flex; gap:6px; margin-bottom:22px;}
+.bq-progress span{flex:1; height:3px; border-radius:2px; background:var(--line);}
+.bq-progress span.done{background:var(--nacar);}
+.bq-step-label{font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--grey); margin-bottom:6px;}
+.bq-question{font-family:'Playfair Display',serif; font-size:19px; margin:0 0 18px; line-height:1.35; padding-right:20px;}
+.bq-options{display:flex; flex-direction:column; gap:10px;}
+.bq-option{border:1px solid var(--line); border-radius:4px; padding:13px 16px; text-align:left; background:#fff; cursor:pointer; font-size:13.5px; transition:border-color .15s, background .15s; width:100%;}
+.bq-option:hover{border-color:var(--nacar); background:var(--nacar-soft);}
+.bq-scale{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:6px;}
+.bq-scale-btn{width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:#fff; cursor:pointer; font-weight:700; color:var(--ink);}
+.bq-scale-btn:hover, .bq-scale-btn.sel{border-color:var(--nacar); background:var(--nacar-soft);}
+.bq-scale-labels{display:flex; justify-content:space-between; font-size:10.5px; color:var(--grey); margin-top:6px;}
+.bq-back{background:none; border:none; color:var(--grey); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:20px; padding:0;}
+.bq-result-intro{font-size:13.5px; color:var(--ink); line-height:1.6; margin-bottom:18px;}
+.bq-result-actions{display:flex; flex-direction:column; gap:10px;}
+
+.beauty-rec-banner{max-width:920px; margin:0 auto 22px; background:var(--nacar-soft); border:1px solid var(--nacar); border-radius:6px; padding:14px 20px; font-size:13px; color:var(--ink); text-align:center;}
+.beauty-rec-banner b{color:#B8873A;}
+.beauty-rec-banner a{color:var(--navy); text-decoration:underline; cursor:pointer; margin-left:6px; font-size:12.5px;}
+.product-card.is-recommended{border-color:var(--nacar); box-shadow:0 6px 18px rgba(219,172,91,.25);}
+.rec-badge{background:var(--nacar); color:#fff; font-size:10px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; text-align:center; padding:5px 8px;}
+
 .privacy-modal .priv-section{margin-bottom:18px;}
 .privacy-modal .priv-section h4{font-size:14px; margin-bottom:6px; color:var(--navy);}
 .privacy-modal .priv-section p{font-size:13px; line-height:1.65; color:var(--ink);}
@@ -536,6 +574,8 @@ var AZURA_CONFIG = {
   REVIEWS_ENDPOINT: "/api/reviews",
   PAYMENT_METHODS_ENDPOINT: "/api/payment-methods",
   ADDRESSES_ENDPOINT: "/api/addresses",
+  CHECKOUT_ENDPOINT: "/api/checkout",
+  WHATSAPP_NUMBER: "529983299195",
   SOCIAL_INSTAGRAM_URL: "https://www.instagram.com/renuevate_adita",
   SOCIAL_TIKTOK_URL: "https://tiktok.com/@TU_USUARIO_AQUI",
   SOCIAL_FACEBOOK_URL: "https://www.facebook.com/share/1RigCHj4Ri",
@@ -591,7 +631,7 @@ var AZURA_CONFIG = {
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
       <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
-      <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.nacar">Belleza</a>
+      <a data-v="nacar" onclick="openBeautyChoice(); closeNav();" data-i18n="nav.nacar">Belleza</a>
       <div class="nav-dropdown" id="navSystemDropdown">
         <a class="nav-dropdown-trigger" onclick="toggleSystemDropdown(event)" data-i18n="nav.system">System Speciality <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
@@ -660,6 +700,7 @@ var AZURA_CONFIG = {
       <div class="v-card nacar has-video" onclick="goVertical('nacar')">
         <div class="v-media">
           <video class="v-media-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-system8-showcase-poster.jpg" aria-hidden="true">
+            <source src="media/seytu-system8-showcase-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
             <source src="media/seytu-system8-showcase.mp4" type="video/mp4">
           </video>
         </div>
@@ -668,15 +709,25 @@ var AZURA_CONFIG = {
         <p class="v-msg" id="vmsgNacar">Luminosidad que se cuida.</p>
         <span class="v-cta" id="vctaNacar">Descubrir &#8594;</span>
       </div>
-      <div class="v-card vigor" onclick="goVertical('vigor')">
-        <svg class="v-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="13 2 3 14 11 14 9 22 21 10 13 10 13 2"/></svg>
+      <div class="v-card vigor has-video" onclick="goVertical('vigor')">
+        <div class="v-media">
+          <video class="v-media-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-system-h-showcase-poster.jpg" aria-hidden="true">
+            <source src="media/seytu-system-h-showcase-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
+            <source src="media/seytu-system-h-showcase-desktop.mp4" type="video/mp4">
+          </video>
+        </div>
         <div class="v-tag" id="vtagVigor">Nutrición y rendimiento</div>
         <h3>System Health Speciality</h3>
         <p class="v-msg" id="vmsgVigor">Energia que se sostiene.</p>
         <span class="v-cta" id="vctaVigor">Descubrir &#8594;</span>
       </div>
-      <div class="v-card roble" onclick="goVertical('roble')">
-        <svg class="v-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 3 7l9 5 9-5-9-5Z"/><path d="M3 7v10l9 5 9-5V7"/><path d="M12 12v10"/></svg>
+      <div class="v-card roble has-video" onclick="goVertical('roble')">
+        <div class="v-media">
+          <video class="v-media-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-system-spot-showcase-poster.jpg" aria-hidden="true">
+            <source src="media/seytu-system-spot-showcase-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
+            <source src="media/seytu-system-spot-showcase-desktop.mp4" type="video/mp4">
+          </video>
+        </div>
         <div class="v-tag" id="vtagRoble">Cuidado para hombre</div>
         <h3>System Spot Speciality</h3>
         <p class="v-msg" id="vmsgRoble">Fuerza que se cuida a si misma.</p>
@@ -731,6 +782,7 @@ var AZURA_CONFIG = {
       </div>
     </div>
 
+    <div class="beauty-rec-banner" id="beautyRecBanner" style="display:none;"></div>
     <div class="products-grid" id="productsGrid"></div>
     <div class="products-footnote">
       <button id="commentsToggleBtn" onclick="toggleComments()">Ver comentarios</button>
@@ -984,6 +1036,41 @@ var AZURA_CONFIG = {
   </div>
 </div>
 
+<div class="profile-modal-overlay" id="beautyChoiceOverlay" onclick="if(event.target===this) closeBeautyChoice();">
+  <div class="privacy-modal beauty-choice-modal" role="dialog" aria-modal="true" aria-labelledby="beautyChoiceTitle">
+    <button class="privacy-modal-close" onclick="closeBeautyChoice()" aria-label="Cerrar">&times;</button>
+    <div class="cs-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c4 3 7 6 7 10a7 7 0 0 1-14 0c0-4 3-7 7-10Z"/></svg>
+    </div>
+    <span class="eyebrow" id="beautyChoiceEyebrow">Speciality Luminous</span>
+    <h3 id="beautyChoiceTitle">&iquest;Como quieres descubrir tu belleza?</h3>
+    <p class="pm-subtitle" id="beautyChoiceSubtitle">Elige explorar el catalogo completo o responde 5 preguntas rapidas para una preseleccion hecha para ti.</p>
+    <div class="beauty-choice-options">
+      <div class="beauty-choice-card" onclick="closeBeautyChoice(); goVertical('nacar');">
+        <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+        <h4 id="beautyChoiceCatalogTitle">Ver catalogo completo</h4>
+        <p id="beautyChoiceCatalogBody">Explora los 4 productos de System Luminous a tu ritmo.</p>
+      </div>
+      <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyQuiz();">
+        <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.3v.2h6v-.2c0-.9.4-1.7 1-2.3A6 6 0 0 0 12 3Z"/></svg></div>
+        <h4 id="beautyChoiceQuizTitle">Diagnostico personalizado</h4>
+        <p id="beautyChoiceQuizBody">5 preguntas y te preseleccionamos tus productos ideales.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="profile-modal-overlay" id="beautyQuizOverlay" onclick="if(event.target===this) closeBeautyQuiz();">
+  <div class="privacy-modal beauty-quiz-modal" role="dialog" aria-modal="true" aria-labelledby="bqQuestion">
+    <button class="privacy-modal-close" onclick="closeBeautyQuiz()" aria-label="Cerrar">&times;</button>
+    <div class="bq-progress" id="bqProgress"></div>
+    <div class="bq-step-label" id="bqStepLabel"></div>
+    <h3 class="bq-question" id="bqQuestion"></h3>
+    <div id="bqBody"></div>
+    <button type="button" class="bq-back" id="bqBackBtn" onclick="bqGoBack()" style="display:none;">&#8592; Regresar</button>
+  </div>
+</div>
+
 <div class="profile-modal-overlay" id="productDetailOverlay" onclick="if(event.target===this) closeProductDetail();">
   <div class="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="pdName">
     <button class="pd-close" onclick="closeProductDetail()" aria-label="Cerrar">&times;</button>
@@ -1029,8 +1116,9 @@ var AZURA_CONFIG = {
       <button type="button" class="cart-shipto-change" onclick="onAccountIconClick()" data-i18n="cart.shipToChange">Cambiar / agregar dirección</button>
     </div>
     <div class="cart-subtotal"><span data-i18n="cart.subtotal">Subtotal</span><span id="cartSubtotalValue">$0 MXN</span></div>
-    <button class="btn btn-dark" style="width:100%; justify-content:center;" disabled data-i18n="cart.checkout">Proceder al pago</button>
-    <div class="cart-checkout-note" data-i18n="cart.checkoutNote">Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.</div>
+    <button class="btn btn-dark" id="cartCheckoutBtn" style="width:100%; justify-content:center;" onclick="startCheckout()" data-i18n="cart.checkout">Proceder al pago</button>
+    <div class="cart-checkout-error" id="cartCheckoutError" style="display:none; color:#B3261E; font-size:12px; text-align:center; margin-top:8px;"></div>
+    <div class="cart-checkout-note" data-i18n="cart.checkoutNote">Pago seguro con Mercado Pago. Nunca almacenamos el numero de tu tarjeta.</div>
   </div>
 </div>
 
@@ -1163,7 +1251,7 @@ var AZURA_CONFIG = {
   </div>
 </div>
 
-<a class="wa-float" href="https://wa.me/525500000000" target="_blank" aria-label="WhatsApp">
+<a class="wa-float" id="waFloatLink" href="https://wa.me/525500000000" target="_blank" rel="noopener" aria-label="WhatsApp">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.8 14.3c-.2.6-1.2 1.2-1.7 1.3-.4.1-1 .1-1.6-.1-.4-.1-1-.3-1.6-.6-2.9-1.3-4.8-4.2-4.9-4.4-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.4.2.5.7 1.8.8 1.9.1.2.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.4 1.8 2.2 1.2 1.1 2.2 1.4 2.6 1.6.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.7.8.2.1.4.2.4.3.1.2.1.7-.1 1.3Z"/></svg>
 </a>
 
@@ -1402,7 +1490,7 @@ var I18N = {
     "chat.a.recommend.needBoth":"Cuentame tu edad y si buscas algo para mujer u hombre y te doy una recomendacion puntual. Por ejemplo: tengo 40 años, soy mujer.",
     "chat.a.fallback":"No tengo esa respuesta. Prueba con envios, pagos, devoluciones, o habla con un asesor.",
     "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
-    "cart.checkoutNote":"Proximamente: pago en linea. Por ahora este carrito es una demostracion funcional, sin cobro real.",
+    "cart.checkoutNote":"Pago seguro con Mercado Pago. Nunca almacenamos el numero de tu tarjeta.",
     "cart.shipToLabel":"Enviar a", "cart.shipToChange":"Cambiar / agregar dirección",
     "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesión para administrar tus direcciones de envío y tus metodos de pago guardados.",
     "account.paymentTitle":"Métodos de pago", "account.paymentSubtitle":"Guarda tu forma de pago preferida para agilizar tu compra.",
@@ -1526,7 +1614,7 @@ var I18N = {
     "chat.a.recommend.needBoth":"Tell me your age and whether you're looking for something for a woman or a man, and I'll give you a precise recommendation. For example: I am 40 years old, woman.",
     "chat.a.fallback":"I don't have that answer. Try shipping, payment, returns, or talk to an advisor.",
     "cart.title":"Your cart", "cart.subtotal":"Subtotal", "cart.checkout":"Proceed to checkout",
-    "cart.checkoutNote":"Coming soon: online payment. For now this cart is a working demo, with no real charge.",
+    "cart.checkoutNote":"Secure payment with Mercado Pago. We never store your card number.",
     "cart.shipToLabel":"Ship to", "cart.shipToChange":"Change / add address",
     "account.title":"My account & payment methods", "account.subtitle":"Sign in to manage your shipping addresses and your saved payment methods.",
     "account.paymentTitle":"Payment methods", "account.paymentSubtitle":"Save your preferred payment method to speed up checkout.",
@@ -1650,7 +1738,7 @@ var I18N = {
     "chat.a.recommend.needBoth":"Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, et je vous donne une recommandation precise. Par exemple : j'ai 40 ans, femme.",
     "chat.a.fallback":"Je n'ai pas cette reponse. Essayez livraison, paiement, retours, ou un conseiller.",
     "cart.title":"Votre panier", "cart.subtotal":"Sous-total", "cart.checkout":"Passer au paiement",
-    "cart.checkoutNote":"Bientot disponible : paiement en ligne. Pour l'instant ce panier est une demonstration fonctionnelle, sans facturation reelle.",
+    "cart.checkoutNote":"Paiement securise avec Mercado Pago. Nous ne stockons jamais le número de votre carte.",
     "cart.shipToLabel":"Expedier a", "cart.shipToChange":"Changer / ajouter une adresse",
     "account.title":"Mon compte et moyens de paiement", "account.subtitle":"Connectez-vous pour gerer vos adresses de livraison et vos moyens de paiement enregistres.",
     "account.paymentTitle":"Moyens de paiement", "account.paymentSubtitle":"Enregistrez votre moyen de paiement prefere pour accelerer votre achat.",
@@ -1731,6 +1819,8 @@ var DYN = {
        cartEmpty:function(){ return 'Tu carrito esta vacio todavia.'; },
        productUnavailable:function(){ return 'Este producto ya no esta disponible.'; },
        removeItem:function(){ return 'Quitar'; },
+       checkoutRedirecting:function(){ return 'Redirigiendo a pago seguro...'; },
+       checkoutError:function(){ return 'No pudimos iniciar el pago. Intenta de nuevo.'; },
        bagUpsellTitle:function(){ return 'Guarda tus productos en una bolsa Renuévate'; },
        bagAddLabel:function(){ return '+ Agregar'; },
        loginRequired:function(){ return 'Inicia sesión con Google o Facebook para agregar productos al carrito, guardar tu metodo de pago o dejar una resena.'; },
@@ -1803,6 +1893,55 @@ var DYN = {
          complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu número de pedido por WhatsApp.'; },
          certUnknown:function(){ return 'No tengo esa certificacion confirmada en este catálogo. Para no darte información incorrecta, te lo valida un asesor humano.'; },
          frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; }
+       },
+       beautyQuiz:{
+         choice:{
+           eyebrow:'Speciality Luminous',
+           title:'¿Como quieres descubrir tu belleza?',
+           subtitle:'Elige explorar el catalogo completo o responde 5 preguntas rapidas para una preseleccion hecha para ti.',
+           catalogTitle:'Ver catalogo completo',
+           catalogBody:'Explora los 4 productos de System Luminous a tu ritmo.',
+           quizTitle:'Diagnostico personalizado',
+           quizBody:'5 preguntas y te preseleccionamos tus productos ideales.'
+         },
+         stepLabel:function(i,total){ return 'Paso ' + i + ' de ' + total; },
+         steps:[
+           { question:'¿Que te gustaria conseguir?', type:'single', key:'goal', options:[
+               {value:'glow', label:'Luminosidad y firmeza de la piel'},
+               {value:'hydration', label:'Hidratacion profunda'},
+               {value:'hair', label:'Brillo y suavidad del cabello'},
+               {value:'eyes', label:'Contorno de ojos y signos de cansancio'},
+               {value:'complete', label:'Quiero una rutina completa'}
+           ]},
+           { question:'¿Como describirias tu piel hoy?', type:'single', key:'skin', options:[
+               {value:'dull', label:'Opaca, sin luminosidad'},
+               {value:'dehydrated', label:'Deshidratada o tirante'},
+               {value:'sensitive', label:'Sensible o reactiva'},
+               {value:'tired', label:'Con signos de cansancio (ojeras, bolsas)'},
+               {value:'normal', label:'Normal y equilibrada'}
+           ]},
+           { question:'¿Como describirias tu cabello hoy?', type:'single', key:'hair', options:[
+               {value:'dull_hair', label:'Opaco y sin brillo'},
+               {value:'dry_hair', label:'Reseco o encrespado'},
+               {value:'oily_hair', label:'Graso'},
+               {value:'normal_hair', label:'Sano y equilibrado'}
+           ]},
+           { question:'¿Con que frecuencia usas herramientas de calor (secadora, plancha, tenazas)?', type:'single', key:'heat', options:[
+               {value:'daily', label:'Diario'},
+               {value:'often', label:'3 a 4 veces por semana'},
+               {value:'sometimes', label:'1 a 2 veces por semana'},
+               {value:'never', label:'Nunca'}
+           ]},
+           { question:'En una escala del 1 al 5, ¿cuanto tiempo dedicas a tu rutina de belleza diaria?', type:'scale', key:'time', minLabel:'Muy poco (menos de 5 min)', maxLabel:'Mucho (mas de 20 min)' }
+         ],
+         back:'← Regresar',
+         resultEyebrow:'Tu diagnostico',
+         resultTitle:'Esto es lo que mas te conviene',
+         resultIntro:function(topName){ return 'Basado en tus respuestas, tu producto estrella es <b>' + topName + '</b>. Preseleccionamos tu rutina en el catalogo.'; },
+         ctaGoCatalog:'Ver mi preseleccion en el catalogo',
+         ctaRedo:'Rehacer diagnostico',
+         bannerHtml:function(topName){ return 'Basado en tu diagnostico, te recomendamos empezar con <b>' + topName + '</b>. <a onclick="openBeautyQuiz()">Rehacer diagnostico</a>'; },
+         recommendedBadge:'Recomendado para ti'
        } },
   en:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Right now it is ' + hh + ':' + mm + ' (your device time). Anything else I can help with?'; },
        routineResult:function(name,title){ return 'Recommendation logged for <b>' + name + '</b>: <em>' + title + '</em>. In production, this triggers a select_routine event in GA4 and an automatic WhatsApp proposal.'; },
@@ -1833,6 +1972,8 @@ var DYN = {
        cartEmpty:function(){ return 'Your cart is empty for now.'; },
        productUnavailable:function(){ return 'This product is no longer available.'; },
        removeItem:function(){ return 'Remove'; },
+       checkoutRedirecting:function(){ return 'Redirecting to secure payment...'; },
+       checkoutError:function(){ return "We couldn't start the payment. Please try again."; },
        bagUpsellTitle:function(){ return 'Store your products in a Renuévate bag'; },
        bagAddLabel:function(){ return '+ Add'; },
        loginRequired:function(){ return 'Sign in with Google or Facebook to add products to your cart, save a payment method, or leave a review.'; },
@@ -1905,6 +2046,55 @@ var DYN = {
          complaintGuard:function(){ return "I'm sorry for the inconvenience. Connecting you now with a human advisor as a priority — please share your order number on WhatsApp."; },
          certUnknown:function(){ return "I don't have that certification confirmed in this catalog. To avoid giving you wrong information, a human advisor will verify it."; },
          frustrationGuard:function(){ return "I'm really sorry about the bad experience. Connecting you right away with a human advisor as a priority."; }
+       },
+       beautyQuiz:{
+         choice:{
+           eyebrow:'Speciality Luminous',
+           title:'How do you want to discover your beauty routine?',
+           subtitle:'Browse the full catalog, or answer 5 quick questions and get a picked-for-you preselection.',
+           catalogTitle:'View full catalog',
+           catalogBody:'Explore all 4 System Luminous products at your own pace.',
+           quizTitle:'Personalized diagnosis',
+           quizBody:'5 questions and we preselect your ideal products.'
+         },
+         stepLabel:function(i,total){ return 'Step ' + i + ' of ' + total; },
+         steps:[
+           { question:'What would you like to achieve?', type:'single', key:'goal', options:[
+               {value:'glow', label:'Radiant, firmer-looking skin'},
+               {value:'hydration', label:'Deep hydration'},
+               {value:'hair', label:'Shinier, softer hair'},
+               {value:'eyes', label:'Eye contour and signs of tiredness'},
+               {value:'complete', label:'I want a complete routine'}
+           ]},
+           { question:'How would you describe your skin today?', type:'single', key:'skin', options:[
+               {value:'dull', label:'Dull, lacking radiance'},
+               {value:'dehydrated', label:'Dehydrated or tight'},
+               {value:'sensitive', label:'Sensitive or reactive'},
+               {value:'tired', label:'Showing signs of tiredness (dark circles, puffiness)'},
+               {value:'normal', label:'Normal and balanced'}
+           ]},
+           { question:'How would you describe your hair today?', type:'single', key:'hair', options:[
+               {value:'dull_hair', label:'Dull, lacking shine'},
+               {value:'dry_hair', label:'Dry or frizzy'},
+               {value:'oily_hair', label:'Oily'},
+               {value:'normal_hair', label:'Healthy and balanced'}
+           ]},
+           { question:'How often do you use heat tools (blow dryer, flat iron, curling iron)?', type:'single', key:'heat', options:[
+               {value:'daily', label:'Daily'},
+               {value:'often', label:'3 to 4 times a week'},
+               {value:'sometimes', label:'1 to 2 times a week'},
+               {value:'never', label:'Never'}
+           ]},
+           { question:'On a scale of 1 to 5, how much time do you spend on your daily beauty routine?', type:'scale', key:'time', minLabel:'Very little (under 5 min)', maxLabel:'A lot (over 20 min)' }
+         ],
+         back:'← Back',
+         resultEyebrow:'Your diagnosis',
+         resultTitle:'Here is what suits you best',
+         resultIntro:function(topName){ return 'Based on your answers, your star product is <b>' + topName + '</b>. We preselected your routine in the catalog.'; },
+         ctaGoCatalog:'See my preselection in the catalog',
+         ctaRedo:'Retake the diagnosis',
+         bannerHtml:function(topName){ return 'Based on your diagnosis, we recommend starting with <b>' + topName + '</b>. <a onclick="openBeautyQuiz()">Retake the diagnosis</a>'; },
+         recommendedBadge:'Recommended for you'
        } },
   fr:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Il est actuellement ' + hh + 'h' + mm + ' (heure de votre appareil). Autre chose ?'; },
        routineResult:function(name,title){ return 'Recommandation enregistree pour <b>' + name + '</b> : <em>' + title + '</em>. En production, cela declenche un evenement select_routine dans GA4 et une proposition automatique via WhatsApp.'; },
@@ -1935,6 +2125,8 @@ var DYN = {
        cartEmpty:function(){ return 'Votre panier est vide pour le moment.'; },
        productUnavailable:function(){ return 'Ce produit n\'est plus disponible.'; },
        removeItem:function(){ return 'Retirer'; },
+       checkoutRedirecting:function(){ return 'Redirection vers le paiement securise...'; },
+       checkoutError:function(){ return "Nous n'avons pas pu demarrer le paiement. Reessayez."; },
        bagUpsellTitle:function(){ return 'Rangez vos produits dans un sac Renuévate'; },
        bagAddLabel:function(){ return '+ Ajouter'; },
        loginRequired:function(){ return 'Connectez-vous avec Google ou Facebook pour ajouter des produits au panier, enregistrer un moyen de paiement ou laisser un avis.'; },
@@ -2007,6 +2199,55 @@ var DYN = {
          complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre número de commande sur WhatsApp."; },
          certUnknown:function(){ return "Je n'ai pas cette certification confirmee dans ce catalogue. Pour eviter de vous donner une information incorrecte, un conseiller humain la verifiera."; },
          frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; }
+       },
+       beautyQuiz:{
+         choice:{
+           eyebrow:'Speciality Luminous',
+           title:'Comment souhaitez-vous decouvrir votre beaute?',
+           subtitle:'Explorez le catalogue complet, ou repondez a 5 questions rapides pour une preselection faite pour vous.',
+           catalogTitle:'Voir le catalogue complet',
+           catalogBody:'Explorez les 4 produits System Luminous a votre rythme.',
+           quizTitle:'Diagnostic personnalise',
+           quizBody:'5 questions et nous preselectionnons vos produits ideaux.'
+         },
+         stepLabel:function(i,total){ return 'Etape ' + i + ' sur ' + total; },
+         steps:[
+           { question:'Que souhaitez-vous obtenir?', type:'single', key:'goal', options:[
+               {value:'glow', label:'Eclat et fermete de la peau'},
+               {value:'hydration', label:'Hydratation profonde'},
+               {value:'hair', label:'Cheveux brillants et doux'},
+               {value:'eyes', label:'Contour des yeux et signes de fatigue'},
+               {value:'complete', label:'Je veux une routine complete'}
+           ]},
+           { question:"Comment decririez-vous votre peau aujourd'hui?", type:'single', key:'skin', options:[
+               {value:'dull', label:'Terne, sans eclat'},
+               {value:'dehydrated', label:'Deshydratee ou tiraillee'},
+               {value:'sensitive', label:'Sensible ou reactive'},
+               {value:'tired', label:'Avec des signes de fatigue (cernes, poches)'},
+               {value:'normal', label:'Normale et equilibree'}
+           ]},
+           { question:"Comment decririez-vous vos cheveux aujourd'hui?", type:'single', key:'hair', options:[
+               {value:'dull_hair', label:'Ternes, sans brillance'},
+               {value:'dry_hair', label:'Secs ou frises'},
+               {value:'oily_hair', label:'Gras'},
+               {value:'normal_hair', label:'Sains et equilibres'}
+           ]},
+           { question:'A quelle frequence utilisez-vous des outils chauffants (seche-cheveux, lisseur, fer a boucler)?', type:'single', key:'heat', options:[
+               {value:'daily', label:'Tous les jours'},
+               {value:'often', label:'3 a 4 fois par semaine'},
+               {value:'sometimes', label:'1 a 2 fois par semaine'},
+               {value:'never', label:'Jamais'}
+           ]},
+           { question:'Sur une echelle de 1 a 5, combien de temps consacrez-vous a votre routine beaute quotidienne?', type:'scale', key:'time', minLabel:'Tres peu (moins de 5 min)', maxLabel:'Beaucoup (plus de 20 min)' }
+         ],
+         back:'← Retour',
+         resultEyebrow:'Votre diagnostic',
+         resultTitle:'Voici ce qui vous convient le mieux',
+         resultIntro:function(topName){ return "D'apres vos reponses, votre produit vedette est <b>" + topName + '</b>. Nous avons preselectionne votre routine dans le catalogue.'; },
+         ctaGoCatalog:'Voir ma preselection dans le catalogue',
+         ctaRedo:'Refaire le diagnostic',
+         bannerHtml:function(topName){ return "D'apres votre diagnostic, nous recommandons de commencer par <b>" + topName + '</b>. <a onclick="openBeautyQuiz()">Refaire le diagnostic</a>'; },
+         recommendedBadge:'Recommande pour vous'
        } }
 };
 
@@ -2228,6 +2469,50 @@ function refreshCart(){
     .then(function(r){ return r.json(); })
     .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); })
     .catch(function(){});
+}
+
+// Invoca la pasarela de pago (Mercado Pago Checkout Pro). El sitio NUNCA pide
+// ni ve el numero de tarjeta: este endpoint solo crea una "preferencia" en
+// Mercado Pago y redirige al cliente al formulario de pago hospedado por
+// ellos (ver api/checkout.js). Si MERCADOPAGO_ACCESS_TOKEN todavia no esta
+// configurado en el servidor, se avisa con el mismo modal de "contenido en
+// preparacion" que ya usa el resto del sitio, en vez de fallar en silencio.
+function startCheckout(){
+  if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
+  var btn = document.getElementById('cartCheckoutBtn');
+  var errEl = document.getElementById('cartCheckoutError');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  var originalLabel = btn.textContent;
+  btn.textContent = DYN[currentLang].checkoutRedirecting ? DYN[currentLang].checkoutRedirecting() : 'Redirigiendo...';
+
+  fetch(AZURA_CONFIG.CHECKOUT_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id })
+  })
+    .then(function(r){ return r.json().then(function(data){ return { status: r.status, data: data }; }); })
+    .then(function(res){
+      if (res.data && res.data.ok && res.data.init_point) {
+        window.location.href = res.data.init_point;
+        return;
+      }
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      if (res.data && res.data.error === 'NOT_CONFIGURED') {
+        openComingSoon();
+      } else {
+        errEl.textContent = (res.data && res.data.error) || (DYN[currentLang].checkoutError ? DYN[currentLang].checkoutError() : 'No pudimos iniciar el pago. Intenta de nuevo.');
+        errEl.style.display = 'block';
+      }
+    })
+    .catch(function(err){
+      console.error('startCheckout: error de red', err);
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      errEl.textContent = DYN[currentLang].checkoutError ? DYN[currentLang].checkoutError() : 'No pudimos iniciar el pago. Intenta de nuevo.';
+      errEl.style.display = 'block';
+    });
 }
 
 function changeCartQty(sku, newQty){
@@ -2661,6 +2946,12 @@ function openCookieModal(){
 function closeCookieModal(){
   document.getElementById('cookieModalOverlay').classList.remove('is-open');
 }
+function wireWhatsappFloat(){
+  var el = document.getElementById('waFloatLink');
+  if (!el || !AZURA_CONFIG.WHATSAPP_NUMBER) return;
+  el.setAttribute('href', 'https://wa.me/' + AZURA_CONFIG.WHATSAPP_NUMBER);
+}
+
 function wireSocialLinks(){
   var map = {socialInstagram:AZURA_CONFIG.SOCIAL_INSTAGRAM_URL, socialTiktok:AZURA_CONFIG.SOCIAL_TIKTOK_URL, socialFacebook:AZURA_CONFIG.SOCIAL_FACEBOOK_URL, socialYoutube:AZURA_CONFIG.SOCIAL_YOUTUBE_URL};
   Object.keys(map).forEach(function(id){
@@ -2678,6 +2969,7 @@ function wireSocialLinks(){
   });
 }
 document.addEventListener("DOMContentLoaded", wireSocialLinks);
+document.addEventListener("DOMContentLoaded", wireWhatsappFloat);
 
 function initHeroVideo(){
   var v = document.getElementById("heroVideoEl");
@@ -3000,6 +3292,9 @@ var currentLang = 'es';
 var selectedRoutine = null;
 var CURRENT_RENDERED_PRODUCTS = [];
 var pdCurrentSku = null;
+var lastBeautyRecommendation = null; // {order:[sku,...], routineIdx:0-2} -- set por el cuestionario de diagnostico de Belleza
+var BQ_STATE = { step: 0, answers: {} };
+var BQ_ROUTINE_BY_TIME = { 1:0, 2:0, 3:1, 4:2, 5:2 };
 
 function renderVertical(v){
   currentV = v;
@@ -3043,7 +3338,7 @@ function renderVertical(v){
     var imgHtml = p.img
       ? '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy" onerror="handleProductImgError(this,\'' + v + '\')">'
       : iconSvg(v);
-    html += '<div class="product-card"><div class="product-img">' + imgHtml + '</div>' +
+    html += '<div class="product-card" data-sku="' + p.sku + '"><div class="product-img">' + imgHtml + '</div>' +
       '<div class="product-body"><div class="p-eyebrow">' + p.tag + '</div>' +
       '<h4>' + p.name + '</h4><p>' + p.desc + '</p>' +
       ratingHtml +
@@ -3066,6 +3361,13 @@ function renderVertical(v){
   }
   rc.innerHTML = rhtml;
   document.getElementById('routineResult').classList.remove('show');
+
+  if (v === 'nacar' && lastBeautyRecommendation){
+    applyBeautyRecommendationUI();
+  } else {
+    var beautyBanner = document.getElementById('beautyRecBanner');
+    if (beautyBanner) beautyBanner.style.display = 'none';
+  }
 }
 
 function selectRoutine(i){
@@ -3085,6 +3387,169 @@ function goVertical(v){
   closeNav();
 }
 function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+/* ===================== Belleza: eleccion catalogo vs diagnostico + cuestionario ===================== */
+function openBeautyChoice(){
+  var t = DYN[currentLang].beautyQuiz.choice;
+  document.getElementById('beautyChoiceEyebrow').textContent = t.eyebrow;
+  document.getElementById('beautyChoiceTitle').textContent = t.title;
+  document.getElementById('beautyChoiceSubtitle').textContent = t.subtitle;
+  document.getElementById('beautyChoiceCatalogTitle').textContent = t.catalogTitle;
+  document.getElementById('beautyChoiceCatalogBody').textContent = t.catalogBody;
+  document.getElementById('beautyChoiceQuizTitle').textContent = t.quizTitle;
+  document.getElementById('beautyChoiceQuizBody').textContent = t.quizBody;
+  document.getElementById('beautyChoiceOverlay').classList.add('is-open');
+}
+function closeBeautyChoice(){
+  document.getElementById('beautyChoiceOverlay').classList.remove('is-open');
+}
+
+function openBeautyQuiz(){
+  BQ_STATE = { step: 0, answers: {} };
+  document.getElementById('beautyChoiceOverlay').classList.remove('is-open');
+  document.getElementById('beautyQuizOverlay').classList.add('is-open');
+  renderBQStep();
+}
+function closeBeautyQuiz(){
+  document.getElementById('beautyQuizOverlay').classList.remove('is-open');
+}
+function renderBQStep(){
+  var quiz = DYN[currentLang].beautyQuiz;
+  var steps = quiz.steps;
+  var i = BQ_STATE.step;
+  if (i >= steps.length){ renderBQResult(); return; }
+  var s = steps[i];
+
+  var progressHtml = '';
+  for (var k=0;k<steps.length;k++){ progressHtml += '<span class="' + (k<=i ? 'done' : '') + '"></span>'; }
+  document.getElementById('bqProgress').innerHTML = progressHtml;
+  document.getElementById('bqStepLabel').textContent = quiz.stepLabel(i+1, steps.length);
+  document.getElementById('bqQuestion').textContent = s.question;
+
+  var body = document.getElementById('bqBody');
+  if (s.type === 'single'){
+    var html = '<div class="bq-options">';
+    for (var o=0;o<s.options.length;o++){
+      html += '<button type="button" class="bq-option" onclick="bqAnswer(\'' + s.key + '\',\'' + s.options[o].value + '\')">' + s.options[o].label + '</button>';
+    }
+    html += '</div>';
+    body.innerHTML = html;
+  } else if (s.type === 'scale'){
+    var current = BQ_STATE.answers[s.key];
+    var html2 = '<div class="bq-scale">';
+    for (var n=1;n<=5;n++){
+      html2 += '<button type="button" class="bq-scale-btn' + (current===n ? ' sel' : '') + '" onclick="bqAnswer(\'' + s.key + '\',' + n + ')">' + n + '</button>';
+    }
+    html2 += '</div><div class="bq-scale-labels"><span>' + s.minLabel + '</span><span>' + s.maxLabel + '</span></div>';
+    body.innerHTML = html2;
+  }
+
+  var backBtn = document.getElementById('bqBackBtn');
+  backBtn.textContent = quiz.back;
+  backBtn.style.display = i > 0 ? 'inline-block' : 'none';
+}
+function bqAnswer(key, value){
+  BQ_STATE.answers[key] = value;
+  BQ_STATE.step++;
+  renderBQStep();
+}
+function bqGoBack(){
+  if (BQ_STATE.step > 0){ BQ_STATE.step--; renderBQStep(); }
+}
+
+function computeBeautyScores(answers){
+  var scores = { 'NACAR-01':0, 'NACAR-02':0, 'NACAR-03':0, 'NACAR-04':0 };
+  var goalMap = { glow:'NACAR-01', hydration:'NACAR-02', hair:'NACAR-03', eyes:'NACAR-04' };
+  if (answers.goal === 'complete'){
+    for (var k in scores){ scores[k] += 1; }
+  } else if (goalMap[answers.goal]){
+    scores[goalMap[answers.goal]] += 3;
+  }
+
+  var skinMap = { dull:'NACAR-01', dehydrated:'NACAR-02', sensitive:'NACAR-02', tired:'NACAR-04' };
+  if (skinMap[answers.skin]) scores[skinMap[answers.skin]] += 2;
+  if (answers.skin === 'normal') scores['NACAR-01'] += 1;
+
+  if (answers.hair === 'dull_hair' || answers.hair === 'dry_hair') scores['NACAR-03'] += 2;
+  else if (answers.hair === 'oily_hair' || answers.hair === 'normal_hair') scores['NACAR-03'] += 1;
+
+  if (answers.heat === 'daily') scores['NACAR-03'] += 2;
+  else if (answers.heat === 'often') scores['NACAR-03'] += 1;
+
+  var time = Number(answers.time) || 3;
+  if (time >= 4){ for (var k2 in scores){ scores[k2] += 1; } }
+
+  return scores;
+}
+function renderBQResult(){
+  var quiz = DYN[currentLang].beautyQuiz;
+  var answers = BQ_STATE.answers;
+  var scores = computeBeautyScores(answers);
+  var order = Object.keys(scores).sort(function(a,b){ return scores[b] - scores[a]; });
+  var showAll = (answers.goal === 'complete') || (Number(answers.time) >= 4);
+  var finalOrder = showAll ? order : order.filter(function(sku){ return scores[sku] > 0; }).slice(0, 2);
+  if (!finalOrder.length) finalOrder = [order[0]];
+  var routineIdx = BQ_ROUTINE_BY_TIME[Number(answers.time)];
+  if (typeof routineIdx !== 'number') routineIdx = 1;
+
+  lastBeautyRecommendation = { order: finalOrder, routineIdx: routineIdx };
+
+  var topProduct = findProductBySku(V.nacar[currentLang].products, finalOrder[0]);
+  var topName = topProduct ? topProduct.name : '';
+
+  document.getElementById('bqProgress').innerHTML = '';
+  document.getElementById('bqStepLabel').textContent = quiz.resultEyebrow;
+  document.getElementById('bqQuestion').textContent = quiz.resultTitle;
+  document.getElementById('bqBody').innerHTML =
+    '<p class="bq-result-intro">' + quiz.resultIntro(topName) + '</p>' +
+    '<div class="bq-result-actions">' +
+      '<button type="button" class="btn btn-dark" style="justify-content:center; border:none; cursor:pointer;" onclick="goToBeautyRecommendation()">' + quiz.ctaGoCatalog + '</button>' +
+      '<button type="button" class="btn btn-outline" style="justify-content:center; cursor:pointer;" onclick="openBeautyQuiz()">' + quiz.ctaRedo + '</button>' +
+    '</div>';
+  document.getElementById('bqBackBtn').style.display = 'none';
+}
+function goToBeautyRecommendation(){
+  closeBeautyQuiz();
+  goVertical('nacar');
+}
+function applyBeautyRecommendationUI(){
+  if (!lastBeautyRecommendation) return;
+  var quiz = DYN[currentLang].beautyQuiz;
+  var order = lastBeautyRecommendation.order;
+  var topProduct = findProductBySku(V.nacar[currentLang].products, order[0]);
+
+  var banner = document.getElementById('beautyRecBanner');
+  if (banner && topProduct){
+    banner.innerHTML = quiz.bannerHtml(topProduct.name);
+    banner.style.display = 'block';
+  }
+
+  var grid = document.getElementById('productsGrid');
+  if (grid){
+    var cards = grid.querySelectorAll('.product-card');
+    var bySku = {};
+    for (var i=0;i<cards.length;i++){ bySku[cards[i].getAttribute('data-sku')] = cards[i]; }
+    var frag = document.createDocumentFragment();
+    for (var j=0;j<order.length;j++){
+      var card = bySku[order[j]];
+      if (!card) continue;
+      card.classList.add('is-recommended');
+      if (j === 0){
+        var badge = document.createElement('div');
+        badge.className = 'rec-badge';
+        badge.textContent = quiz.recommendedBadge;
+        card.insertBefore(badge, card.firstChild);
+      }
+      frag.appendChild(card);
+      delete bySku[order[j]];
+    }
+    for (var sku in bySku){ frag.appendChild(bySku[sku]); }
+    grid.innerHTML = '';
+    grid.appendChild(frag);
+  }
+
+  if (typeof lastBeautyRecommendation.routineIdx === 'number'){ selectRoutine(lastBeautyRecommendation.routineIdx); }
+}
 function toggleNav(){
   var isOpen = document.getElementById('mainNav').classList.toggle('open');
   document.getElementById('navOverlay').classList.toggle('open', isOpen);
@@ -3394,6 +3859,11 @@ function applyLanguage(lang){
   var privacyOverlayEl = document.getElementById('privacyModalOverlay');
   if (privacyOverlayEl && privacyOverlayEl.classList.contains('is-open')) renderPrivacyModal();
 
+  var beautyChoiceOverlayEl = document.getElementById('beautyChoiceOverlay');
+  if (beautyChoiceOverlayEl && beautyChoiceOverlayEl.classList.contains('is-open')) openBeautyChoice();
+  var beautyQuizOverlayEl = document.getElementById('beautyQuizOverlay');
+  if (beautyQuizOverlayEl && beautyQuizOverlayEl.classList.contains('is-open')) renderBQStep();
+
   document.getElementById('chatSubtitle').textContent = dict['chat.subtitle'];
   document.getElementById('chatInput').placeholder = dict['chat.placeholder'];
   document.getElementById('chatSendBtn').textContent = dict['chat.send'];
@@ -3525,7 +3995,7 @@ function detectFrustration(text){
 /* Boton explicito de WhatsApp -- reemplaza los window.open() automaticos (bug
    reportado en QA: se abria una pestana sin que el usuario diera click). */
 function waButtonHtml(label){
-  return '<button class="chat-wa-btn" onclick="window.open(\'https://wa.me/525500000000\',\'_blank\')">' + label + '</button>';
+  return '<button class="chat-wa-btn" onclick="window.open(\'https://wa.me/' + AZURA_CONFIG.WHATSAPP_NUMBER + '\',\'_blank\')">' + label + '</button>';
 }
 /* Comparacion real entre dos lineas de producto (hallazgo #8 del QA: antes solo
    listaba las 4 marcas sin comparar nada). Reutiliza el tagline real de cada
