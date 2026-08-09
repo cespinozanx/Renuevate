@@ -12,6 +12,16 @@
 // Antes de trafico real, esto debe amarrarse a una sesion/cookie firmada (ver Marco de
 // Cumplimiento Enterprise, Bloque A, control de acceso) para que nadie pueda mandar un
 // customerId ajeno. Documentado tambien en README.md.
+//
+// Este archivo TAMBIEN atiende un segundo caso, sin relacion con lo anterior:
+// POST /api/complete-profile { source:'beauty_quiz', email, phone, quiz_answers }
+// Contacto OPCIONAL que un visitante SIN cuenta deja al final del cuestionario de
+// diagnostico de Belleza (index.html -> submitBeautyQuizLead()). Vive en este mismo
+// archivo -- y no en uno nuevo -- porque el plan Hobby de Vercel limita a 12
+// Serverless Functions por deployment y ya estamos en el limite (ver commit
+// "Fix 27", api/checkout.js). Se guarda en una coleccion separada `leads` (nunca
+// en `customers`) para poder distinguir siempre quien se registro de verdad
+// (customers) de quien solo dejo su contacto en el diagnostico (leads).
 
 const { MongoClient, ObjectId } = require('mongodb');
 
@@ -58,8 +68,14 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
   if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
 
+  const body = req.body || {};
+
+  // Lead opcional del cuestionario de Belleza -- visitante sin cuenta, no lleva
+  // customerId. Se resuelve aparte del flujo normal de abajo (que SIEMPRE exige
+  // un customerId valido de un customer ya existente).
+  if (body.source === 'beauty_quiz') { return handleBeautyQuizLead(req, res, body); }
+
   try {
-    const body = req.body || {};
     const { customerId, phone, birth_date, marketing_consent } = body;
 
     if (!customerId || !ObjectId.isValid(customerId)) {
@@ -137,3 +153,59 @@ module.exports = async (req, res) => {
     res.status(500).json({ error: 'No pudimos guardar tu perfil en este momento. Intenta de nuevo en unos minutos.' });
   }
 };
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Guarda el contacto opcional que un visitante SIN cuenta deja al final del
+// cuestionario de diagnostico de Belleza. A proposito NO toca la coleccion
+// `customers` -- va a `leads`, con lead_source:'beauty_quiz', para que siempre
+// se pueda distinguir un registro real (customers) de un contacto suelto
+// dejado en el diagnostico (leads). Si el visitante ya tiene sesion iniciada,
+// el frontend ni siquiera muestra este formulario (ver index.html, CURRENT_CUSTOMER.id).
+async function handleBeautyQuizLead(req, res, body) {
+  try {
+    const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+    const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
+
+    if (!email && !phone) {
+      res.status(400).json({ error: 'Captura al menos un correo o un telefono.' });
+      return;
+    }
+    if (email && !EMAIL_RE.test(email)) {
+      res.status(400).json({ error: 'Correo invalido.' });
+      return;
+    }
+    if (phone && !E164_RE.test(phone)) {
+      res.status(400).json({ error: 'Telefono invalido. Usa formato E.164, ej. +525512345678.' });
+      return;
+    }
+
+    const db = await getDb();
+    const now = new Date();
+
+    // Idempotente por email+telefono: si la misma persona vuelve a dejar su
+    // contacto (ej. repite el diagnostico), se actualiza el mismo lead en vez
+    // de acumular duplicados.
+    const dedupeKey = {};
+    if (email) dedupeKey.email = email;
+    if (phone) dedupeKey.phone = phone;
+
+    const update = {
+      $set: {
+        email: email || null,
+        phone: phone || null,
+        lead_source: 'beauty_quiz',
+        quiz_answers: body.quiz_answers && typeof body.quiz_answers === 'object' ? body.quiz_answers : null,
+        updated_at: now,
+      },
+      $setOnInsert: { created_at: now },
+    };
+
+    await db.collection('leads').updateOne(dedupeKey, update, { upsert: true });
+
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error('complete-profile.js (beauty_quiz lead) error:', err);
+    res.status(500).json({ error: 'No pudimos guardar tu contacto en este momento. Intenta de nuevo en unos minutos.' });
+  }
+}

@@ -473,6 +473,26 @@ const VALIDATORS = {
       },
     },
   },
+
+  // Contactos opcionales de visitantes SIN cuenta (ej. cuestionario de diagnostico
+  // de Belleza, api/complete-profile.js -> handleBeautyQuizLead). A proposito
+  // separado de `customers` -- nunca se mezclan -- para poder distinguir siempre
+  // quien se registro de verdad de quien solo dejo su contacto en un formulario.
+  leads: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['lead_source', 'created_at', 'updated_at'],
+      anyOf: [{ required: ['email'] }, { required: ['phone'] }],
+      properties: {
+        email: { bsonType: ['string', 'null'] },
+        phone: { bsonType: ['string', 'null'] },
+        lead_source: { enum: ['beauty_quiz'] },
+        quiz_answers: { bsonType: ['object', 'null'] },
+        created_at: { bsonType: 'date' },
+        updated_at: { bsonType: 'date' },
+      },
+    },
+  },
 };
 
 // Crea el indice si no existe. Si ya existe un indice con el mismo nombre pero
@@ -512,6 +532,10 @@ async function setupCollections(db) {
   await ensureIndex(db.collection('customers'), { email: 1 }, { unique: true, sparse: true, name: 'uniq_email' });
   await ensureIndex(db.collection('customers'), { phone: 1 }, { unique: true, sparse: true, name: 'uniq_phone' });
   await ensureIndex(db.collection('customers'), { birth_month_day: 1 }, { name: 'idx_birth_month_day' });
+
+  await ensureIndex(db.collection('leads'), { email: 1 }, { sparse: true, name: 'idx_lead_email' });
+  await ensureIndex(db.collection('leads'), { phone: 1 }, { sparse: true, name: 'idx_lead_phone' });
+  await ensureIndex(db.collection('leads'), { lead_source: 1 }, { name: 'idx_lead_source' });
 
   await ensureIndex(db.collection('promotions'), { status: 1 }, { name: 'idx_status' });
   await ensureIndex(db.collection('promotions'), { type: 1 }, { name: 'idx_type' });

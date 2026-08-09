@@ -70,6 +70,11 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 .nav-dropdown-menu a{font-size:11px !important;}
 @media(min-width:761px){
   .nav-dropdown:hover .nav-dropdown-menu{display:flex;}
+  /* Puente invisible entre el trigger y el menu: sin esto, el hueco de
+     margin-top de abajo es una "zona muerta" -- el mouse pierde el :hover
+     del padre al cruzarlo y el submenu se cierra antes de poder darle click.
+     Esto era lo que se sentia como "hay que darle click, si no se quita". */
+  .nav-dropdown::after{content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); width:210px; height:14px; z-index:79;}
   .nav-dropdown-menu{position:absolute; top:100%; left:50%; transform:translateX(-50%); background:#fff; box-shadow:0 10px 28px rgba(0,0,0,.14); padding:12px 18px; min-width:210px; border-radius:6px; z-index:80; margin-top:14px;}
   .nav-dropdown-menu a{padding:8px 4px !important; white-space:nowrap; border-bottom:none !important;}
 }
@@ -148,6 +153,7 @@ section{padding:92px 0;}
 .pillar p{font-size:13.5px; color:var(--grey);}
 
 .zoom-section{border-top:1px solid var(--line);}
+.zoom-section.zoom-hidden{display:none;}
 .zoom-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:52px; flex-wrap:wrap;}
 .zoom-tab{padding:10px 24px; border-radius:30px; border:1px solid var(--line); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700; cursor:pointer; color:var(--grey); background:#fff;}
 .zoom-tab.active{background:#F8F7F3;}
@@ -197,6 +203,9 @@ section{padding:92px 0;}
 
 .add-to-cart-btn{width:100%; margin-top:10px; background:var(--navy); color:#fff; border:none; border-radius:2px; padding:9px 10px; font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:700; cursor:pointer;}
 .add-to-cart-btn:hover{background:#3F3F3F;}
+.add-to-cart-btn:disabled{background:#EDEBE5; color:var(--grey); cursor:not-allowed;}
+.product-card-dummy{opacity:.72;}
+.product-dummy-price{color:var(--grey); font-style:italic; font-weight:600;}
 .add-to-cart-btn:disabled{background:var(--line); color:var(--grey); cursor:not-allowed;}
 
 .cart-overlay{display:none; position:fixed; inset:0; background:rgba(30,30,30,.5); z-index:210;}
@@ -385,6 +394,13 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .bq-back{background:none; border:none; color:var(--grey); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:20px; padding:0;}
 .bq-result-intro{font-size:13.5px; color:var(--ink); line-height:1.6; margin-bottom:18px;}
 .bq-result-actions{display:flex; flex-direction:column; gap:10px;}
+.bq-lead-capture{margin-top:24px; padding-top:20px; border-top:1px dashed var(--line);}
+.bq-lead-note{font-size:12px; color:var(--grey); line-height:1.5; margin-bottom:10px;}
+.bq-lead-fields{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+.bq-lead-fields input{width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:4px; font-size:13px; font-family:inherit;}
+.bq-lead-msg{font-size:12px; margin-top:8px;}
+.bq-lead-msg.is-error{color:#B3261E;}
+.bq-lead-msg.is-ok{color:#1E7A4C;}
 
 .beauty-rec-banner{max-width:920px; margin:0 auto 22px; background:var(--nacar-soft); border:1px solid var(--nacar); border-radius:6px; padding:14px 20px; font-size:13px; color:var(--ink); text-align:center;}
 .beauty-rec-banner b{color:#B8873A;}
@@ -755,7 +771,7 @@ var AZURA_CONFIG = {
   </div>
 </section>
 
-<section class="zoom-section" id="zoom">
+<section class="zoom-section zoom-hidden" id="zoom">
   <div class="container">
     <div class="section-head reveal-stagger">
       <div class="eyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
@@ -1295,7 +1311,13 @@ var V = {
         {sku:"NACAR-01", tag:"Serum facial", name:"Luz Nacar Vitamina C", desc:"Luminosidad inmediata, uso diario.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
         {sku:"NACAR-02", tag:"Hidratante", name:"Crema Perla Hidratante", desc:"Hidratacion profunda 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
         {sku:"NACAR-03", tag:"Cabello", name:"Aceite Brillo Sedoso", desc:"Brillo y suavidad sin sensacion grasosa.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
-        {sku:"NACAR-04", tag:"Contorno", name:"Contorno de Ojos Nacar", desc:"Reduce signos de cansancio.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]}
+        {sku:"NACAR-04", tag:"Contorno", name:"Contorno de Ojos Nacar", desc:"Reduce signos de cansancio.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
+        {sku:"NACAR-D01", tag:"Limpiador", name:"Limpiador Facial Suave Nacar", desc:"Limpieza diaria sin resecar la piel.", dummy:true},
+        {sku:"NACAR-D02", tag:"Mascarilla", name:"Mascarilla Iluminadora Nacar", desc:"Boost de luminosidad en 10 minutos.", dummy:true},
+        {sku:"NACAR-D03", tag:"Tonico", name:"Tonico Equilibrante Nacar", desc:"Equilibra y prepara la piel para tu rutina.", dummy:true},
+        {sku:"NACAR-D04", tag:"Protector solar", name:"Protector Solar Ligero Nacar", desc:"FPS diario con textura ligera.", dummy:true},
+        {sku:"NACAR-D05", tag:"Cabello", name:"Champu Nutritivo Nacar", desc:"Limpieza suave con nutricion diaria.", dummy:true},
+        {sku:"NACAR-D06", tag:"Bruma", name:"Bruma Hidratante Nacar", desc:"Frescura instantanea en cualquier momento del dia.", dummy:true}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
@@ -1308,7 +1330,13 @@ var V = {
         {sku:"NACAR-01", tag:"Facial serum", name:"Nacar Glow Vitamin C", desc:"Instant radiance, daily use.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
         {sku:"NACAR-02", tag:"Moisturizer", name:"Pearl Hydrating Cream", desc:"24h deep hydration.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
         {sku:"NACAR-03", tag:"Hair", name:"Silky Shine Oil", desc:"Shine and softness with no greasy feel.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
-        {sku:"NACAR-04", tag:"Eye care", name:"Nacar Eye Contour", desc:"Reduces signs of tiredness.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]}
+        {sku:"NACAR-04", tag:"Eye care", name:"Nacar Eye Contour", desc:"Reduces signs of tiredness.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
+        {sku:"NACAR-D01", tag:"Cleanser", name:"Nacar Gentle Facial Cleanser", desc:"Daily cleansing without drying out the skin.", dummy:true},
+        {sku:"NACAR-D02", tag:"Mask", name:"Nacar Illuminating Mask", desc:"A radiance boost in 10 minutes.", dummy:true},
+        {sku:"NACAR-D03", tag:"Toner", name:"Nacar Balancing Toner", desc:"Balances and preps skin for your routine.", dummy:true},
+        {sku:"NACAR-D04", tag:"Sunscreen", name:"Nacar Light Daily SPF", desc:"Daily SPF with a light texture.", dummy:true},
+        {sku:"NACAR-D05", tag:"Hair", name:"Nacar Nourishing Shampoo", desc:"Gentle cleansing with daily nourishment.", dummy:true},
+        {sku:"NACAR-D06", tag:"Mist", name:"Nacar Hydrating Mist", desc:"Instant freshness any time of day.", dummy:true}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
@@ -1321,7 +1349,13 @@ var V = {
         {sku:"NACAR-01", tag:"Serum visage", name:"Eclat Nacar Vitamine C", desc:"Luminosite immediate, usage quotidien.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
         {sku:"NACAR-02", tag:"Hydratant", name:"Creme Perle Hydratante", desc:"Hydratation profonde 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
         {sku:"NACAR-03", tag:"Cheveux", name:"Huile Brillance Soyeuse", desc:"Brillance et douceur sans effet gras.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
-        {sku:"NACAR-04", tag:"Contour", name:"Contour des Yeux Nacar", desc:"Reduit les signes de fatigue.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]}
+        {sku:"NACAR-04", tag:"Contour", name:"Contour des Yeux Nacar", desc:"Reduit les signes de fatigue.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
+        {sku:"NACAR-D01", tag:"Nettoyant", name:"Nettoyant Visage Doux Nacar", desc:"Nettoyage quotidien sans dessecher la peau.", dummy:true},
+        {sku:"NACAR-D02", tag:"Masque", name:"Masque Illuminateur Nacar", desc:"Un boost d'eclat en 10 minutes.", dummy:true},
+        {sku:"NACAR-D03", tag:"Tonique", name:"Tonique Equilibrant Nacar", desc:"Equilibre et prepare la peau pour votre routine.", dummy:true},
+        {sku:"NACAR-D04", tag:"Solaire", name:"Protection Solaire Legere Nacar", desc:"FPS quotidien a texture legere.", dummy:true},
+        {sku:"NACAR-D05", tag:"Cheveux", name:"Shampoing Nourrissant Nacar", desc:"Nettoyage doux avec nutrition quotidienne.", dummy:true},
+        {sku:"NACAR-D06", tag:"Brume", name:"Brume Hydratante Nacar", desc:"Fraicheur instantanee a tout moment de la journee.", dummy:true}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complete", desc:"routine en 5 etapes avec contour et protection."}]
     }
@@ -1807,6 +1841,7 @@ var DYN = {
        ]; },
        addToCart:function(){ return 'Agregar al carrito'; },
        viewDetail:function(){ return 'Ver detalle'; },
+       comingSoonBadge:function(){ return 'Proximamente'; },
        ingredientsLabel:function(){ return 'Ingredientes'; },
        usageLabel:function(){ return 'Modo de uso'; },
        addrDefaultBadge:function(){ return 'Predeterminada'; },
@@ -1941,7 +1976,15 @@ var DYN = {
          ctaGoCatalog:'Ver mi preseleccion en el catalogo',
          ctaRedo:'Rehacer diagnostico',
          bannerHtml:function(topName){ return 'Basado en tu diagnostico, te recomendamos empezar con <b>' + topName + '</b>. <a onclick="openBeautyQuiz()">Rehacer diagnostico</a>'; },
-         recommendedBadge:'Recomendado para ti'
+         recommendedBadge:'Recomendado para ti',
+         leadNote:'¿Quieres recibir esta rutina por correo o WhatsApp? Es opcional, solo para darte un mejor servicio.',
+         leadEmailPh:'Tu correo (opcional)',
+         leadPhonePh:'Tu telefono (opcional)',
+         leadSubmit:'Enviarme mi rutina',
+         leadEmptyError:'Escribe al menos un correo o telefono, o simplemente ignora esto y continua.',
+         leadInvalidEmail:'Ese correo no se ve valido, revisalo.',
+         leadOk:'Listo, guardamos tu contacto para darte seguimiento.',
+         leadError:'No pudimos guardar tu contacto. Intenta de nuevo en unos minutos.'
        } },
   en:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Right now it is ' + hh + ':' + mm + ' (your device time). Anything else I can help with?'; },
        routineResult:function(name,title){ return 'Recommendation logged for <b>' + name + '</b>: <em>' + title + '</em>. In production, this triggers a select_routine event in GA4 and an automatic WhatsApp proposal.'; },
@@ -1960,6 +2003,7 @@ var DYN = {
        ]; },
        addToCart:function(){ return 'Add to cart'; },
        viewDetail:function(){ return 'View detail'; },
+       comingSoonBadge:function(){ return 'Coming soon'; },
        ingredientsLabel:function(){ return 'Ingredients'; },
        usageLabel:function(){ return 'How to use'; },
        addrDefaultBadge:function(){ return 'Default'; },
@@ -2094,7 +2138,15 @@ var DYN = {
          ctaGoCatalog:'See my preselection in the catalog',
          ctaRedo:'Retake the diagnosis',
          bannerHtml:function(topName){ return 'Based on your diagnosis, we recommend starting with <b>' + topName + '</b>. <a onclick="openBeautyQuiz()">Retake the diagnosis</a>'; },
-         recommendedBadge:'Recommended for you'
+         recommendedBadge:'Recommended for you',
+         leadNote:'Want to get this routine by email or WhatsApp? It is optional, just to give you better service.',
+         leadEmailPh:'Your email (optional)',
+         leadPhonePh:'Your phone (optional)',
+         leadSubmit:'Send me my routine',
+         leadEmptyError:'Enter at least an email or phone, or just skip this and continue.',
+         leadInvalidEmail:'That email does not look valid, check it.',
+         leadOk:'Done, we saved your contact to follow up.',
+         leadError:'We could not save your contact. Try again in a few minutes.'
        } },
   fr:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Il est actuellement ' + hh + 'h' + mm + ' (heure de votre appareil). Autre chose ?'; },
        routineResult:function(name,title){ return 'Recommandation enregistree pour <b>' + name + '</b> : <em>' + title + '</em>. En production, cela declenche un evenement select_routine dans GA4 et une proposition automatique via WhatsApp.'; },
@@ -2113,6 +2165,7 @@ var DYN = {
        ]; },
        addToCart:function(){ return 'Ajouter au panier'; },
        viewDetail:function(){ return 'Voir le detail'; },
+       comingSoonBadge:function(){ return 'Bientot disponible'; },
        ingredientsLabel:function(){ return 'Ingredients'; },
        usageLabel:function(){ return 'Mode d\'emploi'; },
        addrDefaultBadge:function(){ return 'Par defaut'; },
@@ -2247,7 +2300,15 @@ var DYN = {
          ctaGoCatalog:'Voir ma preselection dans le catalogue',
          ctaRedo:'Refaire le diagnostic',
          bannerHtml:function(topName){ return "D'apres votre diagnostic, nous recommandons de commencer par <b>" + topName + '</b>. <a onclick="openBeautyQuiz()">Refaire le diagnostic</a>'; },
-         recommendedBadge:'Recommande pour vous'
+         recommendedBadge:'Recommande pour vous',
+         leadNote:"Vous voulez recevoir cette routine par courriel ou WhatsApp ? C'est optionnel, juste pour mieux vous servir.",
+         leadEmailPh:'Votre courriel (optionnel)',
+         leadPhonePh:'Votre telephone (optionnel)',
+         leadSubmit:'Envoyez-moi ma routine',
+         leadEmptyError:"Indiquez au moins un courriel ou un telephone, ou ignorez simplement ceci et continuez.",
+         leadInvalidEmail:"Ce courriel ne semble pas valide, verifiez-le.",
+         leadOk:'Parfait, nous avons enregistre votre contact pour le suivi.',
+         leadError:"Nous n'avons pas pu enregistrer votre contact. Reessayez dans quelques minutes."
        } }
 };
 
@@ -3338,14 +3399,24 @@ function renderVertical(v){
     var imgHtml = p.img
       ? '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy" onerror="handleProductImgError(this,\'' + v + '\')">'
       : iconSvg(v);
-    html += '<div class="product-card" data-sku="' + p.sku + '"><div class="product-img">' + imgHtml + '</div>' +
+    // Fichas "dummy" (p.dummy===true): solo sirven para previsualizar el
+    // catalogo como lista larga -- no existen como SKU real en MongoDB, asi
+    // que nunca se ofrece "Agregar al carrito" ni "Ver detalle" sobre ellas.
+    var priceHtml = p.dummy
+      ? '<div class="price product-dummy-price">' + DYN[currentLang].comingSoonBadge() + '</div>'
+      : '<div class="price">' + p.price + '</div>';
+    var actionsHtml = p.dummy
+      ? '<button class="add-to-cart-btn" disabled>' + DYN[currentLang].comingSoonBadge() + '</button>'
+      : ('<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>' +
+         '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\')">' + DYN[currentLang].addToCart() + '</button>');
+
+    html += '<div class="product-card' + (p.dummy ? ' product-card-dummy' : '') + '" data-sku="' + p.sku + '"><div class="product-img">' + imgHtml + '</div>' +
       '<div class="product-body"><div class="p-eyebrow">' + p.tag + '</div>' +
       '<h4>' + p.name + '</h4><p>' + p.desc + '</p>' +
       ratingHtml +
-      '<div class="price">' + p.price + '</div>' +
+      priceHtml +
       relatedHtml +
-      '<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>' +
-      '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\')">' + DYN[currentLang].addToCart() + '</button>' +
+      actionsHtml +
       '</div></div>';
   }
   grid.innerHTML = html;
@@ -3383,6 +3454,11 @@ function selectRoutine(i){
 
 function goVertical(v){
   renderVertical(v);
+  // El catalogo (#zoom) vive oculto por default -- solo se revela cuando el
+  // usuario pide explicitamente ver un sistema (menu Belleza/System Speciality,
+  // footer, busqueda, zoom-tabs o el resultado del diagnostico). Asi la home
+  // no arrastra la ficha de producto dentro del scroll normal de la pagina.
+  document.getElementById('zoom').classList.remove('zoom-hidden');
   scrollToId('zoom');
   closeNav();
 }
@@ -3497,6 +3573,25 @@ function renderBQResult(){
   var topProduct = findProductBySku(V.nacar[currentLang].products, finalOrder[0]);
   var topName = topProduct ? topProduct.name : '';
 
+  // La captura de correo/telefono va AL FINAL del resultado, no al inicio del
+  // cuestionario: primero se entrega el valor (la preseleccion), y solo despues
+  // se pide el contacto -- pedirlo antes de mostrar nada sube el abandono. Es
+  // 100% opcional y solo se muestra si el visitante no tiene sesion iniciada
+  // (si ya inicio sesion, ya tenemos su contacto real de su cuenta).
+  var leadHtml = '';
+  if (!CURRENT_CUSTOMER.id){
+    leadHtml =
+      '<div class="bq-lead-capture" id="bqLeadCapture">' +
+        '<p class="bq-lead-note">' + quiz.leadNote + '</p>' +
+        '<div class="bq-lead-fields">' +
+          '<input type="email" id="bqLeadEmail" placeholder="' + quiz.leadEmailPh + '" autocomplete="email">' +
+          '<input type="tel" id="bqLeadPhone" placeholder="' + quiz.leadPhonePh + '" autocomplete="tel">' +
+        '</div>' +
+        '<button type="button" class="btn btn-outline" style="width:100%; justify-content:center; cursor:pointer;" onclick="submitBeautyQuizLead()">' + quiz.leadSubmit + '</button>' +
+        '<div class="bq-lead-msg" id="bqLeadMsg" style="display:none;"></div>' +
+      '</div>';
+  }
+
   document.getElementById('bqProgress').innerHTML = '';
   document.getElementById('bqStepLabel').textContent = quiz.resultEyebrow;
   document.getElementById('bqQuestion').textContent = quiz.resultTitle;
@@ -3505,8 +3600,63 @@ function renderBQResult(){
     '<div class="bq-result-actions">' +
       '<button type="button" class="btn btn-dark" style="justify-content:center; border:none; cursor:pointer;" onclick="goToBeautyRecommendation()">' + quiz.ctaGoCatalog + '</button>' +
       '<button type="button" class="btn btn-outline" style="justify-content:center; cursor:pointer;" onclick="openBeautyQuiz()">' + quiz.ctaRedo + '</button>' +
-    '</div>';
+    '</div>' +
+    leadHtml;
   document.getElementById('bqBackBtn').style.display = 'none';
+}
+function submitBeautyQuizLead(){
+  var quiz = DYN[currentLang].beautyQuiz;
+  var msgEl = document.getElementById('bqLeadMsg');
+  var emailEl = document.getElementById('bqLeadEmail');
+  var phoneEl = document.getElementById('bqLeadPhone');
+  var email = emailEl ? emailEl.value.trim() : '';
+  var phoneRaw = phoneEl ? phoneEl.value.trim() : '';
+  var phone = phoneRaw ? normalizeMxPhone(phoneRaw) : '';
+
+  if (!email && !phone){
+    msgEl.textContent = quiz.leadEmptyError;
+    msgEl.className = 'bq-lead-msg is-error';
+    msgEl.style.display = 'block';
+    return;
+  }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    msgEl.textContent = quiz.leadInvalidEmail;
+    msgEl.className = 'bq-lead-msg is-error';
+    msgEl.style.display = 'block';
+    return;
+  }
+
+  fetch('/api/complete-profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      source: 'beauty_quiz',
+      email: email || null,
+      phone: phone || null,
+      quiz_answers: BQ_STATE.answers,
+    }),
+  })
+    .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
+    .then(function(res){
+      if (res.ok){
+        msgEl.textContent = quiz.leadOk;
+        msgEl.className = 'bq-lead-msg is-ok';
+        msgEl.style.display = 'block';
+        var fieldsWrap = document.querySelector('#bqLeadCapture .bq-lead-fields');
+        if (fieldsWrap) fieldsWrap.style.display = 'none';
+        var submitBtn = document.querySelector('#bqLeadCapture .btn-outline');
+        if (submitBtn) submitBtn.style.display = 'none';
+      } else {
+        msgEl.textContent = (res.data && res.data.error) || quiz.leadError;
+        msgEl.className = 'bq-lead-msg is-error';
+        msgEl.style.display = 'block';
+      }
+    })
+    .catch(function(){
+      msgEl.textContent = quiz.leadError;
+      msgEl.className = 'bq-lead-msg is-error';
+      msgEl.style.display = 'block';
+    });
 }
 function goToBeautyRecommendation(){
   closeBeautyQuiz();
