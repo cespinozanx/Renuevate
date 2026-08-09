@@ -628,6 +628,14 @@ var AZURA_CONFIG = {
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 
+<!-- Vercel Speed Insights (incluido gratis en el plan de Vercel -- mismo patron
+     que Analytics arriba. El dashboard de Speed Insights mostraba "No data
+     available" porque a este sitio (estatico + funciones serverless, sin
+     Next.js) le faltaba este snippet -- el paquete npm @vercel/speed-insights
+     que sugiere el onboarding es solo para proyectos Next.js/React). -->
+<script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+
 <!-- Google Analytics 4 (opcional -- solo se activa si AZURA_CONFIG.GA4_MEASUREMENT_ID se reemplaza por el ID real) -->
 <script>
   if (AZURA_CONFIG.GA4_MEASUREMENT_ID && AZURA_CONFIG.GA4_MEASUREMENT_ID.indexOf("G-X") !== 0){
