@@ -169,8 +169,8 @@ section{padding:92px 0;}
    vuelve a mostrar todo. Sin esto, aunque #zoom se revelaba correctamente,
    el usuario seguia topandose con el resto de la home al hacer scroll. */
 body.viewing-product-page .home-only{display:none;}
-.zoom-back-link{display:inline-block; margin-bottom:18px; cursor:pointer; color:var(--grey); font-size:14px; letter-spacing:.02em;}
-.zoom-back-link:hover{color:var(--ink);}
+.zoom-back-link{display:inline-flex; align-items:center; gap:6px; margin:22px 0 10px; padding:8px 16px; cursor:pointer; color:var(--ink); font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; border:1px solid var(--line); border-radius:30px; background:#fff; transition:background .15s,border-color .15s;}
+.zoom-back-link:hover{background:var(--cream); border-color:var(--ink);}
 .zoom-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:52px; flex-wrap:wrap;}
 .zoom-tab{padding:10px 24px; border-radius:30px; border:1px solid var(--line); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700; cursor:pointer; color:var(--grey); background:#fff;}
 .zoom-tab.active{background:#F8F7F3;}
@@ -707,7 +707,7 @@ var AZURA_CONFIG = {
       <h1 data-i18n-html="hero.h1"><span class="accent">Transforma</span> tu vida</h1>
       <p data-i18n-html="hero.p">Pensando en <span class="accent">acompañarte</span> en cada etapa de tu vida.</p>
       <div class="hero-cta hero-cta-sm">
-        <a class="btn btn-dark" onclick="goVertical(currentV)" data-i18n="hero.cta1">Explorar el catálogo</a>
+        <a class="btn btn-dark" onclick="openBeautyCatalog()" data-i18n="hero.cta1">Explorar el catálogo</a>
         <a class="btn btn-ghost" onclick="scrollToId('filosofia')" data-i18n="hero.cta2">Nuestra filosofia</a>
       </div>
     </div>
@@ -1486,7 +1486,7 @@ var I18N = {
     "phil.pillar4h":"Un solo estándar", "phil.pillar4p":"Las cuatro marcas comparten un mismo estándar de calidad y servicio.",
     "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;",
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
-    "catalog.eyebrow":"Catalogo", "catalog.title":"Catalogo Belleza", "catalog.subtitle":"Todos los productos de System Luminous, en un solo lugar.",
+    "catalog.eyebrow":"Catálogo", "catalog.title":"Catálogo Belleza", "catalog.subtitle":"Todos los productos de System Luminous, en un solo lugar.",
     "zoom.backHome":"&#8592; Volver a inicio",
     "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
@@ -1738,8 +1738,8 @@ var I18N = {
     "phil.pillar4h":"Un seul standard", "phil.pillar4p":"Les 4 marques partagent la meme gouvernance qualite et le meme service client.",
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Systeme phare", "zoom.knowRitual":"Decouvrir le systeme",
-    "catalog.eyebrow":"Catalogue", "catalog.title":"Catalogue Beaute", "catalog.subtitle":"Tous les produits System Luminous, au meme endroit.",
-    "zoom.backHome":"&#8592; Retour a l'accueil",
+    "catalog.eyebrow":"Catalogue", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"Tous les produits System Luminous, au même endroit.",
+    "zoom.backHome":"&#8592; Retour à l'accueil",
     "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce systeme pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RESULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
     "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo ideal", "zoom.routineP":"Selectionnez votre niveau d'experience et nous vous suggerons la routine adaptee.",
@@ -1943,14 +1943,15 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Tu carrito existe como demostracion funcional, pero necesitas iniciar sesión para verlo y guardarlo.'; },
          talkHumanLabel:function(){ return 'Hablar con un asesor'; },
          restartLabel:function(){ return 'Elegir otra prioridad'; },
-         makeupUnavailable:function(){ return 'Por ahora no tengo maquíllaje confirmado en catálogo, y no quiero ofrecerte algo que no pueda garantizar. Puedo mostrarte nuestro cuidado de piel NACAR, o conectarte con un asesor humano.'; },
+         makeupUnavailable:function(){ return 'Nuestro fuerte es el cuidado de piel y bienestar con System Luminous, Health y Spot. Te muestro las opciones disponibles en nuestro catálogo, o te conecto con un asesor humano si buscas algo mas especifico.'; },
          makeupFallbackOptions:function(){ return [
            { label:'Ver cuidado de piel NACAR', action:function(){ chooseGoal('skin'); } },
+           { label:'Ver catálogo completo', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
            { label:'Hablar con un asesor', action:function(){ answerTopic('human'); renderChatQuickButtons(); } }
          ]; },
          medicalGuard:function(){ return 'Gracias por contarme. Por tu seguridad, en temas de embarazo, lactancia, alergias o medicamentos no hago recomendaciones — te conecto con un asesor humano; te sugiero tambien consultar a tu profesional de salud.'; },
          complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu número de pedido por WhatsApp.'; },
-         certUnknown:function(){ return 'No tengo esa certificacion confirmada en este catálogo. Para no darte información incorrecta, te lo valida un asesor humano.'; },
+         certUnknown:function(){ return 'Para darte informacion 100% correcta sobre esa certificacion, te conecto con un asesor humano que te la valida directamente.'; },
          frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; }
        },
        beautyQuiz:{
@@ -2105,14 +2106,15 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Your cart exists as a working demo, but you need to sign in to see and keep it.'; },
          talkHumanLabel:function(){ return 'Talk to an advisor'; },
          restartLabel:function(){ return 'Choose another priority'; },
-         makeupUnavailable:function(){ return "I don't have makeup confirmed in our catalog yet, and I don't want to offer something I can't guarantee. I can show you NACAR skin care, or connect you with a human advisor."; },
+         makeupUnavailable:function(){ return "We focus on skin care and wellness with System Luminous, Health and Spot. I can show you what's available in our catalog, or connect you with a human advisor if you're after something more specific."; },
          makeupFallbackOptions:function(){ return [
            { label:'View NACAR skin care', action:function(){ chooseGoal('skin'); } },
+           { label:'View full catalog', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
            { label:'Talk to an advisor', action:function(){ answerTopic('human'); renderChatQuickButtons(); } }
          ]; },
          medicalGuard:function(){ return "Thanks for sharing. For your safety, I don't make recommendations around pregnancy, breastfeeding, allergies or medication — connecting you with a human advisor; also worth checking with your healthcare professional."; },
          complaintGuard:function(){ return "I'm sorry for the inconvenience. Connecting you now with a human advisor as a priority — please share your order number on WhatsApp."; },
-         certUnknown:function(){ return "I don't have that certification confirmed in this catalog. To avoid giving you wrong information, a human advisor will verify it."; },
+         certUnknown:function(){ return "To give you fully accurate information on that certification, I'll connect you with a human advisor who can verify it directly."; },
          frustrationGuard:function(){ return "I'm really sorry about the bad experience. Connecting you right away with a human advisor as a priority."; }
        },
        beautyQuiz:{
@@ -2267,14 +2269,15 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Votre panier existe en demonstration fonctionnelle, mais vous devez vous connecter pour le voir et le conserver.'; },
          talkHumanLabel:function(){ return 'Parler a un conseiller'; },
          restartLabel:function(){ return 'Choisir une autre priorite'; },
-         makeupUnavailable:function(){ return "Je n'ai pas encore de maquíllage confirme au catalogue, et je ne veux pas vous proposer quelque chose que je ne peux pas garantir. Je peux vous montrer le soin de la peau NACAR, ou vous mettre en relation avec un conseiller humain."; },
+         makeupUnavailable:function(){ return "Notre specialite est le soin de la peau et le bien-etre avec System Luminous, Health et Spot. Je peux vous montrer ce qui est disponible dans notre catalogue, ou vous mettre en relation avec un conseiller humain si vous cherchez autre chose."; },
          makeupFallbackOptions:function(){ return [
            { label:'Voir le soin de la peau NACAR', action:function(){ chooseGoal('skin'); } },
+           { label:'Voir le catalogue complet', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
            { label:'Parler a un conseiller', action:function(){ answerTopic('human'); renderChatQuickButtons(); } }
          ]; },
          medicalGuard:function(){ return "Merci de me le dire. Pour votre securite, je ne fais pas de recommandation en cas de grossesse, allaitement, allergies ou medicaments — je vous mets en relation avec un conseiller humain ; pensez aussi a consulter votre professionnel de sante."; },
          complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre número de commande sur WhatsApp."; },
-         certUnknown:function(){ return "Je n'ai pas cette certification confirmee dans ce catalogue. Pour eviter de vous donner une information incorrecte, un conseiller humain la verifiera."; },
+         certUnknown:function(){ return "Pour vous donner une information totalement exacte sur cette certification, je vous mets en relation avec un conseiller humain qui la verifiera directement."; },
          frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; }
        },
        beautyQuiz:{
@@ -4294,6 +4297,18 @@ function initChat(){
   addChatMsg(I18N[currentLang]['chat.greeting'], 'bot');
   showTyping();
   setTimeout(function(){ hideTyping(); startGoalFlow(); }, 600);
+}
+// Cierra el panel de chat (y el carrito, por si tambien estaba abierto) antes
+// de navegar a un producto/catalogo desde una tarjeta o boton del chatbot --
+// se llama desde el "Ver detalle"/"Ver catalogo de X" de Julieta. NOTA: esta
+// funcion faltaba por completo (bug pre-existente); sin ella, esos dos
+// botones tiraban un ReferenceError silencioso y nunca llegaban a llamar
+// goVertical(), es decir "llevar al usuario a nuestros productos" no
+// funcionaba en absoluto.
+function closeAllPanels(){
+  var chatPanel = document.getElementById('chatPanel');
+  if (chatPanel) chatPanel.classList.remove('open');
+  closeCart();
 }
 function showTyping(){
   var body = document.getElementById('chatBody');
