@@ -154,6 +154,14 @@ section{padding:92px 0;}
 
 .zoom-section{border-top:1px solid var(--line);}
 .zoom-section.zoom-hidden{display:none;}
+/* Modo catalogo: la ficha #zoom se reusa como pagina de solo-lista (sin tabs
+   Luminous/Health/Spot ni banner narrativo de "sistema destacado" ni bloque de
+   rutinas) para el CTA "Catalogo" del menu Belleza y el resultado del
+   diagnostico -- ver openBeautyCatalog(). goVertical() (System Speciality
+   normal) quita esta clase y restaura la vista completa. */
+.zoom-section.catalog-mode .zoom-tabs,
+.zoom-section.catalog-mode .zoom-banner,
+.zoom-section.catalog-mode .routine-block{display:none;}
 .zoom-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:52px; flex-wrap:wrap;}
 .zoom-tab{padding:10px 24px; border-radius:30px; border:1px solid var(--line); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700; cursor:pointer; color:var(--grey); background:#fff;}
 .zoom-tab.active{background:#F8F7F3;}
@@ -774,7 +782,7 @@ var AZURA_CONFIG = {
 <section class="zoom-section zoom-hidden" id="zoom">
   <div class="container">
     <div class="section-head reveal-stagger">
-      <div class="eyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
+      <div class="eyebrow" id="zoomEyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
       <h2 id="zoomTitle">System Luminous Speciality - Belleza para mujer</h2>
       <p id="zoomSubtitle">Hábitos de belleza con respaldo dermocosmético y textura premium.</p>
     </div>
@@ -1062,7 +1070,7 @@ var AZURA_CONFIG = {
     <h3 id="beautyChoiceTitle">&iquest;Como quieres descubrir tu belleza?</h3>
     <p class="pm-subtitle" id="beautyChoiceSubtitle">Elige explorar el catalogo completo o responde 5 preguntas rapidas para una preseleccion hecha para ti.</p>
     <div class="beauty-choice-options">
-      <div class="beauty-choice-card" onclick="closeBeautyChoice(); goVertical('nacar');">
+      <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyCatalog();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
         <h4 id="beautyChoiceCatalogTitle">Ver catalogo completo</h4>
         <p id="beautyChoiceCatalogBody">Explora los 4 productos de System Luminous a tu ritmo.</p>
@@ -1468,6 +1476,7 @@ var I18N = {
     "phil.pillar4h":"Un solo estándar", "phil.pillar4p":"Las cuatro marcas comparten un mismo estándar de calidad y servicio.",
     "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;",
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
+    "catalog.eyebrow":"Catalogo", "catalog.title":"Catalogo Belleza", "catalog.subtitle":"Todos los productos de System Luminous, en un solo lugar.",
     "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
     "zoom.routineEyebrow":"Que rutina es para ti?", "zoom.routineH2":"Encuentra tu combo ideal", "zoom.routineP":"Selecciona tu nivel de experiencia y te sugerimos la rutina adecuada.",
@@ -1592,6 +1601,7 @@ var I18N = {
     "phil.pillar4h":"One single standard", "phil.pillar4p":"All 4 brands share the same quality governance and customer service.",
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: wellness first.&rdquo;",
     "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
+    "catalog.eyebrow":"Catalog", "catalog.title":"Beauty Catalog", "catalog.subtitle":"Every System Luminous product, in one place.",
     "comingSoon.eyebrow":"Content coming soon", "comingSoon.title":"We're polishing this content", "comingSoon.body":"There's nothing wrong with this Renuévate section: we're still refining the full detail of this system so we can show it to you properly. Check back soon.", "comingSoon.cta":"Got it",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"TO SEE RESULTS*", "zoom.stat3Label":"VERIFIED ORIGIN",
     "zoom.routineEyebrow":"Which routine is right for you?", "zoom.routineH2":"Find your ideal combo", "zoom.routineP":"Select your experience level and we'll suggest the right routine.",
@@ -1716,6 +1726,7 @@ var I18N = {
     "phil.pillar4h":"Un seul standard", "phil.pillar4p":"Les 4 marques partagent la meme gouvernance qualite et le meme service client.",
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Systeme phare", "zoom.knowRitual":"Decouvrir le systeme",
+    "catalog.eyebrow":"Catalogue", "catalog.title":"Catalogue Beaute", "catalog.subtitle":"Tous les produits System Luminous, au meme endroit.",
     "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce systeme pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RESULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
     "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo ideal", "zoom.routineP":"Selectionnez votre niveau d'experience et nous vous suggerons la routine adaptee.",
@@ -3458,11 +3469,47 @@ function goVertical(v){
   // usuario pide explicitamente ver un sistema (menu Belleza/System Speciality,
   // footer, busqueda, zoom-tabs o el resultado del diagnostico). Asi la home
   // no arrastra la ficha de producto dentro del scroll normal de la pagina.
-  document.getElementById('zoom').classList.remove('zoom-hidden');
+  var zoomSection = document.getElementById('zoom');
+  zoomSection.classList.remove('zoom-hidden');
+  // Si veniamos del modo "solo catalogo" (openBeautyCatalog), restauramos la
+  // vista completa de System Speciality (tabs + banner + rutinas) y el
+  // eyebrow original -- goVertical() siempre es navegacion a un sistema
+  // especifico, nunca al catalogo generico.
+  if (zoomSection.classList.contains('catalog-mode')){
+    zoomSection.classList.remove('catalog-mode');
+    document.getElementById('zoomEyebrow').textContent = I18N[currentLang]['zoom.eyebrow'];
+  }
+  catalogModeActive = false;
   scrollToId('zoom');
   closeNav();
 }
 function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+// Pagina de "solo catalogo": reusa la ficha #zoom (mismo grid de productos,
+// panel de comentarios y banner de recomendacion) pero oculta los tabs
+// Luminous/Health/Spot, el banner narrativo de "sistema destacado" y el
+// bloque de rutinas -- ver CSS .zoom-section.catalog-mode. Punto de entrada
+// unico para: 1) CTA "Catalogo" del menu Belleza, 2) CTA "Ver mi preseleccion"
+// al final del diagnostico (goToBeautyRecommendation). El catalogo hoy solo
+// cubre System Luminous (Nacar) porque es lo que vive bajo el menu Belleza;
+// si crece a mas de una vertical, este es el lugar para unificar productos.
+var catalogModeActive = false;
+function openBeautyCatalog(){
+  renderVertical('nacar');
+  var zoomSection = document.getElementById('zoom');
+  zoomSection.classList.remove('zoom-hidden');
+  zoomSection.classList.add('catalog-mode');
+  catalogModeActive = true;
+  applyCatalogPageLabels();
+  scrollToId('zoom');
+  closeNav();
+}
+function applyCatalogPageLabels(){
+  var dict = I18N[currentLang];
+  document.getElementById('zoomEyebrow').textContent = dict['catalog.eyebrow'];
+  document.getElementById('zoomTitle').textContent = dict['catalog.title'];
+  document.getElementById('zoomSubtitle').textContent = dict['catalog.subtitle'];
+}
 
 /* ===================== Belleza: eleccion catalogo vs diagnostico + cuestionario ===================== */
 function openBeautyChoice(){
@@ -3660,7 +3707,7 @@ function submitBeautyQuizLead(){
 }
 function goToBeautyRecommendation(){
   closeBeautyQuiz();
-  goVertical('nacar');
+  openBeautyCatalog();
 }
 function applyBeautyRecommendationUI(){
   if (!lastBeautyRecommendation) return;
@@ -4026,6 +4073,7 @@ function applyLanguage(lang){
   }
 
   renderVertical(currentV);
+  if (catalogModeActive) applyCatalogPageLabels();
 }
 
 /* ===================== Chatbot (FAQ por palabra clave, 100% cliente) ===================== */
