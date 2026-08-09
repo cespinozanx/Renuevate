@@ -12,6 +12,20 @@
 //   -> 501 { error:'NOT_CONFIGURED' } si falta MERCADOPAGO_ACCESS_TOKEN
 //   -> 502 si Mercado Pago rechaza la solicitud
 //
+// GET|POST /api/checkout?action=webhook  -- webhook de Mercado Pago (notifications v2).
+// Vive en este mismo archivo (en vez de api/checkout-webhook.js) porque el plan
+// Hobby de Vercel limita a 12 Serverless Functions por deployment: separarlo en
+// dos archivos nos puso en 13 y tumbo el build (ver Deploy Logs del 09-ago-2026,
+// commit 1f1c083, error "No more than 12 Serverless Functions..."). Mercado Pago
+// llama a esta URL cuando cambia el estado de un pago (se manda automaticamente
+// en notification_url al crear cada preferencia, mas abajo). Por seguridad,
+// NUNCA confiamos en el payload que llega solo -- siempre se vuelve a consultar
+// el pago directamente contra la API de Mercado Pago usando el Access Token
+// antes de dar por buena una compra. Cuando el pago esta 'approved': crea la
+// orden (coleccion `orders`, mismo contrato que api/orders.js), dispara el
+// motor de lealtad y vacia el carrito del cliente. Es idempotente por
+// mp_payment_id -- Mercado Pago puede reintentar el mismo webhook varias veces.
+//
 // Ver README.md seccion "Mercado Pago" para el paso a paso de configuracion
 // de la cuenta y las variables de entorno.
 //
@@ -20,6 +34,7 @@
 //   SITE_URL                   ej. https://azura-wellness-site.vercel.app (para back_urls y el webhook)
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { recordPurchaseForLoyalty } = require('../lib/promotionsEngine');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -45,8 +60,15 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
-  if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
 
+  const isWebhook = req.query && req.query.action === 'webhook';
+  if (isWebhook) { return handleWebhook(req, res); }
+
+  if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
+  return handleCreatePreference(req, res);
+};
+
+async function handleCreatePreference(req, res) {
   try {
     const ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN;
     if (!ACCESS_TOKEN) {
@@ -108,9 +130,9 @@ module.exports = async (req, res) => {
       },
       auto_return: 'approved',
       external_reference: String(custId),
-      notification_url: `${base}/api/checkout-webhook`,
+      notification_url: `${base}/api/checkout?action=webhook`,
       // metadata viaja de vuelta intacta en el objeto payment que consulta
-      // api/checkout-webhook.js -- es la forma en que el webhook sabe que
+      // handleWebhook() mas abajo -- es la forma en que el webhook sabe que
       // cliente y que items exactos corresponden a este pago, sin tener que
       // volver a leer el carrito (que para entonces pudo haber cambiado).
       metadata: { customer_id: String(custId), items: mpItems },
@@ -142,4 +164,92 @@ module.exports = async (req, res) => {
     console.error('checkout.js error:', err);
     res.status(500).json({ error: err.message || 'Error interno del servidor.' });
   }
-};
+}
+
+async function handleWebhook(req, res) {
+  // Mercado Pago espera una respuesta 2xx rapida. Si algo interno falla, se
+  // responde 200 igual (para no generar una tormenta de reintentos por un
+  // bug nuestro) pero se deja registrado en los logs de Vercel para revisar.
+  try {
+    const ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN;
+    if (!ACCESS_TOKEN) { res.status(200).json({ ok: true, skipped: 'NOT_CONFIGURED' }); return; }
+
+    const query = req.query || {};
+    const body = req.body || {};
+    const type = query.type || body.type || query.topic || body.topic;
+    const paymentId = query['data.id'] || (body.data && body.data.id) || query.id;
+
+    if (type !== 'payment' || !paymentId) {
+      res.status(200).json({ ok: true, ignored: true });
+      return;
+    }
+
+    const payResp = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+    });
+    const payment = await payResp.json().catch(() => null);
+
+    if (!payResp.ok || !payment) {
+      console.error('checkout.js (webhook) - no se pudo leer el pago en Mercado Pago:', payResp.status, payment);
+      res.status(200).json({ ok: true, error: 'PAYMENT_LOOKUP_FAILED' });
+      return;
+    }
+
+    if (payment.status !== 'approved') {
+      // pending, rejected, in_process, etc. -- no se crea orden todavia.
+      res.status(200).json({ ok: true, status: payment.status });
+      return;
+    }
+
+    const metaCustomerId = payment.metadata && (payment.metadata.customer_id || payment.metadata.customerId);
+    const metaItems = (payment.metadata && payment.metadata.items) || [];
+    if (!metaCustomerId || !ObjectId.isValid(metaCustomerId) || !metaItems.length) {
+      console.error('checkout.js (webhook) - pago aprobado pero sin metadata utilizable:', payment.id);
+      res.status(200).json({ ok: true, error: 'MISSING_METADATA' });
+      return;
+    }
+
+    const db = await getDb();
+    const custId = new ObjectId(metaCustomerId);
+
+    const already = await db.collection('orders').findOne({ mp_payment_id: String(payment.id) });
+    if (already) { res.status(200).json({ ok: true, already_processed: true }); return; }
+
+    const now = new Date();
+    const cleanItems = metaItems.map((it) => ({
+      sku: it.id,
+      name: it.title,
+      vertical: null,
+      unit_price: Number(it.unit_price),
+      qty: Number(it.quantity),
+    }));
+    const total = cleanItems.reduce((sum, it) => sum + it.unit_price * it.qty, 0);
+
+    const order = {
+      customer_id: custId,
+      items: cleanItems,
+      subtotal: total,
+      applied_promotions: [],
+      total,
+      currency: payment.currency_id || 'MXN',
+      status: 'confirmed',
+      mp_payment_id: String(payment.id),
+      created_at: now,
+    };
+    const insertResult = await db.collection('orders').insertOne(order);
+    order._id = insertResult.insertedId;
+
+    await recordPurchaseForLoyalty(db, { customerId: custId, order, now });
+
+    // La compra ya quedo registrada como orden -- se vacia el carrito activo.
+    await db.collection('carts').updateOne(
+      { customer_id: custId, status: 'active' },
+      { $set: { items: [], updated_at: now } }
+    );
+
+    res.status(200).json({ ok: true, order_id: order._id });
+  } catch (err) {
+    console.error('checkout.js (webhook) error:', err);
+    res.status(200).json({ ok: true, error: 'INTERNAL_ERROR' });
+  }
+}
