@@ -470,7 +470,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .pd-close{position:absolute; top:14px; right:14px; background:rgba(255,255,255,.9); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; line-height:1; cursor:pointer; color:var(--grey); z-index:3;}
 .pd-media-col{width:40%; flex:0 0 40%; display:flex; flex-direction:column; background:var(--beige); overflow-y:auto; max-height:88vh;}
 .pd-media{width:100%; aspect-ratio:3/4; background:var(--beige); display:flex; align-items:center; justify-content:center; overflow:hidden; flex:none;}
-.pd-media img{width:100%; height:100%; object-fit:cover;}
+.pd-media img{width:100%; height:100%; object-fit:contain; object-position:center;}
 .pd-media svg{width:64px; height:64px; opacity:.35;}
 /* Filmstrip de miniaturas del detalle de producto -- solo aparece cuando el
    producto trae mas de una foto (p.img + p.gallery, ver openProductDetail).
@@ -487,13 +487,15 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .pd-body{max-height:none; overflow-y:visible; padding:24px 24px 30px;}
 }
 .pd-eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:6px;}
-.pd-body h3{font-size:24px; margin-bottom:6px;}
-.pd-price{font-size:19px; font-weight:700; color:var(--navy); margin-bottom:16px;}
+.pd-body h3{font-size:24px; margin-bottom:10px;}
+.pd-price{font-size:19px; font-weight:700; color:var(--navy); margin:18px 0 4px;}
 .pd-section{margin-top:18px;}
 .pd-section h5{font-size:12.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:6px;}
 .pd-section p{font-size:13.5px; line-height:1.65; color:var(--ink);}
 .pd-section ul{margin:0; padding-left:18px;}
 .pd-section ul li{font-size:13.5px; line-height:1.6; color:var(--ink); margin-bottom:3px;}
+.pd-section ul li.pd-ing-extra{display:none;}
+.pd-section ul.is-expanded li.pd-ing-extra{display:list-item;}
 .pd-disclaimer{font-size:11.5px; color:var(--grey); font-style:italic; line-height:1.5;}
 .pd-actions{margin-top:24px;}
 .view-detail-link{background:none; border:none; padding:0; margin-top:6px; font-size:12px; color:var(--navy); text-decoration:underline; cursor:pointer; display:inline-block;}
@@ -1143,15 +1145,16 @@ var AZURA_CONFIG = {
     <div class="pd-body">
       <div class="pd-eyebrow" id="pdTag"></div>
       <h3 id="pdName"></h3>
-      <div class="pd-price" id="pdPrice"></div>
       <p id="pdLongDesc"></p>
-      <div class="pd-section" id="pdIngredientsBlock" style="display:none;">
-        <h5 id="pdIngredientsLabel">Ingredientes</h5>
-        <ul id="pdIngredientsList"></ul>
-      </div>
       <div class="pd-section" id="pdUsageBlock" style="display:none;">
         <h5 id="pdUsageLabel">Modo de uso</h5>
         <p id="pdUsageText"></p>
+      </div>
+      <div class="pd-price" id="pdPrice"></div>
+      <div class="pd-section" id="pdIngredientsBlock" style="display:none;">
+        <h5 id="pdIngredientsLabel">Ingredientes</h5>
+        <ul id="pdIngredientsList"></ul>
+        <button type="button" class="view-detail-link" id="pdIngredientsToggle" onclick="togglePdIngredients()" style="display:none;"></button>
       </div>
       <div class="pd-section" id="pdDisclaimerBlock" style="display:none;">
         <p class="pd-disclaimer" id="pdDisclaimerText"></p>
@@ -1923,6 +1926,8 @@ var DYN = {
        comingSoonBadge:function(){ return 'Proximamente'; },
        ingredientsLabel:function(){ return 'Ingredientes'; },
        usageLabel:function(){ return 'Modo de uso'; },
+       ingredientsShowAll:function(n){ return 'Ver los ' + n + ' ingredientes'; },
+       ingredientsShowLess:function(){ return 'Ver menos'; },
        addrDefaultBadge:function(){ return 'Predeterminada'; },
        addrSetDefault:function(){ return 'Usar como predeterminada'; },
        addressSaved:function(){ return 'Dirección guardada.'; },
@@ -2079,6 +2084,8 @@ var DYN = {
        comingSoonBadge:function(){ return 'Coming soon'; },
        ingredientsLabel:function(){ return 'Ingredients'; },
        usageLabel:function(){ return 'How to use'; },
+       ingredientsShowAll:function(n){ return 'See all ' + n + ' ingredients'; },
+       ingredientsShowLess:function(){ return 'Show less'; },
        addrDefaultBadge:function(){ return 'Default'; },
        addrSetDefault:function(){ return 'Use as default'; },
        addressSaved:function(){ return 'Address saved.'; },
@@ -2235,6 +2242,8 @@ var DYN = {
        comingSoonBadge:function(){ return 'Bientot disponible'; },
        ingredientsLabel:function(){ return 'Ingredients'; },
        usageLabel:function(){ return 'Mode d\'emploi'; },
+       ingredientsShowAll:function(n){ return 'Voir les ' + n + ' ingredients'; },
+       ingredientsShowLess:function(){ return 'Voir moins'; },
        addrDefaultBadge:function(){ return 'Par defaut'; },
        addrSetDefault:function(){ return 'Utiliser par defaut'; },
        addressSaved:function(){ return 'Adresse enregistree.'; },
@@ -3289,6 +3298,19 @@ function handleProductImgError(imgEl, vertical){
   if (imgEl && imgEl.parentElement) imgEl.parentElement.innerHTML = iconSvg(vertical);
 }
 
+// Cuantos ingredientes se muestran antes de "Ver los N ingredientes" (ver
+// openProductDetail / togglePdIngredients).
+var PD_INGREDIENTS_PREVIEW = 6;
+
+function togglePdIngredients(){
+  var ul = document.getElementById('pdIngredientsList');
+  var btn = document.getElementById('pdIngredientsToggle');
+  var p = findProductBySku(CURRENT_RENDERED_PRODUCTS, pdCurrentSku);
+  var total = (p && p.ingredients) ? p.ingredients.length : 0;
+  var expanded = ul.classList.toggle('is-expanded');
+  btn.textContent = expanded ? DYN[currentLang].ingredientsShowLess() : DYN[currentLang].ingredientsShowAll(total);
+}
+
 function openProductDetail(sku){
   var p = findProductBySku(CURRENT_RENDERED_PRODUCTS, sku);
   if (!p) return;
@@ -3330,15 +3352,28 @@ function openProductDetail(sku){
   document.getElementById('pdPrice').textContent = p.price || '';
   document.getElementById('pdLongDesc').textContent = p.longDesc || p.desc || '';
 
+  // Ingredientes: se muestra solo un preview corto (PD_INGREDIENTS_PREVIEW)
+  // con un link "Ver los N ingredientes" para expandir el resto -- listas de
+  // 20-30+ ingredientes no deben mostrarse completas de entrada (ver
+  // togglePdIngredients()).
   var ingBlock = document.getElementById('pdIngredientsBlock');
+  var ingToggle = document.getElementById('pdIngredientsToggle');
   if (p.ingredients && p.ingredients.length){
     document.getElementById('pdIngredientsLabel').textContent = DYN[currentLang].ingredientsLabel();
     var ul = document.getElementById('pdIngredientsList');
+    ul.classList.remove('is-expanded');
     ul.innerHTML = '';
     for (var i=0;i<p.ingredients.length;i++){
       var li = document.createElement('li');
       li.textContent = p.ingredients[i];
+      if (i >= PD_INGREDIENTS_PREVIEW) li.classList.add('pd-ing-extra');
       ul.appendChild(li);
+    }
+    if (p.ingredients.length > PD_INGREDIENTS_PREVIEW){
+      ingToggle.textContent = DYN[currentLang].ingredientsShowAll(p.ingredients.length);
+      ingToggle.style.display = '';
+    } else {
+      ingToggle.style.display = 'none';
     }
     ingBlock.style.display = '';
   } else {
