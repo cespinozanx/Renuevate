@@ -451,6 +451,13 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .pd-media{width:100%; aspect-ratio:16/9; background:var(--beige); display:flex; align-items:center; justify-content:center; overflow:hidden;}
 .pd-media img{width:100%; height:100%; object-fit:cover;}
 .pd-media svg{width:64px; height:64px; opacity:.35;}
+/* Filmstrip de miniaturas del detalle de producto -- solo aparece cuando el
+   producto trae mas de una foto (p.img + p.gallery, ver openProductDetail).
+   Clic en una miniatura cambia la foto principal de pdMedia. */
+.pd-thumbs{display:flex; gap:8px; padding:12px 32px 0;}
+.pd-thumb{width:56px; height:56px; flex:none; border-radius:4px; overflow:hidden; border:1px solid var(--line); cursor:pointer; opacity:.65; transition:opacity .15s, border-color .15s; background:#fff; padding:0;}
+.pd-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+.pd-thumb.is-active{opacity:1; border-color:var(--ink);}
 .pd-body{padding:28px 32px 34px;}
 .pd-eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:6px;}
 .pd-body h3{font-size:24px; margin-bottom:6px;}
@@ -1117,6 +1124,7 @@ var AZURA_CONFIG = {
   <div class="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="pdName">
     <button class="pd-close" onclick="closeProductDetail()" aria-label="Cerrar">&times;</button>
     <div class="pd-media" id="pdMedia"></div>
+    <div class="pd-thumbs" id="pdThumbs"></div>
     <div class="pd-body">
       <div class="pd-eyebrow" id="pdTag"></div>
       <h3 id="pdName"></h3>
@@ -1338,6 +1346,12 @@ var V = {
         {sku:"NACAR-02", tag:"Hidratante", name:"Crema Perla Hidratante", desc:"Hidratacion profunda 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
         {sku:"NACAR-03", tag:"Cabello", name:"Aceite Brillo Sedoso", desc:"Brillo y suavidad sin sensacion grasosa.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
         {sku:"NACAR-04", tag:"Contorno", name:"Contorno de Ojos Nacar", desc:"Reduce signos de cansancio.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
+        {sku:"NACAR-05", tag:"Primer facial", name:"Primer Perfeccion Nacar", desc:"Difumina poros, acabado mate uniforme.",
+          longDesc:"Un primer de textura sedosa que unifica la piel antes del maquillaje. Minimiza la apariencia de poros e imperfecciones y deja un acabado mate parejo que ayuda a que el maquillaje dure mas.",
+          usage:"1. Aplica sobre el rostro limpio e hidratado. 2. Coloca una pequeña cantidad en las yemas de los dedos y extiende con un masaje suave sobre todo el rostro, o solo en las zonas donde quieras suavizar los poros. 3. Espera 30 segundos para que se absorba por completo. 4. Continua con tu maquillaje.",
+          ingredients:["Dimethicone","C13-15 Alkane","Dimethicone/Vinyl Dimethicone Crosspolymer","Hydrogenated Vegetable Oil","Microcrystalline Wax","Silica","Beeswax","Ethylhexylglycerin","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol"],
+          img:"media/nacar-05-primer-front.webp", gallery:["media/nacar-05-primer-textura.webp","media/nacar-05-primer-abierto.webp"],
+          related:["NACAR-01"], dummy:true},
         {sku:"NACAR-D01", tag:"Limpiador", name:"Limpiador Facial Suave Nacar", desc:"Limpieza diaria sin resecar la piel.", dummy:true},
         {sku:"NACAR-D02", tag:"Mascarilla", name:"Mascarilla Iluminadora Nacar", desc:"Boost de luminosidad en 10 minutos.", dummy:true},
         {sku:"NACAR-D03", tag:"Tonico", name:"Tonico Equilibrante Nacar", desc:"Equilibra y prepara la piel para tu rutina.", dummy:true},
@@ -1357,6 +1371,12 @@ var V = {
         {sku:"NACAR-02", tag:"Moisturizer", name:"Pearl Hydrating Cream", desc:"24h deep hydration.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
         {sku:"NACAR-03", tag:"Hair", name:"Silky Shine Oil", desc:"Shine and softness with no greasy feel.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
         {sku:"NACAR-04", tag:"Eye care", name:"Nacar Eye Contour", desc:"Reduces signs of tiredness.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
+        {sku:"NACAR-05", tag:"Facial primer", name:"Nacar Perfecting Primer", desc:"Blurs pores, even matte finish.",
+          longDesc:"A silky-textured primer that unifies the skin before makeup. It minimizes the look of pores and imperfections, leaving an even matte finish that helps makeup last longer.",
+          usage:"1. Apply to clean, moisturized skin. 2. Place a small amount on your fingertips and blend with a gentle massage over the face, or only on the areas where you want to soften pores. 3. Wait 30 seconds for full absorption. 4. Follow with your makeup.",
+          ingredients:["Dimethicone","C13-15 Alkane","Dimethicone/Vinyl Dimethicone Crosspolymer","Hydrogenated Vegetable Oil","Microcrystalline Wax","Silica","Beeswax","Ethylhexylglycerin","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol"],
+          img:"media/nacar-05-primer-front.webp", gallery:["media/nacar-05-primer-textura.webp","media/nacar-05-primer-abierto.webp"],
+          related:["NACAR-01"], dummy:true},
         {sku:"NACAR-D01", tag:"Cleanser", name:"Nacar Gentle Facial Cleanser", desc:"Daily cleansing without drying out the skin.", dummy:true},
         {sku:"NACAR-D02", tag:"Mask", name:"Nacar Illuminating Mask", desc:"A radiance boost in 10 minutes.", dummy:true},
         {sku:"NACAR-D03", tag:"Toner", name:"Nacar Balancing Toner", desc:"Balances and preps skin for your routine.", dummy:true},
@@ -1376,6 +1396,12 @@ var V = {
         {sku:"NACAR-02", tag:"Hydratant", name:"Creme Perle Hydratante", desc:"Hydratation profonde 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
         {sku:"NACAR-03", tag:"Cheveux", name:"Huile Brillance Soyeuse", desc:"Brillance et douceur sans effet gras.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
         {sku:"NACAR-04", tag:"Contour", name:"Contour des Yeux Nacar", desc:"Reduit les signes de fatigue.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
+        {sku:"NACAR-05", tag:"Primer visage", name:"Primer Perfection Nacar", desc:"Estompe les pores, fini mat uniforme.",
+          longDesc:"Un primer a la texture soyeuse qui unifie la peau avant le maquillage. Il minimise l'apparence des pores et des imperfections et laisse un fini mat uniforme qui aide le maquillage a tenir plus longtemps.",
+          usage:"1. Appliquer sur une peau propre et hydratee. 2. Deposer une petite quantite sur le bout des doigts et etaler avec un massage doux sur tout le visage, ou uniquement sur les zones a affiner. 3. Attendre 30 secondes pour l'absorption complete. 4. Poursuivre avec le maquillage.",
+          ingredients:["Dimethicone","C13-15 Alkane","Dimethicone/Vinyl Dimethicone Crosspolymer","Hydrogenated Vegetable Oil","Microcrystalline Wax","Silica","Beeswax","Ethylhexylglycerin","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol"],
+          img:"media/nacar-05-primer-front.webp", gallery:["media/nacar-05-primer-textura.webp","media/nacar-05-primer-abierto.webp"],
+          related:["NACAR-01"], dummy:true},
         {sku:"NACAR-D01", tag:"Nettoyant", name:"Nettoyant Visage Doux Nacar", desc:"Nettoyage quotidien sans dessecher la peau.", dummy:true},
         {sku:"NACAR-D02", tag:"Masque", name:"Masque Illuminateur Nacar", desc:"Un boost d'eclat en 10 minutes.", dummy:true},
         {sku:"NACAR-D03", tag:"Tonique", name:"Tonique Equilibrant Nacar", desc:"Equilibre et prepare la peau pour votre routine.", dummy:true},
@@ -3329,6 +3355,24 @@ function openProductDetail(sku){
     ? '<img src="' + p.img + '" alt="' + p.name + '" onerror="handleProductImgError(this,\'' + currentV + '\')">'
     : iconSvg(currentV);
 
+  // Filmstrip de miniaturas -- solo si el producto trae mas de una foto
+  // (p.img + p.gallery). Clic en una miniatura cambia la foto principal sin
+  // cerrar el modal. Si no hay galeria, el contenedor queda vacio (oculto
+  // por no tener contenido, ver .pd-thumbs).
+  var thumbs = document.getElementById('pdThumbs');
+  var allPhotos = [];
+  if (p.img) allPhotos.push(p.img);
+  if (p.gallery && p.gallery.length) allPhotos = allPhotos.concat(p.gallery);
+  if (allPhotos.length > 1){
+    var thumbsHtml = '';
+    for (var t=0;t<allPhotos.length;t++){
+      thumbsHtml += '<button type="button" class="pd-thumb' + (t===0 ? ' is-active' : '') + '" onclick="setPdMainImage(this,\'' + allPhotos[t] + '\')"><img src="' + allPhotos[t] + '" alt="' + p.name + ' ' + (t+1) + '"></button>';
+    }
+    thumbs.innerHTML = thumbsHtml;
+  } else {
+    thumbs.innerHTML = '';
+  }
+
   document.getElementById('pdTag').textContent = p.tag || '';
   document.getElementById('pdName').textContent = p.name || '';
   document.getElementById('pdPrice').textContent = p.price || '';
@@ -3366,12 +3410,26 @@ function openProductDetail(sku){
     discBlock.style.display = 'none';
   }
 
-  document.getElementById('pdAddToCartBtn').textContent = DYN[currentLang].addToCart();
+  var pdBtn = document.getElementById('pdAddToCartBtn');
+  if (p.dummy){
+    pdBtn.textContent = DYN[currentLang].comingSoonBadge();
+    pdBtn.disabled = true;
+  } else {
+    pdBtn.textContent = DYN[currentLang].addToCart();
+    pdBtn.disabled = false;
+  }
   document.getElementById('productDetailOverlay').classList.add('is-open');
 }
 
 function closeProductDetail(){
   document.getElementById('productDetailOverlay').classList.remove('is-open');
+}
+
+function setPdMainImage(btn, src){
+  var img = document.querySelector('#pdMedia img');
+  if (img) img.src = src;
+  var thumbs = document.querySelectorAll('.pd-thumb');
+  for (var i=0;i<thumbs.length;i++){ thumbs[i].classList.toggle('is-active', thumbs[i]===btn); }
 }
 
 function iconSvg(v){
@@ -3434,14 +3492,16 @@ function renderVertical(v){
     var imgHtml = p.img
       ? '<img src="' + p.img + '" alt="' + p.name + '" loading="lazy" onerror="handleProductImgError(this,\'' + v + '\')">'
       : iconSvg(v);
-    // Fichas "dummy" (p.dummy===true): solo sirven para previsualizar el
-    // catalogo como lista larga -- no existen como SKU real en MongoDB, asi
-    // que nunca se ofrece "Agregar al carrito" ni "Ver detalle" sobre ellas.
+    // Fichas "dummy" (p.dummy===true): no existen como SKU real en MongoDB,
+    // asi que nunca se ofrece "Agregar al carrito" sobre ellas -- pero si
+    // traen ficha completa (longDesc/ingredients/usage) si dejamos ver el
+    // detalle, para poder previsualizar el producto mientras se define precio.
     var priceHtml = p.dummy
       ? '<div class="price product-dummy-price">' + DYN[currentLang].comingSoonBadge() + '</div>'
       : '<div class="price">' + p.price + '</div>';
     var actionsHtml = p.dummy
-      ? '<button class="add-to-cart-btn" disabled>' + DYN[currentLang].comingSoonBadge() + '</button>'
+      ? ((p.longDesc ? ('<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>') : '') +
+         '<button class="add-to-cart-btn" disabled>' + DYN[currentLang].comingSoonBadge() + '</button>')
       : ('<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>' +
          '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\')">' + DYN[currentLang].addToCart() + '</button>');
 
