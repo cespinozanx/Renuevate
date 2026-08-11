@@ -82,6 +82,13 @@ const PRODUCTS = [
     long_description_es: 'Un gel ligero que ayuda a proteger la piel del daño de los radicales libres mientras aumenta su nivel de hidratacion. Hidrata, humecta y acondiciona para un aspecto saludable, y ayuda a mejorar la elasticidad de la piel. Presentacion de 30 g.',
     ingredients_es: ['Extracto de levadura', 'Extracto de hoja de olivo', 'Extracto de arnica', 'Extractos de frutas silvestres', 'Aceite de jojoba'],
     usage_es: 'Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.' },
+  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-01'],
+    name_i18n: { es: 'Dia Renovador FPS 30 Nacar', en: 'Nacar Renewing Day SPF 30', fr: 'Jour Renovateur FPS 30 Nacar' },
+    description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
+    image: 'media/nacar-08-dia-fps30-front.webp',
+    long_description_es: 'Una crema de dia que combate los signos visibles de la edad, estimula la produccion de colageno y elastina y mantiene una hidratacion optima de la piel. Con FPS 30 de amplio espectro, protege contra los rayos UVA y UVB mientras ayuda a mejorar la textura y firmeza. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.',
+    ingredients_es: ['Aqua (Water)', 'Octocrylene', 'Ethylhexyl Methoxycinnamate', 'Butyl Methoxydibenzoylmethane', 'Niacinamide', 'Neopentyl Glycol Diheptanoate', 'Potassium Cetyl Phosphate', 'Cetearyl Alcohol', 'Polymethylsilsesquioxane', 'Glycerin', 'Sodium Acrylates Copolymer', 'Bakuchiol', 'Tocopheryl Acetate', 'Hyaluronic Acid', 'Squalene', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Portulaca Oleracea Extract', 'Lecithin', 'Hydrogenated Lecithin', 'Phenoxyethanol', 'Decylene Glycol', 'Caprylyl Glycol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA'],
+    usage_es: 'Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.' },
 
   // VIGOR
   { sku: 'VIGOR-01', vertical: 'vigor', price: '$699 MXN', rating: { stars: 4.8, count: 521 }, related: ['VIGOR-03'],
