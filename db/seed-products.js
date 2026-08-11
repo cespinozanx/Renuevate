@@ -45,51 +45,46 @@ function parsePrice(str) {
   return match ? Number(match[0]) : 0;
 }
 
-// Skus que este seed ya NO siembra en Renuévate porque la vertical Raiz
-// (Suplementos: Optimus/Omniplus/Power Maker/Magnus) se separo a su propio
-// sitio/marca -- ver decision de division de sitios (2026-08-06). Se
-// desactivan en vez de borrarse, por si algun carrito/orden ya los
+// Skus que este seed ya NO siembra en Renuévate. Dos grupos:
+// 1) Raiz/Suplementos (Optimus/Omniplus/Power Maker/Magnus): se separo a su
+//    propio sitio/marca -- ver decision de division de sitios (2026-08-06).
+//    Los mismos 4 productos se siembran activos en la base del sitio nuevo.
+// 2) NACAR-01 a 04: eran productos mock del prototipo original (precio y
+//    rating inventados, sin foto ni ficha real), nunca correspondieron a un
+//    producto SEYTU/OMNILIFE real. Se retiran al limpiar el catalogo Nacar
+//    para dejar solo los 4 productos reales (NACAR-06/07/08/09) cargados con
+//    foto, precio e ingredientes verdaderos (2026-08-11).
+// Se desactivan en vez de borrarse, por si algun carrito/orden ya los
 // referencia en esta base, no truena una validacion contra un sku que
-// desaparecio de golpe. Los mismos 4 productos se siembran activos en la
-// base de datos del sitio nuevo (ver seed-products.js de ese repo).
-const RETIRED_DEMO_SKUS = ['RAIZ-01', 'RAIZ-02', 'RAIZ-03', 'RAIZ-04', 'OPTIMUS', 'OMNIPLUS', 'POWERMAKER', 'MAGNUS'];
+// desaparecio de golpe.
+const RETIRED_DEMO_SKUS = ['RAIZ-01', 'RAIZ-02', 'RAIZ-03', 'RAIZ-04', 'OPTIMUS', 'OMNIPLUS', 'POWERMAKER', 'MAGNUS', 'NACAR-01', 'NACAR-02', 'NACAR-03', 'NACAR-04'];
 
 const PRODUCTS = [
-  // NACAR
-  { sku: 'NACAR-01', vertical: 'nacar', price: '$549 MXN', rating: { stars: 4.7, count: 410 }, related: ['NACAR-02'],
-    name_i18n: { es: 'Luz Nacar Vitamina C', en: 'Nacar Glow Vitamin C', fr: 'Eclat Nacar Vitamine C' },
-    description_i18n: { es: 'Luminosidad inmediata, uso diario.', en: 'Instant radiance, daily use.', fr: 'Luminosite immediate, usage quotidien.' } },
-  { sku: 'NACAR-02', vertical: 'nacar', price: '$479 MXN', rating: { stars: 4.6, count: 356 }, related: ['NACAR-01'],
-    name_i18n: { es: 'Crema Perla Hidratante', en: 'Pearl Hydrating Cream', fr: 'Creme Perle Hydratante' },
-    description_i18n: { es: 'Hidratacion profunda 24h.', en: '24h deep hydration.', fr: 'Hydratation profonde 24h.' } },
-  { sku: 'NACAR-03', vertical: 'nacar', price: '$399 MXN', rating: { stars: 4.4, count: 89 }, related: ['NACAR-04'],
-    name_i18n: { es: 'Aceite Brillo Sedoso', en: 'Silky Shine Oil', fr: 'Huile Brillance Soyeuse' },
-    description_i18n: { es: 'Brillo y suavidad sin sensacion grasosa.', en: 'Shine and softness with no greasy feel.', fr: 'Brillance et douceur sans effet gras.' } },
-  { sku: 'NACAR-04', vertical: 'nacar', price: '$419 MXN', rating: { stars: 4.5, count: 203 }, related: ['NACAR-01'],
-    name_i18n: { es: 'Contorno de Ojos Nacar', en: 'Nacar Eye Contour', fr: 'Contour des Yeux Nacar' },
-    description_i18n: { es: 'Reduce signos de cansancio.', en: 'Reduces signs of tiredness.', fr: 'Reduit les signes de fatigue.' } },
-  { sku: 'NACAR-06', vertical: 'nacar', price: '$370 MXN', related: ['NACAR-01'],
+  // NACAR -- solo los 4 productos reales (foto, precio e ingredientes
+  // verdaderos). NACAR-01 a 04 eran mock del prototipo original; ver
+  // RETIRED_DEMO_SKUS arriba.
+  { sku: 'NACAR-06', vertical: 'nacar', price: '$370 MXN', related: ['NACAR-08'],
     name_i18n: { es: 'Espuma Purificante Nacar', en: 'Nacar Purifying Foam', fr: 'Mousse Purifiante Nacar' },
     description_i18n: { es: 'Limpieza diaria profunda, frescura instantanea.', en: 'Deep daily cleansing, instant freshness.', fr: 'Nettoyage quotidien profond, fraicheur instantanee.' },
     image: 'media/nacar-06-espuma-front.webp',
     long_description_es: 'Una espuma cremosa que retira impurezas y exceso de grasa sin resecar la piel. Deja una sensacion de frescura inmediata y el rostro listo para el resto de tu rutina. Formulada para todo tipo de piel. Presentacion de 150 ml.',
     ingredients_es: ['Aqua (Water)', 'Sodium C14-16 Olefin Sulfonate', 'Sodium Cocoyl Isethionate', 'Sodium Lauroamphoacetate', 'Glycerin', 'Disodium Laureth Sulfosuccinate', 'Cocamidopropyl Betaine', 'PEG-8 Caprylic/Capric Glycerides', 'Polysorbate 20', 'Aloe Barbadensis Leaf Extract', 'Alaria Esculenta Extract', 'Moringa Oleifera Leaf Extract', 'Ethylhexylglycerin', 'PEG-12 Dimethicone', 'Cocamide MIPA', 'Benzyl Alcohol', 'Parfum (Fragrance)', 'Citric Acid', 'Benzyl Salicylate', 'Hexyl Cinnamal', 'Limonene'],
     usage_es: '1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.' },
-  { sku: 'NACAR-07', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-01'],
+  { sku: 'NACAR-07', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-09'],
     name_i18n: { es: 'Gel Antioxidante Nacar', en: 'Nacar Antioxidant Gel', fr: 'Gel Antioxydant Nacar' },
     description_i18n: { es: 'Protege de radicales libres, hidratacion profunda.', en: 'Protects from free radicals, deep hydration.', fr: 'Protege des radicaux libres, hydratation profonde.' },
     image: 'media/nacar-07-gel-front.webp',
     long_description_es: 'Un gel ligero que ayuda a proteger la piel del daño de los radicales libres mientras aumenta su nivel de hidratacion. Hidrata, humecta y acondiciona para un aspecto saludable, y ayuda a mejorar la elasticidad de la piel. Presentacion de 30 g.',
     ingredients_es: ['Extracto de levadura', 'Extracto de hoja de olivo', 'Extracto de arnica', 'Extractos de frutas silvestres', 'Aceite de jojoba'],
     usage_es: 'Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.' },
-  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-01'],
+  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'],
     name_i18n: { es: 'Dia Renovador FPS 30 Nacar', en: 'Nacar Renewing Day SPF 30', fr: 'Jour Renovateur FPS 30 Nacar' },
     description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
     image: 'media/nacar-08-dia-fps30-front.webp',
     long_description_es: 'Una crema de dia que combate los signos visibles de la edad, estimula la produccion de colageno y elastina y mantiene una hidratacion optima de la piel. Con FPS 30 de amplio espectro, protege contra los rayos UVA y UVB mientras ayuda a mejorar la textura y firmeza. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.',
     ingredients_es: ['Aqua (Water)', 'Octocrylene', 'Ethylhexyl Methoxycinnamate', 'Butyl Methoxydibenzoylmethane', 'Niacinamide', 'Neopentyl Glycol Diheptanoate', 'Potassium Cetyl Phosphate', 'Cetearyl Alcohol', 'Polymethylsilsesquioxane', 'Glycerin', 'Sodium Acrylates Copolymer', 'Bakuchiol', 'Tocopheryl Acetate', 'Hyaluronic Acid', 'Squalene', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Portulaca Oleracea Extract', 'Lecithin', 'Hydrogenated Lecithin', 'Phenoxyethanol', 'Decylene Glycol', 'Caprylyl Glycol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA'],
     usage_es: 'Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.' },
-  { sku: 'NACAR-09', vertical: 'nacar', price: '$390 MXN', related: ['NACAR-01'],
+  { sku: 'NACAR-09', vertical: 'nacar', price: '$390 MXN', related: ['NACAR-07'],
     name_i18n: { es: 'Escudo Solar FPS 50+ Nacar', en: 'Nacar Solar Shield SPF 50+', fr: 'Bouclier Solaire FPS 50+ Nacar' },
     description_i18n: { es: 'Toque seco, proteccion FPS 50+ para todos los dias.', en: 'Dry touch, SPF 50+ protection for every day.', fr: 'Toucher sec, protection FPS 50+ au quotidien.' },
     image: 'media/nacar-09-spf50-front.webp',

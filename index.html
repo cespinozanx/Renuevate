@@ -186,12 +186,13 @@ body.viewing-product-page .home-only{display:none;}
 .zoom-stats b{display:block; font-size:21px; font-family:'Playfair Display',serif; color:var(--active);}
 .zoom-stats span{font-size:10.5px; opacity:.75; letter-spacing:.8px; color:var(--grey);}
 
-.products-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:22px; margin-bottom:60px;}
-.product-card{border:1px solid var(--line); border-radius:4px; overflow:hidden; transition:box-shadow .2s;}
+.products-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:26px; margin-bottom:60px;}
+.product-card{border:1px solid var(--line); border-radius:4px; overflow:hidden; transition:box-shadow .2s; display:flex; flex-direction:row; align-items:stretch;}
 .product-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08);}
-.product-img{height:172px; display:flex; align-items:center; justify-content:center; background:var(--active-soft);}
+.product-img{width:230px; flex:0 0 230px; display:flex; align-items:center; justify-content:center; background:var(--active-soft); overflow:hidden;}
+.product-img img{width:100%; height:100%; object-fit:cover; display:block;}
 .product-img svg{width:52px; height:52px; opacity:.7; color:var(--active);}
-.product-body{padding:18px;}
+.product-body{padding:20px; flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;}
 .product-body .p-eyebrow{font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--active); font-weight:700;}
 /* Regla permanente: nombre a 1 linea + descripcion a 2 lineas = 3 lineas de texto maximo por tarjeta */
 .product-body h4{font-family:'Playfair Display',serif; font-size:15.5px; font-weight:600; margin:7px 0 5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
@@ -562,6 +563,8 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   /* Regla permanente: en movil, listas de productos nunca muestran mas de 2 por fila (legibilidad) */
   .verticals-grid{grid-template-columns:1fr;}
   .products-grid{grid-template-columns:1fr 1fr; gap:12px;}
+  .product-card{flex-direction:column;}
+  .product-img{width:100%; flex:0 0 auto; height:172px;}
   .routine-cards{grid-template-columns:1fr;}
   .zoom-banner{grid-template-columns:1fr;}
   .zoom-stats{grid-template-columns:1fr;}
@@ -1087,7 +1090,7 @@ var AZURA_CONFIG = {
     </div>
     <span class="eyebrow" id="beautyChoiceEyebrow">Speciality Luminous</span>
     <h3 id="beautyChoiceTitle">&iquest;Como quieres descubrir tu belleza?</h3>
-    <p class="pm-subtitle" id="beautyChoiceSubtitle">Elige explorar el catalogo completo o responde 5 preguntas rapidas para una preseleccion hecha para ti.</p>
+    <p class="pm-subtitle" id="beautyChoiceSubtitle">Elige explorar el catalogo completo o responde 4 preguntas rapidas para una preseleccion hecha para ti.</p>
     <div class="beauty-choice-options">
       <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyCatalog();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
@@ -1097,7 +1100,7 @@ var AZURA_CONFIG = {
       <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyQuiz();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.3v.2h6v-.2c0-.9.4-1.7 1-2.3A6 6 0 0 0 12 3Z"/></svg></div>
         <h4 id="beautyChoiceQuizTitle">Diagnostico personalizado</h4>
-        <p id="beautyChoiceQuizBody">5 preguntas y te preseleccionamos tus productos ideales.</p>
+        <p id="beautyChoiceQuizBody">4 preguntas y te preseleccionamos tus productos ideales.</p>
       </div>
     </div>
   </div>
@@ -1336,46 +1339,30 @@ var V = {
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"Speciality Luminous",
       stats:["94%","14 dias","+87%"],
       products:[
-        {sku:"NACAR-01", tag:"Serum facial", name:"Luz Nacar Vitamina C", desc:"Luminosidad inmediata, uso diario.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
         {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Purificante Nacar", desc:"Limpieza diaria profunda, frescura instantanea.", price:"$370 MXN",
           longDesc:"Una espuma cremosa que retira impurezas y exceso de grasa sin resecar la piel. Deja una sensacion de frescura inmediata y el rostro listo para el resto de tu rutina. Formulada para todo tipo de piel. Presentacion de 150 ml.",
           usage:"1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-front.webp", gallery:["media/nacar-06-espuma-uso.webp"],
-          related:["NACAR-01"]},
-        {sku:"NACAR-02", tag:"Hidratante", name:"Crema Perla Hidratante", desc:"Hidratacion profunda 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
-        {sku:"NACAR-03", tag:"Cabello", name:"Aceite Brillo Sedoso", desc:"Brillo y suavidad sin sensacion grasosa.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
-        {sku:"NACAR-04", tag:"Contorno", name:"Contorno de Ojos Nacar", desc:"Reduce signos de cansancio.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
-        {sku:"NACAR-05", tag:"Primer facial", name:"Primer Perfeccion Nacar", desc:"Difumina poros, acabado mate uniforme.",
-          longDesc:"Un primer de textura sedosa que unifica la piel antes del maquillaje. Minimiza la apariencia de poros e imperfecciones y deja un acabado mate parejo que ayuda a que el maquillaje dure mas.",
-          usage:"1. Aplica sobre el rostro limpio e hidratado. 2. Coloca una pequeña cantidad en las yemas de los dedos y extiende con un masaje suave sobre todo el rostro, o solo en las zonas donde quieras suavizar los poros. 3. Espera 30 segundos para que se absorba por completo. 4. Continua con tu maquillaje.",
-          ingredients:["Dimethicone","C13-15 Alkane","Dimethicone/Vinyl Dimethicone Crosspolymer","Hydrogenated Vegetable Oil","Microcrystalline Wax","Silica","Beeswax","Ethylhexylglycerin","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol"],
-          img:"media/nacar-05-primer-front.webp", gallery:["media/nacar-05-primer-textura.webp","media/nacar-05-primer-abierto.webp"],
-          related:["NACAR-01"], dummy:true},
+          related:["NACAR-08"]},
         {sku:"NACAR-07", tag:"Gel antioxidante", name:"Gel Antioxidante Nacar", desc:"Protege de radicales libres, hidratacion profunda.", price:"$340 MXN",
           longDesc:"Un gel ligero que ayuda a proteger la piel del daño de los radicales libres mientras aumenta su nivel de hidratacion. Hidrata, humecta y acondiciona para un aspecto saludable, y ayuda a mejorar la elasticidad de la piel. Presentacion de 30 g.",
           usage:"Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.",
           ingredients:["Extracto de levadura","Extracto de hoja de olivo","Extracto de arnica","Extractos de frutas silvestres","Aceite de jojoba"],
           img:"media/nacar-07-gel-front.webp", gallery:["media/nacar-07-gel-abierto.webp","media/nacar-07-gel-textura.webp"],
-          related:["NACAR-01"]},
+          related:["NACAR-09"]},
         {sku:"NACAR-08", tag:"Crema de dia", name:"Dia Renovador FPS 30 Nacar", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN",
           longDesc:"Una crema de dia que combate los signos visibles de la edad, estimula la produccion de colageno y elastina y mantiene una hidratacion optima de la piel. Con FPS 30 de amplio espectro, protege contra los rayos UVA y UVB mientras ayuda a mejorar la textura y firmeza. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.",
           usage:"Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-fps30-front.webp", gallery:["media/nacar-08-dia-fps30-uso.webp"],
-          related:["NACAR-01"]},
+          related:["NACAR-06"]},
         {sku:"NACAR-09", tag:"Protector solar", name:"Escudo Solar FPS 50+ Nacar", desc:"Toque seco, proteccion FPS 50+ para todos los dias.", price:"$390 MXN",
           longDesc:"Un protector solar facial de toque seco y absorcion inmediata, formulado con 89% de ingredientes de origen natural. Resistente al agua, libre de fragancia y clinica y dermatologicamente probado, ideal para pieles sensibles y para toda la familia. Formulado sin ingredientes daninos para los arrecifes de coral. Presentacion de 40 ml.",
           usage:"Aplica de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplica cada 3 horas y despues de nadar, transpirar o secarte con la toalla.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
-          related:["NACAR-01"]},
-        {sku:"NACAR-D01", tag:"Limpiador", name:"Limpiador Facial Suave Nacar", desc:"Limpieza diaria sin resecar la piel.", dummy:true},
-        {sku:"NACAR-D02", tag:"Mascarilla", name:"Mascarilla Iluminadora Nacar", desc:"Boost de luminosidad en 10 minutos.", dummy:true},
-        {sku:"NACAR-D03", tag:"Tonico", name:"Tonico Equilibrante Nacar", desc:"Equilibra y prepara la piel para tu rutina.", dummy:true},
-        {sku:"NACAR-D04", tag:"Protector solar", name:"Protector Solar Ligero Nacar", desc:"FPS diario con textura ligera.", dummy:true},
-        {sku:"NACAR-D05", tag:"Cabello", name:"Champu Nutritivo Nacar", desc:"Limpieza suave con nutricion diaria.", dummy:true},
-        {sku:"NACAR-D06", tag:"Bruma", name:"Bruma Hidratante Nacar", desc:"Frescura instantanea en cualquier momento del dia.", dummy:true}
+          related:["NACAR-07"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
@@ -1385,46 +1372,30 @@ var V = {
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"Speciality Luminous",
       stats:["94%","14 days","+87%"],
       products:[
-        {sku:"NACAR-01", tag:"Facial serum", name:"Nacar Glow Vitamin C", desc:"Instant radiance, daily use.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
         {sku:"NACAR-06", tag:"Facial cleanser", name:"Nacar Purifying Foam", desc:"Deep daily cleansing, instant freshness.", price:"$370 MXN",
           longDesc:"A creamy foam that lifts away impurities and excess oil without drying out the skin. Leaves an immediate feeling of freshness and skin ready for the rest of your routine. Formulated for all skin types. 150 ml.",
           usage:"1. Wet your face with lukewarm water. 2. Apply a small amount of foam and massage in circular motions, avoiding the eye area. 3. Rinse thoroughly with lukewarm water and pat dry with a clean towel. Use morning and night.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-front.webp", gallery:["media/nacar-06-espuma-uso.webp"],
-          related:["NACAR-01"]},
-        {sku:"NACAR-02", tag:"Moisturizer", name:"Pearl Hydrating Cream", desc:"24h deep hydration.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
-        {sku:"NACAR-03", tag:"Hair", name:"Silky Shine Oil", desc:"Shine and softness with no greasy feel.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
-        {sku:"NACAR-04", tag:"Eye care", name:"Nacar Eye Contour", desc:"Reduces signs of tiredness.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
-        {sku:"NACAR-05", tag:"Facial primer", name:"Nacar Perfecting Primer", desc:"Blurs pores, even matte finish.",
-          longDesc:"A silky-textured primer that unifies the skin before makeup. It minimizes the look of pores and imperfections, leaving an even matte finish that helps makeup last longer.",
-          usage:"1. Apply to clean, moisturized skin. 2. Place a small amount on your fingertips and blend with a gentle massage over the face, or only on the areas where you want to soften pores. 3. Wait 30 seconds for full absorption. 4. Follow with your makeup.",
-          ingredients:["Dimethicone","C13-15 Alkane","Dimethicone/Vinyl Dimethicone Crosspolymer","Hydrogenated Vegetable Oil","Microcrystalline Wax","Silica","Beeswax","Ethylhexylglycerin","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol"],
-          img:"media/nacar-05-primer-front.webp", gallery:["media/nacar-05-primer-textura.webp","media/nacar-05-primer-abierto.webp"],
-          related:["NACAR-01"], dummy:true},
+          related:["NACAR-08"]},
         {sku:"NACAR-07", tag:"Antioxidant gel", name:"Nacar Antioxidant Gel", desc:"Protects from free radicals, deep hydration.", price:"$340 MXN",
           longDesc:"A lightweight gel that helps protect skin from free-radical damage while boosting its hydration level. Hydrates, moisturizes and conditions for a healthy look, and helps improve skin elasticity. 30 g.",
           usage:"Apply a small amount to clean face and/or body with a gentle massage until fully absorbed. Daily use.",
           ingredients:["Yeast extract","Olive leaf extract","Arnica extract","Wild berry extracts","Jojoba oil"],
           img:"media/nacar-07-gel-front.webp", gallery:["media/nacar-07-gel-abierto.webp","media/nacar-07-gel-textura.webp"],
-          related:["NACAR-01"]},
+          related:["NACAR-09"]},
         {sku:"NACAR-08", tag:"Day cream", name:"Nacar Renewing Day SPF 30", desc:"Renews and protects, hydration with SPF 30.", price:"$725 MXN",
           longDesc:"A day cream that fights visible signs of aging, boosts collagen and elastin production and keeps skin optimally hydrated. With broad-spectrum SPF 30, it protects against UVA and UVB rays while helping improve texture and firmness. For best results, use it alongside the rest of your Nacar routine. 50 ml.",
           usage:"Apply every morning to clean skin, as the last step of your routine before makeup. Avoid contact with the eyes. Reapply after prolonged sun exposure.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-fps30-front.webp", gallery:["media/nacar-08-dia-fps30-uso.webp"],
-          related:["NACAR-01"]},
+          related:["NACAR-06"]},
         {sku:"NACAR-09", tag:"Sunscreen", name:"Nacar Solar Shield SPF 50+", desc:"Dry touch, SPF 50+ protection for every day.", price:"$390 MXN",
           longDesc:"A facial sunscreen with a dry touch and instant absorption, formulated with 89% naturally-derived ingredients. Water-resistant, fragrance-free and clinically and dermatologically tested, ideal for sensitive skin and the whole family. Formulated without ingredients harmful to coral reefs. 40 ml.",
           usage:"Apply evenly to dry skin before sun exposure. Reapply every 3 hours and after swimming, sweating or towel-drying.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
-          related:["NACAR-01"]},
-        {sku:"NACAR-D01", tag:"Cleanser", name:"Nacar Gentle Facial Cleanser", desc:"Daily cleansing without drying out the skin.", dummy:true},
-        {sku:"NACAR-D02", tag:"Mask", name:"Nacar Illuminating Mask", desc:"A radiance boost in 10 minutes.", dummy:true},
-        {sku:"NACAR-D03", tag:"Toner", name:"Nacar Balancing Toner", desc:"Balances and preps skin for your routine.", dummy:true},
-        {sku:"NACAR-D04", tag:"Sunscreen", name:"Nacar Light Daily SPF", desc:"Daily SPF with a light texture.", dummy:true},
-        {sku:"NACAR-D05", tag:"Hair", name:"Nacar Nourishing Shampoo", desc:"Gentle cleansing with daily nourishment.", dummy:true},
-        {sku:"NACAR-D06", tag:"Mist", name:"Nacar Hydrating Mist", desc:"Instant freshness any time of day.", dummy:true}
+          related:["NACAR-07"]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
@@ -1434,46 +1405,30 @@ var V = {
       tag:"Beaute feminine", msg:"Une luminosite qui prend soin d'elle-meme.", bmLabel:"Speciality Luminous",
       stats:["94%","14 jours","+87%"],
       products:[
-        {sku:"NACAR-01", tag:"Serum visage", name:"Eclat Nacar Vitamine C", desc:"Luminosite immediate, usage quotidien.", price:"$549 MXN", rating:{stars:4.7,count:410}, related:["NACAR-02"]},
         {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Purifiante Nacar", desc:"Nettoyage quotidien profond, fraicheur instantanee.", price:"$370 MXN",
           longDesc:"Une mousse cremeuse qui elimine les impuretes et l'exces de sebum sans dessecher la peau. Laisse une sensation de fraicheur immediate et une peau prete pour la suite de votre routine. Convient a tous types de peau. Format 150 ml.",
           usage:"1. Humidifiez le visage a l'eau tiede. 2. Appliquez une petite quantite de mousse et massez avec des mouvements circulaires, en evitant le contour des yeux. 3. Rincez abondamment a l'eau tiede et sechez avec une serviette propre. A utiliser matin et soir.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-front.webp", gallery:["media/nacar-06-espuma-uso.webp"],
-          related:["NACAR-01"]},
-        {sku:"NACAR-02", tag:"Hydratant", name:"Creme Perle Hydratante", desc:"Hydratation profonde 24h.", price:"$479 MXN", rating:{stars:4.6,count:356}, related:["NACAR-01"]},
-        {sku:"NACAR-03", tag:"Cheveux", name:"Huile Brillance Soyeuse", desc:"Brillance et douceur sans effet gras.", price:"$399 MXN", rating:{stars:4.4,count:89}, related:["NACAR-04"]},
-        {sku:"NACAR-04", tag:"Contour", name:"Contour des Yeux Nacar", desc:"Reduit les signes de fatigue.", price:"$419 MXN", rating:{stars:4.5,count:203}, related:["NACAR-01"]},
-        {sku:"NACAR-05", tag:"Primer visage", name:"Primer Perfection Nacar", desc:"Estompe les pores, fini mat uniforme.",
-          longDesc:"Un primer a la texture soyeuse qui unifie la peau avant le maquillage. Il minimise l'apparence des pores et des imperfections et laisse un fini mat uniforme qui aide le maquillage a tenir plus longtemps.",
-          usage:"1. Appliquer sur une peau propre et hydratee. 2. Deposer une petite quantite sur le bout des doigts et etaler avec un massage doux sur tout le visage, ou uniquement sur les zones a affiner. 3. Attendre 30 secondes pour l'absorption complete. 4. Poursuivre avec le maquillage.",
-          ingredients:["Dimethicone","C13-15 Alkane","Dimethicone/Vinyl Dimethicone Crosspolymer","Hydrogenated Vegetable Oil","Microcrystalline Wax","Silica","Beeswax","Ethylhexylglycerin","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol"],
-          img:"media/nacar-05-primer-front.webp", gallery:["media/nacar-05-primer-textura.webp","media/nacar-05-primer-abierto.webp"],
-          related:["NACAR-01"], dummy:true},
+          related:["NACAR-08"]},
         {sku:"NACAR-07", tag:"Gel antioxydant", name:"Gel Antioxydant Nacar", desc:"Protege des radicaux libres, hydratation profonde.", price:"$340 MXN",
           longDesc:"Un gel leger qui aide a proteger la peau des dommages des radicaux libres tout en augmentant son niveau d'hydratation. Hydrate, nourrit et conditionne pour un aspect sain, et aide a ameliorer l'elasticite de la peau. Format 30 g.",
           usage:"Appliquer une petite quantite sur le visage et/ou le corps propre avec un massage doux jusqu'a absorption complete. Usage quotidien.",
           ingredients:["Extrait de levure","Extrait de feuille d'olivier","Extrait d'arnica","Extraits de fruits sauvages","Huile de jojoba"],
           img:"media/nacar-07-gel-front.webp", gallery:["media/nacar-07-gel-abierto.webp","media/nacar-07-gel-textura.webp"],
-          related:["NACAR-01"]},
+          related:["NACAR-09"]},
         {sku:"NACAR-08", tag:"Creme de jour", name:"Jour Renovateur FPS 30 Nacar", desc:"Renove et protege, hydratation avec FPS 30.", price:"$725 MXN",
           longDesc:"Une creme de jour qui combat les signes visibles de l'age, stimule la production de collagene et d'elastine et maintient une hydratation optimale de la peau. Avec un FPS 30 a large spectre, elle protege contre les rayons UVA et UVB tout en aidant a ameliorer la texture et la fermete. Pour de meilleurs resultats, utilisez-la avec le reste de votre routine Nacar. Format 50 ml.",
           usage:"Appliquer chaque matin sur une peau propre, comme derniere etape de votre routine avant le maquillage. Eviter le contact avec les yeux. Reappliquer en cas d'exposition prolongee au soleil.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-fps30-front.webp", gallery:["media/nacar-08-dia-fps30-uso.webp"],
-          related:["NACAR-01"]},
+          related:["NACAR-06"]},
         {sku:"NACAR-09", tag:"Protection solaire", name:"Bouclier Solaire FPS 50+ Nacar", desc:"Toucher sec, protection FPS 50+ au quotidien.", price:"$390 MXN",
           longDesc:"Une protection solaire visage au toucher sec et a absorption immediate, formulee avec 89% d'ingredients d'origine naturelle. Resistante a l'eau, sans parfum, testee cliniquement et dermatologiquement, ideale pour les peaux sensibles et toute la famille. Formulee sans ingredients nocifs pour les recifs coralliens. Format 40 ml.",
           usage:"Appliquer uniformement sur peau seche avant l'exposition au soleil. Reappliquer toutes les 3 heures et apres la baignade, la transpiration ou le sechage a la serviette.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
-          related:["NACAR-01"]},
-        {sku:"NACAR-D01", tag:"Nettoyant", name:"Nettoyant Visage Doux Nacar", desc:"Nettoyage quotidien sans dessecher la peau.", dummy:true},
-        {sku:"NACAR-D02", tag:"Masque", name:"Masque Illuminateur Nacar", desc:"Un boost d'eclat en 10 minutes.", dummy:true},
-        {sku:"NACAR-D03", tag:"Tonique", name:"Tonique Equilibrant Nacar", desc:"Equilibre et prepare la peau pour votre routine.", dummy:true},
-        {sku:"NACAR-D04", tag:"Solaire", name:"Protection Solaire Legere Nacar", desc:"FPS quotidien a texture legere.", dummy:true},
-        {sku:"NACAR-D05", tag:"Cheveux", name:"Shampoing Nourrissant Nacar", desc:"Nettoyage doux avec nutrition quotidienne.", dummy:true},
-        {sku:"NACAR-D06", tag:"Brume", name:"Brume Hydratante Nacar", desc:"Fraicheur instantanee a tout moment de la journee.", dummy:true}
+          related:["NACAR-07"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complete", desc:"routine en 5 etapes avec contour et protection."}]
     }
@@ -2040,39 +1995,32 @@ var DYN = {
          choice:{
            eyebrow:'Speciality Luminous',
            title:'¿Como quieres descubrir tu belleza?',
-           subtitle:'Elige explorar el catalogo completo o responde 5 preguntas rapidas para una preseleccion hecha para ti.',
+           subtitle:'Elige explorar el catalogo completo o responde 4 preguntas rapidas para una preseleccion hecha para ti.',
            catalogTitle:'Ver catalogo completo',
            catalogBody:'Explora los 4 productos de System Luminous a tu ritmo.',
            quizTitle:'Diagnostico personalizado',
-           quizBody:'5 preguntas y te preseleccionamos tus productos ideales.'
+           quizBody:'4 preguntas y te preseleccionamos tus productos ideales.'
          },
          stepLabel:function(i,total){ return 'Paso ' + i + ' de ' + total; },
          steps:[
            { question:'¿Que te gustaria conseguir?', type:'single', key:'goal', options:[
-               {value:'glow', label:'Luminosidad y firmeza de la piel'},
-               {value:'hydration', label:'Hidratacion profunda'},
-               {value:'hair', label:'Brillo y suavidad del cabello'},
-               {value:'eyes', label:'Contorno de ojos y signos de cansancio'},
+               {value:'cleanse', label:'Piel limpia y libre de impurezas'},
+               {value:'antioxidant', label:'Hidratacion y proteccion contra el dano diario'},
+               {value:'firmness', label:'Firmeza y luminosidad con cuidado anti-edad'},
+               {value:'sun', label:'Proteccion solar dedicada'},
                {value:'complete', label:'Quiero una rutina completa'}
            ]},
            { question:'¿Como describirias tu piel hoy?', type:'single', key:'skin', options:[
-               {value:'dull', label:'Opaca, sin luminosidad'},
+               {value:'oily', label:'Con exceso de grasa o impurezas'},
                {value:'dehydrated', label:'Deshidratada o tirante'},
+               {value:'tired', label:'Con signos de cansancio o falta de firmeza'},
                {value:'sensitive', label:'Sensible o reactiva'},
-               {value:'tired', label:'Con signos de cansancio (ojeras, bolsas)'},
                {value:'normal', label:'Normal y equilibrada'}
            ]},
-           { question:'¿Como describirias tu cabello hoy?', type:'single', key:'hair', options:[
-               {value:'dull_hair', label:'Opaco y sin brillo'},
-               {value:'dry_hair', label:'Reseco o encrespado'},
-               {value:'oily_hair', label:'Graso'},
-               {value:'normal_hair', label:'Sano y equilibrado'}
-           ]},
-           { question:'¿Con que frecuencia usas herramientas de calor (secadora, plancha, tenazas)?', type:'single', key:'heat', options:[
-               {value:'daily', label:'Diario'},
-               {value:'often', label:'3 a 4 veces por semana'},
-               {value:'sometimes', label:'1 a 2 veces por semana'},
-               {value:'never', label:'Nunca'}
+           { question:'¿Cuanto tiempo pasas expuesta al sol en tu dia a dia?', type:'single', key:'sun', options:[
+               {value:'high', label:'Mucho tiempo al aire libre'},
+               {value:'commute', label:'Solo el trayecto diario (calle, auto, oficina con ventanas)'},
+               {value:'low', label:'Casi nada, la mayoria del tiempo en interiores'}
            ]},
            { question:'En una escala del 1 al 5, ¿cuanto tiempo dedicas a tu rutina de belleza diaria?', type:'scale', key:'time', minLabel:'Muy poco (menos de 5 min)', maxLabel:'Mucho (mas de 20 min)' }
          ],
@@ -2203,39 +2151,32 @@ var DYN = {
          choice:{
            eyebrow:'Speciality Luminous',
            title:'How do you want to discover your beauty routine?',
-           subtitle:'Browse the full catalog, or answer 5 quick questions and get a picked-for-you preselection.',
+           subtitle:'Browse the full catalog, or answer 4 quick questions and get a picked-for-you preselection.',
            catalogTitle:'View full catalog',
            catalogBody:'Explore all 4 System Luminous products at your own pace.',
            quizTitle:'Personalized diagnosis',
-           quizBody:'5 questions and we preselect your ideal products.'
+           quizBody:'4 questions and we preselect your ideal products.'
          },
          stepLabel:function(i,total){ return 'Step ' + i + ' of ' + total; },
          steps:[
            { question:'What would you like to achieve?', type:'single', key:'goal', options:[
-               {value:'glow', label:'Radiant, firmer-looking skin'},
-               {value:'hydration', label:'Deep hydration'},
-               {value:'hair', label:'Shinier, softer hair'},
-               {value:'eyes', label:'Eye contour and signs of tiredness'},
+               {value:'cleanse', label:'Clean, impurity-free skin'},
+               {value:'antioxidant', label:'Hydration and protection from daily damage'},
+               {value:'firmness', label:'Firmness and radiance with anti-aging care'},
+               {value:'sun', label:'Dedicated sun protection'},
                {value:'complete', label:'I want a complete routine'}
            ]},
            { question:'How would you describe your skin today?', type:'single', key:'skin', options:[
-               {value:'dull', label:'Dull, lacking radiance'},
+               {value:'oily', label:'Oily or prone to impurities'},
                {value:'dehydrated', label:'Dehydrated or tight'},
+               {value:'tired', label:'Showing signs of tiredness or loss of firmness'},
                {value:'sensitive', label:'Sensitive or reactive'},
-               {value:'tired', label:'Showing signs of tiredness (dark circles, puffiness)'},
                {value:'normal', label:'Normal and balanced'}
            ]},
-           { question:'How would you describe your hair today?', type:'single', key:'hair', options:[
-               {value:'dull_hair', label:'Dull, lacking shine'},
-               {value:'dry_hair', label:'Dry or frizzy'},
-               {value:'oily_hair', label:'Oily'},
-               {value:'normal_hair', label:'Healthy and balanced'}
-           ]},
-           { question:'How often do you use heat tools (blow dryer, flat iron, curling iron)?', type:'single', key:'heat', options:[
-               {value:'daily', label:'Daily'},
-               {value:'often', label:'3 to 4 times a week'},
-               {value:'sometimes', label:'1 to 2 times a week'},
-               {value:'never', label:'Never'}
+           { question:'How much sun exposure do you get day to day?', type:'single', key:'sun', options:[
+               {value:'high', label:'A lot of time outdoors'},
+               {value:'commute', label:'Just the daily commute (street, car, office by a window)'},
+               {value:'low', label:'Almost none, mostly indoors'}
            ]},
            { question:'On a scale of 1 to 5, how much time do you spend on your daily beauty routine?', type:'scale', key:'time', minLabel:'Very little (under 5 min)', maxLabel:'A lot (over 20 min)' }
          ],
@@ -2366,39 +2307,32 @@ var DYN = {
          choice:{
            eyebrow:'Speciality Luminous',
            title:'Comment souhaitez-vous decouvrir votre beaute?',
-           subtitle:'Explorez le catalogue complet, ou repondez a 5 questions rapides pour une preselection faite pour vous.',
+           subtitle:'Explorez le catalogue complet, ou repondez a 4 questions rapides pour une preselection faite pour vous.',
            catalogTitle:'Voir le catalogue complet',
            catalogBody:'Explorez les 4 produits System Luminous a votre rythme.',
            quizTitle:'Diagnostic personnalise',
-           quizBody:'5 questions et nous preselectionnons vos produits ideaux.'
+           quizBody:'4 questions et nous preselectionnons vos produits ideaux.'
          },
          stepLabel:function(i,total){ return 'Etape ' + i + ' sur ' + total; },
          steps:[
            { question:'Que souhaitez-vous obtenir?', type:'single', key:'goal', options:[
-               {value:'glow', label:'Eclat et fermete de la peau'},
-               {value:'hydration', label:'Hydratation profonde'},
-               {value:'hair', label:'Cheveux brillants et doux'},
-               {value:'eyes', label:'Contour des yeux et signes de fatigue'},
+               {value:'cleanse', label:'Une peau propre, sans impuretes'},
+               {value:'antioxidant', label:'Hydratation et protection contre les agressions quotidiennes'},
+               {value:'firmness', label:'Fermete et eclat avec un soin anti-age'},
+               {value:'sun', label:'Protection solaire dediee'},
                {value:'complete', label:'Je veux une routine complete'}
            ]},
            { question:"Comment decririez-vous votre peau aujourd'hui?", type:'single', key:'skin', options:[
-               {value:'dull', label:'Terne, sans eclat'},
+               {value:'oily', label:'Grasse ou sujette aux impuretes'},
                {value:'dehydrated', label:'Deshydratee ou tiraillee'},
+               {value:'tired', label:'Avec des signes de fatigue ou un manque de fermete'},
                {value:'sensitive', label:'Sensible ou reactive'},
-               {value:'tired', label:'Avec des signes de fatigue (cernes, poches)'},
                {value:'normal', label:'Normale et equilibree'}
            ]},
-           { question:"Comment decririez-vous vos cheveux aujourd'hui?", type:'single', key:'hair', options:[
-               {value:'dull_hair', label:'Ternes, sans brillance'},
-               {value:'dry_hair', label:'Secs ou frises'},
-               {value:'oily_hair', label:'Gras'},
-               {value:'normal_hair', label:'Sains et equilibres'}
-           ]},
-           { question:'A quelle frequence utilisez-vous des outils chauffants (seche-cheveux, lisseur, fer a boucler)?', type:'single', key:'heat', options:[
-               {value:'daily', label:'Tous les jours'},
-               {value:'often', label:'3 a 4 fois par semaine'},
-               {value:'sometimes', label:'1 a 2 fois par semaine'},
-               {value:'never', label:'Jamais'}
+           { question:"Combien de temps passez-vous au soleil au quotidien?", type:'single', key:'sun', options:[
+               {value:'high', label:'Beaucoup de temps a l\'exterieur'},
+               {value:'commute', label:'Seulement le trajet quotidien (rue, voiture, bureau pres d\'une fenetre)'},
+               {value:'low', label:'Presque jamais, surtout en interieur'}
            ]},
            { question:'Sur une echelle de 1 a 5, combien de temps consacrez-vous a votre routine beaute quotidienne?', type:'scale', key:'time', minLabel:'Tres peu (moins de 5 min)', maxLabel:'Beaucoup (plus de 20 min)' }
          ],
@@ -3696,23 +3630,26 @@ function bqGoBack(){
 }
 
 function computeBeautyScores(answers){
-  var scores = { 'NACAR-01':0, 'NACAR-02':0, 'NACAR-03':0, 'NACAR-04':0 };
-  var goalMap = { glow:'NACAR-01', hydration:'NACAR-02', hair:'NACAR-03', eyes:'NACAR-04' };
+  // Motor de puntaje alineado a los 4 productos reales del catalogo Nacar:
+  // NACAR-06 Espuma (limpieza), NACAR-07 Gel (antioxidante/hidratacion),
+  // NACAR-08 Dia FPS30 (firmeza/proteccion diaria), NACAR-09 Protector FPS50+
+  // (proteccion solar dedicada). Sin preguntas de cabello: ese producto no
+  // existe en el catalogo actual.
+  var scores = { 'NACAR-06':0, 'NACAR-07':0, 'NACAR-08':0, 'NACAR-09':0 };
+  var goalMap = { cleanse:'NACAR-06', antioxidant:'NACAR-07', firmness:'NACAR-08', sun:'NACAR-09' };
   if (answers.goal === 'complete'){
     for (var k in scores){ scores[k] += 1; }
   } else if (goalMap[answers.goal]){
     scores[goalMap[answers.goal]] += 3;
   }
 
-  var skinMap = { dull:'NACAR-01', dehydrated:'NACAR-02', sensitive:'NACAR-02', tired:'NACAR-04' };
+  var skinMap = { oily:'NACAR-06', dehydrated:'NACAR-07', tired:'NACAR-08', sensitive:'NACAR-09' };
   if (skinMap[answers.skin]) scores[skinMap[answers.skin]] += 2;
-  if (answers.skin === 'normal') scores['NACAR-01'] += 1;
+  if (answers.skin === 'normal') scores['NACAR-08'] += 1;
 
-  if (answers.hair === 'dull_hair' || answers.hair === 'dry_hair') scores['NACAR-03'] += 2;
-  else if (answers.hair === 'oily_hair' || answers.hair === 'normal_hair') scores['NACAR-03'] += 1;
-
-  if (answers.heat === 'daily') scores['NACAR-03'] += 2;
-  else if (answers.heat === 'often') scores['NACAR-03'] += 1;
+  if (answers.sun === 'high') scores['NACAR-09'] += 2;
+  else if (answers.sun === 'commute') scores['NACAR-08'] += 1;
+  else if (answers.sun === 'low') scores['NACAR-06'] += 1;
 
   var time = Number(answers.time) || 3;
   if (time >= 4){ for (var k2 in scores){ scores[k2] += 1; } }
