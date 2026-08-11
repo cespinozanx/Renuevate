@@ -75,6 +75,13 @@ const PRODUCTS = [
     long_description_es: 'Una espuma cremosa que retira impurezas y exceso de grasa sin resecar la piel. Deja una sensacion de frescura inmediata y el rostro listo para el resto de tu rutina. Formulada para todo tipo de piel. Presentacion de 150 ml.',
     ingredients_es: ['Aqua (Water)', 'Sodium C14-16 Olefin Sulfonate', 'Sodium Cocoyl Isethionate', 'Sodium Lauroamphoacetate', 'Glycerin', 'Disodium Laureth Sulfosuccinate', 'Cocamidopropyl Betaine', 'PEG-8 Caprylic/Capric Glycerides', 'Polysorbate 20', 'Aloe Barbadensis Leaf Extract', 'Alaria Esculenta Extract', 'Moringa Oleifera Leaf Extract', 'Ethylhexylglycerin', 'PEG-12 Dimethicone', 'Cocamide MIPA', 'Benzyl Alcohol', 'Parfum (Fragrance)', 'Citric Acid', 'Benzyl Salicylate', 'Hexyl Cinnamal', 'Limonene'],
     usage_es: '1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.' },
+  { sku: 'NACAR-07', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-01'],
+    name_i18n: { es: 'Gel Antioxidante Nacar', en: 'Nacar Antioxidant Gel', fr: 'Gel Antioxydant Nacar' },
+    description_i18n: { es: 'Protege de radicales libres, hidratacion profunda.', en: 'Protects from free radicals, deep hydration.', fr: 'Protege des radicaux libres, hydratation profonde.' },
+    image: 'media/nacar-07-gel-front.webp',
+    long_description_es: 'Un gel ligero que ayuda a proteger la piel del daño de los radicales libres mientras aumenta su nivel de hidratacion. Hidrata, humecta y acondiciona para un aspecto saludable, y ayuda a mejorar la elasticidad de la piel. Presentacion de 30 g.',
+    ingredients_es: ['Extracto de levadura', 'Extracto de hoja de olivo', 'Extracto de arnica', 'Extractos de frutas silvestres', 'Aceite de jojoba'],
+    usage_es: 'Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.' },
 
   // VIGOR
   { sku: 'VIGOR-01', vertical: 'vigor', price: '$699 MXN', rating: { stars: 4.8, count: 521 }, related: ['VIGOR-03'],
