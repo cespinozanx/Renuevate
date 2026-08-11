@@ -2571,8 +2571,143 @@ function renderBagUpsell(cart){
   el.style.display = 'block';
 }
 
+/* ===================== Carrito de invitado (sin login, ver decision de negocio) =====================
+   B2C: exigir cuenta para agregar al carrito cuesta conversion (Baymard: ~26%
+   abandona por registro forzado). Decision: se permite agregar/editar el
+   carrito sin loguearse, guardado 100% en localStorage -- nunca toca
+   /api/cart ni el backend de promociones/lealtad mientras no hay sesion. El
+   login sigue siendo obligatorio para pagar (startCheckout ya lo exige, no se
+   toca) porque ahi si se necesita un customer_id real (direccion, metodo de
+   pago, orden). Al iniciar sesion, mergeGuestCartIntoAccount() sube cada
+   linea del carrito de invitado al carrito real del customer en Mongo. */
+var GUEST_CART_KEY = 'renuevate_guest_cart';
+
+function loadGuestCart(){
+  try {
+    var raw = localStorage.getItem(GUEST_CART_KEY);
+    if (raw){
+      var parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.items)) return parsed;
+    }
+  } catch (e) { /* localStorage no disponible (incognito estricto, etc.) -- se trata como carrito vacio */ }
+  return { items: [] };
+}
+function saveGuestCart(cart){
+  try { localStorage.setItem(GUEST_CART_KEY, JSON.stringify(cart)); } catch (e) { /* no fatal */ }
+}
+function clearGuestCart(){
+  try { localStorage.removeItem(GUEST_CART_KEY); } catch (e) { /* no fatal */ }
+}
+
+// El carrito de invitado no tiene Mongo detras, asi que hidrata contra el
+// mismo catalogo que ya esta cargado en el navegador (las 3 verticales +
+// accesorios de bolsa) en vez de contra /api/cart.
+function guestFindProduct(sku){
+  var verticals = ['nacar', 'vigor', 'roble'];
+  for (var i=0;i<verticals.length;i++){
+    var list = V[verticals[i]] && V[verticals[i]][currentLang] && V[verticals[i]][currentLang].products;
+    var p = list ? findProductBySku(list, sku) : null;
+    if (p) return { sku: p.sku, name: p.name, price: p.price, dummy: Boolean(p.dummy) };
+  }
+  var bag = findProductBySku(BAG_MODELS, sku);
+  if (bag) return { sku: bag.sku, name: bag.name[currentLang] || bag.name.es, price: bag.price, dummy: false };
+  return null;
+}
+
+function parsePriceToNumber(priceStr){
+  var m = String(priceStr || '').match(/[\d.]+/);
+  return m ? Number(m[0]) : 0;
+}
+
+// Misma forma de salida que hydrateCart() en api/cart.js (items/saved_items/
+// subtotal/currency) para que renderCartPanel() no necesite saber si esta
+// pintando un carrito real o uno de invitado.
+function hydrateGuestCart(){
+  var raw = loadGuestCart();
+  var items = [], savedItems = [], subtotal = 0;
+  raw.items.forEach(function(i){
+    var p = guestFindProduct(i.sku);
+    var hydrated;
+    if (!p || p.dummy){
+      hydrated = { sku: i.sku, qty: i.qty, unavailable: true };
+    } else {
+      var unitPrice = parsePriceToNumber(p.price);
+      var lineTotal = unitPrice * i.qty;
+      var nameObj = {}; nameObj[currentLang] = p.name;
+      hydrated = { sku: i.sku, qty: i.qty, name: nameObj, unit_price: unitPrice, line_total: lineTotal };
+      if (!i.saved) subtotal += lineTotal;
+    }
+    if (i.saved) savedItems.push(hydrated); else items.push(hydrated);
+  });
+  return { items: items, saved_items: savedItems, subtotal: subtotal, currency: 'MXN' };
+}
+
+function guestAddToCart(sku, qty){
+  var cart = loadGuestCart();
+  var existing = null;
+  for (var i=0;i<cart.items.length;i++){ if (cart.items[i].sku === sku){ existing = cart.items[i]; break; } }
+  if (existing){ existing.qty += (qty || 1); }
+  else { cart.items.push({ sku: sku, qty: qty || 1, saved: false }); }
+  saveGuestCart(cart);
+}
+function guestChangeQty(sku, newQty){
+  var cart = loadGuestCart();
+  if (newQty <= 0){
+    cart.items = cart.items.filter(function(i){ return i.sku !== sku; });
+  } else {
+    for (var i=0;i<cart.items.length;i++){ if (cart.items[i].sku === sku){ cart.items[i].qty = newQty; } }
+  }
+  saveGuestCart(cart);
+}
+function guestRemoveItem(sku){
+  var cart = loadGuestCart();
+  cart.items = cart.items.filter(function(i){ return i.sku !== sku; });
+  saveGuestCart(cart);
+}
+function guestSetSaved(sku, saved){
+  var cart = loadGuestCart();
+  for (var i=0;i<cart.items.length;i++){ if (cart.items[i].sku === sku){ cart.items[i].saved = Boolean(saved); } }
+  saveGuestCart(cart);
+}
+
+// Se llama justo despues de un login exitoso (ver sendToBackend). Sube cada
+// linea del carrito de invitado a /api/cart (el endpoint real, sin cambios)
+// para que quede en el carrito de Mongo del customer ya logueado, preservando
+// el estado "guardado para mas tarde" con un PUT de seguimiento. Si el
+// customer ya tenia items reales en su carrito, no se pisan: POST incrementa
+// qty si el sku ya existe (ver api/cart.js). Se limpia localStorage antes de
+// mandar las llamadas para no reintentar el mismo merge dos veces si algo
+// falla a medio camino.
+function mergeGuestCartIntoAccount(){
+  var guest = loadGuestCart();
+  if (!guest.items.length){ refreshCart(); return; }
+  var pending = guest.items.slice();
+  clearGuestCart();
+  var next = function(){
+    if (!pending.length){ refreshCart(); return; }
+    var item = pending.shift();
+    fetch(AZURA_CONFIG.CART_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: item.sku, qty: item.qty })
+    })
+      .then(function(){
+        if (item.saved){
+          return fetch(AZURA_CONFIG.CART_ENDPOINT, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: item.sku, saved: true })
+          });
+        }
+      })
+      .then(function(){ next(); })
+      .catch(function(err){ console.error('mergeGuestCartIntoAccount: error de red', err); next(); });
+  };
+  next();
+}
+
 function addToCart(sku){
-  if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
+  if (!CURRENT_CUSTOMER.id){ guestAddToCart(sku, 1); openCart(); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -2595,7 +2730,7 @@ function addToCart(sku){
 }
 
 function refreshCart(){
-  if (!CURRENT_CUSTOMER.id){ renderCartPanel({ items: [], subtotal: 0, currency: 'MXN' }); return; }
+  if (!CURRENT_CUSTOMER.id){ renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id))
     .then(function(r){ return r.json(); })
     .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); })
@@ -2647,7 +2782,7 @@ function startCheckout(){
 }
 
 function changeCartQty(sku, newQty){
-  if (!CURRENT_CUSTOMER.id) return;
+  if (!CURRENT_CUSTOMER.id){ guestChangeQty(sku, newQty); renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -2658,7 +2793,7 @@ function changeCartQty(sku, newQty){
 }
 
 function removeCartItem(sku){
-  if (!CURRENT_CUSTOMER.id) return;
+  if (!CURRENT_CUSTOMER.id){ guestRemoveItem(sku); renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id) + '&sku=' + encodeURIComponent(sku), { method: 'DELETE' })
     .then(function(r){ return r.json(); })
     .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
@@ -2722,7 +2857,7 @@ function renderCartPanel(cart){
 }
 
 function saveForLater(sku){
-  if (!CURRENT_CUSTOMER.id) return;
+  if (!CURRENT_CUSTOMER.id){ guestSetSaved(sku, true); renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -2733,7 +2868,7 @@ function saveForLater(sku){
 }
 
 function moveToCart(sku){
-  if (!CURRENT_CUSTOMER.id) return;
+  if (!CURRENT_CUSTOMER.id){ guestSetSaved(sku, false); renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -2743,8 +2878,10 @@ function moveToCart(sku){
   .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
 }
 
+// Ya no exige login para VER el carrito (solo para pagar, ver startCheckout)
+// -- decision de negocio: el carrito de invitado (localStorage) debe poder
+// revisarse igual que el real antes de pedir cuenta.
 function openCart(){
-  if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
   refreshCart();
   loadAddresses();
   document.getElementById('cartOverlay').classList.add('open');
@@ -3990,16 +4127,20 @@ function saveSessionLocal(){
 function restoreSessionLocal(){
   try {
     var raw = localStorage.getItem('renuevate_session');
-    if (!raw) return;
-    var s = JSON.parse(raw);
-    if (s && s.id){
-      CURRENT_CUSTOMER.id = s.id;
-      CURRENT_CUSTOMER.name = s.name || null;
-      CURRENT_CUSTOMER.profileComplete = Boolean(s.profileComplete);
-      updateAccountNameDisplay();
-      refreshCart();
+    if (raw){
+      var s = JSON.parse(raw);
+      if (s && s.id){
+        CURRENT_CUSTOMER.id = s.id;
+        CURRENT_CUSTOMER.name = s.name || null;
+        CURRENT_CUSTOMER.profileComplete = Boolean(s.profileComplete);
+        updateAccountNameDisplay();
+      }
     }
   } catch (e) { /* sesion guardada corrupta -- se ignora, no se rompe la carga de la pagina */ }
+  // refreshCart() ya sabe elegir entre el carrito real (logueado) y el de
+  // invitado (localStorage) -- se llama siempre para que el badge del
+  // carrito sea correcto desde que carga la pagina, con o sin sesion.
+  refreshCart();
 }
 document.addEventListener('DOMContentLoaded', restoreSessionLocal);
 
@@ -4110,7 +4251,11 @@ function sendToBackend(provider, credential){
       if (CURRENT_CUSTOMER.id && !CURRENT_CUSTOMER.profileComplete){
         openProfileModal();
       }
-      refreshCart();
+      // Login social exitoso: si habia carrito de invitado en localStorage,
+      // se fusiona con el carrito real del customer (POST/PUT a /api/cart) y
+      // se limpia localStorage. mergeGuestCartIntoAccount() ya llama
+      // refreshCart() al terminar (o de inmediato si no habia nada que fusionar).
+      mergeGuestCartIntoAccount();
     }
     else {
       // El backend ya devuelve un mensaje generico y seguro para el usuario final
