@@ -457,19 +457,30 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .cookie-banner-link{background:none; border:none; color:var(--gold); font-size:11.5px; text-decoration:underline; cursor:pointer; letter-spacing:.4px;}
 .cookie-banner-actions .btn{padding:9px 16px; font-size:11px;}
 
-.product-detail-modal{background:#fff; max-width:680px; width:100%; border-radius:4px; padding:0; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:90vh; overflow-y:auto; position:relative;}
-.pd-close{position:absolute; top:14px; right:14px; background:rgba(255,255,255,.9); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; line-height:1; cursor:pointer; color:var(--grey); z-index:2;}
-.pd-media{width:100%; aspect-ratio:16/9; background:var(--beige); display:flex; align-items:center; justify-content:center; overflow:hidden;}
+/* Ficha de detalle de producto: layout de 2 columnas en escritorio/tablet
+   (imagen fija a la izquierda, texto con su propio scroll a la derecha) para
+   que no se sienta larga/vertical con productos que traen ingredientes
+   extensos. En movil se apila (imagen arriba, texto abajo). */
+.product-detail-modal{background:#fff; max-width:920px; width:100%; border-radius:4px; padding:0; box-shadow:0 20px 60px rgba(0,0,0,.3); max-height:88vh; overflow:hidden; position:relative; display:flex; align-items:stretch;}
+.pd-close{position:absolute; top:14px; right:14px; background:rgba(255,255,255,.9); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; line-height:1; cursor:pointer; color:var(--grey); z-index:3;}
+.pd-media-col{width:40%; flex:0 0 40%; display:flex; flex-direction:column; background:var(--beige); overflow-y:auto; max-height:88vh;}
+.pd-media{width:100%; aspect-ratio:3/4; background:var(--beige); display:flex; align-items:center; justify-content:center; overflow:hidden; flex:none;}
 .pd-media img{width:100%; height:100%; object-fit:cover;}
 .pd-media svg{width:64px; height:64px; opacity:.35;}
 /* Filmstrip de miniaturas del detalle de producto -- solo aparece cuando el
    producto trae mas de una foto (p.img + p.gallery, ver openProductDetail).
    Clic en una miniatura cambia la foto principal de pdMedia. */
-.pd-thumbs{display:flex; gap:8px; padding:12px 32px 0;}
+.pd-thumbs{display:flex; gap:8px; padding:12px; flex-wrap:wrap;}
 .pd-thumb{width:56px; height:56px; flex:none; border-radius:4px; overflow:hidden; border:1px solid var(--line); cursor:pointer; opacity:.65; transition:opacity .15s, border-color .15s; background:#fff; padding:0;}
 .pd-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
 .pd-thumb.is-active{opacity:1; border-color:var(--ink);}
-.pd-body{padding:28px 32px 34px;}
+.pd-body{flex:1; min-width:0; padding:32px 34px; overflow-y:auto; max-height:88vh;}
+@media(max-width:700px){
+  .product-detail-modal{flex-direction:column; max-height:90vh; overflow-y:auto;}
+  .pd-media-col{width:100%; flex:none; max-height:none; overflow-y:visible;}
+  .pd-media{aspect-ratio:4/3;}
+  .pd-body{max-height:none; overflow-y:visible; padding:24px 24px 30px;}
+}
 .pd-eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:6px;}
 .pd-body h3{font-size:24px; margin-bottom:6px;}
 .pd-price{font-size:19px; font-weight:700; color:var(--navy); margin-bottom:16px;}
@@ -1120,8 +1131,10 @@ var AZURA_CONFIG = {
 <div class="profile-modal-overlay" id="productDetailOverlay" onclick="if(event.target===this) closeProductDetail();">
   <div class="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="pdName">
     <button class="pd-close" onclick="closeProductDetail()" aria-label="Cerrar">&times;</button>
-    <div class="pd-media" id="pdMedia"></div>
-    <div class="pd-thumbs" id="pdThumbs"></div>
+    <div class="pd-media-col">
+      <div class="pd-media" id="pdMedia"></div>
+      <div class="pd-thumbs" id="pdThumbs"></div>
+    </div>
     <div class="pd-body">
       <div class="pd-eyebrow" id="pdTag"></div>
       <h3 id="pdName"></h3>
@@ -3275,6 +3288,14 @@ function openProductDetail(sku){
   var p = findProductBySku(CURRENT_RENDERED_PRODUCTS, sku);
   if (!p) return;
   pdCurrentSku = sku;
+
+  // pd-body y pd-media-col ahora tienen su propio scroll independiente (ver
+  // .product-detail-modal en CSS) -- se reinicia a 0 cada vez que se abre un
+  // producto para no heredar el scroll del producto anterior.
+  var pdBodyEl = document.querySelector('.product-detail-modal .pd-body');
+  if (pdBodyEl) pdBodyEl.scrollTop = 0;
+  var pdMediaColEl = document.querySelector('.product-detail-modal .pd-media-col');
+  if (pdMediaColEl) pdMediaColEl.scrollTop = 0;
 
   var media = document.getElementById('pdMedia');
   media.innerHTML = p.img
