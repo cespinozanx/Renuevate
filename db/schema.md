@@ -187,9 +187,11 @@ Controles aplicados en esta iteración, mapeados a los dominios que un auditor o
 
 **Gaps heredados, todavía sin cerrar (no tocados en esta iteración, ver secciones 6-8):** sesión de servidor firmada (todo el backend confía en el `customerId` que manda el navegador), y `api/orders.js` sin validación de precio contra `products`. Ambos son prerrequisito antes de manejar dinero real o datos de clientes en producción con tráfico externo.
 
-## 10. Registro/login por teléfono (OTP) y Aviso de Privacidad
+## 10. Registro/login por teléfono (OTP) — RETIRADO, y Aviso de Privacidad
 
-**Por qué se agregó.** El modal de login/signup solo ofrecía Google/Facebook. Feedback directo: hace falta una tercera vía para quien no quiere u no puede usar OAuth social — mínimo un campo, teléfono o celular (son el mismo dato). Se optó por **verificación real vía código OTP** en vez de solo capturar el número, porque un campo de texto sin verificar permite que cualquiera escriba el número de un tercero y cree una cuenta a su nombre (suplantación). Ver `api/phone-auth.js`.
+**Estado: retirado.** Esta función se quitó del sitio (Fix de migración a WhatsApp click-to-chat) para mantener el login simple en esta primera etapa y eliminar la dependencia de Twilio. `api/phone-auth.js`, `lib/sendSms.js` y `lib/sendWhatsapp.js` ya no existen en el repo; el login/signup hoy es solo Google o Facebook. La colección `phone_verifications` deja de recibir escrituras nuevas — no se borró retroactivamente (si existía en Mongo, sus documentos expiran solos por el TTL index descrito abajo). Se conserva el resto de esta sección como bitácora de la decisión original, por si se retoma más adelante.
+
+**Por qué se había agregado.** El modal de login/signup solo ofrecía Google/Facebook. Feedback directo: hace falta una tercera vía para quien no quiere u no puede usar OAuth social — mínimo un campo, teléfono o celular (son el mismo dato). Se optó por **verificación real vía código OTP** en vez de solo capturar el número, porque un campo de texto sin verificar permite que cualquiera escriba el número de un tercero y cree una cuenta a su nombre (suplantación). Ver `api/phone-auth.js`.
 
 **Diseño del control (mapeo ISO 27001 A.8.24 / A.9.4 / A.8.10):**
 - El código OTP nunca se guarda en claro — solo `sha256(otp + salt)`, con `salt` aleatorio distinto por intento.

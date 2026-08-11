@@ -82,32 +82,11 @@ El sitio usa el SDK de JavaScript de Facebook para el boton de login (`connect.f
 
 ---
 
-## 3bis. Registro por telefono (SMS OTP via Twilio) — opcional, tiene costo
+## 3bis. WhatsApp del sitio (click-to-chat, sin backend)
 
-El modal de login tambien ofrece "Registrarte con tu telefono" como alternativa a Google/Facebook, con un codigo de verificacion real por SMS (ver `api/phone-auth.js`). A diferencia de Google/Facebook OAuth (gratis a este volumen), **cada SMS enviado tiene costo** — es una decision de negocio, no solo tecnica. Si no configuras esto, el boton de registro por telefono muestra un aviso claro en vez de fallar en silencio (mismo patron que Google/Facebook sin configurar).
+El boton flotante de WhatsApp y los CTAs de "Escribenos por WhatsApp" (chat, footer, politicas) usan un enlace directo `https://wa.me/<numero>` — no hay backend, API, ni costo recurrente involucrado. El numero se configura en un solo lugar: `AZURA_CONFIG.WHATSAPP_NUMBER` dentro de `index.html`. Si cambias el numero de WhatsApp del negocio, solo edita ese valor.
 
-1. Entra a https://www.twilio.com/try-twilio y crea una cuenta (da credito de prueba gratis).
-2. En el **Console Dashboard**, copia tu **Account SID** y tu **Auth Token**.
-3. Consigue un numero de telefono Twilio (**Phone Numbers > Buy a number** — con el credito de prueba alcanza para pruebas). Copia el numero en formato E.164 (ej. `+14155551234`).
-4. Guarda los 3 valores — son tu `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` y `TWILIO_FROM_NUMBER` (paso 6, tabla de variables de entorno).
-5. Con cuenta de prueba (trial), Twilio solo permite enviar SMS a numeros que hayas verificado como destinatario de prueba en la consola — para enviar a cualquier numero real hay que pasar a cuenta de pago (agregar tarjeta). Revisa el costo vigente por SMS a Mexico antes de activarlo con clientes reales.
-
----
-
-## 3ter. WhatsApp OTP (mucho mas barato que SMS) — recomendado
-
-Investigacion de costo (2026): SMS a Mexico via Twilio cuesta aprox. **$0.18 USD/mensaje + $6-15 USD/mes de renta del numero** (~$60-70 USD/mes a 300 envios). WhatsApp via Twilio (como Business Solution Provider de Meta) cuesta aprox. **$0.0084 USD/mensaje, sin renta de numero** — **~20-50x mas barato** al mismo volumen. Dado que dijiste que no quieres gastar, este es el camino correcto: reutiliza tu misma cuenta de Twilio (mismo `TWILIO_ACCOUNT_SID`/`TWILIO_AUTH_TOKEN`), solo agrega 2 variables nuevas.
-
-El codigo ya esta listo (`lib/sendWhatsapp.js`): si configuras las 2 variables de abajo, `api/phone-auth.js` **usa WhatsApp automaticamente** y solo cae a SMS si WhatsApp falla o no esta configurado. No se rompe nada de lo que ya funciona.
-
-Pasos para activarlo:
-
-1. En la consola de Twilio, ve a **Messaging > Try it out > Send a WhatsApp message** para activar el sandbox de pruebas gratis (te da un numero `whatsapp:+14155238886` y un codigo para unirte desde tu propio WhatsApp — sirve para probar antes de pagar nada).
-2. Para produccion real (mensajes a cualquier cliente, no solo tu numero de prueba) necesitas un **WhatsApp Business Profile** aprobado por Meta: en Twilio ve a **Messaging > Senders > WhatsApp senders** y sigue el flujo de registro (piden nombre de negocio, logo, categoria — GoNexus Group / Renuévate).
-3. Crea una plantilla de mensaje categoria **Authentication** en **Content Template Builder** de Twilio (Content API). Meta exige plantillas pre-aprobadas para mensajes de este tipo fuera de la ventana de 24h de conversacion; la aprobacion de Meta tarda **1-3 dias habiles**. Copia el **Content SID** (empieza con `HX...`).
-4. **Importante sobre volumen:** mientras tengas menos de 250 destinatarios unicos distintos en 24 horas (Meta "Tier 1"), **no necesitas pasar por Business Verification completa de Meta** — puedes operar con el registro basico. Solo se vuelve obligatorio al escalar.
-5. Agrega `TWILIO_WHATSAPP_FROM` (tu numero de WhatsApp Business aprobado, formato `whatsapp:+52...`) y `TWILIO_WHATSAPP_CONTENT_SID` (el `HX...` de tu plantilla) en Vercel > Project Settings > Environment Variables. Redeploy.
-6. Prueba el flujo de "Registrarte con tu telefono" en el sitio — el mensaje debe llegar por WhatsApp, no por SMS.
+Nota: el sitio antes tambien ofrecia "Registrarte con tu telefono" (login alterno a Google/Facebook, con un codigo OTP real enviado por SMS/WhatsApp via Twilio). Esa funcion se retiro en esta primera etapa para mantener el sitio simple y sin dependencias de pago — hoy el inicio de sesion es solo Google o Facebook.
 
 ---
 
@@ -120,12 +99,10 @@ azura-site/
   index.html                  <- el sitio (copia ya lista de Azura_Wellness_Group_Prototipo.html)
   api/register.js             <- funcion serverless (verifica login, guarda/actualiza en `customers`)
   api/complete-profile.js     <- funcion serverless (telefono, fecha de nacimiento, consentimiento)
-  api/phone-auth.js            <- registro/login por telefono con codigo OTP real (ver seccion 3bis)
   api/orders.js                <- funcion serverless (contrato de datos de orden + dispara lealtad)
   api/promotions.js, api/loyalty-rules.js  <- CRUD admin de promociones/lealtad
   db/schema.md, db/collections.js  <- arquitectura de datos + creacion de colecciones/indices
   lib/promotionsEngine.js      <- logica de elegibilidad y conteo de lealtad
-  lib/sendSms.js                <- envio de SMS via Twilio (para el OTP de telefono)
   package.json                 <- dependencias (mongodb, google-auth-library)
   .env.example                 <- plantilla de variables de entorno
   .gitignore
@@ -188,9 +165,6 @@ git push -u origin main
    | `GOOGLE_CLIENT_ID` | el Client ID del paso 2 |
    | `FACEBOOK_APP_ID` | el App ID del paso 3 |
    | `FACEBOOK_APP_SECRET` | el App Secret del paso 3 |
-   | `TWILIO_ACCOUNT_SID` | (opcional, solo si activas registro por telefono — paso 3bis) |
-   | `TWILIO_AUTH_TOKEN` | (opcional, paso 3bis) |
-   | `TWILIO_FROM_NUMBER` | (opcional, paso 3bis) |
 
 5. Dale **Deploy**. En 1-2 minutos tendras una URL tipo `https://renuevatehoy.vercel.app`.
 6. Vuelve al paso 2 (Google Cloud) y al paso 3 (Facebook) y agrega esa URL real a los origenes/dominios autorizados.

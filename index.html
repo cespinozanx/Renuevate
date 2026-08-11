@@ -330,8 +330,6 @@ body.viewing-product-page .home-only{display:none;}
 .auth-headline{font-size:15px; color:var(--ink); text-align:center; margin-bottom:22px; line-height:1.5;}
 .auth-social{display:flex; flex-direction:column; gap:12px;}
 .auth-social button{width:100%; padding:13px 18px; font-size:14px; border-radius:4px;}
-.auth-divider{display:flex; align-items:center; gap:12px; margin:22px 0; color:var(--grey); font-size:11px; letter-spacing:.5px; text-transform:uppercase;}
-.auth-divider::before, .auth-divider::after{content:""; flex:1; height:1px; background:var(--line);}
 .auth-switch{text-align:center; font-size:12.5px; color:var(--grey); margin-top:4px;}
 .auth-switch a{color:var(--navy); font-weight:700; cursor:pointer; text-decoration:underline;}
 .auth-privacy-note{font-size:10.5px; color:var(--grey); line-height:1.6; text-align:center; margin-top:22px; padding-top:18px; border-top:1px solid var(--line);}
@@ -476,9 +474,6 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .pm-field{margin-bottom:16px;}
 .pm-field label{display:block; font-size:12px; font-weight:700; letter-spacing:.4px; margin-bottom:6px; color:var(--ink);}
 .pm-field input[type="tel"], .pm-field input[type="date"], .pm-field input[type="text"]{width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px; font-size:14.5px; font-family:inherit;}
-.auth-phone-toggle{display:block; width:100%; text-align:center; background:none; border:none; color:var(--navy); font-size:12.5px; font-weight:700; text-decoration:underline; cursor:pointer; padding:4px 0; font-family:inherit;}
-.auth-phone-form{margin-top:14px;}
-.btn-link-inline{display:block; width:100%; text-align:center; background:none; border:none; color:var(--grey); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:8px; font-family:inherit;}
 .pm-hint{font-size:11px; color:var(--grey); margin-top:5px;}
 .pm-consent{display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--ink); margin-bottom:10px; line-height:1.4;}
 .pm-consent input{margin-top:3px; flex-shrink:0;}
@@ -609,7 +604,6 @@ var AZURA_CONFIG = {
   GOOGLE_CLIENT_ID: "134635437294-vv4ett18l5tqh65jb6g3ht4t4vjl8tkf.apps.googleusercontent.com",
   FACEBOOK_APP_ID: "3518013621701110",
   REGISTER_ENDPOINT: "/api/register",
-  PHONE_AUTH_ENDPOINT: "/api/phone-auth",
   CART_ENDPOINT: "/api/cart",
   REVIEWS_ENDPOINT: "/api/reviews",
   PAYMENT_METHODS_ENDPOINT: "/api/payment-methods",
@@ -960,35 +954,6 @@ var AZURA_CONFIG = {
         </button>
       </div>
       <div class="pm-error" id="authSocialError"></div>
-      <div class="auth-divider"><span data-i18n="auth.or">o</span></div>
-      <button type="button" class="auth-phone-toggle" id="authPhoneToggleBtn" onclick="togglePhoneAuth()" data-i18n="auth.phoneToggle">Continuar con tu telefono</button>
-      <div class="auth-phone-form" id="authPhoneStep1" style="display:none;">
-        <div class="pm-field">
-          <label for="authPhoneName" data-i18n="auth.phoneNameLabel">Nombre</label>
-          <input type="text" id="authPhoneName" placeholder="Tu nombre">
-        </div>
-        <div class="pm-field">
-          <label for="authPhoneNumber" data-i18n="profile.phoneLabel">Telefono (con codigo de pais)</label>
-          <input type="tel" id="authPhoneNumber" placeholder="+525512345678">
-        </div>
-        <div class="pm-field">
-          <label for="authPhoneBirth" data-i18n="profile.birthLabel">Fecha de nacimiento</label>
-          <input type="date" id="authPhoneBirth">
-        </div>
-        <label class="pm-consent"><input type="checkbox" id="authPhoneConsentEmail" required> <span data-i18n="profile.consentEmailLabel">Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)</span></label>
-        <label class="pm-consent"><input type="checkbox" id="authPhoneConsentSms"> <span data-i18n="profile.consentSmsLabel">Tambien por SMS</span></label>
-        <button type="button" class="btn btn-outline" style="width:100%; justify-content:center;" onclick="requestPhoneCode()" data-i18n="auth.phoneSendCode">Enviar codigo por SMS</button>
-        <div class="pm-error" id="authPhoneError"></div>
-      </div>
-      <div class="auth-phone-form" id="authPhoneStep2" style="display:none;">
-        <div class="pm-field">
-          <label for="authPhoneOtp" data-i18n="auth.phoneOtpLabel">Codigo de verificacion</label>
-          <input type="tel" id="authPhoneOtp" maxlength="6" placeholder="123456" inputmode="numeric">
-        </div>
-        <button type="button" class="btn btn-dark" style="width:100%; justify-content:center;" onclick="verifyPhoneCode()" data-i18n="auth.phoneVerify">Verificar y continuar</button>
-        <button type="button" class="btn-link-inline" onclick="resetPhoneAuth()" data-i18n="auth.phoneChangeNumber">Cambiar número</button>
-        <div class="pm-error" id="authPhoneOtpError"></div>
-      </div>
       <p class="auth-switch" id="authSwitchLine">
         <span>Nuevo en Renuévate?</span>
         <a onclick="setAuthTab('signup')">Crea tu cuenta</a>
@@ -1666,15 +1631,8 @@ var I18N = {
     "account.addrReferencesLabel":"Referencias (opcional)", "account.addrDefaultLabel":"Usar como dirección predeterminada",
     "account.addrSaveLabel":"Guardar dirección", "account.logoutLabel":"Cerrar sesión",
     "auth.tabSignin":"Iniciar sesión", "auth.tabSignup":"Crear cuenta",
-    "auth.privacyNote":"Usamos tu correo, telefono o datos de Google/Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick=\"openPrivacyModal()\">Ver aviso de privacidad completo</a>.",
+    "auth.privacyNote":"Usamos tu correo o datos de Google/Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick=\"openPrivacyModal()\">Ver aviso de privacidad completo</a>.",
     "nl.accountHint":"¿Ya tienes cuenta o quieres crear una? Usa el icono de perfil arriba a la derecha.",
-    "auth.or":"o",
-    "auth.phoneToggle":"Continuar con tu telefono",
-    "auth.phoneNameLabel":"Nombre",
-    "auth.phoneSendCode":"Enviar codigo por SMS",
-    "auth.phoneOtpLabel":"Codigo de verificacion",
-    "auth.phoneVerify":"Verificar y continuar",
-    "auth.phoneChangeNumber":"Cambiar número",
     "auth.privacyLink":"Ver aviso de privacidad completo.",
     "privacy.title":"Aviso de Privacidad", "privacy.updated":"Última actualización: julio 2026.",
     "terms.title":"Términos y Condiciones", "terms.updated":"Última actualización: julio 2026.",
@@ -1792,15 +1750,8 @@ var I18N = {
     "account.addrReferencesLabel":"References (optional)", "account.addrDefaultLabel":"Use as default address",
     "account.addrSaveLabel":"Save address", "account.logoutLabel":"Sign out",
     "auth.tabSignin":"Sign in", "auth.tabSignup":"Create account",
-    "auth.privacyNote":"We use your email, phone, or Google/Facebook data only to identify you and save your promotions. <b>We never see or store your password</b> — ISO 27001 compliant, personal data minimization. <a onclick=\"openPrivacyModal()\">See the full privacy notice</a>.",
+    "auth.privacyNote":"We use your email or Google/Facebook data only to identify you and save your promotions. <b>We never see or store your password</b> — ISO 27001 compliant, personal data minimization. <a onclick=\"openPrivacyModal()\">See the full privacy notice</a>.",
     "nl.accountHint":"Already have an account or want to create one? Use the profile icon in the top right.",
-    "auth.or":"or",
-    "auth.phoneToggle":"Continue with your phone",
-    "auth.phoneNameLabel":"Name",
-    "auth.phoneSendCode":"Send code by SMS",
-    "auth.phoneOtpLabel":"Verification code",
-    "auth.phoneVerify":"Verify and continue",
-    "auth.phoneChangeNumber":"Change number",
     "auth.privacyLink":"See the full privacy notice.",
     "privacy.title":"Privacy Notice", "privacy.updated":"Last updated: July 2026.",
     "terms.title":"Terms and Conditions", "terms.updated":"Last updated: July 2026.",
@@ -1918,15 +1869,8 @@ var I18N = {
     "account.addrReferencesLabel":"References (optionnel)", "account.addrDefaultLabel":"Utiliser comme adresse par defaut",
     "account.addrSaveLabel":"Enregistrer l'adresse", "account.logoutLabel":"Se deconnecter",
     "auth.tabSignin":"Connexion", "auth.tabSignup":"Creer un compte",
-    "auth.privacyNote":"Nous utilisons votre email, telephone ou vos donnees Google/Facebook uniquement pour vous identifier et enregistrer vos promotions. <b>Nous ne voyons ni ne stockons jamais votre mot de passe</b> — conforme ISO 27001, minimisation des donnees personnelles. <a onclick=\"openPrivacyModal()\">Voir l'avis de confidentialite complet</a>.",
+    "auth.privacyNote":"Nous utilisons votre email ou vos donnees Google/Facebook uniquement pour vous identifier et enregistrer vos promotions. <b>Nous ne voyons ni ne stockons jamais votre mot de passe</b> — conforme ISO 27001, minimisation des donnees personnelles. <a onclick=\"openPrivacyModal()\">Voir l'avis de confidentialite complet</a>.",
     "nl.accountHint":"Vous avez deja un compte ou voulez en creer un ? Utilisez l'icone de profil en haut a droite.",
-    "auth.or":"ou",
-    "auth.phoneToggle":"Continuer avec votre telephone",
-    "auth.phoneNameLabel":"Nom",
-    "auth.phoneSendCode":"Envoyer le code par SMS",
-    "auth.phoneOtpLabel":"Code de verification",
-    "auth.phoneVerify":"Verifier et continuer",
-    "auth.phoneChangeNumber":"Changer de número",
     "auth.privacyLink":"Voir l'avis de confidentialite complet.",
     "privacy.title":"Avis de confidentialite", "privacy.updated":"Derniere mise a jour : juillet 2026.",
     "terms.title":"Conditions Generales", "terms.updated":"Derniere mise a jour : juillet 2026.",
@@ -2871,8 +2815,6 @@ function openAuthModal(tab){
 }
 function closeAuthModal(){
   document.getElementById('authModalOverlay').classList.remove('is-open');
-  document.getElementById('authPhoneStep1').style.display = 'none';
-  resetPhoneAuth();
 }
 
 function setAuthTab(tab){
@@ -2888,98 +2830,6 @@ function setAuthTab(tab){
     : ('<span>' + d.authNewHereText() + '</span> <a onclick="setAuthTab(\'signup\')">' + d.authNewHereLink() + '</a>');
 }
 
-/* ===================== Registro/login por telefono (OTP real, ver api/phone-auth.js) ===================== */
-function togglePhoneAuth(){
-  var step1 = document.getElementById('authPhoneStep1');
-  var showing = step1.style.display !== 'none';
-  step1.style.display = showing ? 'none' : 'block';
-  if (showing) resetPhoneAuth();
-}
-
-function resetPhoneAuth(){
-  document.getElementById('authPhoneStep1').style.display = 'block';
-  document.getElementById('authPhoneStep2').style.display = 'none';
-  document.getElementById('authPhoneOtp').value = '';
-  var errEl = document.getElementById('authPhoneOtpError');
-  errEl.textContent = ''; errEl.className = 'pm-error';
-}
-
-function requestPhoneCode(){
-  var errEl = document.getElementById('authPhoneError');
-  errEl.textContent = ''; errEl.className = 'pm-error';
-
-  var payload = {
-    firstName: document.getElementById('authPhoneName').value.trim(),
-    phone: normalizeMxPhone(document.getElementById('authPhoneNumber').value),
-    birthDate: document.getElementById('authPhoneBirth').value,
-    marketingConsent: {
-      email: document.getElementById('authPhoneConsentEmail').checked,
-      sms: document.getElementById('authPhoneConsentSms').checked,
-    },
-  };
-
-  fetch(AZURA_CONFIG.PHONE_AUTH_ENDPOINT + '?action=request', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
-  .then(function(res){
-    if (res.ok){
-      document.getElementById('authPhoneStep1').style.display = 'none';
-      document.getElementById('authPhoneStep2').style.display = 'block';
-    } else {
-      errEl.textContent = (res.data && res.data.error) || DYN[currentLang].registerFail('error desconocido');
-      errEl.className = 'pm-error is-visible';
-    }
-  })
-  .catch(function(err){
-    errEl.textContent = err.message;
-    errEl.className = 'pm-error is-visible';
-  });
-}
-
-function verifyPhoneCode(){
-  var errEl = document.getElementById('authPhoneOtpError');
-  errEl.textContent = ''; errEl.className = 'pm-error';
-
-  var payload = {
-    // Debe usar el mismo telefono normalizado que requestPhoneCode() -- si no,
-    // la busqueda en phone_verifications nunca hace match (se guardo con +52).
-    phone: normalizeMxPhone(document.getElementById('authPhoneNumber').value),
-    otp: document.getElementById('authPhoneOtp').value.trim(),
-  };
-
-  fetch(AZURA_CONFIG.PHONE_AUTH_ENDPOINT + '?action=verify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
-  .then(function(res){
-    if (res.ok){
-      var u = res.data.user || {};
-      CURRENT_CUSTOMER.id = u.id || null;
-      CURRENT_CUSTOMER.profileComplete = Boolean(u.profile_complete);
-      CURRENT_CUSTOMER.name = u.name || null;
-      updateAccountNameDisplay();
-      saveSessionLocal();
-      closeAuthModal();
-      resetPhoneAuth();
-      document.getElementById('authPhoneStep1').style.display = 'none';
-      alert(DYN[currentLang].registerOk(u.name ? u.name : ''));
-      refreshCart();
-    } else {
-      errEl.textContent = (res.data && res.data.error) || DYN[currentLang].registerFail('error desconocido');
-      errEl.className = 'pm-error is-visible';
-    }
-  })
-  .catch(function(err){
-    errEl.textContent = err.message;
-    errEl.className = 'pm-error is-visible';
-  });
-}
-
 /* ===================== Aviso de Privacidad (contenido real, ES/EN/FR) ===================== */
 var PRIVACY_CONTENT = {
   es: {
@@ -2988,10 +2838,10 @@ var PRIVACY_CONTENT = {
       { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, reseñas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el número completo ni el CVV).' },
       { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleaños y tu programa de lealtad, mostrar tus reseñas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
       { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos además los controles tecnicos del estándar ISO 27001 sobre estos datos.' },
-      { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesión con ellos (solo reciben la solicitud de autenticacion, nunca tu contrasena de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. Si activas el registro por telefono, Twilio procesa el envio del SMS de verificacion. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
-      { h:'6. Cuanto tiempo los conservamos', p:'Mientras tu cuenta este activa. Los codigos de verificacion telefonica (OTP) se eliminan automaticamente a los 10 minutos, se hayan usado o no.' },
+      { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesión con ellos (solo reciben la solicitud de autenticacion, nunca tu contrasena de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
+      { h:'6. Cuanto tiempo los conservamos', p:'Mientras tu cuenta este activa.' },
       { h:'7. Tus derechos (ARCO)', p:'Puedes Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales en cualquier momento, escribiendo al contacto que aparece abajo.' },
-      { h:'8. Seguridad', p:'Nunca capturamos ni guardamos el número completo de tu tarjeta ni el CVV (control PCI-DSS/ISO 27001 A.8.24). Los codigos OTP se guardan solo como huella criptografica (hash), nunca en texto plano.' },
+      { h:'8. Seguridad', p:'Nunca capturamos ni guardamos el número completo de tu tarjeta ni el CVV (control PCI-DSS/ISO 27001 A.8.24).' },
       { h:'9. Cambios a este aviso', p:'Podemos actualizar este aviso; la fecha de la version vigente aparece al inicio de esta seccion.' },
       { h:'10. Contacto', p:'Para ejercer tus derechos o resolver dudas sobre tus datos, contacta al area de Tech Ops & Security de GoNexus Group.' },
     ],
@@ -3002,10 +2852,10 @@ var PRIVACY_CONTENT = {
       { h:'2. What data we collect', p:'Name, email and/or phone, date of birth, order history, reviews and photos you choose to share, and masked payment method data (brand and last 4 digits only -- never the full card number or CVV).' },
       { h:'3. What we use it for', p:'To identify you when you sign in, process and track your orders, activate birthday promotions and your loyalty program, display your published reviews, and send marketing communications only if you gave explicit consent.' },
       { h:'4. Legal basis', p:'Your express consent (marketing checkbox), performance of the contractual relationship when you place an order, and our legitimate interest in operating the site securely. We also apply ISO 27001 technical controls to this data.' },
-      { h:'5. Who we share it with', p:'Google and/or Facebook act as identity providers if you choose to sign in with them (they only receive the authentication request, never an Renuévate password because none exists). MongoDB Atlas is our database storage processor. If phone registration is enabled, Twilio processes the verification SMS. We do not sell or rent your data to third parties for advertising.' },
-      { h:'6. How long we keep it', p:'While your account is active. Phone verification codes (OTP) are automatically deleted after 10 minutes, whether used or not.' },
+      { h:'5. Who we share it with', p:'Google and/or Facebook act as identity providers if you choose to sign in with them (they only receive the authentication request, never an Renuévate password because none exists). MongoDB Atlas is our database storage processor. We do not sell or rent your data to third parties for advertising.' },
+      { h:'6. How long we keep it', p:'While your account is active.' },
       { h:'7. Your rights', p:'You can Access, Rectify, Cancel, or Object to the processing of your personal data at any time by writing to the contact below.' },
-      { h:'8. Security', p:'We never capture or store your full card number or CVV (PCI-DSS/ISO 27001 A.8.24 control). OTP codes are stored only as a cryptographic hash, never in plain text.' },
+      { h:'8. Security', p:'We never capture or store your full card number or CVV (PCI-DSS/ISO 27001 A.8.24 control).' },
       { h:'9. Changes to this notice', p:'We may update this notice; the effective date appears at the top of this section.' },
       { h:'10. Contact', p:'To exercise your rights or ask questions about your data, contact the Tech Ops & Security team at GoNexus Group.' },
     ],
@@ -3016,10 +2866,10 @@ var PRIVACY_CONTENT = {
       { h:'2. Donnees que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et donnees masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le número complet ni le CVV).' },
       { h:'3. A quoi elles servent', p:'Vous identifier a la connexion, traiter et suivre vos commandes, activer les promotions d\'anniversaire et votre programme de fidelite, afficher vos avis publies, et vous envoyer des communications marketing uniquement si vous avez donne votre consentement explicite.' },
       { h:'4. Fondement legal', p:'Votre consentement expres (case promotions), l\'execution de la relation contractuelle lors d\'une commande, et notre interet legitime a exploiter le site en toute securite. Nous appliquons aussi les controles techniques ISO 27001 a ces donnees.' },
-      { h:'5. Avec qui nous les partageons', p:'Google et/ou Facebook agissent comme fournisseurs d\'identite si vous choisissez de vous connecter avec eux (ils recoivent uniquement la demande d\'authentification, jamais un mot de passe Renuévate puisqu\'il n\'en existe pas). MongoDB Atlas est notre sous-traitant de stockage de base de donnees. Si l\'inscription par telephone est activee, Twilio traite l\'envoi du SMS de verification. Nous ne vendons ni ne louons vos donnees a des tiers a des fins publicitaires.' },
-      { h:'6. Duree de conservation', p:'Tant que votre compte est actif. Les codes de verification telephonique (OTP) sont automatiquement supprimes apres 10 minutes, utilises ou non.' },
+      { h:'5. Avec qui nous les partageons', p:'Google et/ou Facebook agissent comme fournisseurs d\'identite si vous choisissez de vous connecter avec eux (ils recoivent uniquement la demande d\'authentification, jamais un mot de passe Renuévate puisqu\'il n\'en existe pas). MongoDB Atlas est notre sous-traitant de stockage de base de donnees. Nous ne vendons ni ne louons vos donnees a des tiers a des fins publicitaires.' },
+      { h:'6. Duree de conservation', p:'Tant que votre compte est actif.' },
       { h:'7. Vos droits', p:'Vous pouvez Acceder, Rectifier, Annuler ou vous Opposer au traitement de vos donnees personnelles a tout moment, en ecrivant au contact ci-dessous.' },
-      { h:'8. Securite', p:'Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24). Les codes OTP sont stockes uniquement sous forme de hash cryptographique, jamais en texte clair.' },
+      { h:'8. Securite', p:'Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24).' },
       { h:'9. Modifications de cet avis', p:'Nous pouvons mettre a jour cet avis ; la date de la version en vigueur apparait en haut de cette section.' },
       { h:'10. Contact', p:'Pour exercer vos droits ou poser des questions sur vos donnees, contactez l\'equipe Tech Ops & Security de GoNexus Group.' },
     ],
@@ -3051,7 +2901,7 @@ var TERMS_CONTENT = {
     { h:'3. Precios y disponibilidad', p:'Los precios se muestran en pesos mexicanos (MXN) e incluyen impuestos aplicables salvo que se indique lo contrario. Los precios y la disponibilidad de producto pueden cambiar sin previo aviso.' },
     { h:'4. Envios', p:'Realizamos envios a todo Mexico con entrega estimada de 4 dias habiles. Te enviamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.' },
     { h:'5. Devoluciones', p:'Estamos formalizando nuestra política de devoluciones. Mientras tanto, cada caso se resuelve directamente contigo por WhatsApp.' },
-    { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catálogo. Para comprar, puedes iniciar sesión con Google, Facebook o tu telefono. Eres responsable de mantener la confidencialidad de tu acceso.' },
+    { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catálogo. Para comprar, puedes iniciar sesión con Google o Facebook. Eres responsable de mantener la confidencialidad de tu acceso.' },
     { h:'7. Pagos', p:'Aceptamos tarjeta, debito y PayPal. Nunca capturamos ni almacenamos el número completo de tu tarjeta ni el CVV en nuestros servidores (control PCI-DSS/ISO 27001).' },
     { h:'8. Propiedad intelectual', p:'El nombre Renuévate, el logotipo, los textos, imagenes y el diseño del sitio son propiedad de GoNexus Group y no pueden reproducirse sin autorizacion.' },
     { h:'9. Uso aceptable', p:'No debes usar el sitio para fines fraudulentos, intentar vulnerar su seguridad, ni extraer masivamente su contenido (scraping) sin autorizacion.' },
@@ -3066,7 +2916,7 @@ var TERMS_CONTENT = {
     { h:'3. Pricing and availability', p:'Prices are shown in Mexican pesos (MXN) and include applicable taxes unless stated otherwise. Prices and product availability may change without notice.' },
     { h:'4. Shipping', p:'We ship across Mexico with an estimated delivery of 4 business days. We send your tracking number by email and WhatsApp once your order ships.' },
     { h:'5. Returns', p:'We are still formalizing our returns policy. In the meantime, each case is resolved directly with you via WhatsApp.' },
-    { h:'6. Accounts and access', p:'You do not need an account to browse the catalog. To purchase, you can sign in with Google, Facebook, or your phone. You are responsible for keeping your access confidential.' },
+    { h:'6. Accounts and access', p:'You do not need an account to browse the catalog. To purchase, you can sign in with Google or Facebook. You are responsible for keeping your access confidential.' },
     { h:'7. Payments', p:'We accept card, debit, and PayPal. We never capture or store your full card number or CVV on our servers (PCI-DSS/ISO 27001 control).' },
     { h:'8. Intellectual property', p:'The Renuévate name, logo, text, images, and site design are the property of GoNexus Group and may not be reproduced without authorization.' },
     { h:'9. Acceptable use', p:'You must not use the site for fraudulent purposes, attempt to compromise its security, or bulk-scrape its content without authorization.' },
@@ -3081,7 +2931,7 @@ var TERMS_CONTENT = {
     { h:'3. Prix et disponibilite', p:'Les prix sont affiches en pesos mexicains (MXN) et incluent les taxes applicables sauf indication contraire. Les prix et la disponibilite des produits peuvent changer sans preavis.' },
     { h:'4. Livraison', p:'Nous livrons partout au Mexique avec une livraison estimee de 4 jours ouvres. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
     { h:'5. Retours', p:'Nous finalisons notre politique de retours. En attendant, chaque cas est traite directement avec vous via WhatsApp.' },
-    { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google, Facebook ou votre telephone. Vous etes responsable de la confidentialite de votre acces.' },
+    { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google ou Facebook. Vous etes responsable de la confidentialite de votre acces.' },
     { h:'7. Paiements', p:'Carte, debit et PayPal acceptes. Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
     { h:'8. Propriete intellectuelle', p:'Le nom Renuévate, le logo, les textes, images et le design du site appartiennent a GoNexus Group et ne peuvent etre reproduits sans autorisation.' },
     { h:'9. Utilisation acceptable', p:'Vous ne devez pas utiliser le site a des fins frauduleuses, tenter de compromettre sa securite, ni extraire massivement son contenu (scraping) sans autorisation.' },
