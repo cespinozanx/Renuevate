@@ -152,7 +152,12 @@ section{padding:92px 0;}
 .pillar h4{font-size:15.5px; margin-bottom:5px; font-weight:600;}
 .pillar p{font-size:13.5px; color:var(--grey);}
 
-.zoom-section{border-top:1px solid var(--line);}
+/* .zoom-section reduce su padding-top respecto al "section{padding:92px 0}"
+   generico: al ser una pagina aislada (ver comentario de abajo), esos 92px
+   mas el margen del boton "Volver a inicio" dejaban un bloque de espacio en
+   blanco muy grande justo debajo del header, antes de llegar a cualquier
+   contenido util. */
+.zoom-section{border-top:1px solid var(--line); padding-top:32px;}
 .zoom-section.zoom-hidden{display:none;}
 /* Modo catalogo: la ficha #zoom se reusa como pagina de solo-lista (sin tabs
    Luminous/Health/Spot ni banner narrativo de "sistema destacado" ni bloque de
@@ -169,7 +174,7 @@ section{padding:92px 0;}
    vuelve a mostrar todo. Sin esto, aunque #zoom se revelaba correctamente,
    el usuario seguia topandose con el resto de la home al hacer scroll. */
 body.viewing-product-page .home-only{display:none;}
-.zoom-back-link{display:inline-flex; align-items:center; gap:6px; margin:22px 0 10px; padding:8px 16px; cursor:pointer; color:var(--ink); font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; border:1px solid var(--line); border-radius:30px; background:#fff; transition:background .15s,border-color .15s;}
+.zoom-back-link{display:inline-flex; align-items:center; gap:6px; margin:0 0 10px; padding:8px 16px; cursor:pointer; color:var(--ink); font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; border:1px solid var(--line); border-radius:30px; background:#fff; transition:background .15s,border-color .15s;}
 .zoom-back-link:hover{background:var(--cream); border-color:var(--ink);}
 .zoom-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:52px; flex-wrap:wrap;}
 .zoom-tab{padding:10px 24px; border-radius:30px; border:1px solid var(--line); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700; cursor:pointer; color:var(--grey); background:#fff;}
