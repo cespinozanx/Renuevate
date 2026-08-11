@@ -427,6 +427,18 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .privacy-modal .priv-section h4{font-size:14px; margin-bottom:6px; color:var(--navy);}
 .privacy-modal .priv-section p{font-size:13px; line-height:1.65; color:var(--ink);}
 .privacy-modal-close{position:absolute; top:18px; right:18px; background:none; border:none; font-size:22px; line-height:1; cursor:pointer; color:var(--grey);}
+
+.about-modal{max-width:680px; padding-top:0;}
+.about-modal .privacy-modal-close{background:rgba(30,30,30,.35); color:#fff; width:30px; height:30px; border-radius:50%; top:14px; right:14px; z-index:2;}
+.about-hero{position:relative; margin:0 -34px 26px; height:190px; overflow:hidden; border-radius:4px 4px 0 0;}
+.about-hero-imgs{position:absolute; inset:0; display:flex;}
+.about-hero-imgs img{flex:1 1 33.33%; width:33.34%; height:100%; object-fit:cover;}
+.about-hero-overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(30,30,30,.12) 0%, rgba(30,30,30,.85) 100%);}
+.about-hero-text{position:absolute; left:26px; right:26px; bottom:18px;}
+.about-hero-text .eyebrow{display:block; margin-bottom:6px; color:var(--gold);}
+.about-hero-text h3{font-family:'Playfair Display',serif; font-size:23px; color:#fff; margin:0; line-height:1.3;}
+.about-modal .priv-section h4{font-family:'Playfair Display',serif; font-size:16px; color:#B8873A; font-weight:600;}
+.about-modal .priv-section:last-child p{font-style:italic; color:var(--navy);}
 .cookie-toggle-row{display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 0; border-top:1px solid var(--line);}
 .cookie-toggle-row b{font-size:13.5px; display:block; margin-bottom:2px;}
 .cookie-toggle-row p{font-size:12px; color:var(--grey); line-height:1.5;}
@@ -884,9 +896,7 @@ var AZURA_CONFIG = {
       <a onclick="openChat()" data-i18n="footer.chat">Chatea con el asistente</a>
     </div>
     <div><h5 data-i18n="footer.hCompania">Compañía</h5>
-      <a onclick="openComingSoon()" data-i18n="footer.about">Sobre Renuévate</a>
-      <a onclick="openComingSoon()" data-i18n="footer.sustainability">Sostenibilidad</a>
-      <a onclick="openComingSoon()" data-i18n="footer.careers">Trabaja con nosotros</a>
+      <a onclick="openAboutModal()" data-i18n="footer.about">Sobre Renuévate</a>
     </div>
     <div><h5 data-i18n="footer.hLegal">Legal</h5>
       <a onclick="openPrivacyModal()" data-i18n="footer.privacy">Aviso de privacidad</a>
@@ -978,6 +988,25 @@ var AZURA_CONFIG = {
     <h3 id="termsTitle" data-i18n="terms.title">Términos y Condiciones</h3>
     <p class="pm-subtitle" data-i18n="terms.updated">Última actualización: julio 2026.</p>
     <div id="termsBody"></div>
+  </div>
+</div>
+
+<div class="profile-modal-overlay" id="aboutModalOverlay">
+  <div class="privacy-modal about-modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <button class="privacy-modal-close" onclick="closeAboutModal()" aria-label="Cerrar">&times;</button>
+    <div class="about-hero">
+      <div class="about-hero-imgs">
+        <img src="media/nacar-08-dia-fps30-front.webp" alt="">
+        <img src="media/nacar-09-spf50-front.webp" alt="">
+        <img src="media/nacar-06-espuma-front.webp" alt="">
+      </div>
+      <div class="about-hero-overlay"></div>
+      <div class="about-hero-text">
+        <span class="eyebrow" data-i18n="about.eyebrow">Sobre Renuévate</span>
+        <h3 id="aboutTitle" data-i18n="about.heroTitle">Belleza y bienestar, con criterio.</h3>
+      </div>
+    </div>
+    <div id="aboutBody"></div>
   </div>
 </div>
 
@@ -1568,7 +1597,8 @@ var I18N = {
     "footer.brandP":"System Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envios y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
-    "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate", "footer.sustainability":"Sostenibilidad", "footer.careers":"Trabaja con nosotros",
+    "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate",
+    "about.eyebrow":"Sobre Renuévate", "about.heroTitle":"Belleza y bienestar, con criterio.",
     "footer.hLegal":"Legal", "footer.privacy":"Aviso de privacidad", "footer.terms":"Términos y condiciones", "footer.cookies":"Política de cookies",
     "footer.copyright":"&copy; 2026 Renuévate. Todos los derechos reservados.", "footer.prototypeNote":"Diseñado en México, para tu bienestar.",
     "chat.subtitle":"En linea . tu asesora de bienestar Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
@@ -1601,7 +1631,7 @@ var I18N = {
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o adabueo18@gmail.com.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
-    "chat.a.about":"Renuévate es la tienda online del holding de belleza y bienestar con 3 sistemas: System Luminous, System Health y System Spot Speciality.",
+    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar de GoNexus Group: reunimos productos curados en 3 sistemas (System Luminous, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la pagina.",
     "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System Luminous, System Health y System Spot Speciality.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario habil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
@@ -1687,7 +1717,8 @@ var I18N = {
     "footer.brandP":"System Luminous, Health and Spot: wellness habits for every stage of your life.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
-    "footer.hCompania":"Company", "footer.about":"About Renuévate", "footer.sustainability":"Sustainability", "footer.careers":"Work with us",
+    "footer.hCompania":"Company", "footer.about":"About Renuévate",
+    "about.eyebrow":"About Renuévate", "about.heroTitle":"Beauty and wellness, with judgment.",
     "footer.hLegal":"Legal", "footer.privacy":"Privacy notice", "footer.terms":"Terms & conditions", "footer.cookies":"Cookie policy",
     "footer.copyright":"&copy; 2026 Renuévate. All rights reserved.", "footer.prototypeNote":"Designed in Mexico, for your wellbeing.",
     "chat.subtitle":"Online . your Renuévate wellness advisor", "chat.placeholder":"Type your question...", "chat.send":"Send",
@@ -1720,7 +1751,7 @@ var I18N = {
     "chat.a.loyalty":"Every purchase earns Renuévate points, redeemable on your next order.",
     "chat.a.contact":"Reach us on WhatsApp, this chat, or adabueo18@gmail.com.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
-    "chat.a.about":"Renuévate is the online store for a beauty and wellness holding with 3 systems: System Luminous, System Health and System Spot Speciality.",
+    "chat.a.about":"Renuévate is GoNexus Group's beauty and wellness online store: we bring together curated products in 3 systems (System Luminous, System Health and System Spot Speciality) and help you choose with judgment, not to sell. Learn more in \"About Renuévate\", at the bottom of the page.",
     "chat.a.products":"We sell skin and hair care, and daily wellness across 3 systems: System Luminous, System Health and System Spot Speciality.",
     "chat.a.hours":"The site takes orders 24/7. A human advisor is available on WhatsApp during business hours.",
     "chat.a.security":"Secure encrypted payment. We never store your card details on our servers.",
@@ -1806,7 +1837,8 @@ var I18N = {
     "footer.brandP":"System Luminous, Health et Spot : des habitudes de bien-etre pour chaque etape de votre vie.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre systeme", "footer.shipping":"Livraison et retours", "footer.faq":"Questions frequentes", "footer.chat":"Discuter avec l'assistant",
-    "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate", "footer.sustainability":"Durabilite", "footer.careers":"Travailler avec nous",
+    "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate",
+    "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beaute et bien-etre, avec discernement.",
     "footer.hLegal":"Mentions legales", "footer.privacy":"Politique de confidentialite", "footer.terms":"Conditions generales", "footer.cookies":"Politique de cookies",
     "footer.copyright":"&copy; 2026 Renuévate. Tous droits reserves.", "footer.prototypeNote":"Concu au Mexique, pour votre bien-etre.",
     "chat.subtitle":"En ligne . votre conseillere bien-etre Renuévate", "chat.placeholder":"Ecrivez votre question...", "chat.send":"Envoyer",
@@ -1839,7 +1871,7 @@ var I18N = {
     "chat.a.loyalty":"Chaque achat cumule des points Renuévate, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.",
     "chat.a.sustainability":"Emballages recyclables et ingredients d'origine certifiee.",
-    "chat.a.about":"Renuévate est la boutique en ligne du holding beaute et bien-etre avec 3 systemes : System Luminous, System Health et System Spot Speciality.",
+    "chat.a.about":"Renuévate est la boutique en ligne beaute et bien-etre de GoNexus Group : nous reunissons des produits selectionnes en 3 systemes (System Luminous, System Health et System Spot Speciality) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
     "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systemes : System Luminous, System Health et System Spot Speciality.",
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
     "chat.a.security":"Paiement securise et chiffre. Nous ne stockons jamais les donnees de votre carte.",
@@ -2956,6 +2988,44 @@ function openTermsModal(){
 }
 function closeTermsModal(){
   document.getElementById('termsModalOverlay').classList.remove('is-open');
+}
+
+/* ===================== Sobre Renuévate (contenido real, ES/EN/FR) ===================== */
+var ABOUT_CONTENT = {
+  es: { sections: [
+    { h:'Quiénes somos', p:'Renuévate es la tienda online de belleza y bienestar de GoNexus Group. Reunimos en un solo lugar los productos que de verdad funcionan, elegidos y explicados con criterio -- no acumulados por acumular.' },
+    { h:'Nuestro propósito', p:'Existimos para simplificar una decisión que suele ser confusa: qué usar, en qué orden y por qué. Cada producto que aparece aquí está porque resuelve algo concreto, no porque llena espacio en un catálogo.' },
+    { h:'Cómo trabajamos', p:'Organizamos todo en tres sistemas claros: System Luminous Speciality para el cuidado facial, System Health Speciality para nutrición y rendimiento, y System Spot Speciality para el cuidado del hombre. Nuestro cuestionario de diagnóstico y Julieta, tu asesora virtual, te ayudan a encontrar el sistema correcto para ti -- no el que más se vende.' },
+    { h:'Nuestro compromiso', p:'Somos una tienda 100% en línea, directa y transparente: precios claros, ingredientes visibles, y una persona real detrás de cada pedido cuando la necesitas, por WhatsApp. Así entendemos el cuidado personal: sin promesas vacías, con resultados que se sostienen.' },
+  ] },
+  en: { sections: [
+    { h:'Who we are', p:'Renuévate is the beauty and wellness online store from GoNexus Group. We bring together, in one place, the products that actually work -- chosen and explained with judgment, not piled up for the sake of it.' },
+    { h:'Our purpose', p:'We exist to simplify a decision that is usually confusing: what to use, in what order, and why. Every product here earned its place because it solves something specific, not because it fills up a catalog.' },
+    { h:'How we work', p:'We organize everything into three clear systems: System Luminous Speciality for facial care, System Health Speciality for nutrition and performance, and System Spot Speciality for men\'s grooming. Our diagnostic quiz and Julieta, your virtual advisor, help you find the right system for you -- not the one that sells the most.' },
+    { h:'Our commitment', p:'We are a 100% online store, direct and transparent: clear pricing, visible ingredients, and a real person behind every order when you need one, over WhatsApp. That is how we understand personal care: no empty promises, with results that last.' },
+  ] },
+  fr: { sections: [
+    { h:'Qui nous sommes', p:'Renuévate est la boutique en ligne beaute et bien-etre de GoNexus Group. Nous reunissons en un seul endroit les produits qui fonctionnent vraiment, choisis et expliques avec discernement -- pas accumules pour accumuler.' },
+    { h:'Notre raison d\'etre', p:'Nous existons pour simplifier une decision souvent confuse : quoi utiliser, dans quel ordre et pourquoi. Chaque produit present ici a sa place parce qu\'il resout quelque chose de concret, pas parce qu\'il remplit un catalogue.' },
+    { h:'Comment nous travaillons', p:'Nous organisons tout en trois systemes clairs : System Luminous Speciality pour le soin du visage, System Health Speciality pour la nutrition et la performance, et System Spot Speciality pour le soin de l\'homme. Notre questionnaire de diagnostic et Julieta, votre conseillere virtuelle, vous aident a trouver le bon systeme pour vous -- pas celui qui se vend le plus.' },
+    { h:'Notre engagement', p:'Nous sommes une boutique 100% en ligne, directe et transparente : prix clairs, ingredients visibles, et une vraie personne derriere chaque commande quand vous en avez besoin, par WhatsApp. C\'est ainsi que nous comprenons le soin personnel : sans fausses promesses, avec des resultats qui durent.' },
+  ] },
+};
+
+function renderAboutModal(){
+  var body = document.getElementById('aboutBody');
+  if (!body) return;
+  var content = ABOUT_CONTENT[currentLang] || ABOUT_CONTENT.es;
+  body.innerHTML = content.sections.map(function(s){
+    return '<div class="priv-section"><h4>' + s.h + '</h4><p>' + s.p + '</p></div>';
+  }).join('');
+}
+function openAboutModal(){
+  renderAboutModal();
+  document.getElementById('aboutModalOverlay').classList.add('is-open');
+}
+function closeAboutModal(){
+  document.getElementById('aboutModalOverlay').classList.remove('is-open');
 }
 
 /* ===================== Politica de Cookies (banner funcional + preferencias reales) ===================== */
@@ -4100,6 +4170,9 @@ function applyLanguage(lang){
 
   var privacyOverlayEl = document.getElementById('privacyModalOverlay');
   if (privacyOverlayEl && privacyOverlayEl.classList.contains('is-open')) renderPrivacyModal();
+
+  var aboutOverlayEl = document.getElementById('aboutModalOverlay');
+  if (aboutOverlayEl && aboutOverlayEl.classList.contains('is-open')) renderAboutModal();
 
   var beautyChoiceOverlayEl = document.getElementById('beautyChoiceOverlay');
   if (beautyChoiceOverlayEl && beautyChoiceOverlayEl.classList.contains('is-open')) openBeautyChoice();
