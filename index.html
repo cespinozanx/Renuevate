@@ -78,7 +78,7 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
   .nav-dropdown-menu{position:absolute; top:100%; left:50%; transform:translateX(-50%); background:#fff; box-shadow:0 10px 28px rgba(0,0,0,.14); padding:12px 18px; min-width:210px; border-radius:6px; z-index:80; margin-top:14px;}
   .nav-dropdown-menu a{padding:8px 4px !important; white-space:nowrap; border-bottom:none !important;}
 }
-.hero-video-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#1E1E1E url('media/hero-mobile-poster.jpg') center/cover no-repeat; z-index:0;}
+.hero-video-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#fff url('media/hero-mobile-poster.jpg') center/cover no-repeat; z-index:0;}
 .hero-video-el{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:0; display:block;}
 .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(20,18,14,.22) 0%, rgba(20,18,14,.08) 38%, rgba(20,18,14,.62) 100%);}
 @media(prefers-reduced-motion:reduce){ .hero-video-el{display:none;} }
@@ -91,7 +91,7 @@ body.nav-lock{overflow:hidden;}
 
 .lang-select-top{background:transparent; color:var(--ink); border:1px solid var(--line); border-radius:2px; font-size:11px; letter-spacing:.6px; padding:5px 6px; cursor:pointer; font-family:'Manrope',sans-serif;}
 
-.hero{position:relative; min-height:68vh; padding:0; display:flex; align-items:flex-end; overflow:hidden; background:#1E1E1E;}
+.hero{position:relative; min-height:68vh; padding:0; display:flex; align-items:flex-end; overflow:hidden; background:#fff;}
 .hero-grid{position:relative; z-index:2; display:flex; justify-content:center; width:100%; padding-bottom:52px;}
 .hero-content{color:#fff; max-width:640px; text-align:center;}
 .hero-content .eyebrow{color:#F0DCA0;}
@@ -102,12 +102,17 @@ body.nav-lock{overflow:hidden;}
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
      borde) -- se sentia "demasiado ancho". Ahora se reduce y se le da un
-     margen ligero a los lados (40px) para que se vea mas como una pieza de
-     contenido enmarcada que como un fondo de pantalla completa. El fondo
-     blanco de .hero es lo que se ve en ese margen (antes era #1E1E1E
-     porque el video llegaba hasta el borde y no se notaba). */
-  .hero{min-height:64vh; background:#fff;}
-  .hero-video-frame{left:40px; right:40px; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
+     margen a los lados para que se vea mas como una pieza de contenido
+     enmarcada que como un fondo de pantalla completa. El fondo blanco de
+     .hero es lo que se ve en ese margen.
+     Bug corregido: .hero-video-frame tiene width:100% en su regla base
+     (linea de arriba). Con left+right+width:100% los tres puestos a la vez,
+     CSS ignora "right" (elemento sobre-restringido) y el marco se corria
+     hacia la derecha, quedando recortado por el overflow:hidden de .hero --
+     eso era el "lado derecho recortado". width:auto aqui resuelve el
+     ancho real entre left y right en vez de heredar el 100% fijo. */
+  .hero{min-height:56vh; background:#fff;}
+  .hero-video-frame{left:64px; right:64px; width:auto; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
 }
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
 .btn-ghost:hover{background:rgba(255,255,255,.1);}
