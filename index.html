@@ -100,7 +100,14 @@ body.nav-lock{overflow:hidden;}
 .hero-content p{font-size:17px; color:rgba(255,255,255,.92); max-width:520px; margin:0 auto 34px; font-weight:400;}
 .hero-cta{display:flex; gap:16px; flex-wrap:wrap; justify-content:center;}
 @media(min-width:761px){
-  .hero{min-height:86vh;}
+  /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
+     borde) -- se sentia "demasiado ancho". Ahora se reduce y se le da un
+     margen ligero a los lados (40px) para que se vea mas como una pieza de
+     contenido enmarcada que como un fondo de pantalla completa. El fondo
+     blanco de .hero es lo que se ve en ese margen (antes era #1E1E1E
+     porque el video llegaba hasta el borde y no se notaba). */
+  .hero{min-height:64vh; background:#fff;}
+  .hero-video-frame{left:40px; right:40px; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
 }
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
 .btn-ghost:hover{background:rgba(255,255,255,.1);}
@@ -569,6 +576,14 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .footer-grid{grid-template-columns:1fr 1fr; row-gap:32px;}
 }
 @media(max-width:760px){
+  /* El video hero-mobile.mp4 es 960x540 (horizontal, 16:9) pero el contenedor
+     del hero en movil es angosto y alto (retrato) -- con object-fit:cover
+     eso obligaba a recortar casi 2/3 del ancho del video para llenar el
+     marco, se veia como un zoom exagerado a una franja del centro, no el
+     video completo. Con "contain" se ve la escena entera (con franjas del
+     color de fondo arriba/abajo en vez de recorte lateral). */
+  .hero-video-el{object-fit:contain;}
+  .hero-video-frame{background-size:contain;}
   .topbar-links span:nth-child(2), .topbar-links span:nth-child(3){display:none;}
   .nav-row{position:relative;}
   .logo{flex:1; text-align:center; font-size:27px;}
