@@ -157,9 +157,10 @@ section{padding:92px 0;}
 
 .philosophy{background:var(--cream);}
 .phil-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;}
-.phil-visual{background:#F8F7F3; border:1px solid var(--line); border-radius:4px; min-height:340px; display:flex; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:44px;}
+.phil-visual{background:#F0F0EF; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.05); min-height:340px; display:flex; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:44px;}
 .phil-visual .quote{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:25px; line-height:1.55; color:var(--navy);}
-.phil-showcase{margin-top:28px; width:230px; max-width:60%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
+.phil-visual .quote .accent{color:var(--gold); border-color:var(--gold);}
+.phil-showcase{margin-top:28px; margin-left:auto; margin-right:auto; width:230px; max-width:60%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
 .phil-showcase-el{width:100%; height:auto; display:block; aspect-ratio:335/597; object-fit:cover;}
 @media(prefers-reduced-motion:reduce){ .phil-showcase-el{display:none;} }
 @media(max-width:760px){ .phil-showcase{width:190px; max-width:52%;} }
@@ -204,6 +205,8 @@ body.viewing-product-page .home-only{display:none;}
 .zoom-stats span{font-size:10.5px; opacity:.75; letter-spacing:.8px; color:var(--grey);}
 
 .products-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:26px; margin-bottom:60px;}
+.catalog-view-all-link{grid-column:1/-1; text-align:center; margin-top:-34px;}
+.catalog-view-all-link a{font-size:12.5px; font-weight:700; letter-spacing:.4px; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--ink); padding-bottom:2px;}
 .product-card{border:1px solid var(--line); border-radius:4px; overflow:hidden; transition:box-shadow .2s; display:flex; flex-direction:row; align-items:stretch;}
 .product-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08);}
 .product-img{width:230px; flex:0 0 230px; display:flex; align-items:center; justify-content:center; background:var(--active-soft); overflow:hidden;}
@@ -725,7 +728,25 @@ var AZURA_CONFIG = {
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
       <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
-      <a data-v="nacar" onclick="openBeautyChoice(); closeNav();" data-i18n="nav.nacar">Belleza</a>
+      <!-- Fix 58: "Belleza" pasa de link simple a dropdown (mismo patron que
+           System Speciality abajo): cada categoria muestra solo su producto
+           (ver openBeautyCategory() + filtro categoryFilterSku en
+           renderVertical), y el ultimo item "Explorar catalogo" muestra los
+           4 productos (openBeautyCatalog(), sin filtro). Se conserva
+           "Diagnostico personalizado" al final para no perder esa funcion
+           (antes era la unica forma de llegar al cuestionario, via el modal
+           beautyChoice que este dropdown reemplaza como punto de entrada). -->
+      <div class="nav-dropdown" id="navBeautyDropdown">
+        <a class="nav-dropdown-trigger" data-v="nacar" onclick="toggleBeautyDropdown(event)"><span data-i18n="nav.nacar">Belleza</span> <span class="caret">&#9660;</span></a>
+        <div class="nav-dropdown-menu">
+          <a onclick="openBeautyCategory('NACAR-06'); closeNav();" data-i18n="nav.beauty.cleanser">Limpiador facial</a>
+          <a onclick="openBeautyCategory('NACAR-07'); closeNav();" data-i18n="nav.beauty.gel">Gel antioxidante</a>
+          <a onclick="openBeautyCategory('NACAR-08'); closeNav();" data-i18n="nav.beauty.cream">Crema de dia</a>
+          <a onclick="openBeautyCategory('NACAR-09'); closeNav();" data-i18n="nav.beauty.sunscreen">Protector solar</a>
+          <a onclick="openBeautyCatalog(); closeNav();" data-i18n="nav.beauty.explore">Explorar catalogo</a>
+          <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
+        </div>
+      </div>
       <div class="nav-dropdown" id="navSystemDropdown">
         <a class="nav-dropdown-trigger" onclick="toggleSystemDropdown(event)" data-i18n="nav.system">System Speciality <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
@@ -852,7 +873,7 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div class="phil-visual reveal">
-      <div class="quote" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;</div>
+      <div class="quote" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;</div>
     </div>
   </div>
 </section>
@@ -1571,6 +1592,7 @@ var I18N = {
   es:{
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
+    "nav.beauty.cleanser":"Limpiador facial", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.sunscreen":"Protector solar", "nav.beauty.explore":"Explorar catalogo", "nav.beauty.quiz":"Diagnostico personalizado",
     "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'<span class="accent">Transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
     "hero.p":'Pensado en <span class="accent">acompañarte</span> en cada etapa de tu vida.',
     "hero.cta1":"Explorar el catálogo", "hero.cta2":"Nuestra filosofia",
@@ -1582,9 +1604,10 @@ var I18N = {
     "vert.p":"Cada ingrediente resuelve una necesidad específica, compartiendo la misma esencia y convicción.",
     "vert.cta":"Descubrir &#8594;",
     "phil.eyebrow":"Nuestra filosofía", "phil.h2":'Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.',
-    "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;",
+    "phil.quote":'&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;',
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
-    "catalog.eyebrow":"Catálogo", "catalog.title":"Catálogo Belleza", "catalog.subtitle":"Todos los productos de System Luminous, en un solo lugar.",
+    "catalog.eyebrow":"", "catalog.title":"Catálogo Belleza", "catalog.subtitle":"",
+    "catalog.categorySubtitle":"El producto de System Luminous pensado para esta necesidad.", "catalog.viewAll":"Ver catálogo completo &#8594;",
     "zoom.backHome":"&#8592; Volver a inicio",
     "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
@@ -1687,6 +1710,7 @@ var I18N = {
   en:{
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
+    "nav.beauty.cleanser":"Facial cleanser", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.sunscreen":"Sunscreen", "nav.beauty.explore":"Explore catalog", "nav.beauty.quiz":"Personalized diagnosis",
     "hero.eyebrow":"Renuévate . Wellness Holding", "hero.h1":'<span class="accent">Transform</span> your life', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
     "hero.p":'Here to <span class="accent">walk beside you</span> through every stage of your life.',
     "hero.cta1":"Explore the catalog", "hero.cta2":"Our philosophy",
@@ -1698,9 +1722,10 @@ var I18N = {
     "vert.p":"Each ingredient solves a specific need, sharing the same essence and conviction: taking care of yourself is an investment in you.",
     "vert.cta":"Discover &#8594;",
     "phil.eyebrow":"Our philosophy", "phil.h2":'We think about your wellbeing. We sustain <span class="accent">habits</span>.',
-    "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: wellness first.&rdquo;",
+    "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: <span class=\"accent\">wellness</span> first.&rdquo;",
     "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
-    "catalog.eyebrow":"Catalog", "catalog.title":"Beauty Catalog", "catalog.subtitle":"Every System Luminous product, in one place.",
+    "catalog.eyebrow":"", "catalog.title":"Beauty Catalog", "catalog.subtitle":"",
+    "catalog.categorySubtitle":"The System Luminous product designed for this need.", "catalog.viewAll":"View full catalog &#8594;",
     "zoom.backHome":"&#8592; Back to home",
     "comingSoon.eyebrow":"Content coming soon", "comingSoon.title":"We're polishing this content", "comingSoon.body":"There's nothing wrong with this Renuévate section: we're still refining the full detail of this system so we can show it to you properly. Check back soon.", "comingSoon.cta":"Got it",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"TO SEE RESULTS*", "zoom.stat3Label":"VERIFIED ORIGIN",
@@ -1803,6 +1828,7 @@ var I18N = {
   fr:{
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
+    "nav.beauty.cleanser":"Nettoyant visage", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.sunscreen":"Protection solaire", "nav.beauty.explore":"Explorer le catalogue", "nav.beauty.quiz":"Diagnostic personnalise",
     "hero.eyebrow":"Renuévate . Holding Bien-etre", "hero.h1":'<span class="accent">Transforme</span> votre vie', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
     "hero.p":'Pense pour <span class="accent">vous accompagner</span> a chaque etape de votre vie.',
     "hero.cta1":"Explorer le catalogue", "hero.cta2":"Notre philosophie",
@@ -1814,9 +1840,10 @@ var I18N = {
     "vert.p":"Chaque ingredient repond a un besoin precis, partageant la meme essence et la meme conviction : prendre soin de soi, c'est investir en soi.",
     "vert.cta":"Decouvrir &#8594;",
     "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous pensons a votre bien-etre. Nous soutenons des <span class="accent">habitudes</span>.',
-    "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
+    "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le <span class=\"accent\">bien-etre</span> d'abord.&rdquo;",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Systeme phare", "zoom.knowRitual":"Decouvrir le systeme",
-    "catalog.eyebrow":"Catalogue", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"Tous les produits System Luminous, au même endroit.",
+    "catalog.eyebrow":"", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"",
+    "catalog.categorySubtitle":"Le produit System Luminous conçu pour ce besoin.", "catalog.viewAll":"Voir le catalogue complet &#8594;",
     "zoom.backHome":"&#8592; Retour à l'accueil",
     "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce systeme pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RESULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
@@ -3585,6 +3612,11 @@ var selectedRoutine = null;
 var CURRENT_RENDERED_PRODUCTS = [];
 var pdCurrentSku = null;
 var lastBeautyRecommendation = null; // {order:[sku,...], routineIdx:0-2} -- set por el cuestionario de diagnostico de Belleza
+// Fix 58: sku unico a mostrar en productsGrid cuando se entra por una
+// categoria del menu Belleza (ver openBeautyCategory). null = mostrar todos
+// los productos de la vertical (comportamiento de siempre). Se resetea en
+// goVertical() y openBeautyCatalog() para no dejar "pegado" el filtro.
+var categoryFilterSku = null;
 var BQ_STATE = { step: 0, answers: {} };
 var BQ_ROUTINE_BY_TIME = { 1:0, 2:0, 3:1, 4:2, 5:2 };
 
@@ -3612,8 +3644,13 @@ function renderVertical(v){
 
   var grid = document.getElementById('productsGrid');
   var html = '';
-  for (var k=0;k<d.products.length;k++){
-    var p = d.products[k];
+  // Fix 58: si categoryFilterSku esta activo (llego por una categoria del
+  // menu Belleza), el grid solo pinta ese producto. relatedHtml sigue
+  // buscando en d.products (lista completa) para que "se compra junto con"
+  // no se pierda solo por estar en vista filtrada.
+  var listToRender = categoryFilterSku ? d.products.filter(function(pp){ return pp.sku === categoryFilterSku; }) : d.products;
+  for (var k=0;k<listToRender.length;k++){
+    var p = listToRender[k];
     var ratingHtml = p.rating ? ('<div class="product-rating"><span class="stars">' + starsHtml(p.rating.stars) + '</span><span>' + p.rating.stars.toFixed(1) + ' (' + p.rating.count + ')</span></div>') : '';
     var relatedHtml = '';
     if (p.related && p.related.length){
@@ -3652,6 +3689,12 @@ function renderVertical(v){
       actionsHtml +
       '</div></div>';
   }
+  // Fix 58: en vista filtrada por categoria (un solo producto), se ofrece
+  // salida directa al catalogo completo en vez de dejar al usuario varado
+  // en una ficha unica.
+  if (categoryFilterSku){
+    html += '<div class="catalog-view-all-link"><a onclick="openBeautyCatalog()">' + I18N[currentLang]['catalog.viewAll'] + '</a></div>';
+  }
   grid.innerHTML = html;
   document.getElementById('commentsPanel').classList.remove('open');
   document.getElementById('commentsToggleBtn').textContent = DYN[currentLang].viewComments();
@@ -3686,6 +3729,7 @@ function selectRoutine(i){
 }
 
 function goVertical(v){
+  categoryFilterSku = null; // Fix 58: navegar a un System Speciality siempre muestra todos sus productos
   renderVertical(v);
   // El catalogo (#zoom) vive oculto por default -- solo se revela cuando el
   // usuario pide explicitamente ver un sistema (menu Belleza/System Speciality,
@@ -3751,6 +3795,7 @@ function goToFilosofia(){ goToHomeSection('filosofia'); }
 // si crece a mas de una vertical, este es el lugar para unificar productos.
 var catalogModeActive = false;
 function openBeautyCatalog(){
+  categoryFilterSku = null; // Fix 58: "Explorar catalogo" siempre muestra los 4 productos, sin filtro
   renderVertical('nacar');
   var zoomSection = document.getElementById('zoom');
   zoomSection.classList.remove('zoom-hidden');
@@ -3770,6 +3815,32 @@ function applyCatalogPageLabels(){
   document.getElementById('zoomEyebrow').textContent = dict['catalog.eyebrow'];
   document.getElementById('zoomTitle').textContent = dict['catalog.title'];
   document.getElementById('zoomSubtitle').textContent = dict['catalog.subtitle'];
+}
+
+// Fix 58: punto de entrada de cada categoria del dropdown "Belleza" -- reusa
+// la misma ficha #zoom/catalog-mode que openBeautyCatalog(), pero fija
+// categoryFilterSku antes de renderizar para que productsGrid pinte solo el
+// producto de esa categoria (ver filtro en renderVertical). El titulo/subtitulo
+// se sobreescriben despues con el tag del producto encontrado.
+function openBeautyCategory(sku){
+  categoryFilterSku = sku;
+  renderVertical('nacar');
+  var zoomSection = document.getElementById('zoom');
+  zoomSection.classList.remove('zoom-hidden');
+  zoomSection.classList.add('catalog-mode');
+  catalogModeActive = true;
+  applyCatalogCategoryLabels(sku);
+  document.body.classList.add('viewing-product-page');
+  window.scrollTo({top:0, behavior:'auto'});
+  scrollToId('zoom');
+  closeNav();
+}
+function applyCatalogCategoryLabels(sku){
+  var dict = I18N[currentLang];
+  var p = findProductBySku(V.nacar[currentLang].products, sku);
+  document.getElementById('zoomEyebrow').textContent = dict['catalog.eyebrow'];
+  document.getElementById('zoomTitle').textContent = p ? p.tag : dict['catalog.title'];
+  document.getElementById('zoomSubtitle').textContent = dict['catalog.categorySubtitle'];
 }
 
 /* ===================== Belleza: eleccion catalogo vs diagnostico + cuestionario ===================== */
@@ -4024,15 +4095,26 @@ function closeNav(){
   document.body.classList.remove('nav-lock');
   var sd = document.getElementById('navSystemDropdown');
   if (sd) sd.classList.remove('open');
+  var bd = document.getElementById('navBeautyDropdown');
+  if (bd) bd.classList.remove('open');
 }
 function toggleSystemDropdown(e){
   if (e){ e.preventDefault(); e.stopPropagation(); }
   var sd = document.getElementById('navSystemDropdown');
   if (sd) sd.classList.toggle('open');
 }
+// Fix 58: mismo patron que toggleSystemDropdown -- toggle en click (mobile),
+// :hover cubre desktop via CSS (.nav-dropdown:hover .nav-dropdown-menu).
+function toggleBeautyDropdown(e){
+  if (e){ e.preventDefault(); e.stopPropagation(); }
+  var bd = document.getElementById('navBeautyDropdown');
+  if (bd) bd.classList.toggle('open');
+}
 document.addEventListener('click', function(e){
   var sd = document.getElementById('navSystemDropdown');
   if (sd && sd.classList.contains('open') && !sd.contains(e.target)) sd.classList.remove('open');
+  var bd = document.getElementById('navBeautyDropdown');
+  if (bd && bd.classList.contains('open') && !bd.contains(e.target)) bd.classList.remove('open');
 });
 
 function subscribeForm(e){
