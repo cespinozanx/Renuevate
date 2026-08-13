@@ -1990,6 +1990,7 @@ var DYN = {
        reviewPlaceholder:function(){ return 'Cuentanos que te parecio (opcional)'; },
        submitReview:function(){ return 'Publicar resena'; },
        loginToReview:function(){ return 'Inicia sesión para dejar tu resena y compartir fotos de tu experiencia.'; },
+       mustPurchaseToReview:function(){ return 'Solo clientes que ya compraron este producto pueden dejar una resena. ¿Ya lo compraste? Escribela desde tu cuenta despues de recibir tu pedido.'; },
        authSigninHeadline:function(){ return 'Inicia sesión para ver tu carrito, tus pedidos y tus promociones.'; },
        authSignupHeadline:function(){ return 'Crea tu cuenta en segundos y desbloquea tus promociones de bienvenida.'; },
        authNewHereText:function(){ return 'Nuevo en Renuévate?'; },
@@ -2148,6 +2149,7 @@ var DYN = {
        reviewPlaceholder:function(){ return 'Tell us what you thought (optional)'; },
        submitReview:function(){ return 'Post review'; },
        loginToReview:function(){ return 'Sign in to leave your review and share photos of your experience.'; },
+       mustPurchaseToReview:function(){ return 'Only customers who purchased this product can leave a review. Already bought it? Write it from your account once your order arrives.'; },
        authSigninHeadline:function(){ return 'Sign in to see your cart, your orders, and your promotions.'; },
        authSignupHeadline:function(){ return 'Create your account in seconds and unlock your welcome promotions.'; },
        authNewHereText:function(){ return 'New to Renuévate?'; },
@@ -2306,6 +2308,7 @@ var DYN = {
        reviewPlaceholder:function(){ return 'Dites-nous ce que vous en avez pense (facultatif)'; },
        submitReview:function(){ return 'Publier l\'avis'; },
        loginToReview:function(){ return 'Connectez-vous pour laisser votre avis et partager des photos de votre experience.'; },
+       mustPurchaseToReview:function(){ return 'Seuls les clients ayant achete ce produit peuvent laisser un avis. Vous l\'avez deja achete ? Ecrivez-le depuis votre compte apres reception de votre commande.'; },
        authSigninHeadline:function(){ return 'Connectez-vous pour voir votre panier, vos commandes et vos promotions.'; },
        authSignupHeadline:function(){ return 'Creez votre compte en quelques secondes et debloquez vos promotions de bienvenue.'; },
        authNewHereText:function(){ return 'Nouveau chez Renuévate ?'; },
@@ -2458,25 +2461,46 @@ function toggleComments(){
   }
 }
 
+// Fix 60: el panel de comentarios es por vertical (un solo formulario para
+// todos los skus visibles), pero la resena real se asocia a UN sku. Antes
+// siempre era products[0] (el primero de la vertical), incluso si el
+// visitante llego por una categoria especifica del menu Belleza (Fix 58,
+// categoryFilterSku). Ahora, si hay un categoryFilterSku activo y existe en
+// la vertical actual, la resena se asocia a ese producto -- mas correcto
+// para el flujo "compra verificada" (ver hasPurchased() en api/reviews.js).
+function getReviewTargetSku(products){
+  if (categoryFilterSku){
+    for (var i=0;i<products.length;i++){ if (products[i].sku === categoryFilterSku) return categoryFilterSku; }
+  }
+  return products[0].sku;
+}
+
 // Trae resenas reales de /api/reviews para todos los skus de la vertical activa.
 // Si un producto no tiene resenas reales todavia, cae al comentario de
 // demostracion (dejando claro que es contenido de ejemplo) para no dejar el
-// panel vacio -- ver gap documentado en db/schema.md.
+// panel vacio -- ver gap documentado en db/schema.md. Tambien pide, para el
+// sku que recibira la resena (getReviewTargetSku), si el cliente actual ya lo
+// compro -- eso decide si buildReviewFormHtml() muestra el formulario o el
+// mensaje "compra este producto primero" (Fix 60).
 function loadReviewsForCurrentVertical(){
   var panel = document.getElementById('commentsPanel');
   panel.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].loadingReviews() + '</p>';
   var products = V[currentV][currentLang].products;
+  var targetSku = getReviewTargetSku(products);
+  var custQS = CURRENT_CUSTOMER.id ? ('&customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id)) : '';
   var fetches = products.map(function(p){
-    return fetch(AZURA_CONFIG.REVIEWS_ENDPOINT + '?sku=' + encodeURIComponent(p.sku))
-      .then(function(r){ return r.ok ? r.json() : { reviews: [] }; })
-      .then(function(data){ return { sku: p.sku, name: p.name, reviews: (data && data.reviews) || [] }; })
-      .catch(function(){ return { sku: p.sku, name: p.name, reviews: [] }; });
+    return fetch(AZURA_CONFIG.REVIEWS_ENDPOINT + '?sku=' + encodeURIComponent(p.sku) + custQS)
+      .then(function(r){ return r.ok ? r.json() : { reviews: [], purchased: false }; })
+      .then(function(data){ return { sku: p.sku, name: p.name, reviews: (data && data.reviews) || [], purchased: !!(data && data.purchased) }; })
+      .catch(function(){ return { sku: p.sku, name: p.name, reviews: [], purchased: false }; });
   });
   Promise.all(fetches).then(function(results){
     var html = '';
     var anyReal = false;
+    var targetPurchased = false;
     for (var i=0;i<results.length;i++){
       var r = results[i];
+      if (r.sku === targetSku) targetPurchased = r.purchased;
       if (r.reviews.length){
         anyReal = true;
         for (var j=0;j<r.reviews.length;j++){
@@ -2497,7 +2521,7 @@ function loadReviewsForCurrentVertical(){
       }
       html += '<div class="comments-disclaimer">' + DYN[currentLang].commentsDisclaimer() + '</div>';
     }
-    html += buildReviewFormHtml();
+    html += buildReviewFormHtml(targetSku, targetPurchased);
     panel.innerHTML = html;
     var starEls = panel.querySelectorAll('.rf-stars span');
     for (var s=0;s<starEls.length;s++){
@@ -2507,17 +2531,29 @@ function loadReviewsForCurrentVertical(){
   });
 }
 
-function buildReviewFormHtml(){
+// Fix 60: 3 estados posibles -- (1) sin sesion: invita a iniciar sesion,
+// (2) con sesion pero sin compra verificada de "sku": mensaje explicando que
+// solo clientes que ya compraron pueden opinar, (3) con sesion y compra
+// verificada: formulario completo. El backend (api/reviews.js) vuelve a
+// validar la compra en el POST -- este gate del frontend es solo UX, no la
+// unica linea de defensa.
+function buildReviewFormHtml(sku, purchased){
+  var bodyHtml;
+  if (!CURRENT_CUSTOMER.id){
+    bodyHtml = '<p class="review-login-hint">' + DYN[currentLang].loginToReview() + '</p>';
+  } else if (!purchased){
+    bodyHtml = '<p class="review-login-hint">' + DYN[currentLang].mustPurchaseToReview() + '</p>';
+  } else {
+    bodyHtml = '<div class="rf-stars" id="rfStars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>' +
+      '<textarea id="rfText" maxlength="500" placeholder="' + DYN[currentLang].reviewPlaceholder() + '"></textarea>' +
+      '<input type="file" id="rfPhotos" accept="image/*" multiple onchange="handleReviewPhotos(event)">' +
+      '<div class="review-photo-preview" id="rfPhotoPreview"></div>' +
+      '<button type="button" onclick="submitReview(\'' + sku + '\')">' + DYN[currentLang].submitReview() + '</button>' +
+      '<div class="pm-error" id="rfError"></div>';
+  }
   return '<div class="review-form">' +
     '<p style="font-size:12.5px; font-weight:700; margin-bottom:8px;">' + DYN[currentLang].shareExperience() + '</p>' +
-    (CURRENT_CUSTOMER.id
-      ? ('<div class="rf-stars" id="rfStars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>' +
-         '<textarea id="rfText" maxlength="500" placeholder="' + DYN[currentLang].reviewPlaceholder() + '"></textarea>' +
-         '<input type="file" id="rfPhotos" accept="image/*" multiple onchange="handleReviewPhotos(event)">' +
-         '<div class="review-photo-preview" id="rfPhotoPreview"></div>' +
-         '<button type="button" onclick="submitReview()">' + DYN[currentLang].submitReview() + '</button>' +
-         '<div class="pm-error" id="rfError"></div>')
-      : ('<p class="review-login-hint">' + DYN[currentLang].loginToReview() + '</p>')) +
+    bodyHtml +
     '</div>';
 }
 
@@ -2544,11 +2580,14 @@ function handleReviewPhotos(evt){
   });
 }
 
-function submitReview(){
+function submitReview(sku){
   var errEl = document.getElementById('rfError');
   errEl.className = 'pm-error';
   if (!CURRENT_CUSTOMER.id){ return; }
-  var sku = V[currentV][currentLang].products[0].sku; // panel es por vertical; se asocia a la primera categoria visible
+  // Fix 60: sku ahora viene del boton (ver buildReviewFormHtml/getReviewTargetSku)
+  // en vez de asumir siempre products[0] -- fallback solo por si se invoca sin
+  // argumento desde algun lugar que no se haya actualizado.
+  if (!sku){ sku = V[currentV][currentLang].products[0].sku; }
   var text = document.getElementById('rfText').value.trim();
   fetch(AZURA_CONFIG.REVIEWS_ENDPOINT, {
     method: 'POST',

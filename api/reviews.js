@@ -10,8 +10,16 @@
 // moderacion -- recomendado antes de abrir el sitio a trafico publico real,
 // para evitar contenido abusivo o spam visible sin revision humana.
 //
-// GET  /api/reviews?sku=NACAR-01          -> resenas publicadas de ese sku
+// GET  /api/reviews?sku=NACAR-01[&customerId=...]  -> resenas publicadas de ese
+//      sku; si se manda customerId tambien regresa purchased:true/false (ver
+//      hasPurchased()).
 // POST /api/reviews { customerId, sku, stars, text, displayName, photos:[dataUrl,...] }
+//
+// Fix 60 (instruccion Carlos: "una vez que compraron se les de la opcion de
+// agregar un comentario"): antes cualquier customerId con sesion podia dejar
+// resena de cualquier sku sin haberlo comprado. Ahora POST exige una orden
+// confirmada (coleccion `orders`, mismo contrato que api/orders.js) del
+// cliente que incluya ese sku -- "resena de compra verificada".
 
 const { MongoClient, ObjectId } = require('mongodb');
 
@@ -30,6 +38,16 @@ async function getDb() {
   await client.connect();
   cachedClient = client;
   return client.db(MONGODB_DB);
+}
+
+async function hasPurchased(db, customerId, sku) {
+  if (!ObjectId.isValid(customerId)) return false;
+  const order = await db.collection('orders').findOne({
+    customer_id: new ObjectId(customerId),
+    status: 'confirmed',
+    'items.sku': sku,
+  });
+  return !!order;
 }
 
 async function recomputeRating(db, sku) {
@@ -51,7 +69,7 @@ module.exports = async (req, res) => {
     const db = await getDb();
 
     if (req.method === 'GET') {
-      const { sku } = req.query || {};
+      const { sku, customerId } = req.query || {};
       if (!sku) { res.status(400).json({ error: 'Falta sku.' }); return; }
       const reviews = await db
         .collection('product_reviews')
@@ -60,7 +78,15 @@ module.exports = async (req, res) => {
         .limit(20)
         .project({ customer_id: 0 })
         .toArray();
-      res.status(200).json({ ok: true, reviews });
+      // Fix 60: si viene customerId (cliente con sesion iniciada), informamos
+      // tambien si ya compro este sku -- el frontend usa esto para decidir si
+      // mostrar el formulario "escribe tu resena" o el mensaje de "compra
+      // este producto primero" (ver hasPurchased() mas abajo, reusada en POST).
+      let purchased = false;
+      if (customerId && ObjectId.isValid(customerId)) {
+        purchased = await hasPurchased(db, customerId, String(sku));
+      }
+      res.status(200).json({ ok: true, reviews, purchased });
       return;
     }
 
@@ -70,6 +96,18 @@ module.exports = async (req, res) => {
 
       if (!customerId || !ObjectId.isValid(customerId)) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
       if (!sku || typeof sku !== 'string') { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
+
+      // Fix 60 (instruccion Carlos: "una vez que compraron se les de la opcion
+      // de agregar un comentario"): solo clientes con una orden confirmada que
+      // incluya este sku pueden dejar resena -- antes cualquier cliente con
+      // sesion iniciada podia opinar sobre cualquier producto sin haberlo
+      // comprado, lo cual le resta credibilidad a la resena ("compra
+      // verificada") y abre la puerta a spam.
+      const verifiedPurchase = await hasPurchased(db, customerId, sku);
+      if (!verifiedPurchase) {
+        res.status(403).json({ error: 'Solo puedes dejar una resena de un producto que hayas comprado.' });
+        return;
+      }
 
       const product = await db.collection('products').findOne({ sku });
       if (!product) { res.status(404).json({ error: `El producto ${sku} no existe.` }); return; }
