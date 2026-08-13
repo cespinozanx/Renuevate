@@ -67,7 +67,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Espuma Purificante Nacar', en: 'Nacar Purifying Foam', fr: 'Mousse Purifiante Nacar' },
     description_i18n: { es: 'Limpieza diaria profunda, frescura instantanea.', en: 'Deep daily cleansing, instant freshness.', fr: 'Nettoyage quotidien profond, fraicheur instantanee.' },
     image: 'media/nacar-06-espuma-front.webp',
-    long_description_es: 'Una espuma cremosa que retira impurezas y exceso de grasa sin resecar la piel. Deja una sensacion de frescura inmediata y el rostro listo para el resto de tu rutina. Formulada para todo tipo de piel. Presentacion de 150 ml.',
+    long_description_es: 'Contiene ingredientes naturales seleccionados; ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel y deja una intensa sensacion de frescura. Formulada para todo tipo de piel. Presentacion de 150 ml.',
     ingredients_es: ['Aqua (Water)', 'Sodium C14-16 Olefin Sulfonate', 'Sodium Cocoyl Isethionate', 'Sodium Lauroamphoacetate', 'Glycerin', 'Disodium Laureth Sulfosuccinate', 'Cocamidopropyl Betaine', 'PEG-8 Caprylic/Capric Glycerides', 'Polysorbate 20', 'Aloe Barbadensis Leaf Extract', 'Alaria Esculenta Extract', 'Moringa Oleifera Leaf Extract', 'Ethylhexylglycerin', 'PEG-12 Dimethicone', 'Cocamide MIPA', 'Benzyl Alcohol', 'Parfum (Fragrance)', 'Citric Acid', 'Benzyl Salicylate', 'Hexyl Cinnamal', 'Limonene'],
     usage_es: '1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.' },
   { sku: 'NACAR-07', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-09'],
