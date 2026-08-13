@@ -68,6 +68,7 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 .nav-dropdown-menu{display:none; flex-direction:column;}
 .nav-dropdown.open .nav-dropdown-menu{display:flex;}
 .nav-dropdown-menu a{font-size:11px !important;}
+.nav-dropdown-divider{height:1px; background:var(--line); margin:8px 4px;}
 @media(min-width:761px){
   .nav-dropdown:hover .nav-dropdown-menu{display:flex;}
   /* Puente invisible entre el trigger y el menu: sin esto, el hueco de
@@ -157,10 +158,21 @@ section{padding:92px 0;}
 
 .philosophy{background:var(--cream);}
 .phil-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;}
-.phil-visual{background:#F0F0EF; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.05); min-height:340px; display:flex; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:44px;}
+/* Fix 61: #F0F0EF quedaba casi identico al --cream de siempre (#F8F7F3) --
+   apenas se notaba el cambio. Se sube el contraste a un gris mas franco. */
+.phil-visual{background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:340px; display:flex; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:44px;}
 .phil-visual .quote{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:25px; line-height:1.55; color:var(--navy);}
-.phil-visual .quote .accent{color:var(--gold); border-color:var(--gold);}
-.phil-showcase{margin-top:28px; margin-left:auto; margin-right:auto; width:230px; max-width:60%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
+/* La palabra dorada ya no es solo un cambio de color -- cambia a Bodoni Moda
+   en redonda (no italica, a proposito, para que contraste contra el resto de
+   la cita que si es italica) + letter-spacing, mas llamativa. */
+.phil-visual .quote .accent{color:var(--gold); border-color:var(--gold); font-family:'Bodoni Moda',serif; font-style:normal; font-weight:500; letter-spacing:.6px;}
+/* El texto (eyebrow/h2) de esta columna debe seguir alineado a la izquierda;
+   solo el video/imagen de abajo (.phil-showcase) debe quedar centrado. Se
+   fuerza con flex+align-self ademas del margin:auto de abajo (doble
+   aseguramiento) porque un margin:auto por si solo no estaba centrando el
+   video en pantalla real -- reportado por Carlos ("la veo a la izquierda"). */
+.phil-grid > .reveal-stagger{display:flex; flex-direction:column; align-items:flex-start;}
+.phil-showcase{align-self:center; margin-top:28px; margin-left:auto; margin-right:auto; width:230px; max-width:60%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
 .phil-showcase-el{width:100%; height:auto; display:block; aspect-ratio:335/597; object-fit:cover;}
 @media(prefers-reduced-motion:reduce){ .phil-showcase-el{display:none;} }
 @media(max-width:760px){ .phil-showcase{width:190px; max-width:52%;} }
@@ -728,21 +740,28 @@ var AZURA_CONFIG = {
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
       <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
-      <!-- Fix 58: "Belleza" pasa de link simple a dropdown (mismo patron que
-           System Speciality abajo): cada categoria muestra solo su producto
-           (ver openBeautyCategory() + filtro categoryFilterSku en
-           renderVertical), y el ultimo item "Explorar catalogo" muestra los
-           4 productos (openBeautyCatalog(), sin filtro). Se conserva
-           "Diagnostico personalizado" al final para no perder esa funcion
-           (antes era la unica forma de llegar al cuestionario, via el modal
-           beautyChoice que este dropdown reemplaza como punto de entrada). -->
+      <!-- Fix 58/61: "Belleza" pasa de link simple a dropdown (mismo patron
+           que System Speciality abajo). Instruccion Carlos: solo 3 categorias
+           por ahora, acomodando los 4 productos hoy cargados -- Limpieza
+           (NACAR-06) y Protector solar (NACAR-09) se quedan 1 a 1, y
+           Tratamiento agrupa Gel antioxidante (NACAR-07) + Crema de dia
+           (NACAR-08) porque ambos son pasos de tratamiento de la rutina
+           (ver openBeautyCategory([...skus], labelKey) + filtro
+           categoryFilterSku en renderVertical, ahora soporta arreglo de
+           skus). "Explorar catalogo" muestra los 4 productos sin filtro.
+           Linea divisoria (.nav-dropdown-divider) separa las categorias de
+           producto de los ultimos 2 items (Explorar catalogo / Diagnostico),
+           que no son categorias sino accesos alternos. Se conserva
+           "Diagnostico personalizado" para no perder esa funcion (antes era
+           la unica forma de llegar al cuestionario, via el modal
+           beautyChoice que este dropdown reemplazo como punto de entrada). -->
       <div class="nav-dropdown" id="navBeautyDropdown">
         <a class="nav-dropdown-trigger" data-v="nacar" onclick="toggleBeautyDropdown(event)"><span data-i18n="nav.nacar">Belleza</span> <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
-          <a onclick="openBeautyCategory('NACAR-06'); closeNav();" data-i18n="nav.beauty.cleanser">Limpiador facial</a>
-          <a onclick="openBeautyCategory('NACAR-07'); closeNav();" data-i18n="nav.beauty.gel">Gel antioxidante</a>
-          <a onclick="openBeautyCategory('NACAR-08'); closeNav();" data-i18n="nav.beauty.cream">Crema de dia</a>
-          <a onclick="openBeautyCategory('NACAR-09'); closeNav();" data-i18n="nav.beauty.sunscreen">Protector solar</a>
+          <a onclick="openBeautyCategory(['NACAR-06'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Limpiador facial</a>
+          <a onclick="openBeautyCategory(['NACAR-07','NACAR-08'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Tratamiento</a>
+          <a onclick="openBeautyCategory(['NACAR-09'], 'nav.beauty.sunscreen'); closeNav();" data-i18n="nav.beauty.sunscreen">Protector solar</a>
+          <div class="nav-dropdown-divider" aria-hidden="true"></div>
           <a onclick="openBeautyCatalog(); closeNav();" data-i18n="nav.beauty.explore">Explorar catalogo</a>
           <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
         </div>
@@ -1592,7 +1611,7 @@ var I18N = {
   es:{
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
-    "nav.beauty.cleanser":"Limpiador facial", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.sunscreen":"Protector solar", "nav.beauty.explore":"Explorar catalogo", "nav.beauty.quiz":"Diagnostico personalizado",
+    "nav.beauty.cleanser":"Limpiador facial", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Tratamiento", "nav.beauty.sunscreen":"Protector solar", "nav.beauty.explore":"Explorar catalogo", "nav.beauty.quiz":"Diagnostico personalizado",
     "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'<span class="accent">Transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
     "hero.p":'Pensado en <span class="accent">acompañarte</span> en cada etapa de tu vida.',
     "hero.cta1":"Explorar el catálogo", "hero.cta2":"Nuestra filosofia",
@@ -1652,7 +1671,7 @@ var I18N = {
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o adabueo18@gmail.com.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
-    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar de GoNexus Group: reunimos productos curados en 3 sistemas (System Luminous, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la pagina.",
+    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System Luminous, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la pagina.",
     "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System Luminous, System Health y System Spot Speciality.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario habil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
@@ -1710,7 +1729,7 @@ var I18N = {
   en:{
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
-    "nav.beauty.cleanser":"Facial cleanser", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.sunscreen":"Sunscreen", "nav.beauty.explore":"Explore catalog", "nav.beauty.quiz":"Personalized diagnosis",
+    "nav.beauty.cleanser":"Facial cleanser", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Treatment", "nav.beauty.sunscreen":"Sunscreen", "nav.beauty.explore":"Explore catalog", "nav.beauty.quiz":"Personalized diagnosis",
     "hero.eyebrow":"Renuévate . Wellness Holding", "hero.h1":'<span class="accent">Transform</span> your life', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
     "hero.p":'Here to <span class="accent">walk beside you</span> through every stage of your life.',
     "hero.cta1":"Explore the catalog", "hero.cta2":"Our philosophy",
@@ -1770,7 +1789,7 @@ var I18N = {
     "chat.a.loyalty":"Every purchase earns Renuévate points, redeemable on your next order.",
     "chat.a.contact":"Reach us on WhatsApp, this chat, or adabueo18@gmail.com.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
-    "chat.a.about":"Renuévate is GoNexus Group's beauty and wellness online store: we bring together curated products in 3 systems (System Luminous, System Health and System Spot Speciality) and help you choose with judgment, not to sell. Learn more in \"About Renuévate\", at the bottom of the page.",
+    "chat.a.about":"Renuévate is a beauty and wellness online store: we bring together curated products in 3 systems (System Luminous, System Health and System Spot Speciality) and help you choose with judgment, not to sell. Learn more in \"About Renuévate\", at the bottom of the page.",
     "chat.a.products":"We sell skin and hair care, and daily wellness across 3 systems: System Luminous, System Health and System Spot Speciality.",
     "chat.a.hours":"The site takes orders 24/7. A human advisor is available on WhatsApp during business hours.",
     "chat.a.security":"Secure encrypted payment. We never store your card details on our servers.",
@@ -1828,7 +1847,7 @@ var I18N = {
   fr:{
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
-    "nav.beauty.cleanser":"Nettoyant visage", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.sunscreen":"Protection solaire", "nav.beauty.explore":"Explorer le catalogue", "nav.beauty.quiz":"Diagnostic personnalise",
+    "nav.beauty.cleanser":"Nettoyant visage", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Traitement", "nav.beauty.sunscreen":"Protection solaire", "nav.beauty.explore":"Explorer le catalogue", "nav.beauty.quiz":"Diagnostic personnalise",
     "hero.eyebrow":"Renuévate . Holding Bien-etre", "hero.h1":'<span class="accent">Transforme</span> votre vie', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
     "hero.p":'Pense pour <span class="accent">vous accompagner</span> a chaque etape de votre vie.',
     "hero.cta1":"Explorer le catalogue", "hero.cta2":"Notre philosophie",
@@ -1888,7 +1907,7 @@ var I18N = {
     "chat.a.loyalty":"Chaque achat cumule des points Renuévate, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.",
     "chat.a.sustainability":"Emballages recyclables et ingredients d'origine certifiee.",
-    "chat.a.about":"Renuévate est la boutique en ligne beaute et bien-etre de GoNexus Group : nous reunissons des produits selectionnes en 3 systemes (System Luminous, System Health et System Spot Speciality) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
+    "chat.a.about":"Renuévate est la boutique en ligne beaute et bien-etre : nous reunissons des produits selectionnes en 3 systemes (System Luminous, System Health et System Spot Speciality) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
     "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systemes : System Luminous, System Health et System Spot Speciality.",
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
     "chat.a.security":"Paiement securise et chiffre. Nous ne stockons jamais les donnees de votre carte.",
@@ -2461,16 +2480,19 @@ function toggleComments(){
   }
 }
 
-// Fix 60: el panel de comentarios es por vertical (un solo formulario para
+// Fix 60/61: el panel de comentarios es por vertical (un solo formulario para
 // todos los skus visibles), pero la resena real se asocia a UN sku. Antes
 // siempre era products[0] (el primero de la vertical), incluso si el
 // visitante llego por una categoria especifica del menu Belleza (Fix 58,
-// categoryFilterSku). Ahora, si hay un categoryFilterSku activo y existe en
-// la vertical actual, la resena se asocia a ese producto -- mas correcto
-// para el flujo "compra verificada" (ver hasPurchased() en api/reviews.js).
+// categoryFilterSku). Ahora, si hay un categoryFilterSku activo, la resena se
+// asocia al primer producto de ese arreglo que exista en la vertical actual
+// -- mas correcto para el flujo "compra verificada" (ver hasPurchased() en
+// api/reviews.js). Nota: en categorias con 2 productos (ej. "Tratamiento")
+// esto sigue siendo un formulario unico para ambos -- redisenar a un
+// formulario por producto queda fuera de este alcance.
 function getReviewTargetSku(products){
   if (categoryFilterSku){
-    for (var i=0;i<products.length;i++){ if (products[i].sku === categoryFilterSku) return categoryFilterSku; }
+    for (var i=0;i<products.length;i++){ if (categoryFilterSku.indexOf(products[i].sku) !== -1) return products[i].sku; }
   }
   return products[0].sku;
 }
@@ -3044,7 +3066,7 @@ function setAuthTab(tab){
 var PRIVACY_CONTENT = {
   es: {
     sections: [
-      { h:'1. Responsable de tus datos', p:'Renuévate (operado por GoNexus Group) es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
+      { h:'1. Responsable de tus datos', p:'Renuévate es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
       { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, reseñas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el número completo ni el CVV).' },
       { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleaños y tu programa de lealtad, mostrar tus reseñas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
       { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos además los controles tecnicos del estándar ISO 27001 sobre estos datos.' },
@@ -3053,12 +3075,12 @@ var PRIVACY_CONTENT = {
       { h:'7. Tus derechos (ARCO)', p:'Puedes Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales en cualquier momento, escribiendo al contacto que aparece abajo.' },
       { h:'8. Seguridad', p:'Nunca capturamos ni guardamos el número completo de tu tarjeta ni el CVV (control PCI-DSS/ISO 27001 A.8.24).' },
       { h:'9. Cambios a este aviso', p:'Podemos actualizar este aviso; la fecha de la version vigente aparece al inicio de esta seccion.' },
-      { h:'10. Contacto', p:'Para ejercer tus derechos o resolver dudas sobre tus datos, contacta al area de Tech Ops & Security de GoNexus Group.' },
+      { h:'10. Contacto', p:'Para ejercer tus derechos o resolver dudas sobre tus datos, contacta a nuestro equipo de soporte.' },
     ],
   },
   en: {
     sections: [
-      { h:'1. Who is responsible for your data', p:'Renuévate (operated by GoNexus Group) is responsible for processing your personal data under Mexico\'s Federal Law on Protection of Personal Data Held by Private Parties (LFPDPPP).' },
+      { h:'1. Who is responsible for your data', p:'Renuévate is responsible for processing your personal data under Mexico\'s Federal Law on Protection of Personal Data Held by Private Parties (LFPDPPP).' },
       { h:'2. What data we collect', p:'Name, email and/or phone, date of birth, order history, reviews and photos you choose to share, and masked payment method data (brand and last 4 digits only -- never the full card number or CVV).' },
       { h:'3. What we use it for', p:'To identify you when you sign in, process and track your orders, activate birthday promotions and your loyalty program, display your published reviews, and send marketing communications only if you gave explicit consent.' },
       { h:'4. Legal basis', p:'Your express consent (marketing checkbox), performance of the contractual relationship when you place an order, and our legitimate interest in operating the site securely. We also apply ISO 27001 technical controls to this data.' },
@@ -3067,12 +3089,12 @@ var PRIVACY_CONTENT = {
       { h:'7. Your rights', p:'You can Access, Rectify, Cancel, or Object to the processing of your personal data at any time by writing to the contact below.' },
       { h:'8. Security', p:'We never capture or store your full card number or CVV (PCI-DSS/ISO 27001 A.8.24 control).' },
       { h:'9. Changes to this notice', p:'We may update this notice; the effective date appears at the top of this section.' },
-      { h:'10. Contact', p:'To exercise your rights or ask questions about your data, contact the Tech Ops & Security team at GoNexus Group.' },
+      { h:'10. Contact', p:'To exercise your rights or ask questions about your data, contact our support team.' },
     ],
   },
   fr: {
     sections: [
-      { h:'1. Responsable de vos donnees', p:'Renuévate (exploite par GoNexus Group) est responsable du traitement de vos donnees personnelles conformement a la loi mexicaine LFPDPPP.' },
+      { h:'1. Responsable de vos donnees', p:'Renuévate est responsable du traitement de vos donnees personnelles conformement a la loi mexicaine LFPDPPP.' },
       { h:'2. Donnees que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et donnees masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le número complet ni le CVV).' },
       { h:'3. A quoi elles servent', p:'Vous identifier a la connexion, traiter et suivre vos commandes, activer les promotions d\'anniversaire et votre programme de fidelite, afficher vos avis publies, et vous envoyer des communications marketing uniquement si vous avez donne votre consentement explicite.' },
       { h:'4. Fondement legal', p:'Votre consentement expres (case promotions), l\'execution de la relation contractuelle lors d\'une commande, et notre interet legitime a exploiter le site en toute securite. Nous appliquons aussi les controles techniques ISO 27001 a ces donnees.' },
@@ -3081,7 +3103,7 @@ var PRIVACY_CONTENT = {
       { h:'7. Vos droits', p:'Vous pouvez Acceder, Rectifier, Annuler ou vous Opposer au traitement de vos donnees personnelles a tout moment, en ecrivant au contact ci-dessous.' },
       { h:'8. Securite', p:'Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24).' },
       { h:'9. Modifications de cet avis', p:'Nous pouvons mettre a jour cet avis ; la date de la version en vigueur apparait en haut de cette section.' },
-      { h:'10. Contact', p:'Pour exercer vos droits ou poser des questions sur vos donnees, contactez l\'equipe Tech Ops & Security de GoNexus Group.' },
+      { h:'10. Contact', p:'Pour exercer vos droits ou poser des questions sur vos donnees, contactez notre equipe support.' },
     ],
   },
 };
@@ -3106,14 +3128,14 @@ function closePrivacyModal(){
 /* ===================== Terminos y Condiciones (contenido real, ES/EN/FR) ===================== */
 var TERMS_CONTENT = {
   es: { sections: [
-    { h:'1. Aceptación de los términos', p:'Al usar Renuévate (operado por GoNexus Group) y realizar una compra, aceptas estos Términos y Condiciones y el Aviso de Privacidad.' },
+    { h:'1. Aceptación de los términos', p:'Al usar Renuévate y realizar una compra, aceptas estos Términos y Condiciones y el Aviso de Privacidad.' },
     { h:'2. Naturaleza del sitio', p:'Renuévate es una tienda 100% en linea. No operamos tienda fisica ni punto de venta presencial por el momento.' },
     { h:'3. Precios y disponibilidad', p:'Los precios se muestran en pesos mexicanos (MXN) e incluyen impuestos aplicables salvo que se indique lo contrario. Los precios y la disponibilidad de producto pueden cambiar sin previo aviso.' },
     { h:'4. Envios', p:'Realizamos envios a todo Mexico con entrega estimada de 4 dias habiles. Te enviamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.' },
     { h:'5. Devoluciones', p:'Estamos formalizando nuestra política de devoluciones. Mientras tanto, cada caso se resuelve directamente contigo por WhatsApp.' },
     { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catálogo. Para comprar, puedes iniciar sesión con Google o Facebook. Eres responsable de mantener la confidencialidad de tu acceso.' },
     { h:'7. Pagos', p:'Aceptamos tarjeta, debito y PayPal. Nunca capturamos ni almacenamos el número completo de tu tarjeta ni el CVV en nuestros servidores (control PCI-DSS/ISO 27001).' },
-    { h:'8. Propiedad intelectual', p:'El nombre Renuévate, el logotipo, los textos, imagenes y el diseño del sitio son propiedad de GoNexus Group y no pueden reproducirse sin autorizacion.' },
+    { h:'8. Propiedad intelectual', p:'El nombre Renuévate, el logotipo, los textos, imagenes y el diseño del sitio son propiedad de Renuévate y no pueden reproducirse sin autorizacion.' },
     { h:'9. Uso aceptable', p:'No debes usar el sitio para fines fraudulentos, intentar vulnerar su seguridad, ni extraer masivamente su contenido (scraping) sin autorizacion.' },
     { h:'10. Limitacion de responsabilidad', p:'El sitio se ofrece "tal cual". No garantizamos disponibilidad ininterrumpida y no somos responsables por danos indirectos derivados del uso del sitio, salvo lo que exija la ley aplicable.' },
     { h:'11. Ley aplicable', p:'Estos terminos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier controversia se resolvera ante los tribunales competentes de Mexico.' },
@@ -3121,14 +3143,14 @@ var TERMS_CONTENT = {
     { h:'13. Contacto', p:'Dudas sobre estos terminos: escribenos por WhatsApp, este chat, o adabueo18@gmail.com.' },
   ] },
   en: { sections: [
-    { h:'1. Acceptance of terms', p:'By using Renuévate (operated by GoNexus Group) and placing an order, you accept these Terms and Conditions and the Privacy Notice.' },
+    { h:'1. Acceptance of terms', p:'By using Renuévate and placing an order, you accept these Terms and Conditions and the Privacy Notice.' },
     { h:'2. Nature of the site', p:'Renuévate is a 100% online store. We do not operate a physical store or point of sale at this time.' },
     { h:'3. Pricing and availability', p:'Prices are shown in Mexican pesos (MXN) and include applicable taxes unless stated otherwise. Prices and product availability may change without notice.' },
     { h:'4. Shipping', p:'We ship across Mexico with an estimated delivery of 4 business days. We send your tracking number by email and WhatsApp once your order ships.' },
     { h:'5. Returns', p:'We are still formalizing our returns policy. In the meantime, each case is resolved directly with you via WhatsApp.' },
     { h:'6. Accounts and access', p:'You do not need an account to browse the catalog. To purchase, you can sign in with Google or Facebook. You are responsible for keeping your access confidential.' },
     { h:'7. Payments', p:'We accept card, debit, and PayPal. We never capture or store your full card number or CVV on our servers (PCI-DSS/ISO 27001 control).' },
-    { h:'8. Intellectual property', p:'The Renuévate name, logo, text, images, and site design are the property of GoNexus Group and may not be reproduced without authorization.' },
+    { h:'8. Intellectual property', p:'The Renuévate name, logo, text, images, and site design are the property of Renuévate and may not be reproduced without authorization.' },
     { h:'9. Acceptable use', p:'You must not use the site for fraudulent purposes, attempt to compromise its security, or bulk-scrape its content without authorization.' },
     { h:'10. Limitation of liability', p:'The site is provided "as is." We do not guarantee uninterrupted availability and are not liable for indirect damages arising from use of the site, except as required by applicable law.' },
     { h:'11. Governing law', p:'These terms are governed by the laws of Mexico. Any dispute will be resolved before the competent courts of Mexico.' },
@@ -3136,14 +3158,14 @@ var TERMS_CONTENT = {
     { h:'13. Contact', p:'Questions about these terms: message us on WhatsApp, this chat, or adabueo18@gmail.com.' },
   ] },
   fr: { sections: [
-    { h:'1. Acceptation des conditions', p:'En utilisant Renuévate (exploite par GoNexus Group) et en passant une commande, vous acceptez ces Conditions Generales et l\'Avis de Confidentialite.' },
+    { h:'1. Acceptation des conditions', p:'En utilisant Renuévate et en passant une commande, vous acceptez ces Conditions Generales et l\'Avis de Confidentialite.' },
     { h:'2. Nature du site', p:'Renuévate est une boutique 100% en ligne. Nous n\'exploitons pas de boutique physique pour le moment.' },
     { h:'3. Prix et disponibilite', p:'Les prix sont affiches en pesos mexicains (MXN) et incluent les taxes applicables sauf indication contraire. Les prix et la disponibilite des produits peuvent changer sans preavis.' },
     { h:'4. Livraison', p:'Nous livrons partout au Mexique avec une livraison estimee de 4 jours ouvres. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
     { h:'5. Retours', p:'Nous finalisons notre politique de retours. En attendant, chaque cas est traite directement avec vous via WhatsApp.' },
     { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google ou Facebook. Vous etes responsable de la confidentialite de votre acces.' },
     { h:'7. Paiements', p:'Carte, debit et PayPal acceptes. Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
-    { h:'8. Propriete intellectuelle', p:'Le nom Renuévate, le logo, les textes, images et le design du site appartiennent a GoNexus Group et ne peuvent etre reproduits sans autorisation.' },
+    { h:'8. Propriete intellectuelle', p:'Le nom Renuévate, le logo, les textes, images et le design du site appartiennent a Renuévate et ne peuvent etre reproduits sans autorisation.' },
     { h:'9. Utilisation acceptable', p:'Vous ne devez pas utiliser le site a des fins frauduleuses, tenter de compromettre sa securite, ni extraire massivement son contenu (scraping) sans autorisation.' },
     { h:'10. Limitation de responsabilite', p:'Le site est fourni "tel quel". Nous ne garantissons pas une disponibilite ininterrompue et ne sommes pas responsables des dommages indirects lies a l\'utilisation du site, sauf disposition legale contraire.' },
     { h:'11. Loi applicable', p:'Ces conditions sont regies par les lois du Mexique. Tout litige sera resolu devant les tribunaux competents du Mexique.' },
@@ -3171,19 +3193,19 @@ function closeTermsModal(){
 /* ===================== Sobre Renuévate (contenido real, ES/EN/FR) ===================== */
 var ABOUT_CONTENT = {
   es: { sections: [
-    { h:'Quiénes somos', p:'Renuévate es la tienda online de belleza y bienestar de GoNexus Group. Reunimos en un solo lugar los productos que de verdad funcionan, elegidos y explicados con criterio -- no acumulados por acumular.' },
+    { h:'Quiénes somos', p:'Renuévate es la tienda online de belleza y bienestar. Reunimos en un solo lugar los productos que de verdad funcionan, elegidos y explicados con criterio -- no acumulados por acumular.' },
     { h:'Nuestro propósito', p:'Existimos para simplificar una decisión que suele ser confusa: qué usar, en qué orden y por qué. Cada producto que aparece aquí está porque resuelve algo concreto, no porque llena espacio en un catálogo.' },
     { h:'Cómo trabajamos', p:'Organizamos todo en tres sistemas claros: System Luminous Speciality para el cuidado facial, System Health Speciality para nutrición y rendimiento, y System Spot Speciality para el cuidado del hombre. Nuestro cuestionario de diagnóstico y Julieta, tu asesora virtual, te ayudan a encontrar el sistema correcto para ti -- no el que más se vende.' },
     { h:'Nuestro compromiso', p:'Somos una tienda 100% en línea, directa y transparente: precios claros, ingredientes visibles, y una persona real detrás de cada pedido cuando la necesitas, por WhatsApp. Así entendemos el cuidado personal: sin promesas vacías, con resultados que se sostienen.' },
   ] },
   en: { sections: [
-    { h:'Who we are', p:'Renuévate is the beauty and wellness online store from GoNexus Group. We bring together, in one place, the products that actually work -- chosen and explained with judgment, not piled up for the sake of it.' },
+    { h:'Who we are', p:'Renuévate is the beauty and wellness online store. We bring together, in one place, the products that actually work -- chosen and explained with judgment, not piled up for the sake of it.' },
     { h:'Our purpose', p:'We exist to simplify a decision that is usually confusing: what to use, in what order, and why. Every product here earned its place because it solves something specific, not because it fills up a catalog.' },
     { h:'How we work', p:'We organize everything into three clear systems: System Luminous Speciality for facial care, System Health Speciality for nutrition and performance, and System Spot Speciality for men\'s grooming. Our diagnostic quiz and Julieta, your virtual advisor, help you find the right system for you -- not the one that sells the most.' },
     { h:'Our commitment', p:'We are a 100% online store, direct and transparent: clear pricing, visible ingredients, and a real person behind every order when you need one, over WhatsApp. That is how we understand personal care: no empty promises, with results that last.' },
   ] },
   fr: { sections: [
-    { h:'Qui nous sommes', p:'Renuévate est la boutique en ligne beaute et bien-etre de GoNexus Group. Nous reunissons en un seul endroit les produits qui fonctionnent vraiment, choisis et expliques avec discernement -- pas accumules pour accumuler.' },
+    { h:'Qui nous sommes', p:'Renuévate est la boutique en ligne beaute et bien-etre. Nous reunissons en un seul endroit les produits qui fonctionnent vraiment, choisis et expliques avec discernement -- pas accumules pour accumuler.' },
     { h:'Notre raison d\'etre', p:'Nous existons pour simplifier une decision souvent confuse : quoi utiliser, dans quel ordre et pourquoi. Chaque produit present ici a sa place parce qu\'il resout quelque chose de concret, pas parce qu\'il remplit un catalogue.' },
     { h:'Comment nous travaillons', p:'Nous organisons tout en trois systemes clairs : System Luminous Speciality pour le soin du visage, System Health Speciality pour la nutrition et la performance, et System Spot Speciality pour le soin de l\'homme. Notre questionnaire de diagnostic et Julieta, votre conseillere virtuelle, vous aident a trouver le bon systeme pour vous -- pas celui qui se vend le plus.' },
     { h:'Notre engagement', p:'Nous sommes une boutique 100% en ligne, directe et transparente : prix clairs, ingredients visibles, et une vraie personne derriere chaque commande quand vous en avez besoin, par WhatsApp. C\'est ainsi que nous comprenons le soin personnel : sans fausses promesses, avec des resultats qui durent.' },
@@ -3651,9 +3673,11 @@ var selectedRoutine = null;
 var CURRENT_RENDERED_PRODUCTS = [];
 var pdCurrentSku = null;
 var lastBeautyRecommendation = null; // {order:[sku,...], routineIdx:0-2} -- set por el cuestionario de diagnostico de Belleza
-// Fix 58: sku unico a mostrar en productsGrid cuando se entra por una
-// categoria del menu Belleza (ver openBeautyCategory). null = mostrar todos
-// los productos de la vertical (comportamiento de siempre). Se resetea en
+// Fix 58/61: arreglo de sku(s) a mostrar en productsGrid cuando se entra por
+// una categoria del menu Belleza (ver openBeautyCategory). null = mostrar
+// todos los productos de la vertical (comportamiento de siempre). La mayoria
+// de categorias traen 1 solo sku, pero "Tratamiento" agrupa 2 (NACAR-07 +
+// NACAR-08) -- por eso es arreglo y no un sku suelto. Se resetea en
 // goVertical() y openBeautyCatalog() para no dejar "pegado" el filtro.
 var categoryFilterSku = null;
 var BQ_STATE = { step: 0, answers: {} };
@@ -3683,11 +3707,12 @@ function renderVertical(v){
 
   var grid = document.getElementById('productsGrid');
   var html = '';
-  // Fix 58: si categoryFilterSku esta activo (llego por una categoria del
-  // menu Belleza), el grid solo pinta ese producto. relatedHtml sigue
-  // buscando en d.products (lista completa) para que "se compra junto con"
-  // no se pierda solo por estar en vista filtrada.
-  var listToRender = categoryFilterSku ? d.products.filter(function(pp){ return pp.sku === categoryFilterSku; }) : d.products;
+  // Fix 58/61: si categoryFilterSku esta activo (llego por una categoria del
+  // menu Belleza), el grid solo pinta los productos de ese arreglo (1 para la
+  // mayoria de categorias, 2 para "Tratamiento"). relatedHtml sigue buscando
+  // en d.products (lista completa) para que "se compra junto con" no se
+  // pierda solo por estar en vista filtrada.
+  var listToRender = categoryFilterSku ? d.products.filter(function(pp){ return categoryFilterSku.indexOf(pp.sku) !== -1; }) : d.products;
   for (var k=0;k<listToRender.length;k++){
     var p = listToRender[k];
     var ratingHtml = p.rating ? ('<div class="product-rating"><span class="stars">' + starsHtml(p.rating.stars) + '</span><span>' + p.rating.stars.toFixed(1) + ' (' + p.rating.count + ')</span></div>') : '';
@@ -3856,29 +3881,31 @@ function applyCatalogPageLabels(){
   document.getElementById('zoomSubtitle').textContent = dict['catalog.subtitle'];
 }
 
-// Fix 58: punto de entrada de cada categoria del dropdown "Belleza" -- reusa
-// la misma ficha #zoom/catalog-mode que openBeautyCatalog(), pero fija
-// categoryFilterSku antes de renderizar para que productsGrid pinte solo el
-// producto de esa categoria (ver filtro en renderVertical). El titulo/subtitulo
-// se sobreescriben despues con el tag del producto encontrado.
-function openBeautyCategory(sku){
-  categoryFilterSku = sku;
+// Fix 58/61: punto de entrada de cada categoria del dropdown "Belleza" --
+// reusa la misma ficha #zoom/catalog-mode que openBeautyCatalog(), pero fija
+// categoryFilterSku antes de renderizar para que productsGrid pinte solo los
+// productos de esa categoria (ver filtro en renderVertical). "skus" es
+// siempre un arreglo (1 elemento para la mayoria de categorias, 2 para
+// "Tratamiento"). "labelKey" es la clave i18n a usar como titulo de la
+// pagina -- ya no se deriva del tag de un solo producto porque una categoria
+// puede agrupar 2 productos con tags distintos.
+function openBeautyCategory(skus, labelKey){
+  categoryFilterSku = skus;
   renderVertical('nacar');
   var zoomSection = document.getElementById('zoom');
   zoomSection.classList.remove('zoom-hidden');
   zoomSection.classList.add('catalog-mode');
   catalogModeActive = true;
-  applyCatalogCategoryLabels(sku);
+  applyCatalogCategoryLabels(labelKey);
   document.body.classList.add('viewing-product-page');
   window.scrollTo({top:0, behavior:'auto'});
   scrollToId('zoom');
   closeNav();
 }
-function applyCatalogCategoryLabels(sku){
+function applyCatalogCategoryLabels(labelKey){
   var dict = I18N[currentLang];
-  var p = findProductBySku(V.nacar[currentLang].products, sku);
   document.getElementById('zoomEyebrow').textContent = dict['catalog.eyebrow'];
-  document.getElementById('zoomTitle').textContent = p ? p.tag : dict['catalog.title'];
+  document.getElementById('zoomTitle').textContent = dict[labelKey] || dict['catalog.title'];
   document.getElementById('zoomSubtitle').textContent = dict['catalog.categorySubtitle'];
 }
 
