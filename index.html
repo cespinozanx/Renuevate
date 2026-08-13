@@ -159,10 +159,10 @@ section{padding:92px 0;}
 .phil-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;}
 .phil-visual{background:#F8F7F3; border:1px solid var(--line); border-radius:4px; min-height:340px; display:flex; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:44px;}
 .phil-visual .quote{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:25px; line-height:1.55; color:var(--navy);}
-.pillars{margin-top:28px; display:grid; grid-template-columns:1fr; gap:18px;}
-.pillar{border-left:2px solid var(--gold); padding-left:16px;}
-.pillar h4{font-size:15.5px; margin-bottom:5px; font-weight:600;}
-.pillar p{font-size:13.5px; color:var(--grey);}
+.phil-showcase{margin-top:28px; width:230px; max-width:60%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
+.phil-showcase-el{width:100%; height:auto; display:block; aspect-ratio:335/597; object-fit:cover;}
+@media(prefers-reduced-motion:reduce){ .phil-showcase-el{display:none;} }
+@media(max-width:760px){ .phil-showcase{width:190px; max-width:52%;} }
 
 /* .zoom-section reduce su padding-top respecto al "section{padding:92px 0}"
    generico: al ser una pagina aislada (ver comentario de abajo), esos 92px
@@ -837,10 +837,19 @@ var AZURA_CONFIG = {
       <div class="eyebrow" data-i18n="phil.eyebrow">Nuestra filosofía</div>
       <h2 data-i18n-html="phil.h2">Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.</h2>
       <p style="color:var(--grey); margin-top:18px;" data-i18n="phil.p">Renuévate existe para el bienestar real de las personas. Cada marca de nuestro portafolio fue creada para resolver una necesidad específica, no para competir por precio, sino por relevancia en la etapa de vida de quien nos elige.</p>
-      <div class="pillars reveal-stagger">
-        <div class="pillar"><h4 data-i18n="phil.pillar2h">Transparencia, no promesas vacías</h4><p data-i18n="phil.pillar2p">Evidencia y ficha técnica siempre visibles, sin compromisos que no podamos cumplir.</p></div>
-        <div class="pillar"><h4 data-i18n="phil.pillar3h">Hábitos, no transacciones</h4><p data-i18n="phil.pillar3p">Rutinas pensadas para acompañar el progreso real, paso a paso.</p></div>
-        <div class="pillar"><h4 data-i18n="phil.pillar4h">Un solo estándar</h4><p data-i18n="phil.pillar4p">Las cuatro marcas comparten un mismo estándar de calidad y servicio.</p></div>
+      <!-- Fix 56: se quito el bloque de 3 pilares de texto (Transparencia /
+           Habitos / Un solo estandar) por instruccion directa de Carlos --
+           en su lugar, un mini video/transicion cinematografica hecho con
+           2 fotos de campana oficiales SEYTU (Seccion A-1 y Seccion A-1-B)
+           via ffmpeg: zoom lento tipo Ken Burns en cada foto + crossfade
+           de 1s entre ambas, loop de ~9s. No se usa reveal-stagger aqui
+           (mismo motivo que .v-card.has-video mas abajo: un video autoplay
+           no debe arrancar en opacity:0, el decodificador se puede quedar
+           suspendido en algunos navegadores). -->
+      <div class="phil-showcase reveal">
+        <video class="phil-showcase-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-filosofia-showcase-poster.jpg" aria-hidden="true">
+          <source src="media/seytu-filosofia-showcase.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
     <div class="phil-visual reveal">
@@ -1575,9 +1584,6 @@ var I18N = {
     "vert.cta":"Descubrir &#8594;",
     "phil.eyebrow":"Nuestra filosofía", "phil.h2":'Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.',
     "phil.p":"Renuévate existe para el bienestar real de las personas. Cada marca de nuestro portafolio fue creada para resolver una necesidad específica, no para competir por precio, sino por relevancia en la etapa de vida de quien nos elige.",
-    "phil.pillar2h":"Transparencia, no promesas vacías", "phil.pillar2p":"Evidencia y ficha técnica siempre visibles, sin compromisos que no podamos cumplir.",
-    "phil.pillar3h":"Hábitos, no transacciones", "phil.pillar3p":"Rutinas pensadas para acompañar el progreso real, paso a paso.",
-    "phil.pillar4h":"Un solo estándar", "phil.pillar4p":"Las cuatro marcas comparten un mismo estándar de calidad y servicio.",
     "phil.quote":"&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su bienestar.&rdquo;",
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
     "catalog.eyebrow":"Catálogo", "catalog.title":"Catálogo Belleza", "catalog.subtitle":"Todos los productos de System Luminous, en un solo lugar.",
@@ -1695,9 +1701,6 @@ var I18N = {
     "vert.cta":"Discover &#8594;",
     "phil.eyebrow":"Our philosophy", "phil.h2":'We think about your wellbeing. We sustain <span class="accent">habits</span>.',
     "phil.p":"Renuévate exists for people's real wellness. Each vertical was designed to solve a concrete need, not to compete on price, but on relevance to the life moment of whoever chooses us.",
-    "phil.pillar2h":"Transparency, not empty promises", "phil.pillar2p":"Clear evidence and technical data sheets, no claims we can't stand behind.",
-    "phil.pillar3h":"Habits, not transactions", "phil.pillar3p":"Staged routines that support the person's real progress.",
-    "phil.pillar4h":"One single standard", "phil.pillar4p":"All 4 brands share the same quality governance and customer service.",
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: wellness first.&rdquo;",
     "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
     "catalog.eyebrow":"Catalog", "catalog.title":"Beauty Catalog", "catalog.subtitle":"Every System Luminous product, in one place.",
@@ -1815,9 +1818,6 @@ var I18N = {
     "vert.cta":"Decouvrir &#8594;",
     "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous pensons a votre bien-etre. Nous soutenons des <span class="accent">habitudes</span>.',
     "phil.p":"Renuévate existe pour le bien-etre reel des personnes. Chaque marque a ete concue pour repondre a un besoin concret, sans jouer la carte du prix, mais celle de la pertinence dans le moment de vie de la personne qui nous choisit.",
-    "phil.pillar2h":"La transparence, pas de promesses vides", "phil.pillar2p":"Preuves et fiches techniques claires, sans allegations que nous ne pouvons pas soutenir.",
-    "phil.pillar3h":"Des habitudes, pas des transactions", "phil.pillar3p":"Des routines progressives qui accompagnent le progres reel de la personne.",
-    "phil.pillar4h":"Un seul standard", "phil.pillar4p":"Les 4 marques partagent la meme gouvernance qualite et le meme service client.",
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le bien-etre d'abord.&rdquo;",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Systeme phare", "zoom.knowRitual":"Decouvrir le systeme",
     "catalog.eyebrow":"Catalogue", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"Tous les produits System Luminous, au même endroit.",
