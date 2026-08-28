@@ -79,13 +79,17 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
   .nav-dropdown-menu{position:absolute; top:100%; left:50%; transform:translateX(-50%); background:#fff; box-shadow:0 10px 28px rgba(0,0,0,.14); padding:12px 18px; min-width:210px; border-radius:6px; z-index:80; margin-top:14px;}
   .nav-dropdown-menu a{padding:8px 4px !important; white-space:nowrap; border-bottom:none !important;}
 }
-.hero-video-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#fff url('media/hero-mobile-poster.jpg') center/cover no-repeat; z-index:0;}
-.hero-video-el{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:0; display:block;}
+/* Fix 68: el video unico del hero se sustituye por un carrusel de 3 fotos
+   lifestyle (rotacion automatica + control manual con puntos). Mismo marco
+   (posicion, margen desktop, sombra) que el video, solo cambia el contenido:
+   ahora son <img class="hero-slide"> apiladas con crossfade por opacity. */
+.hero-media-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#F8F7F3; z-index:0;}
+.hero-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity 1.4s ease;}
+.hero-slide.is-active{opacity:1;}
 .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(20,18,14,.22) 0%, rgba(20,18,14,.08) 38%, rgba(20,18,14,.62) 100%);}
-@media(prefers-reduced-motion:reduce){ .hero-video-el{display:none;} }
-@media(min-width:761px){
-  .hero-video-frame{background-image:url('media/hero-desktop-poster.jpg');}
-}
+.hero-slide-dots{position:absolute; z-index:2; left:0; right:0; bottom:16px; display:flex; justify-content:center; gap:8px;}
+.hero-slide-dot{width:7px; height:7px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.5); cursor:pointer; transition:background .25s ease, transform .25s ease;}
+.hero-slide-dot.is-active{background:#fff; transform:scale(1.35);}
 .hero-cta.hero-cta-sm .btn{padding:9px 18px; font-size:10.5px; letter-spacing:1.2px;}
 
 body.nav-lock{overflow:hidden;}
@@ -106,14 +110,14 @@ body.nav-lock{overflow:hidden;}
      margen a los lados para que se vea mas como una pieza de contenido
      enmarcada que como un fondo de pantalla completa. El fondo blanco de
      .hero es lo que se ve en ese margen.
-     Bug corregido: .hero-video-frame tiene width:100% en su regla base
+     Bug corregido: .hero-media-frame tiene width:100% en su regla base
      (linea de arriba). Con left+right+width:100% los tres puestos a la vez,
      CSS ignora "right" (elemento sobre-restringido) y el marco se corria
      hacia la derecha, quedando recortado por el overflow:hidden de .hero --
      eso era el "lado derecho recortado". width:auto aqui resuelve el
      ancho real entre left y right en vez de heredar el 100% fijo. */
   .hero{min-height:56vh; background:#fff;}
-  .hero-video-frame{left:64px; right:64px; width:auto; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
+  .hero-media-frame{left:64px; right:64px; width:auto; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
 }
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
 .btn-ghost:hover{background:rgba(255,255,255,.1);}
@@ -610,14 +614,6 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .footer-grid{grid-template-columns:1fr 1fr; row-gap:32px;}
 }
 @media(max-width:760px){
-  /* El video hero-mobile.mp4 es 960x540 (horizontal, 16:9) pero el contenedor
-     del hero en movil es angosto y alto (retrato) -- con object-fit:cover
-     eso obligaba a recortar casi 2/3 del ancho del video para llenar el
-     marco, se veia como un zoom exagerado a una franja del centro, no el
-     video completo. Con "contain" se ve la escena entera (con franjas del
-     color de fondo arriba/abajo en vez de recorte lateral). */
-  .hero-video-el{object-fit:contain;}
-  .hero-video-frame{background-size:contain;}
   .topbar-links span:nth-child(2), .topbar-links span:nth-child(3){display:none;}
   .nav-row{position:relative;}
   .logo{flex:1; text-align:center; font-size:27px;}
@@ -809,12 +805,16 @@ var AZURA_CONFIG = {
 </header>
 
 <section class="hero home-only">
-  <div class="hero-video-frame" id="heroVideoFrame">
-    <video class="hero-video-el" id="heroVideoEl" autoplay muted loop playsinline preload="auto" aria-label="Video de marca Renuévate">
-      <source src="media/hero-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
-      <source src="media/hero-desktop.mp4" type="video/mp4">
-    </video>
+  <div class="hero-media-frame" id="heroCarouselFrame">
+    <img class="hero-slide is-active" src="media/hero-carousel-1-labial.webp" alt="" loading="eager">
+    <img class="hero-slide" src="media/hero-carousel-2-crema.webp" alt="" loading="lazy">
+    <img class="hero-slide" src="media/hero-carousel-3-flatlay.webp" alt="" loading="lazy">
     <div class="hero-scrim"></div>
+    <div class="hero-slide-dots" id="heroSlideDots">
+      <button type="button" class="hero-slide-dot is-active" onclick="heroGoToSlide(0,true)" aria-label="Imagen 1"></button>
+      <button type="button" class="hero-slide-dot" onclick="heroGoToSlide(1,true)" aria-label="Imagen 2"></button>
+      <button type="button" class="hero-slide-dot" onclick="heroGoToSlide(2,true)" aria-label="Imagen 3"></button>
+    </div>
   </div>
   <div class="container hero-grid">
     <div class="hero-content reveal-stagger">
@@ -1625,7 +1625,7 @@ var I18N = {
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
     "nav.beauty.cleanser":"Limpiador facial", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Tratamiento", "nav.beauty.sunscreen":"Protector solar", "nav.beauty.explore":"Explorar catalogo", "nav.beauty.quiz":"Diagnostico personalizado",
-    "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
+    "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
     "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
@@ -1743,7 +1743,7 @@ var I18N = {
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
     "nav.beauty.cleanser":"Facial cleanser", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Treatment", "nav.beauty.sunscreen":"Sunscreen", "nav.beauty.explore":"Explore catalog", "nav.beauty.quiz":"Personalized diagnosis",
-    "hero.h1":'<span class="accent">Transform</span> your life, Renuévate', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
+    "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
     "hero.cta1":"See more", "hero.cta2":"Our philosophy",
     "hero.visualCaption":"Four wellness systems, one single standard of origin and quality.",
@@ -1861,7 +1861,7 @@ var I18N = {
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
     "nav.beauty.cleanser":"Nettoyant visage", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Traitement", "nav.beauty.sunscreen":"Protection solaire", "nav.beauty.explore":"Explorer le catalogue", "nav.beauty.quiz":"Diagnostic personnalise",
-    "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
+    "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
     "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
     "hero.visualCaption":"Quatre systemes de bien-etre, un seul standard d'origine et de qualite.",
@@ -3298,31 +3298,39 @@ function wireSocialLinks(){
 document.addEventListener("DOMContentLoaded", wireSocialLinks);
 document.addEventListener("DOMContentLoaded", wireWhatsappFloat);
 
-function initHeroVideo(){
-  var v = document.getElementById("heroVideoEl");
-  if (!v) return;
-  // Chrome/WebView en Android a veces solo respeta la propiedad JS "muted" en
-  // reproducciones disparadas por play() programatico, no solo el atributo HTML
-  // -- se fija explicito aqui como defensa adicional para autoplay en Android.
-  v.muted = true;
-  v.addEventListener('error', function(){
-    var err = v.error;
-    var codes = {1:'ABORTED', 2:'NETWORK', 3:'DECODE', 4:'SRC_NOT_SUPPORTED'};
-    console.error('[heroVideo] no se pudo reproducir. code=' + (err && err.code) +
-      ' (' + (err && codes[err.code]) + ') currentSrc=' + v.currentSrc);
-  });
-  var tryPlay = function(){ v.play().catch(function(err){ console.warn('[heroVideo] play() rechazado:', err && err.message); }); };
-  tryPlay();
-  if ("IntersectionObserver" in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting) tryPlay(); else v.pause();
-      });
-    }, { threshold: 0.25 });
-    io.observe(v);
-  }
+/* Fix 68: carrusel del hero (reemplaza al video unico). Rotacion automatica
+   cada 5.5s + control manual con los puntos (heroGoToSlide(i,true) reinicia
+   el temporizador para que no "salte" justo despues de un click manual). Se
+   pausa el auto-rotate si la pestaña esta oculta (ahorro de batería/CPU en
+   movil) y se respeta prefers-reduced-motion (sin auto-rotate, pero los
+   puntos siguen funcionando). */
+var heroSlideIndex = 0;
+var heroSlideTimer = null;
+function heroGoToSlide(i, manual){
+  var slides = document.querySelectorAll("#heroCarouselFrame .hero-slide");
+  var dots = document.querySelectorAll("#heroSlideDots .hero-slide-dot");
+  if (!slides.length) return;
+  heroSlideIndex = ((i % slides.length) + slides.length) % slides.length;
+  slides.forEach(function(s, idx){ s.classList.toggle("is-active", idx === heroSlideIndex); });
+  dots.forEach(function(d, idx){ d.classList.toggle("is-active", idx === heroSlideIndex); });
+  if (manual) heroStartAutoRotate();
 }
-document.addEventListener("DOMContentLoaded", initHeroVideo);
+function heroStartAutoRotate(){
+  if (heroSlideTimer) clearInterval(heroSlideTimer);
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) return;
+  heroSlideTimer = setInterval(function(){ heroGoToSlide(heroSlideIndex + 1); }, 5500);
+}
+function initHeroCarousel(){
+  var frame = document.getElementById("heroCarouselFrame");
+  if (!frame) return;
+  heroStartAutoRotate();
+  document.addEventListener("visibilitychange", function(){
+    if (document.hidden){ if (heroSlideTimer){ clearInterval(heroSlideTimer); heroSlideTimer = null; } }
+    else { heroStartAutoRotate(); }
+  });
+}
+document.addEventListener("DOMContentLoaded", initHeroCarousel);
 
 function saveCookiePrefs(){
   var a = document.getElementById('cookieAnalyticsToggle');
