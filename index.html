@@ -516,7 +516,15 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 @media(max-width:700px){
   .product-detail-modal{flex-direction:column; max-height:90vh; overflow-y:auto;}
   .pd-media-col{width:100%; flex:none; max-height:none; overflow-y:visible;}
-  .pd-media{aspect-ratio:4/3;}
+  /* Fix 67: en escritorio .pd-media es 3/4 (retrato), que es la proporcion
+     real de nuestras fotos de producto (1200x1600, 1200x1200, etc). Aqui en
+     movil quedaba forzado a 4/3 (horizontal) -- un contenedor apaisado para
+     fotos verticales hace que object-fit:contain deje franjas enormes
+     arriba/abajo, o sea la imagen se ve chica dentro de su caja ("no
+     maximizada") en vez de llenar el contenedor. Se iguala a la misma
+     proporcion 3/4 de escritorio para que la foto llene el recuadro en
+     iOS/Android igual que en escritorio. */
+  .pd-media{aspect-ratio:3/4;}
   .pd-body{max-height:none; overflow-y:visible; padding:24px 24px 30px;}
 }
 .pd-eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:6px;}
@@ -810,11 +818,10 @@ var AZURA_CONFIG = {
   </div>
   <div class="container hero-grid">
     <div class="hero-content reveal-stagger">
-      <div class="eyebrow" data-i18n="hero.eyebrow">Renuévate . Holding de Bienestar</div>
-      <h1 data-i18n-html="hero.h1"><span class="accent">Transforma</span> tu vida</h1>
-      <p data-i18n-html="hero.p">Pensado en <span class="accent">acompañarte</span> en cada etapa de tu vida.</p>
+      <h1 data-i18n-html="hero.h1"><span class="accent">Transforma</span> tu vida, Renuévate</h1>
+      <p data-i18n-html="hero.p">Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.</p>
       <div class="hero-cta hero-cta-sm">
-        <a class="btn btn-dark" onclick="openBeautyCatalog()" data-i18n="hero.cta1">Explorar el catálogo</a>
+        <a class="btn btn-dark" onclick="openBeautyCatalog()" data-i18n="hero.cta1">Ver más</a>
         <a class="btn btn-ghost" onclick="scrollToId('filosofia')" data-i18n="hero.cta2">Nuestra filosofia</a>
       </div>
     </div>
@@ -1618,9 +1625,9 @@ var I18N = {
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
     "nav.beauty.cleanser":"Limpiador facial", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Tratamiento", "nav.beauty.sunscreen":"Protector solar", "nav.beauty.explore":"Explorar catalogo", "nav.beauty.quiz":"Diagnostico personalizado",
-    "hero.eyebrow":"Renuévate . Holding de Bienestar", "hero.h1":'<span class="accent">Transforma</span> tu vida', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
-    "hero.p":'Pensado en <span class="accent">acompañarte</span> en cada etapa de tu vida.',
-    "hero.cta1":"Explorar el catálogo", "hero.cta2":"Nuestra filosofia",
+    "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate', "hero.videoCaption":"Video de marca Renuévate", "hero.videoCta":"Ver video &#8594;",
+    "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
+    "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
     "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su sistema...",
     "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesión para guardar tus productos favoritos y tu historial de pedidos.",
@@ -1736,9 +1743,9 @@ var I18N = {
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
     "nav.beauty.cleanser":"Facial cleanser", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Treatment", "nav.beauty.sunscreen":"Sunscreen", "nav.beauty.explore":"Explore catalog", "nav.beauty.quiz":"Personalized diagnosis",
-    "hero.eyebrow":"Renuévate . Wellness Holding", "hero.h1":'<span class="accent">Transform</span> your life', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
-    "hero.p":'Here to <span class="accent">walk beside you</span> through every stage of your life.',
-    "hero.cta1":"Explore the catalog", "hero.cta2":"Our philosophy",
+    "hero.h1":'<span class="accent">Transform</span> your life, Renuévate', "hero.videoCaption":"Renuévate brand video", "hero.videoCta":"Watch video &#8594;",
+    "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
+    "hero.cta1":"See more", "hero.cta2":"Our philosophy",
     "hero.visualCaption":"Four wellness systems, one single standard of origin and quality.",
     "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its system...",
     "account.title":"Your Renuévate account", "account.p":"Sign in to save your favorite products and your order history.",
@@ -1854,9 +1861,9 @@ var I18N = {
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
     "nav.beauty.cleanser":"Nettoyant visage", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Traitement", "nav.beauty.sunscreen":"Protection solaire", "nav.beauty.explore":"Explorer le catalogue", "nav.beauty.quiz":"Diagnostic personnalise",
-    "hero.eyebrow":"Renuévate . Holding Bien-etre", "hero.h1":'<span class="accent">Transforme</span> votre vie', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
-    "hero.p":'Pense pour <span class="accent">vous accompagner</span> a chaque etape de votre vie.',
-    "hero.cta1":"Explorer le catalogue", "hero.cta2":"Notre philosophie",
+    "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate', "hero.videoCaption":"Video de marque Renuévate", "hero.videoCta":"Voir la video &#8594;",
+    "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
+    "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
     "hero.visualCaption":"Quatre systemes de bien-etre, un seul standard d'origine et de qualite.",
     "search.placeholder":"Recherchez un produit ou un systeme...", "search.btn":"Rechercher", "search.notfound":"Aucun resultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture du systeme...",
     "account.title":"Votre compte Renuévate", "account.p":"Connectez-vous pour enregistrer vos produits favoris et votre historique de commandes.",
@@ -3135,48 +3142,45 @@ function closePrivacyModal(){
 var TERMS_CONTENT = {
   es: { sections: [
     { h:'1. Aceptación de los términos', p:'Al usar Renuévate y realizar una compra, aceptas estos Términos y Condiciones y el Aviso de Privacidad.' },
-    { h:'2. Naturaleza del sitio', p:'Renuévate es una tienda 100% en linea. No operamos tienda fisica ni punto de venta presencial por el momento.' },
+    { h:'2. Naturaleza del sitio', p:'Renuévate es una tienda 100% en línea.' },
     { h:'3. Precios y disponibilidad', p:'Los precios se muestran en pesos mexicanos (MXN) e incluyen impuestos aplicables salvo que se indique lo contrario. Los precios y la disponibilidad de producto pueden cambiar sin previo aviso.' },
-    { h:'4. Envios', p:'Realizamos envios a todo Mexico con entrega estimada de 4 dias habiles. Te enviamos tu guia de rastreo por correo y WhatsApp al salir tu pedido.' },
-    { h:'5. Devoluciones', p:'Estamos formalizando nuestra política de devoluciones. Mientras tanto, cada caso se resuelve directamente contigo por WhatsApp.' },
-    { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catálogo. Para comprar, puedes iniciar sesión con Google o Facebook. Eres responsable de mantener la confidencialidad de tu acceso.' },
-    { h:'7. Pagos', p:'Aceptamos tarjeta, debito y PayPal. Nunca capturamos ni almacenamos el número completo de tu tarjeta ni el CVV en nuestros servidores (control PCI-DSS/ISO 27001).' },
-    { h:'8. Propiedad intelectual', p:'El nombre Renuévate, el logotipo, los textos, imagenes y el diseño del sitio son propiedad de Renuévate y no pueden reproducirse sin autorizacion.' },
-    { h:'9. Uso aceptable', p:'No debes usar el sitio para fines fraudulentos, intentar vulnerar su seguridad, ni extraer masivamente su contenido (scraping) sin autorizacion.' },
-    { h:'10. Limitacion de responsabilidad', p:'El sitio se ofrece "tal cual". No garantizamos disponibilidad ininterrumpida y no somos responsables por danos indirectos derivados del uso del sitio, salvo lo que exija la ley aplicable.' },
-    { h:'11. Ley aplicable', p:'Estos terminos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier controversia se resolvera ante los tribunales competentes de Mexico.' },
-    { h:'12. Cambios a estos terminos', p:'Podemos actualizar estos terminos; la fecha de la version vigente aparece al inicio de esta seccion.' },
-    { h:'13. Contacto', p:'Dudas sobre estos terminos: escribenos por WhatsApp, este chat, o adabueo18@gmail.com.' },
+    { h:'4. Envíos', p:'Realizamos envíos a todo México, con entrega desde el mismo día y hasta un máximo de 3 días hábiles, según tu ubicación. Te enviamos tu guía de rastreo por correo y WhatsApp al salir tu pedido.' },
+    { h:'5. Devoluciones', p:'Cada devolución se gestiona directamente contigo por WhatsApp.' },
+    { h:'6. Cuentas y acceso', p:'No necesitas cuenta para navegar el catálogo. Para comprar, puedes iniciar sesión con Google o Facebook.' },
+    { h:'7. Pagos', p:'Aceptamos tarjeta de crédito y débito, PayPal, y pagos a través de Mercado Pago. Nunca capturamos ni almacenamos el número completo de tu tarjeta ni el CVV en nuestros servidores (control PCI-DSS/ISO 27001).' },
+    { h:'8. Propiedad intelectual', p:'El nombre Renuévate, el logotipo, los textos, imágenes y el diseño del sitio son propiedad de Renuévate y no pueden reproducirse sin autorización.' },
+    { h:'9. Limitación de responsabilidad', p:'El sitio se ofrece "tal cual". No garantizamos disponibilidad ininterrumpida y no somos responsables por daños indirectos derivados del uso del sitio, salvo lo que exija la ley aplicable.' },
+    { h:'10. Ley aplicable', p:'Estos términos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier controversia se resolverá ante los tribunales competentes de México.' },
+    { h:'11. Cambios a estos términos', p:'Podemos actualizar estos términos; la fecha de la versión vigente aparece al inicio de esta sección.' },
+    { h:'12. Contacto', p:'Dudas sobre estos términos: escríbenos por WhatsApp, este chat, o adabueo18@gmail.com.' },
   ] },
   en: { sections: [
     { h:'1. Acceptance of terms', p:'By using Renuévate and placing an order, you accept these Terms and Conditions and the Privacy Notice.' },
-    { h:'2. Nature of the site', p:'Renuévate is a 100% online store. We do not operate a physical store or point of sale at this time.' },
+    { h:'2. Nature of the site', p:'Renuévate is a 100% online store.' },
     { h:'3. Pricing and availability', p:'Prices are shown in Mexican pesos (MXN) and include applicable taxes unless stated otherwise. Prices and product availability may change without notice.' },
-    { h:'4. Shipping', p:'We ship across Mexico with an estimated delivery of 4 business days. We send your tracking number by email and WhatsApp once your order ships.' },
-    { h:'5. Returns', p:'We are still formalizing our returns policy. In the meantime, each case is resolved directly with you via WhatsApp.' },
-    { h:'6. Accounts and access', p:'You do not need an account to browse the catalog. To purchase, you can sign in with Google or Facebook. You are responsible for keeping your access confidential.' },
-    { h:'7. Payments', p:'We accept card, debit, and PayPal. We never capture or store your full card number or CVV on our servers (PCI-DSS/ISO 27001 control).' },
+    { h:'4. Shipping', p:'We ship across Mexico, with delivery ranging from the same day up to a maximum of 3 business days, depending on your location. We send your tracking number by email and WhatsApp once your order ships.' },
+    { h:'5. Returns', p:'Each return is handled directly with you over WhatsApp.' },
+    { h:'6. Accounts and access', p:'You do not need an account to browse the catalog. To purchase, you can sign in with Google or Facebook.' },
+    { h:'7. Payments', p:'We accept credit and debit cards, PayPal, and payments through Mercado Pago. We never capture or store your full card number or CVV on our servers (PCI-DSS/ISO 27001 control).' },
     { h:'8. Intellectual property', p:'The Renuévate name, logo, text, images, and site design are the property of Renuévate and may not be reproduced without authorization.' },
-    { h:'9. Acceptable use', p:'You must not use the site for fraudulent purposes, attempt to compromise its security, or bulk-scrape its content without authorization.' },
-    { h:'10. Limitation of liability', p:'The site is provided "as is." We do not guarantee uninterrupted availability and are not liable for indirect damages arising from use of the site, except as required by applicable law.' },
-    { h:'11. Governing law', p:'These terms are governed by the laws of Mexico. Any dispute will be resolved before the competent courts of Mexico.' },
-    { h:'12. Changes to these terms', p:'We may update these terms; the effective date appears at the top of this section.' },
-    { h:'13. Contact', p:'Questions about these terms: message us on WhatsApp, this chat, or adabueo18@gmail.com.' },
+    { h:'9. Limitation of liability', p:'The site is provided "as is." We do not guarantee uninterrupted availability and are not liable for indirect damages arising from use of the site, except as required by applicable law.' },
+    { h:'10. Governing law', p:'These terms are governed by the laws of Mexico. Any dispute will be resolved before the competent courts of Mexico.' },
+    { h:'11. Changes to these terms', p:'We may update these terms; the effective date appears at the top of this section.' },
+    { h:'12. Contact', p:'Questions about these terms: message us on WhatsApp, this chat, or adabueo18@gmail.com.' },
   ] },
   fr: { sections: [
     { h:'1. Acceptation des conditions', p:'En utilisant Renuévate et en passant une commande, vous acceptez ces Conditions Generales et l\'Avis de Confidentialite.' },
-    { h:'2. Nature du site', p:'Renuévate est une boutique 100% en ligne. Nous n\'exploitons pas de boutique physique pour le moment.' },
+    { h:'2. Nature du site', p:'Renuévate est une boutique 100% en ligne.' },
     { h:'3. Prix et disponibilite', p:'Les prix sont affiches en pesos mexicains (MXN) et incluent les taxes applicables sauf indication contraire. Les prix et la disponibilite des produits peuvent changer sans preavis.' },
-    { h:'4. Livraison', p:'Nous livrons partout au Mexique avec une livraison estimee de 4 jours ouvres. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
-    { h:'5. Retours', p:'Nous finalisons notre politique de retours. En attendant, chaque cas est traite directement avec vous via WhatsApp.' },
-    { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google ou Facebook. Vous etes responsable de la confidentialite de votre acces.' },
-    { h:'7. Paiements', p:'Carte, debit et PayPal acceptes. Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
+    { h:'4. Livraison', p:'Nous livrons partout au Mexique, avec une livraison allant du jour meme jusqu\'a un maximum de 3 jours ouvres, selon votre emplacement. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
+    { h:'5. Retours', p:'Chaque retour est traite directement avec vous via WhatsApp.' },
+    { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google ou Facebook.' },
+    { h:'7. Paiements', p:'Nous acceptons les cartes de credit et de debit, PayPal, et les paiements via Mercado Pago. Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
     { h:'8. Propriete intellectuelle', p:'Le nom Renuévate, le logo, les textes, images et le design du site appartiennent a Renuévate et ne peuvent etre reproduits sans autorisation.' },
-    { h:'9. Utilisation acceptable', p:'Vous ne devez pas utiliser le site a des fins frauduleuses, tenter de compromettre sa securite, ni extraire massivement son contenu (scraping) sans autorisation.' },
-    { h:'10. Limitation de responsabilite', p:'Le site est fourni "tel quel". Nous ne garantissons pas une disponibilite ininterrompue et ne sommes pas responsables des dommages indirects lies a l\'utilisation du site, sauf disposition legale contraire.' },
-    { h:'11. Loi applicable', p:'Ces conditions sont regies par les lois du Mexique. Tout litige sera resolu devant les tribunaux competents du Mexique.' },
-    { h:'12. Modifications de ces conditions', p:'Nous pouvons mettre a jour ces conditions ; la date de la version en vigueur apparait en haut de cette section.' },
-    { h:'13. Contact', p:'Questions sur ces conditions : ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.' },
+    { h:'9. Limitation de responsabilite', p:'Le site est fourni "tel quel". Nous ne garantissons pas une disponibilite ininterrompue et ne sommes pas responsables des dommages indirects lies a l\'utilisation du site, sauf disposition legale contraire.' },
+    { h:'10. Loi applicable', p:'Ces conditions sont regies par les lois du Mexique. Tout litige sera resolu devant les tribunaux competents du Mexique.' },
+    { h:'11. Modifications de ces conditions', p:'Nous pouvons mettre a jour ces conditions ; la date de la version en vigueur apparait en haut de cette section.' },
+    { h:'12. Contact', p:'Questions sur ces conditions : ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.' },
   ] },
 };
 
