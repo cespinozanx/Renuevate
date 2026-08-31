@@ -68,6 +68,10 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 .nav-dropdown-menu{display:none; flex-direction:column;}
 .nav-dropdown.open .nav-dropdown-menu{display:flex;}
 .nav-dropdown-menu a{font-size:11px !important;}
+/* Fix 69: item de nav "Ver mas" (buscador) -- mismo tamaño/tracking que el
+   resto de links del nav, solo agrega la lupa antes del texto. */
+.nav-search-link{display:inline-flex; align-items:center; gap:5px;}
+.nav-search-icon{flex:0 0 auto;}
 .nav-dropdown-divider{height:1px; background:var(--line); margin:8px 4px;}
 @media(min-width:761px){
   .nav-dropdown:hover .nav-dropdown-menu{display:flex;}
@@ -86,8 +90,22 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 .hero-media-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#F8F7F3; z-index:0;}
 .hero-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity 1.4s ease;}
 .hero-slide.is-active{opacity:1;}
+/* Object-position por foto: mantiene rostro/producto centrado cuando el
+   recorte de "cover" cae del lado que menos conviene (ver comentario de
+   min-height arriba). */
+.hero-slide:nth-of-type(1){object-position:center 30%;}
+.hero-slide:nth-of-type(2){object-position:center 35%;}
+.hero-slide:nth-of-type(3){object-position:center 55%;}
 .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(20,18,14,.22) 0%, rgba(20,18,14,.08) 38%, rgba(20,18,14,.62) 100%);}
-.hero-slide-dots{position:absolute; z-index:2; left:0; right:0; bottom:16px; display:flex; justify-content:center; gap:8px;}
+/* Fix 69: los puntos no respondian al clic -- .hero-grid (el bloque de texto
+   H1/parrafo/botones) tambien tiene z-index:2 y, aunque su fondo es
+   transparente, su caja SI es "clickeable" en toda su area (incluido el
+   padding-bottom de 52px que usa para pegarse abajo via align-items:flex-end
+   del .hero). Esa franja transparente caia justo encima de los puntos y,
+   por venir despues en el DOM con el mismo z-index, ganaba el hit-test y se
+   quedaba con el clic. Subir los puntos a z-index:3 los pone por encima de
+   esa franja sin tocar el resto del layout. */
+.hero-slide-dots{position:absolute; z-index:3; left:0; right:0; bottom:16px; display:flex; justify-content:center; gap:8px;}
 .hero-slide-dot{width:7px; height:7px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.5); cursor:pointer; transition:background .25s ease, transform .25s ease;}
 .hero-slide-dot.is-active{background:#fff; transform:scale(1.35);}
 .hero-cta.hero-cta-sm .btn{padding:9px 18px; font-size:10.5px; letter-spacing:1.2px;}
@@ -96,7 +114,15 @@ body.nav-lock{overflow:hidden;}
 
 .lang-select-top{background:transparent; color:var(--ink); border:1px solid var(--line); border-radius:2px; font-size:11px; letter-spacing:.6px; padding:5px 6px; cursor:pointer; font-family:'Manrope',sans-serif;}
 
-.hero{position:relative; min-height:68vh; padding:0; display:flex; align-items:flex-end; overflow:hidden; background:#fff;}
+/* Fix 69: en movil el carrusel se sentia "chico" comparado con desktop.
+   68vh dejaba la caja casi del mismo aspecto que las fotos (poco recorte,
+   pero tambien poca presencia en pantalla). Subir a 84vh hace que la foto
+   ocupe mas alto de la pantalla (se siente "maximizada", igual de grande que
+   en desktop) -- el recorte que se gana es lateral, no de arriba/abajo, y
+   con el object-position de cada slide (ver .hero-slide:nth-of-type) el
+   sujeto/producto se mantiene centrado. Desktop sigue en 56vh (linea de
+   abajo, sin tocar -- ese ya "se ve perfecto" segun Carlos). */
+.hero{position:relative; min-height:84vh; padding:0; display:flex; align-items:flex-end; overflow:hidden; background:#fff;}
 .hero-grid{position:relative; z-index:2; display:flex; justify-content:center; width:100%; padding-bottom:52px;}
 .hero-content{color:#fff; max-width:640px; text-align:center;}
 .hero-content .eyebrow{color:#F0DCA0;}
@@ -422,6 +448,17 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .beauty-choice-modal .eyebrow{display:block; margin-bottom:8px;}
 .beauty-choice-modal h3{font-size:21px;}
 .beauty-choice-modal .pm-subtitle{margin-bottom:8px; line-height:1.6;}
+
+/* Fix 69: modal de busqueda -- mismo patron visual que coming-soon-modal
+   (icono circular + titulo + texto), con un form de una linea (input+boton)
+   y una linea de feedback debajo para "no encontramos"/"encontramos X". */
+.search-modal{max-width:420px; text-align:center;}
+.search-modal .cs-icon{width:52px; height:52px; border-radius:50%; background:var(--cream); color:var(--gold); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;}
+.search-modal h3{font-size:20px; margin-bottom:18px;}
+.search-form{display:flex; gap:8px;}
+.search-input{flex:1; border:1px solid var(--line); border-radius:2px; padding:11px 12px; font-size:13.5px; font-family:'Manrope',sans-serif; color:var(--ink);}
+.search-input:focus{outline:none; border-color:var(--navy);}
+.search-feedback{margin-top:14px; font-size:12.5px; color:var(--grey); min-height:16px; line-height:1.5;}
 .beauty-choice-options{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;}
 .beauty-choice-card{border:1px solid var(--line); border-radius:6px; padding:22px 18px; cursor:pointer; text-align:left; transition:box-shadow .2s, border-color .2s; background:#fff;}
 .beauty-choice-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08); border-color:var(--nacar);}
@@ -768,23 +805,29 @@ var AZURA_CONFIG = {
       <div class="nav-dropdown" id="navBeautyDropdown">
         <a class="nav-dropdown-trigger" data-v="nacar" onclick="toggleBeautyDropdown(event)"><span data-i18n="nav.nacar">Belleza</span> <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
-          <a onclick="openBeautyCategory(['NACAR-06'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Limpiador facial</a>
-          <a onclick="openBeautyCategory(['NACAR-07','NACAR-08'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Tratamiento</a>
-          <a onclick="openBeautyCategory(['NACAR-09'], 'nav.beauty.sunscreen'); closeNav();" data-i18n="nav.beauty.sunscreen">Protector solar</a>
+          <a onclick="openBeautyCategory(['NACAR-06'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skin Care</a>
+          <a onclick="openBeautyCategory(['NACAR-07','NACAR-08'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
+          <a onclick="openBeautyCategory(['NACAR-09'], 'nav.beauty.sunscreen'); closeNav();" data-i18n="nav.beauty.sunscreen">Descubre tu rutina</a>
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
-          <a onclick="openBeautyCatalog(); closeNav();" data-i18n="nav.beauty.explore">Explorar catalogo</a>
-          <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
-        </div>
-      </div>
-      <div class="nav-dropdown" id="navSystemDropdown">
-        <a class="nav-dropdown-trigger" onclick="toggleSystemDropdown(event)" data-i18n="nav.system">System Speciality <span class="caret">&#9660;</span></a>
-        <div class="nav-dropdown-menu">
+          <!-- Fix 69: "System Speciality" ya no es su propio item de nav de
+               nivel superior -- Carlos pidio bajarlo dentro del dropdown
+               Belleza, exactamente donde antes vivia "Explorar catalogo"
+               (ahora eliminado de aqui). -->
           <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.system.luminous">Speciality Luminous</a>
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">Speciality Health</a>
           <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
+          <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
         </div>
       </div>
       <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
+      <!-- Fix 69: buscador -- reemplaza al viejo icono de lupa del header
+           (quitado en Fix 56). Ahora es un item de nav normal, a la derecha
+           de "Nuestra filosofia", con el mismo texto del CTA del hero
+           ("Ver mas") + icono de lupa. Abre searchModalOverlay. -->
+      <a class="nav-search-link" onclick="openSearchModal();">
+        <svg class="nav-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span data-i18n="nav.search">Ver más</span>
+      </a>
     </nav>
     <div class="header-icons">
       <span class="account-name" id="accountNameLabel" style="display:none;"></span>
@@ -1162,6 +1205,24 @@ var AZURA_CONFIG = {
     <h3 id="comingSoonTitle" data-i18n="comingSoon.title">Estamos afinando este contenido</h3>
     <p class="pm-subtitle" data-i18n="comingSoon.body">Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.</p>
     <button type="button" class="btn btn-dark" style="width:100%; border:none; cursor:pointer;" onclick="closeComingSoon()" data-i18n="comingSoon.cta">Entendido</button>
+  </div>
+</div>
+
+<!-- Fix 69: modal de busqueda, abierto desde el item de nav "Ver mas" (lupa)
+     junto a "Nuestra filosofia". Reusa el patron profile-modal-overlay +
+     is-open, igual que comingSoonOverlay/subscribeThanksOverlay. -->
+<div class="profile-modal-overlay" id="searchModalOverlay" onclick="if(event.target===this) closeSearchModal();">
+  <div class="privacy-modal search-modal" role="dialog" aria-modal="true" aria-labelledby="searchModalTitle">
+    <button class="privacy-modal-close" onclick="closeSearchModal()" aria-label="Cerrar">&times;</button>
+    <div class="cs-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    </div>
+    <h3 id="searchModalTitle" data-i18n="search.title">Buscar</h3>
+    <form class="search-form" onsubmit="return runProductSearch(event);">
+      <input type="text" id="searchInput" class="search-input" placeholder="Busca un producto o sistema...">
+      <button type="submit" class="btn btn-dark" style="border:none; cursor:pointer;" data-i18n="search.btn">Buscar</button>
+    </form>
+    <p class="search-feedback" id="searchFeedback"></p>
   </div>
 </div>
 
@@ -1623,8 +1684,8 @@ var V = {
 var I18N = {
   es:{
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
-    "nav.nacar":"Belleza", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia",
-    "nav.beauty.cleanser":"Limpiador facial", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Tratamiento", "nav.beauty.sunscreen":"Protector solar", "nav.beauty.explore":"Explorar catalogo", "nav.beauty.quiz":"Diagnostico personalizado",
+    "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
     "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
@@ -1741,8 +1802,8 @@ var I18N = {
   },
   en:{
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
-    "nav.nacar":"Beauty", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy",
-    "nav.beauty.cleanser":"Facial cleanser", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Treatment", "nav.beauty.sunscreen":"Sunscreen", "nav.beauty.explore":"Explore catalog", "nav.beauty.quiz":"Personalized diagnosis",
+    "nav.nacar":"Beauty", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy", "nav.search":"See more",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "search.title":"Search",
     "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
     "hero.cta1":"See more", "hero.cta2":"Our philosophy",
@@ -1859,8 +1920,8 @@ var I18N = {
   },
   fr:{
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
-    "nav.nacar":"Beaute", "nav.system":"System Speciality", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie",
-    "nav.beauty.cleanser":"Nettoyant visage", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Traitement", "nav.beauty.sunscreen":"Protection solaire", "nav.beauty.explore":"Explorer le catalogue", "nav.beauty.quiz":"Diagnostic personnalise",
+    "nav.nacar":"Beaute", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
     "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
@@ -1985,7 +2046,7 @@ var DYN = {
        configMissing:function(field){ return 'Falta configurar ' + field + ' en AZURA_CONFIG (ver README de azura-site) antes de que este boton funcione.'; },
        registerOk:function(name){ return 'Listo' + (name ? ', ' + name : '') + '. Tu registro quedo guardado en la base de datos de Renuévate.'; },
        registerFail:function(){ return 'No pudimos completar tu inicio de sesión en este momento. Intenta de nuevo en unos minutos.'; },
-       boughtTogether:function(){ return 'Se compra junto con:'; },
+       boughtTogether:function(){ return 'Los clientes que compraron esto también llevaron:'; },
        viewComments:function(){ return 'Ver comentarios'; },
        hideComments:function(){ return 'Ocultar comentarios'; },
        commentsDisclaimer:function(){ return 'Comentarios de ejemplo con fines de demostracion del prototipo.'; },
@@ -2144,7 +2205,7 @@ var DYN = {
        configMissing:function(field){ return 'Missing ' + field + ' in AZURA_CONFIG (see azura-site README) before this button will work.'; },
        registerOk:function(name){ return 'Done' + (name ? ', ' + name : '') + '. Your registration was saved to Renuévate\'s database.'; },
        registerFail:function(){ return 'We could not complete your sign-in right now. Please try again in a few minutes.'; },
-       boughtTogether:function(){ return 'Frequently bought together:'; },
+       boughtTogether:function(){ return 'Customers who bought this also purchased:'; },
        viewComments:function(){ return 'View comments'; },
        hideComments:function(){ return 'Hide comments'; },
        commentsDisclaimer:function(){ return 'Sample comments for prototype demonstration purposes.'; },
@@ -2303,7 +2364,7 @@ var DYN = {
        configMissing:function(field){ return field + ' manquant dans AZURA_CONFIG (voir le README de azura-site) avant que ce bouton fonctionne.'; },
        registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de donnees Renuévate.'; },
        registerFail:function(){ return 'Nous n\'avons pas pu terminer votre connexion pour le moment. Veuillez reessayer dans quelques minutes.'; },
-       boughtTogether:function(){ return 'Souvent achete avec:'; },
+       boughtTogether:function(){ return 'Les clients ayant achete cet article ont egalement achete:'; },
        viewComments:function(){ return 'Voir les commentaires'; },
        hideComments:function(){ return 'Masquer les commentaires'; },
        commentsDisclaimer:function(){ return 'Commentaires d\'exemple a des fins de demonstration du prototype.'; },
@@ -4188,29 +4249,89 @@ function closeNav(){
   document.getElementById('navOverlay').classList.remove('open');
   document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'false');
   document.body.classList.remove('nav-lock');
-  var sd = document.getElementById('navSystemDropdown');
-  if (sd) sd.classList.remove('open');
   var bd = document.getElementById('navBeautyDropdown');
   if (bd) bd.classList.remove('open');
 }
-function toggleSystemDropdown(e){
-  if (e){ e.preventDefault(); e.stopPropagation(); }
-  var sd = document.getElementById('navSystemDropdown');
-  if (sd) sd.classList.toggle('open');
-}
-// Fix 58: mismo patron que toggleSystemDropdown -- toggle en click (mobile),
-// :hover cubre desktop via CSS (.nav-dropdown:hover .nav-dropdown-menu).
+// Fix 69: toggleSystemDropdown() se elimino -- "System Speciality" ya no es
+// su propio trigger de nav, vive como links planos dentro del dropdown
+// Belleza (ver toggleBeautyDropdown, que ahora cubre ambos).
 function toggleBeautyDropdown(e){
   if (e){ e.preventDefault(); e.stopPropagation(); }
   var bd = document.getElementById('navBeautyDropdown');
   if (bd) bd.classList.toggle('open');
 }
 document.addEventListener('click', function(e){
-  var sd = document.getElementById('navSystemDropdown');
-  if (sd && sd.classList.contains('open') && !sd.contains(e.target)) sd.classList.remove('open');
   var bd = document.getElementById('navBeautyDropdown');
   if (bd && bd.classList.contains('open') && !bd.contains(e.target)) bd.classList.remove('open');
 });
+
+/* ===================== Fix 69: buscador del sitio ===================== */
+// Normaliza texto para comparar sin acentos ni mayusculas/minusculas (para
+// que "espuma" encuentre "Espuma Purificante Nacar" sin importar tilde/caso).
+function normalizeSearchText(s){
+  return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+function openSearchModal(){
+  var feedback = document.getElementById('searchFeedback');
+  if (feedback) feedback.textContent = '';
+  document.getElementById('searchModalOverlay').classList.add('is-open');
+  closeNav();
+  setTimeout(function(){ var el = document.getElementById('searchInput'); if (el) el.focus(); }, 60);
+}
+function closeSearchModal(){
+  document.getElementById('searchModalOverlay').classList.remove('is-open');
+  var input = document.getElementById('searchInput');
+  if (input) input.value = '';
+  var feedback = document.getElementById('searchFeedback');
+  if (feedback) feedback.textContent = '';
+}
+// Busca primero por nombre/tag de producto (en las 3 verticales, aunque hoy
+// solo Nacar tiene productos reales de venta); si no hay match, intenta por
+// nombre del sistema (bmLabel/tag). Reusa el mismo mensaje "search.found" /
+// "search.notfound" que ya vivia en el diccionario i18n desde antes -- ese
+// texto ya estaba escrito para este flujo, solo faltaba el modal que lo usara.
+function runProductSearch(e){
+  if (e) e.preventDefault();
+  var dict = I18N[currentLang];
+  var input = document.getElementById('searchInput');
+  var feedback = document.getElementById('searchFeedback');
+  var q = normalizeSearchText(input ? input.value : '');
+  if (!q) return false;
+  var verticals = ['nacar', 'vigor', 'roble'];
+  var matchProduct = null, matchVertical = null, matchVerticalLabel = null;
+  for (var i = 0; i < verticals.length && !matchProduct; i++){
+    var v = verticals[i];
+    var vd = V[v] && V[v][currentLang];
+    var products = (vd && vd.products) || [];
+    for (var j = 0; j < products.length; j++){
+      var p = products[j];
+      if (normalizeSearchText(p.name).indexOf(q) !== -1 || normalizeSearchText(p.tag).indexOf(q) !== -1){
+        matchProduct = p; matchVertical = v; matchVerticalLabel = vd.bmLabel; break;
+      }
+    }
+  }
+  if (!matchVertical){
+    for (var k = 0; k < verticals.length; k++){
+      var v2 = verticals[k];
+      var vd2 = V[v2] && V[v2][currentLang];
+      if (!vd2) continue;
+      if (normalizeSearchText(vd2.bmLabel).indexOf(q) !== -1 || normalizeSearchText(vd2.tag).indexOf(q) !== -1){
+        matchVertical = v2; matchVerticalLabel = vd2.bmLabel; break;
+      }
+    }
+  }
+  if (matchVertical){
+    if (feedback){
+      feedback.textContent = matchProduct
+        ? (dict['search.found'] || '').replace('{name}', matchProduct.name).replace('{vertical}', matchVerticalLabel)
+        : '';
+    }
+    setTimeout(function(){ closeSearchModal(); goVertical(matchVertical); }, matchProduct ? 700 : 0);
+  } else if (feedback){
+    feedback.textContent = dict['search.notfound'] || '';
+  }
+  return false;
+}
 
 function subscribeForm(e){
   e.preventDefault();
