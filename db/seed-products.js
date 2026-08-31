@@ -65,14 +65,14 @@ const PRODUCTS = [
   // RETIRED_DEMO_SKUS arriba.
   // Fix 72: renombrado + copy nuevo (Carlos, 2026-08-30) -- antes "Espuma
   // Purificante Nacar". Mismo cambio aplicado en index.html.
-  { sku: 'NACAR-06', vertical: 'nacar', price: '$370 MXN', related: ['NACAR-08'],
+  { sku: 'NACAR-06', vertical: 'nacar', price: '$370 MXN', related: ['NACAR-08'], favorito: true,
     name_i18n: { es: 'Espuma Limpiadora Facial', en: 'Facial Cleansing Foam', fr: 'Mousse Nettoyante Faciale' },
     description_i18n: { es: 'Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.', en: 'With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.', fr: 'Avec certains ingredients naturels, la formule de la mousse nettoyante faciale SEYTU est ideale pour un nettoyage en profondeur.' },
     image: 'media/nacar-06-espuma-front.webp',
     long_description_es: 'Ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel. Intensa sensacion de frescura. Ideal para todo tipo de piel. Presentacion de 150 ml.',
     ingredients_es: ['Aqua (Water)', 'Sodium C14-16 Olefin Sulfonate', 'Sodium Cocoyl Isethionate', 'Sodium Lauroamphoacetate', 'Glycerin', 'Disodium Laureth Sulfosuccinate', 'Cocamidopropyl Betaine', 'PEG-8 Caprylic/Capric Glycerides', 'Polysorbate 20', 'Aloe Barbadensis Leaf Extract', 'Alaria Esculenta Extract', 'Moringa Oleifera Leaf Extract', 'Ethylhexylglycerin', 'PEG-12 Dimethicone', 'Cocamide MIPA', 'Benzyl Alcohol', 'Parfum (Fragrance)', 'Citric Acid', 'Benzyl Salicylate', 'Hexyl Cinnamal', 'Limonene'],
     usage_es: '1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.' },
-  { sku: 'NACAR-07', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-09'],
+  { sku: 'NACAR-07', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-09'], favorito: false,
     name_i18n: { es: 'Gel Antioxidante Nacar', en: 'Nacar Antioxidant Gel', fr: 'Gel Antioxydant Nacar' },
     description_i18n: { es: 'Protege de radicales libres, hidratacion profunda.', en: 'Protects from free radicals, deep hydration.', fr: 'Protege des radicaux libres, hydratation profonde.' },
     image: 'media/nacar-07-gel-abierto.webp',
@@ -83,14 +83,14 @@ const PRODUCTS = [
   // index.html ya mostraba "Seytú System Time-Specialist" desde entonces,
   // pero este archivo se quedo con el nombre viejo. Se corrige aqui para que
   // ambas fuentes de verdad (ver nota dual-source-of-truth) vuelvan a coincidir.
-  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'],
+  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'], favorito: true,
     name_i18n: { es: 'Seytú System Time-Specialist', en: 'Seytú System Time-Specialist', fr: 'Seytú System Time-Specialist' },
     description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
     image: 'media/nacar-08-dia-lifestyle-espejo.webp',
     long_description_es: 'Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.',
     ingredients_es: ['Aqua (Water)', 'Octocrylene', 'Ethylhexyl Methoxycinnamate', 'Butyl Methoxydibenzoylmethane', 'Niacinamide', 'Neopentyl Glycol Diheptanoate', 'Potassium Cetyl Phosphate', 'Cetearyl Alcohol', 'Polymethylsilsesquioxane', 'Glycerin', 'Sodium Acrylates Copolymer', 'Bakuchiol', 'Tocopheryl Acetate', 'Hyaluronic Acid', 'Squalene', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Portulaca Oleracea Extract', 'Lecithin', 'Hydrogenated Lecithin', 'Phenoxyethanol', 'Decylene Glycol', 'Caprylyl Glycol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA'],
     usage_es: 'Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.' },
-  { sku: 'NACAR-09', vertical: 'nacar', price: '$390 MXN', related: ['NACAR-07'],
+  { sku: 'NACAR-09', vertical: 'nacar', price: '$390 MXN', related: ['NACAR-07'], favorito: false,
     name_i18n: { es: 'Escudo Solar FPS 50+ Nacar', en: 'Nacar Solar Shield SPF 50+', fr: 'Bouclier Solaire FPS 50+ Nacar' },
     description_i18n: { es: 'Toque seco, proteccion FPS 50+ para todos los dias.', en: 'Dry touch, SPF 50+ protection for every day.', fr: 'Toucher sec, protection FPS 50+ au quotidien.' },
     image: 'media/nacar-09-spf50-front.webp',
@@ -102,7 +102,7 @@ const PRODUCTS = [
   // desde 06/08 todavia (solo se agrego related en este sku hacia ellos) --
   // ver mismo comentario en index.html sobre el motor de puntaje del
   // cuestionario de belleza, que tampoco lo cubre todavia.
-  { sku: 'NACAR-10', vertical: 'nacar', price: '$430 MXN', related: ['NACAR-06', 'NACAR-08'],
+  { sku: 'NACAR-10', vertical: 'nacar', price: '$430 MXN', related: ['NACAR-06', 'NACAR-08'], favorito: true,
     name_i18n: { es: 'Suero Facial de Hidratación Profunda con Aloe Vera', en: 'Aloe Vera Deep Moisturizing Facial Serum', fr: "Serum Facial Hydratant Profond a l'Aloe Vera" },
     description_i18n: { es: 'El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.', en: "SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", fr: 'Le Serum Facial Hydratant Profond a l\'Aloe Vera SEYTU hydrate en profondeur et aide a ameliorer la fermete et l\'elasticite de votre peau.' },
     image: 'media/nacar-10-suero-lifestyle-mano.webp',
@@ -179,6 +179,11 @@ async function main() {
       if (p.ingredients_es !== undefined) setFields.ingredients_es = p.ingredients_es;
       if (p.usage_es !== undefined) setFields.usage_es = p.usage_es;
       if (p.disclaimer_es !== undefined) setFields.disclaimer_es = p.disclaimer_es;
+      // Fix 74: atributo "Favoritos de Renuevate" (Carlos, 2026-08-31) -- se
+      // filtra por este campo en el nuevo link/submenu del sitio. Se checa
+      // !== undefined (no solo truthy) porque false es un valor valido que
+      // debe guardarse igual que true.
+      if (p.favorito !== undefined) setFields.favorito = p.favorito;
 
       await db.collection('products').updateOne(
         { sku: p.sku },

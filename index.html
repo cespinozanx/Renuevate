@@ -109,6 +109,19 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
    por venir despues en el DOM con el mismo z-index, ganaba el hit-test y se
    quedaba con el clic. Subir los puntos a z-index:3 los pone por encima de
    esa franja sin tocar el resto del layout. */
+/* Fix 74: flechas prev/next del carrusel (ver comentario en el HTML). Mismo
+   z-index:3 que los puntos -- la razon de fondo es la misma del bug de Fix
+   69 (el .hero-grid del texto tiene z-index:2 y su caja "clickeable" cubre
+   toda su area aunque el fondo sea transparente). */
+.hero-arrow{position:absolute; z-index:3; top:50%; transform:translateY(-50%); width:38px; height:38px; border-radius:50%; border:0; background:rgba(0,0,0,.28); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s ease;}
+.hero-arrow:hover{background:rgba(0,0,0,.5);}
+.hero-arrow svg{width:16px; height:16px;}
+.hero-arrow-prev{left:14px;}
+.hero-arrow-next{right:14px;}
+@media(max-width:760px){
+  .hero-arrow{width:32px; height:32px;}
+  .hero-arrow svg{width:14px; height:14px;}
+}
 .hero-slide-dots{position:absolute; z-index:3; left:0; right:0; bottom:16px; display:flex; justify-content:center; gap:8px;}
 .hero-slide-dot{width:7px; height:7px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.5); cursor:pointer; transition:background .25s ease, transform .25s ease;}
 .hero-slide-dot.is-active{background:#fff; transform:scale(1.35);}
@@ -230,6 +243,11 @@ section{padding:92px 0;}
    video+foto). Tamano de fuente a la mitad del original (era 25px) por
    instruccion explicita de Carlos. */
 .phil-quote-below{grid-column:1/-1; font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:12.5px; line-height:1.6; color:var(--navy); text-align:center; max-width:640px; margin:28px auto 0;}
+/* Fix 74: link "Favoritos de Renuevate" debajo de la seccion de filosofia --
+   mismo fondo --cream para que se sienta parte de la misma franja visual. */
+.phil-favorites{background:var(--cream); text-align:center; padding:6px 0 56px;}
+.phil-favorites a{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--gold); padding-bottom:3px;}
+.phil-favorites a:hover{color:var(--gold);}
 /* La palabra dorada ya no es solo un cambio de color -- cambia a Bodoni Moda
    en redonda (no italica, a proposito, para que contraste contra el resto de
    la cita que si es italica) + letter-spacing, mas llamativa. */
@@ -862,6 +880,11 @@ var AZURA_CONFIG = {
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">Speciality Health</a>
           <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
           <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
+          <div class="nav-dropdown-divider" aria-hidden="true"></div>
+          <!-- Fix 74: nuevo submenu al fondo de Belleza, instruccion Carlos.
+               Filtra en vivo por el atributo favorito:true de cada producto
+               (ver openFavoritesCategory) -- no es una lista de skus fija. -->
+          <a onclick="openFavoritesCategory(); closeNav();" data-i18n="nav.beauty.favorites">Favoritos de Renuévate</a>
         </div>
       </div>
       <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skin Care</a>
@@ -900,6 +923,18 @@ var AZURA_CONFIG = {
     <img class="hero-slide" src="media/hero-carousel-2-crema.webp" alt="" loading="lazy">
     <img class="hero-slide" src="media/hero-carousel-3-flatlay.webp" alt="" loading="lazy">
     <div class="hero-scrim"></div>
+    <!-- Fix 74: Carlos pidio que el carrusel "SI tenga un desplazador entre
+         imagenes" -- los puntos de abajo saltan a un slide especifico, pero
+         no dan la sensacion de flecha secuencial (anterior/siguiente) que
+         se espera de un carrusel. Se agregan flechas prev/next; reusan
+         heroGoToSlide (ya trae wraparound modulo) leyendo heroSlideIndex al
+         momento del clic, igual que los puntos. -->
+    <button type="button" class="hero-arrow hero-arrow-prev" onclick="heroGoToSlide(heroSlideIndex-1,true)" aria-label="Imagen anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="hero-arrow hero-arrow-next" onclick="heroGoToSlide(heroSlideIndex+1,true)" aria-label="Imagen siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
     <div class="hero-slide-dots" id="heroSlideDots">
       <button type="button" class="hero-slide-dot is-active" onclick="heroGoToSlide(0,true)" aria-label="Imagen 1"></button>
       <button type="button" class="hero-slide-dot" onclick="heroGoToSlide(1,true)" aria-label="Imagen 2"></button>
@@ -1006,6 +1041,15 @@ var AZURA_CONFIG = {
     <div class="phil-quote-below" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;</div>
   </div>
 </section>
+
+<!-- Fix 74: link "Favoritos de Renuevate" debajo de la seccion de filosofia
+     (Fix 73, la de la foto grande), instruccion Carlos. Mismo fondo --cream
+     que .philosophy para que se sienta continuacion visual de esa seccion.
+     Filtra en vivo por favorito:true (ver openFavoritesCategory). -->
+<div class="phil-favorites home-only">
+  <a onclick="openFavoritesCategory();" data-i18n="nav.beauty.favorites">Favoritos de Renuévate</a>
+  <span aria-hidden="true">&#8594;</span>
+</div>
 
 <section class="zoom-section zoom-hidden" id="zoom">
   <div class="container">
@@ -1554,31 +1598,31 @@ var V = {
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"Speciality Luminous",
       stats:["94%","14 dias","+87%"],
       products:[
-        {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Limpiadora Facial", desc:"Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.", price:"$370 MXN",
+        {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Limpiadora Facial", desc:"Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.", price:"$370 MXN", favorito:true,
           longDesc:"Ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel. Intensa sensacion de frescura. Ideal para todo tipo de piel. Presentacion de 150 ml.",
           usage:"1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
-        {sku:"NACAR-07", tag:"Gel antioxidante", name:"Gel Antioxidante Nacar", desc:"Protege de radicales libres, hidratacion profunda.", price:"$340 MXN",
+        {sku:"NACAR-07", tag:"Gel antioxidante", name:"Gel Antioxidante Nacar", desc:"Protege de radicales libres, hidratacion profunda.", price:"$340 MXN", favorito:false,
           longDesc:"Tu mejor aliado para hidratar, humectar y acondicionar la piel: ayuda a mantenerla protegida frente a los radicales libres y aumenta su nivel de hidratacion. Brinda mayor proteccion, un aspecto saludable y ayuda a mejorar la elasticidad. Presentacion de 30 g.",
           usage:"Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.",
           ingredients:["Extracto de levadura","Extracto de hoja de olivo","Extracto de arnica","Extractos de frutas silvestres","Aceite de jojoba"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Crema de dia", name:"Seytú System Time-Specialist", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN",
+        {sku:"NACAR-08", tag:"Crema de dia", name:"Seytú System Time-Specialist", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN", favorito:true,
           longDesc:"Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.",
           usage:"Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
-        {sku:"NACAR-09", tag:"Protector solar", name:"Escudo Solar FPS 50+ Nacar", desc:"Toque seco, proteccion FPS 50+ para todos los dias.", price:"$390 MXN",
+        {sku:"NACAR-09", tag:"Protector solar", name:"Escudo Solar FPS 50+ Nacar", desc:"Toque seco, proteccion FPS 50+ para todos los dias.", price:"$390 MXN", favorito:false,
           longDesc:"Un protector solar facial de toque seco y absorcion inmediata, formulado con 89% de ingredientes de origen natural. Resistente al agua, libre de fragancia y clinica y dermatologicamente probado, ideal para pieles sensibles y para toda la familia. Formulado sin ingredientes daninos para los arrecifes de coral. Presentacion de 40 ml.",
           usage:"Aplica de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplica cada 3 horas y despues de nadar, transpirar o secarte con la toalla.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
           related:["NACAR-07"]},
-        {sku:"NACAR-10", tag:"Suero facial", name:"Suero Facial de Hidratación Profunda con Aloe Vera", desc:"El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.", price:"$430 MXN",
+        {sku:"NACAR-10", tag:"Suero facial", name:"Suero Facial de Hidratación Profunda con Aloe Vera", desc:"El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.", price:"$430 MXN", favorito:true,
           longDesc:"Ideal para ayudar a mejorar la apariencia de las finas líneas de expresión causadas por la resequedad. Textura suave y ligera de fácil absorción.",
           usage:"Aplica 2-3 gotas sobre rostro limpio, por la mañana y por la noche, con un ligero masaje hasta su absorción completa. Puedes usarlo antes de tu crema hidratante.",
           ingredients:["Enriquecido con péptidos precursores del colágeno y ácido hialurónico."],
@@ -1593,31 +1637,31 @@ var V = {
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"Speciality Luminous",
       stats:["94%","14 days","+87%"],
       products:[
-        {sku:"NACAR-06", tag:"Facial cleanser", name:"Facial Cleansing Foam", desc:"With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.", price:"$370 MXN",
+        {sku:"NACAR-06", tag:"Facial cleanser", name:"Facial Cleansing Foam", desc:"With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.", price:"$370 MXN", favorito:true,
           longDesc:"Ideal for daily cleansing of the skin, it helps remove impurities. Intense feeling of freshness. Ideal for all skin types. 150 ml.",
           usage:"1. Wet your face with lukewarm water. 2. Apply a small amount of foam and massage in circular motions, avoiding the eye area. 3. Rinse thoroughly with lukewarm water and pat dry with a clean towel. Use morning and night.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
-        {sku:"NACAR-07", tag:"Antioxidant gel", name:"Nacar Antioxidant Gel", desc:"Protects from free radicals, deep hydration.", price:"$340 MXN",
+        {sku:"NACAR-07", tag:"Antioxidant gel", name:"Nacar Antioxidant Gel", desc:"Protects from free radicals, deep hydration.", price:"$340 MXN", favorito:false,
           longDesc:"Your best ally to hydrate, moisturize and condition the skin: helps keep it protected from free radicals and increases its hydration level. Provides greater protection, a healthy look, and helps improve elasticity. 30 g.",
           usage:"Apply a small amount to clean face and/or body with a gentle massage until fully absorbed. Daily use.",
           ingredients:["Yeast extract","Olive leaf extract","Arnica extract","Wild berry extracts","Jojoba oil"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Day cream", name:"Seytú System Time-Specialist", desc:"Renews and protects, hydration with SPF 30.", price:"$725 MXN",
+        {sku:"NACAR-08", tag:"Day cream", name:"Seytú System Time-Specialist", desc:"Renews and protects, hydration with SPF 30.", price:"$725 MXN", favorito:true,
           longDesc:"Fights the appearance of the main signs of aging, stimulates collagen and elastin production, and helps improve skin texture and firmness. With antioxidant and hydrating properties, it protects skin against UVA/UVB rays. For best results, use it alongside the rest of your Nacar routine. 50 ml.",
           usage:"Apply every morning to clean skin, as the last step of your routine before makeup. Avoid contact with the eyes. Reapply after prolonged sun exposure.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
-        {sku:"NACAR-09", tag:"Sunscreen", name:"Nacar Solar Shield SPF 50+", desc:"Dry touch, SPF 50+ protection for every day.", price:"$390 MXN",
+        {sku:"NACAR-09", tag:"Sunscreen", name:"Nacar Solar Shield SPF 50+", desc:"Dry touch, SPF 50+ protection for every day.", price:"$390 MXN", favorito:false,
           longDesc:"A facial sunscreen with a dry touch and instant absorption, formulated with 89% naturally-derived ingredients. Water-resistant, fragrance-free and clinically and dermatologically tested, ideal for sensitive skin and the whole family. Formulated without ingredients harmful to coral reefs. 40 ml.",
           usage:"Apply evenly to dry skin before sun exposure. Reapply every 3 hours and after swimming, sweating or towel-drying.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
           related:["NACAR-07"]},
-        {sku:"NACAR-10", tag:"Facial serum", name:"Aloe Vera Deep Moisturizing Facial Serum", desc:"SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", price:"$430 MXN",
+        {sku:"NACAR-10", tag:"Facial serum", name:"Aloe Vera Deep Moisturizing Facial Serum", desc:"SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", price:"$430 MXN", favorito:true,
           longDesc:"Ideal to help improve the appearance of fine expression lines caused by dryness. Soft, lightweight texture that absorbs easily.",
           usage:"Apply 2-3 drops to clean skin, morning and night, with a gentle massage until fully absorbed. Use before your moisturizer.",
           ingredients:["Enriched with collagen-precursor peptides and hyaluronic acid."],
@@ -1632,31 +1676,31 @@ var V = {
       tag:"Beaute feminine", msg:"Une luminosite qui prend soin d'elle-meme.", bmLabel:"Speciality Luminous",
       stats:["94%","14 jours","+87%"],
       products:[
-        {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Nettoyante Faciale", desc:"Avec certains ingredients naturels, la formule de la mousse nettoyante faciale SEYTU est ideale pour un nettoyage en profondeur.", price:"$370 MXN",
+        {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Nettoyante Faciale", desc:"Avec certains ingredients naturels, la formule de la mousse nettoyante faciale SEYTU est ideale pour un nettoyage en profondeur.", price:"$370 MXN", favorito:true,
           longDesc:"Ideal pour le nettoyage quotidien du teint, il aide a eliminer les impuretes de la peau. Sensation de fraicheur intense. Ideal pour tous types de peau. Format 150 ml.",
           usage:"1. Humidifiez le visage a l'eau tiede. 2. Appliquez une petite quantite de mousse et massez avec des mouvements circulaires, en evitant le contour des yeux. 3. Rincez abondamment a l'eau tiede et sechez avec une serviette propre. A utiliser matin et soir.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
-        {sku:"NACAR-07", tag:"Gel antioxydant", name:"Gel Antioxydant Nacar", desc:"Protege des radicaux libres, hydratation profonde.", price:"$340 MXN",
+        {sku:"NACAR-07", tag:"Gel antioxydant", name:"Gel Antioxydant Nacar", desc:"Protege des radicaux libres, hydratation profonde.", price:"$340 MXN", favorito:false,
           longDesc:"Votre meilleur allie pour hydrater et conditionner la peau : aide a la proteger des radicaux libres et augmente son niveau d'hydratation. Offre une meilleure protection, un aspect sain et aide a ameliorer l'elasticite. Format 30 g.",
           usage:"Appliquer une petite quantite sur le visage et/ou le corps propre avec un massage doux jusqu'a absorption complete. Usage quotidien.",
           ingredients:["Extrait de levure","Extrait de feuille d'olivier","Extrait d'arnica","Extraits de fruits sauvages","Huile de jojoba"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Creme de jour", name:"Seytú System Time-Specialist", desc:"Renove et protege, hydratation avec FPS 30.", price:"$725 MXN",
+        {sku:"NACAR-08", tag:"Creme de jour", name:"Seytú System Time-Specialist", desc:"Renove et protege, hydratation avec FPS 30.", price:"$725 MXN", favorito:true,
           longDesc:"Combat l'apparence des principaux signes de l'age, stimule la production de collagene et d'elastine et aide a ameliorer la texture et la fermete de la peau. Avec des proprietes antioxydantes et hydratantes, elle protege la peau contre les rayons UVA/UVB. Pour de meilleurs resultats, utilisez-la avec le reste de votre routine Nacar. Format 50 ml.",
           usage:"Appliquer chaque matin sur une peau propre, comme derniere etape de votre routine avant le maquillage. Eviter le contact avec les yeux. Reappliquer en cas d'exposition prolongee au soleil.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
-        {sku:"NACAR-09", tag:"Protection solaire", name:"Bouclier Solaire FPS 50+ Nacar", desc:"Toucher sec, protection FPS 50+ au quotidien.", price:"$390 MXN",
+        {sku:"NACAR-09", tag:"Protection solaire", name:"Bouclier Solaire FPS 50+ Nacar", desc:"Toucher sec, protection FPS 50+ au quotidien.", price:"$390 MXN", favorito:false,
           longDesc:"Une protection solaire visage au toucher sec et a absorption immediate, formulee avec 89% d'ingredients d'origine naturelle. Resistante a l'eau, sans parfum, testee cliniquement et dermatologiquement, ideale pour les peaux sensibles et toute la famille. Formulee sans ingredients nocifs pour les recifs coralliens. Format 40 ml.",
           usage:"Appliquer uniformement sur peau seche avant l'exposition au soleil. Reappliquer toutes les 3 heures et apres la baignade, la transpiration ou le sechage a la serviette.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
           related:["NACAR-07"]},
-        {sku:"NACAR-10", tag:"Serum facial", name:"Serum Facial Hydratant Profond a l'Aloe Vera", desc:"Le Serum Facial Hydratant Profond a l'Aloe Vera SEYTU hydrate en profondeur et aide a ameliorer la fermete et l'elasticite de votre peau.", price:"$430 MXN",
+        {sku:"NACAR-10", tag:"Serum facial", name:"Serum Facial Hydratant Profond a l'Aloe Vera", desc:"Le Serum Facial Hydratant Profond a l'Aloe Vera SEYTU hydrate en profondeur et aide a ameliorer la fermete et l'elasticite de votre peau.", price:"$430 MXN", favorito:true,
           longDesc:"Ideal pour aider a ameliorer l'apparence des fines lignes d'expression causees par la secheresse. Texture douce et legere, absorption facile.",
           usage:"Appliquer 2 a 3 gouttes sur peau propre, matin et soir, avec un leger massage jusqu'a absorption complete. A utiliser avant votre creme hydratante.",
           ingredients:["Enrichi en peptides precurseurs du collagene et en acide hyaluronique."],
@@ -1758,7 +1802,7 @@ var I18N = {
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "search.title":"Buscar",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
     "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
@@ -1877,7 +1921,7 @@ var I18N = {
     "promo.shipping":"FREE shipping on orders over $1,800 MXN", "promo.cta":"Shop now",
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy", "nav.search":"See more",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "search.title":"Search",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
     "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
     "hero.cta1":"See more", "hero.cta2":"Our philosophy",
@@ -1996,7 +2040,7 @@ var I18N = {
     "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.nacar":"Beaute", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "search.title":"Rechercher",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
     "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
@@ -4074,6 +4118,17 @@ function openBeautyCategory(skus, labelKey){
   window.scrollTo({top:0, behavior:'auto'});
   scrollToId('zoom');
   closeNav();
+}
+// Fix 74: "Favoritos de Renuevate" (link debajo de Nuestra filosofia + ultimo
+// item del dropdown Belleza), instruccion Carlos. A diferencia de las demas
+// categorias (Skin Care, Maquillaje, etc.) que usan un arreglo de skus fijo,
+// esta filtra en vivo por el atributo favorito:true de cada producto -- asi
+// que agregar/quitar favoritos a futuro solo requiere tocar ese atributo en
+// el catalogo (V.nacar.<lang>.products), no esta funcion.
+function openFavoritesCategory(){
+  var d = V.nacar[currentLang];
+  var skus = d.products.filter(function(p){ return p.favorito === true; }).map(function(p){ return p.sku; });
+  openBeautyCategory(skus, 'nav.beauty.favorites');
 }
 function applyCatalogCategoryLabels(labelKey){
   var dict = I18N[currentLang];
