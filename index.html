@@ -36,6 +36,10 @@ img,svg{display:block;}
 .btn-vertical{background:var(--active); color:#fff;}
 .btn-vertical:hover{filter:brightness(1.15);}
 
+/* Fix 72: banner de envio gratis arriba del topbar, instruccion Carlos. */
+.promo-banner{background:var(--navy); color:#fff; text-align:center; font-size:11.5px; letter-spacing:.5px; padding:9px 14px; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;}
+.promo-banner .promo-cta{background:var(--gold); color:var(--navy); border:0; border-radius:3px; padding:5px 16px; font-size:10.5px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; cursor:pointer; font-family:'Manrope',sans-serif;}
+.promo-banner .promo-cta:hover{opacity:.88;}
 .topbar{background:var(--cream); color:var(--grey); font-size:11.5px; letter-spacing:.8px; border-bottom:1px solid var(--line);}
 .topbar .container{display:flex; justify-content:space-between; align-items:center; height:34px;}
 .topbar-links{display:flex; gap:18px;}
@@ -130,6 +134,24 @@ body.nav-lock{overflow:hidden;}
 .hero-content h1 .accent{color:#F0DCA0; border-color:#F0DCA0;}
 .hero-content p{font-size:17px; color:rgba(255,255,255,.92); max-width:520px; margin:0 auto 34px; font-weight:400;}
 .hero-cta{display:flex; gap:16px; flex-wrap:wrap; justify-content:center;}
+/* Fix 72: Carlos reporto que, pese a subir .hero a 84vh (Fix 69), en movil
+   "no se ve maximizada" y los rostros no quedan parciales/recortados como el
+   ejemplo que mando. Razon real: al ser una caja mas alta, object-fit:cover
+   solo gana recorte LATERAL (izq/der), no vertical -- el rostro completo
+   sigue cabiendo dentro del marco en vez de sentirse "en primer plano". La
+   unica forma de garantizar un acercamiento real, sin importar el aspect
+   ratio de cada foto, es escalar la imagen por encima de su ajuste natural
+   con transform:scale() -- esto la agranda de verdad y empuja bordes (pelo,
+   hombros, fondo) fuera de cuadro, dejando el rostro/producto en un recorte
+   parcial mas dramatico, igual en cualquier telefono. transform-origin usa
+   el mismo punto vertical que cada object-position de arriba, para que el
+   zoom no se desalinee del encuadre ya elegido por slide. */
+@media(max-width:760px){
+  .hero-slide{transform:scale(1.35);}
+  .hero-slide:nth-of-type(1){transform-origin:center 30%;}
+  .hero-slide:nth-of-type(2){transform-origin:center 35%;}
+  .hero-slide:nth-of-type(3){transform-origin:center 55%;}
+}
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
      borde) -- se sentia "demasiado ancho". Ahora se reduce y se le da un
@@ -191,15 +213,21 @@ section{padding:92px 0;}
 /* Fix 61: #F0F0EF quedaba casi identico al --cream de siempre (#F8F7F3) --
    apenas se notaba el cambio. Se sube el contraste a un gris mas franco. */
 .phil-visual{background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:36px 44px 44px;}
-/* Fix 71: imagen del Suero arriba de la cita -- ancho fijo (no 100%) para
-   que en pantallas grandes no se estire mas alla de su resolucion nativa;
-   el archivo ya viene a 1600px, de sobra para el max-width de 420px. */
-.phil-visual-img{width:100%; max-width:420px; height:auto; border-radius:8px; margin-bottom:26px; box-shadow:0 14px 34px rgba(0,0,0,.16); display:block;}
-.phil-visual .quote{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:25px; line-height:1.55; color:var(--navy);}
+/* Fix 72: Carlos pidio sacar la cita de esta caja -- ahora .phil-visual solo
+   contiene la foto del Suero, a maximo tamano (100% del contenedor, sin el
+   max-width fijo de Fix 71). La cita se movio a .phil-quote-below, debajo de
+   todo el grid (ver mas abajo y el HTML de #filosofia). */
+.phil-visual-img{width:100%; max-width:100%; height:100%; object-fit:cover; border-radius:6px; margin-bottom:0; box-shadow:none; display:block;}
+/* Fix 72: la cita ya no vive dentro de .phil-visual (que ahora es solo la
+   foto) -- vive en su propio bloque, debajo de las 2 columnas del grid
+   (grid-column:1/-1 la hace ocupar todo el ancho para quedar centrada bajo
+   video+foto). Tamano de fuente a la mitad del original (era 25px) por
+   instruccion explicita de Carlos. */
+.phil-quote-below{grid-column:1/-1; font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:12.5px; line-height:1.6; color:var(--navy); text-align:center; max-width:640px; margin:28px auto 0;}
 /* La palabra dorada ya no es solo un cambio de color -- cambia a Bodoni Moda
    en redonda (no italica, a proposito, para que contraste contra el resto de
    la cita que si es italica) + letter-spacing, mas llamativa. */
-.phil-visual .quote .accent{color:var(--gold); border-color:var(--gold); font-family:'Bodoni Moda',serif; font-style:normal; font-weight:500; letter-spacing:.6px;}
+.phil-quote-below .accent{color:var(--gold); border-color:var(--gold); font-family:'Bodoni Moda',serif; font-style:normal; font-weight:500; letter-spacing:.6px;}
 /* El texto (eyebrow/h2) de esta columna debe seguir alineado a la izquierda;
    solo el video/imagen de abajo (.phil-showcase) debe quedar centrado. Se
    fuerza con flex+align-self ademas del margin:auto de abajo (doble
@@ -770,6 +798,17 @@ var AZURA_CONFIG = {
 </script>
 
 
+<!-- Fix 72: banner de envio gratis, instruccion explicita de Carlos.
+     NOTA: el link "COMPRAR AHORA" que Carlos pego en su mensaje apuntaba a
+     clinique.com.mx (sitio de un competidor) -- casi seguro un pegado
+     accidental, asi que el boton abre el catalogo propio del sitio en su
+     lugar. Se flagea esto en la respuesta de este Fix para que Carlos
+     confirme el destino real que quiere. -->
+<div class="promo-banner">
+  <span data-i18n="promo.shipping">Envío GRATIS en compras mínimas de $1,800 MXN</span>
+  <button class="promo-cta" onclick="openBeautyCatalog()" data-i18n="promo.cta">Comprar ahora</button>
+</div>
+
 <div class="topbar">
   <div class="container">
     <div class="topbar-links">
@@ -791,38 +830,32 @@ var AZURA_CONFIG = {
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
     <nav class="main" id="mainNav">
       <button class="nav-close" id="navCloseBtn" onclick="closeNav()" aria-label="Cerrar menu">&times;</button>
-      <!-- Fix 58/61: "Belleza" pasa de link simple a dropdown (mismo patron
-           que System Speciality abajo). Instruccion Carlos: solo 3 categorias
-           por ahora, acomodando los 4 productos hoy cargados -- Limpieza
-           (NACAR-06) y Protector solar (NACAR-09) se quedan 1 a 1, y
-           Tratamiento agrupa Gel antioxidante (NACAR-07) + Crema de dia
-           (NACAR-08) porque ambos son pasos de tratamiento de la rutina
-           (ver openBeautyCategory([...skus], labelKey) + filtro
-           categoryFilterSku en renderVertical, ahora soporta arreglo de
-           skus). "Explorar catalogo" muestra los 4 productos sin filtro.
-           Linea divisoria (.nav-dropdown-divider) separa las categorias de
-           producto de los ultimos 2 items (Explorar catalogo / Diagnostico),
-           que no son categorias sino accesos alternos. Se conserva
-           "Diagnostico personalizado" para no perder esa funcion (antes era
-           la unica forma de llegar al cuestionario, via el modal
-           beautyChoice que este dropdown reemplazo como punto de entrada). -->
+      <!-- Fix 72: restructura completa de este menu, instruccion Carlos ("el
+           menu vamos a re estructurar 100%"). "Skin Care" y "Maquillaje" ya
+           NO son sub-items del dropdown "Belleza" -- ahora son items propios
+           de nivel principal (ver los 2 <a> justo debajo de este dropdown),
+           igual de visibles que "Belleza" o "Nuestra filosofia". El dropdown
+           "Belleza" se queda con lo que no se movio: "Descubre tu rutina",
+           los 3 Speciality (Luminous/Health/Spot) y el Diagnostico
+           personalizado. Los skus de "Skin Care" ahora son los 5 productos
+           reales (NACAR-06..10, ver Fix 72 en openBeautyCategory de abajo) y
+           "Maquillaje" queda temporalmente vacio ([]) hasta que Carlos cargue
+           productos que de verdad sean de esa categoria -- renderVertical ya
+           muestra un estado vacio con mensaje (categoria.empty) en vez de
+           dejar la caja en blanco. -->
       <div class="nav-dropdown" id="navBeautyDropdown">
         <a class="nav-dropdown-trigger" data-v="nacar" onclick="toggleBeautyDropdown(event)"><span data-i18n="nav.nacar">Belleza</span> <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
-          <a onclick="openBeautyCategory(['NACAR-06'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skin Care</a>
-          <a onclick="openBeautyCategory(['NACAR-07','NACAR-08'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
           <a onclick="openBeautyCategory(['NACAR-09'], 'nav.beauty.sunscreen'); closeNav();" data-i18n="nav.beauty.sunscreen">Descubre tu rutina</a>
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
-          <!-- Fix 69: "System Speciality" ya no es su propio item de nav de
-               nivel superior -- Carlos pidio bajarlo dentro del dropdown
-               Belleza, exactamente donde antes vivia "Explorar catalogo"
-               (ahora eliminado de aqui). -->
           <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.system.luminous">Speciality Luminous</a>
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">Speciality Health</a>
           <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
           <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
         </div>
       </div>
+      <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skin Care</a>
+      <a onclick="openBeautyCategory([], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
       <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
       <!-- Fix 69: buscador -- reemplaza al viejo icono de lupa del header
            (quitado en Fix 56). Ahora es un item de nav normal, a la derecha
@@ -952,13 +985,15 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div class="phil-visual reveal">
-      <!-- Fix 71: la caja de la cita ahora encabeza con la foto del Suero
-           Facial (grande, sin recorte forzado -- max-width fijo y la fuente
-           ya viene a 1600px de ancho para que no se pixelee ni en pantallas
-           retina/zoom). La cita de siempre se queda debajo, sin cambios. -->
+      <!-- Fix 72: esta caja ahora es solo la foto, a 100% del contenedor --
+           sin la cita adentro (ver .phil-quote-below, 3er hijo del grid). -->
       <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ">
-      <div class="quote" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;</div>
     </div>
+    <!-- Fix 72: la cita se saca de .phil-visual y baja de tamano a la mitad
+         (25px -> 12.5px), por instruccion de Carlos. Es 3er hijo directo de
+         .phil-grid para que grid-column:1/-1 (CSS .phil-quote-below) la
+         centre ocupando todo el ancho, debajo de las 2 columnas. -->
+    <div class="phil-quote-below" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;</div>
   </div>
 </section>
 
@@ -1509,8 +1544,8 @@ var V = {
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"Speciality Luminous",
       stats:["94%","14 dias","+87%"],
       products:[
-        {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Purificante Nacar", desc:"Limpieza diaria profunda, frescura instantanea.", price:"$370 MXN",
-          longDesc:"Contiene ingredientes naturales seleccionados; ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel y deja una intensa sensacion de frescura. Formulada para todo tipo de piel. Presentacion de 150 ml.",
+        {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Limpiadora Facial", desc:"Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.", price:"$370 MXN",
+          longDesc:"Ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel. Intensa sensacion de frescura. Ideal para todo tipo de piel. Presentacion de 150 ml.",
           usage:"1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
@@ -1548,8 +1583,8 @@ var V = {
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"Speciality Luminous",
       stats:["94%","14 days","+87%"],
       products:[
-        {sku:"NACAR-06", tag:"Facial cleanser", name:"Nacar Purifying Foam", desc:"Deep daily cleansing, instant freshness.", price:"$370 MXN",
-          longDesc:"With select natural ingredients; ideal for daily facial cleansing, it helps remove impurities from the skin and leaves an intense feeling of freshness. Formulated for all skin types. 150 ml.",
+        {sku:"NACAR-06", tag:"Facial cleanser", name:"Facial Cleansing Foam", desc:"With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.", price:"$370 MXN",
+          longDesc:"Ideal for daily cleansing of the skin, it helps remove impurities. Intense feeling of freshness. Ideal for all skin types. 150 ml.",
           usage:"1. Wet your face with lukewarm water. 2. Apply a small amount of foam and massage in circular motions, avoiding the eye area. 3. Rinse thoroughly with lukewarm water and pat dry with a clean towel. Use morning and night.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
@@ -1587,8 +1622,8 @@ var V = {
       tag:"Beaute feminine", msg:"Une luminosite qui prend soin d'elle-meme.", bmLabel:"Speciality Luminous",
       stats:["94%","14 jours","+87%"],
       products:[
-        {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Purifiante Nacar", desc:"Nettoyage quotidien profond, fraicheur instantanee.", price:"$370 MXN",
-          longDesc:"Avec des ingredients naturels selectionnes ; ideale pour le nettoyage quotidien du teint, elle aide a eliminer les impuretes de la peau et laisse une sensation de fraicheur intense. Convient a tous types de peau. Format 150 ml.",
+        {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Nettoyante Faciale", desc:"Avec certains ingredients naturels, la formule de la mousse nettoyante faciale SEYTU est ideale pour un nettoyage en profondeur.", price:"$370 MXN",
+          longDesc:"Ideal pour le nettoyage quotidien du teint, il aide a eliminer les impuretes de la peau. Sensation de fraicheur intense. Ideal pour tous types de peau. Format 150 ml.",
           usage:"1. Humidifiez le visage a l'eau tiede. 2. Appliquez une petite quantite de mousse et massez avec des mouvements circulaires, en evitant le contour des yeux. 3. Rincez abondamment a l'eau tiede et sechez avec une serviette propre. A utiliser matin et soir.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
@@ -1710,6 +1745,7 @@ var V = {
 /* ===================== Diccionario de idioma para todo el copy estatico ===================== */
 var I18N = {
   es:{
+    "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
     "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
     "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "search.title":"Buscar",
@@ -1717,7 +1753,7 @@ var I18N = {
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
     "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
-    "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su sistema...",
+    "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su ficha...", "search.foundCategory":"Mostrando productos de {name}...", "category.empty":"Proximamente nuevos productos en esta categoria.",
     "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesión para guardar tus productos favoritos y tu historial de pedidos.",
     "cart.title":"Tu carrito", "cart.empty":"Tu carrito esta vacio por ahora.", "cart.cta":"Explorar catálogo",
     "vert.h2":"Lo mejor para ti",
@@ -1828,6 +1864,7 @@ var I18N = {
     "faq.q.warranty":"¿Qué pasa si mi producto llega defectuoso?", "faq.q.contact":"¿Cómo los contacto?"
   },
   en:{
+    "promo.shipping":"FREE shipping on orders over $1,800 MXN", "promo.cta":"Shop now",
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy", "nav.search":"See more",
     "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "search.title":"Search",
@@ -1835,7 +1872,7 @@ var I18N = {
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
     "hero.cta1":"See more", "hero.cta2":"Our philosophy",
     "hero.visualCaption":"Four wellness systems, one single standard of origin and quality.",
-    "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its system...",
+    "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its page...", "search.foundCategory":"Showing {name} products...", "category.empty":"New products coming soon in this category.",
     "account.title":"Your Renuévate account", "account.p":"Sign in to save your favorite products and your order history.",
     "cart.title":"Your cart", "cart.empty":"Your cart is empty for now.", "cart.cta":"Explore the catalog",
     "vert.h2":"The best for you",
@@ -1946,6 +1983,7 @@ var I18N = {
     "faq.q.warranty":"What happens if my product arrives defective?", "faq.q.contact":"How do I contact you?"
   },
   fr:{
+    "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
     "nav.nacar":"Beaute", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
     "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "search.title":"Rechercher",
@@ -1953,7 +1991,7 @@ var I18N = {
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
     "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
     "hero.visualCaption":"Quatre systemes de bien-etre, un seul standard d'origine et de qualite.",
-    "search.placeholder":"Recherchez un produit ou un systeme...", "search.btn":"Rechercher", "search.notfound":"Aucun resultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture du systeme...",
+    "search.placeholder":"Recherchez un produit ou un systeme...", "search.btn":"Rechercher", "search.notfound":"Aucun resultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture de sa fiche...", "search.foundCategory":"Affichage des produits de {name}...", "category.empty":"Nouveaux produits bientot disponibles dans cette categorie.",
     "account.title":"Votre compte Renuévate", "account.p":"Connectez-vous pour enregistrer vos produits favoris et votre historique de commandes.",
     "cart.title":"Votre panier", "cart.empty":"Votre panier est vide pour le moment.", "cart.cta":"Explorer le catalogue",
     "vert.h2":"Le meilleur pour vous",
@@ -3870,6 +3908,14 @@ function renderVertical(v){
       actionsHtml +
       '</div></div>';
   }
+  // Fix 72: "Maquillaje" ahora se navega con categoryFilterSku=[] (sin
+  // productos reales todavia) -- sin este bloque, listToRender quedaba vacio
+  // y el usuario solo veia una caja en blanco, sin explicacion. Se agrega un
+  // estado vacio con mensaje de marca (categoria.empty) antes del link de
+  // "ver catalogo completo".
+  if (categoryFilterSku && listToRender.length === 0){
+    html += '<div class="category-empty-state">' + I18N[currentLang]['category.empty'] + '</div>';
+  }
   // Fix 58: en vista filtrada por categoria (un solo producto), se ofrece
   // salida directa al catalogo completo en vez de dejar al usuario varado
   // en una ficha unica.
@@ -4301,7 +4347,7 @@ document.addEventListener('click', function(e){
 
 /* ===================== Fix 69: buscador del sitio ===================== */
 // Normaliza texto para comparar sin acentos ni mayusculas/minusculas (para
-// que "espuma" encuentre "Espuma Purificante Nacar" sin importar tilde/caso).
+// que "espuma" encuentre "Espuma Limpiadora Facial" sin importar tilde/caso).
 function normalizeSearchText(s){
   return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 }
@@ -4319,11 +4365,17 @@ function closeSearchModal(){
   var feedback = document.getElementById('searchFeedback');
   if (feedback) feedback.textContent = '';
 }
-// Busca primero por nombre/tag de producto (en las 3 verticales, aunque hoy
-// solo Nacar tiene productos reales de venta); si no hay match, intenta por
-// nombre del sistema (bmLabel/tag). Reusa el mismo mensaje "search.found" /
-// "search.notfound" que ya vivia en el diccionario i18n desde antes -- ese
-// texto ya estaba escrito para este flujo, solo faltaba el modal que lo usara.
+// Fix 72: Carlos reporto "no estas buscando bien los productos". 2 huecos
+// reales encontrados: (1) nunca se buscaba por SKU, y (2) escribir el nombre
+// de una categoria del menu Belleza (p.ej. "Skin Care", tal cual la ve el
+// usuario en el nav) siempre devolvia "no encontramos resultados", porque el
+// buscador solo conocia nombre/tag de producto y nombre de sistema (bmLabel),
+// nunca las etiquetas de categoria. Tambien: al encontrar un producto, antes
+// solo abria el sistema completo sin filtro (goVertical) -- el usuario nunca
+// veia "su" producto, solo aterrizaba en una lista larga. Ahora abre
+// directo la ficha de detalle (openProductDetail) del producto encontrado.
+// Orden de busqueda: 1) producto por nombre/tag/sku, 2) categoria del menu
+// Belleza por su nombre visible, 3) sistema completo por bmLabel/tag.
 function runProductSearch(e){
   if (e) e.preventDefault();
   var dict = I18N[currentLang];
@@ -4332,6 +4384,7 @@ function runProductSearch(e){
   var q = normalizeSearchText(input ? input.value : '');
   if (!q) return false;
   var verticals = ['nacar', 'vigor', 'roble'];
+
   var matchProduct = null, matchVertical = null, matchVerticalLabel = null;
   for (var i = 0; i < verticals.length && !matchProduct; i++){
     var v = verticals[i];
@@ -4339,28 +4392,52 @@ function runProductSearch(e){
     var products = (vd && vd.products) || [];
     for (var j = 0; j < products.length; j++){
       var p = products[j];
-      if (normalizeSearchText(p.name).indexOf(q) !== -1 || normalizeSearchText(p.tag).indexOf(q) !== -1){
+      if (normalizeSearchText(p.name).indexOf(q) !== -1 ||
+          normalizeSearchText(p.tag).indexOf(q) !== -1 ||
+          normalizeSearchText(p.sku).indexOf(q) !== -1){
         matchProduct = p; matchVertical = v; matchVerticalLabel = vd.bmLabel; break;
       }
     }
   }
-  if (!matchVertical){
+
+  // Fix 72: categorias reales del menu Belleza (ver openBeautyCategory en el
+  // nav) -- "Maquillaje" hoy va con arreglo vacio a proposito (sin productos
+  // todavia), igual que en el nav.
+  var matchCategory = null;
+  if (!matchProduct){
+    var categories = [
+      { skus:['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], labelKey:'nav.beauty.cleanser' },
+      { skus:[], labelKey:'nav.beauty.treatment' },
+      { skus:['NACAR-09'], labelKey:'nav.beauty.sunscreen' }
+    ];
+    for (var c = 0; c < categories.length; c++){
+      var label = dict[categories[c].labelKey];
+      if (label && normalizeSearchText(label).indexOf(q) !== -1){ matchCategory = categories[c]; break; }
+    }
+  }
+
+  var matchVerticalOnly = null, matchVerticalOnlyLabel = null;
+  if (!matchProduct && !matchCategory){
     for (var k = 0; k < verticals.length; k++){
       var v2 = verticals[k];
       var vd2 = V[v2] && V[v2][currentLang];
       if (!vd2) continue;
       if (normalizeSearchText(vd2.bmLabel).indexOf(q) !== -1 || normalizeSearchText(vd2.tag).indexOf(q) !== -1){
-        matchVertical = v2; matchVerticalLabel = vd2.bmLabel; break;
+        matchVerticalOnly = v2; matchVerticalOnlyLabel = vd2.bmLabel; break;
       }
     }
   }
-  if (matchVertical){
-    if (feedback){
-      feedback.textContent = matchProduct
-        ? (dict['search.found'] || '').replace('{name}', matchProduct.name).replace('{vertical}', matchVerticalLabel)
-        : '';
-    }
-    setTimeout(function(){ closeSearchModal(); goVertical(matchVertical); }, matchProduct ? 700 : 0);
+
+  if (matchProduct){
+    if (feedback) feedback.textContent = (dict['search.found'] || '').replace('{name}', matchProduct.name).replace('{vertical}', matchVerticalLabel);
+    var skuToOpen = matchProduct.sku;
+    setTimeout(function(){ closeSearchModal(); goVertical(matchVertical); openProductDetail(skuToOpen); }, 700);
+  } else if (matchCategory){
+    if (feedback) feedback.textContent = (dict['search.foundCategory'] || '').replace('{name}', dict[matchCategory.labelKey] || '');
+    setTimeout(function(){ closeSearchModal(); openBeautyCategory(matchCategory.skus, matchCategory.labelKey); }, 500);
+  } else if (matchVerticalOnly){
+    if (feedback) feedback.textContent = (dict['search.foundCategory'] || '').replace('{name}', matchVerticalOnlyLabel);
+    setTimeout(function(){ closeSearchModal(); goVertical(matchVerticalOnly); }, 500);
   } else if (feedback){
     feedback.textContent = dict['search.notfound'] || '';
   }

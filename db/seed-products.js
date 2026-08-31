@@ -63,11 +63,13 @@ const PRODUCTS = [
   // NACAR -- solo los 4 productos reales (foto, precio e ingredientes
   // verdaderos). NACAR-01 a 04 eran mock del prototipo original; ver
   // RETIRED_DEMO_SKUS arriba.
+  // Fix 72: renombrado + copy nuevo (Carlos, 2026-08-30) -- antes "Espuma
+  // Purificante Nacar". Mismo cambio aplicado en index.html.
   { sku: 'NACAR-06', vertical: 'nacar', price: '$370 MXN', related: ['NACAR-08'],
-    name_i18n: { es: 'Espuma Purificante Nacar', en: 'Nacar Purifying Foam', fr: 'Mousse Purifiante Nacar' },
-    description_i18n: { es: 'Limpieza diaria profunda, frescura instantanea.', en: 'Deep daily cleansing, instant freshness.', fr: 'Nettoyage quotidien profond, fraicheur instantanee.' },
+    name_i18n: { es: 'Espuma Limpiadora Facial', en: 'Facial Cleansing Foam', fr: 'Mousse Nettoyante Faciale' },
+    description_i18n: { es: 'Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.', en: 'With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.', fr: 'Avec certains ingredients naturels, la formule de la mousse nettoyante faciale SEYTU est ideale pour un nettoyage en profondeur.' },
     image: 'media/nacar-06-espuma-front.webp',
-    long_description_es: 'Contiene ingredientes naturales seleccionados; ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel y deja una intensa sensacion de frescura. Formulada para todo tipo de piel. Presentacion de 150 ml.',
+    long_description_es: 'Ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel. Intensa sensacion de frescura. Ideal para todo tipo de piel. Presentacion de 150 ml.',
     ingredients_es: ['Aqua (Water)', 'Sodium C14-16 Olefin Sulfonate', 'Sodium Cocoyl Isethionate', 'Sodium Lauroamphoacetate', 'Glycerin', 'Disodium Laureth Sulfosuccinate', 'Cocamidopropyl Betaine', 'PEG-8 Caprylic/Capric Glycerides', 'Polysorbate 20', 'Aloe Barbadensis Leaf Extract', 'Alaria Esculenta Extract', 'Moringa Oleifera Leaf Extract', 'Ethylhexylglycerin', 'PEG-12 Dimethicone', 'Cocamide MIPA', 'Benzyl Alcohol', 'Parfum (Fragrance)', 'Citric Acid', 'Benzyl Salicylate', 'Hexyl Cinnamal', 'Limonene'],
     usage_es: '1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.' },
   { sku: 'NACAR-07', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-09'],
@@ -77,10 +79,14 @@ const PRODUCTS = [
     long_description_es: 'Tu mejor aliado para hidratar, humectar y acondicionar la piel: ayuda a mantenerla protegida frente a los radicales libres y aumenta su nivel de hidratacion. Brinda mayor proteccion, un aspecto saludable y ayuda a mejorar la elasticidad. Presentacion de 30 g.',
     ingredients_es: ['Extracto de levadura', 'Extracto de hoja de olivo', 'Extracto de arnica', 'Extractos de frutas silvestres', 'Aceite de jojoba'],
     usage_es: 'Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.' },
+  // Fix 72: se detecta que este seed nunca recibio el rename de Fix 70 --
+  // index.html ya mostraba "Seytú System Time-Specialist" desde entonces,
+  // pero este archivo se quedo con el nombre viejo. Se corrige aqui para que
+  // ambas fuentes de verdad (ver nota dual-source-of-truth) vuelvan a coincidir.
   { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'],
-    name_i18n: { es: 'Dia Renovador FPS 30 Nacar', en: 'Nacar Renewing Day SPF 30', fr: 'Jour Renovateur FPS 30 Nacar' },
+    name_i18n: { es: 'Seytú System Time-Specialist', en: 'Seytú System Time-Specialist', fr: 'Seytú System Time-Specialist' },
     description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
-    image: 'media/nacar-08-dia-fps30-front.webp',
+    image: 'media/nacar-08-dia-lifestyle-espejo.webp',
     long_description_es: 'Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.',
     ingredients_es: ['Aqua (Water)', 'Octocrylene', 'Ethylhexyl Methoxycinnamate', 'Butyl Methoxydibenzoylmethane', 'Niacinamide', 'Neopentyl Glycol Diheptanoate', 'Potassium Cetyl Phosphate', 'Cetearyl Alcohol', 'Polymethylsilsesquioxane', 'Glycerin', 'Sodium Acrylates Copolymer', 'Bakuchiol', 'Tocopheryl Acetate', 'Hyaluronic Acid', 'Squalene', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Portulaca Oleracea Extract', 'Lecithin', 'Hydrogenated Lecithin', 'Phenoxyethanol', 'Decylene Glycol', 'Caprylyl Glycol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA'],
     usage_es: 'Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.' },
