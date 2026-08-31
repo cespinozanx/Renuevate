@@ -338,6 +338,13 @@ body.viewing-product-page .home-only{display:none;}
 .comment-item .c-stars{color:var(--gold); font-size:12px;}
 .comment-item p{font-size:13px; color:var(--grey); margin:0;}
 .comments-disclaimer{font-size:10.5px; color:var(--grey); opacity:.75; margin-top:10px; font-style:italic;}
+/* Fix 76: "Ver mas" por comentario -- .comment-more arranca oculto (display:none)
+   y toggleDemoCommentMore() le agrega/quita .open. */
+.comment-more{display:none; margin-top:6px;}
+.comment-more.open{display:block;}
+.comment-more p{margin:0 0 6px;}
+.comment-readmore-link{display:inline-block; margin-top:6px; font-size:11.5px; font-weight:700; letter-spacing:.3px; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--gold);}
+.comment-readmore-link:hover{color:var(--gold);}
 
 /* ===================== Carrito, cuenta/pagos y resenas reales (conectado a BD) ===================== */
 .account-icon-btn, .cart-icon-btn{position:relative; background:none; border:none; cursor:pointer; color:var(--ink); padding:4px; display:flex; align-items:center;}
@@ -2178,10 +2185,15 @@ var DYN = {
        hideComments:function(){ return 'Ocultar comentarios'; },
        commentsDisclaimer:function(){ return 'Comentarios de ejemplo con fines de demostracion del prototipo.'; },
        demoComments:function(){ return [
-         {name:'Cliente verificado', stars:5, text:'Buena calidad y llego mas rapido de lo que esperaba.'},
-         {name:'Cliente verificado', stars:4, text:'Cumple lo que promete, seguire comprando.'},
-         {name:'Cliente verificado', stars:5, text:'Se nota la diferencia despues de unas semanas de uso.'}
+         {name:'Renata M.', stars:5, text:'Llego rapido y bien empacado. La espuma no reseca, la uso a diario.', more:'Ya voy en el segundo frasco, no me ha batallado la piel desde que la uso.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
+         {name:'Diego H.', stars:4, text:'Buen producto, aunque el envio se tardo un poco mas de lo que decia.', more:'El resultado si se nota, solo esperaba que llegara en los 4 dias que dice la pagina.'},
+         {name:'Paola S.', stars:5, text:'Me encanto la textura, no deja la piel grasosa.', more:'La compre por recomendacion de una amiga y ahora yo tambien la recomiendo.'},
+         {name:'Fernanda L.', stars:5, text:'El protector solar no deja la cara blanca, eso ya es ganancia.', more:'Lo uso todos los dias antes de salir, huele rico y no irrita los ojos.', photo:'media/nacar-09-spf50-abierto.webp'},
+         {name:'Andrea Q.', stars:4, text:'Cumple, aunque el precio esta un poco alto para lo que rinde.', more:'Aun asi voy a seguir comprando porque no me ha generado ninguna reaccion.'},
+         {name:'Miguel T.', stars:5, text:'Se la regale a mi esposa y le encanto, ya la volvio a pedir.', more:'Buen empaque, llego a tiempo y el producto se ve de calidad.'}
        ]; },
+       reviewReadMore:function(){ return 'Ver mas'; },
+       reviewReadLess:function(){ return 'Ver menos'; },
        addToCart:function(){ return 'Agregar al carrito'; },
        viewDetail:function(){ return 'Ver detalle'; },
        comingSoonBadge:function(){ return 'Proximamente'; },
@@ -2337,10 +2349,15 @@ var DYN = {
        hideComments:function(){ return 'Hide comments'; },
        commentsDisclaimer:function(){ return 'Sample comments for prototype demonstration purposes.'; },
        demoComments:function(){ return [
-         {name:'Verified customer', stars:5, text:'Good quality and arrived faster than expected.'},
-         {name:'Verified customer', stars:4, text:'Does what it promises, will keep buying.'},
-         {name:'Verified customer', stars:5, text:'You notice the difference after a few weeks of use.'}
+         {name:'Renata M.', stars:5, text:"Arrived fast and well packed. The foam doesn't dry out my skin, I use it daily.", more:"On my second bottle already, my skin has been much calmer since I started.", photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
+         {name:'Diego H.', stars:4, text:'Good product, though shipping took a bit longer than stated.', more:'You can tell it works, just wish it had arrived within the 4 days the site says.'},
+         {name:'Paola S.', stars:5, text:"Loved the texture, doesn't leave skin greasy.", more:"Bought it on a friend's recommendation and now I recommend it too."},
+         {name:'Fernanda L.', stars:5, text:'The sunscreen leaves no white cast, that alone is a win.', more:"I use it every day before heading out, smells nice and doesn't sting my eyes.", photo:'media/nacar-09-spf50-abierto.webp'},
+         {name:'Andrea Q.', stars:4, text:"Does the job, though it's a bit pricey for how much you get.", more:"Still buying it again since it hasn't caused any reaction on my skin."},
+         {name:'Miguel T.', stars:5, text:'Got it for my wife and she loved it, already asked for another one.', more:'Good packaging, arrived on time and the product feels well made.'}
        ]; },
+       reviewReadMore:function(){ return 'Read more'; },
+       reviewReadLess:function(){ return 'Show less'; },
        addToCart:function(){ return 'Add to cart'; },
        viewDetail:function(){ return 'View detail'; },
        comingSoonBadge:function(){ return 'Coming soon'; },
@@ -2496,10 +2513,15 @@ var DYN = {
        hideComments:function(){ return 'Masquer les commentaires'; },
        commentsDisclaimer:function(){ return 'Commentaires d\'exemple a des fins de demonstration du prototype.'; },
        demoComments:function(){ return [
-         {name:'Client verifie', stars:5, text:'Bonne qualite, livraison plus rapide que prevu.'},
-         {name:'Client verifie', stars:4, text:'Tient ses promesses, je continuerai a en acheter.'},
-         {name:'Client verifie', stars:5, text:'On remarque la difference apres quelques semaines d\'utilisation.'}
+         {name:'Renata M.', stars:5, text:"Arrivee rapidement et bien emballee. La mousse n'assèche pas la peau, je l'utilise tous les jours.", more:'Deja mon deuxieme flacon, ma peau est beaucoup plus calme depuis.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
+         {name:'Diego H.', stars:4, text:'Bon produit, meme si la livraison a pris un peu plus de temps que prevu.', more:'Le resultat se voit, j\'aurais juste aime qu\'il arrive dans les 4 jours annonces.'},
+         {name:'Paola S.', stars:5, text:'J\'ai adore la texture, elle ne laisse pas la peau grasse.', more:'Achete sur recommandation d\'une amie, et maintenant je le recommande aussi.'},
+         {name:'Fernanda L.', stars:5, text:'La protection solaire ne laisse pas de trace blanche, c\'est deja un plus.', more:'Je l\'utilise tous les jours avant de sortir, elle sent bon et ne pique pas les yeux.', photo:'media/nacar-09-spf50-abierto.webp'},
+         {name:'Andrea Q.', stars:4, text:'Fait le travail, meme si le prix est un peu eleve pour la quantite.', more:'Je continue quand meme a en racheter, aucune reaction sur ma peau.'},
+         {name:'Miguel T.', stars:5, text:'Je l\'ai offert a ma femme, elle a adore et en a deja recommande.', more:'Bon emballage, livraison a temps et le produit semble de bonne qualite.'}
        ]; },
+       reviewReadMore:function(){ return 'Voir plus'; },
+       reviewReadLess:function(){ return 'Voir moins'; },
        addToCart:function(){ return 'Ajouter au panier'; },
        viewDetail:function(){ return 'Voir le detail'; },
        comingSoonBadge:function(){ return 'Bientot disponible'; },
@@ -2680,6 +2702,15 @@ function toggleComments(){
     btn.textContent = DYN[currentLang].viewComments();
   }
 }
+// Fix 76: expande/colapsa el texto extendido (y foto, si trae) de un
+// comentario de ejemplo. moreId identifica el bloque .comment-more oculto
+// que corresponde a ese comentario especifico.
+function toggleDemoCommentMore(link, moreId){
+  var more = document.getElementById(moreId);
+  if (!more) return;
+  var isOpen = more.classList.toggle('open');
+  link.textContent = isOpen ? DYN[currentLang].reviewReadLess() : DYN[currentLang].reviewReadMore();
+}
 
 // Fix 60/61: el panel de comentarios es por vertical (un solo formulario para
 // todos los skus visibles), pero la resena real se asocia a UN sku. Antes
@@ -2738,9 +2769,24 @@ function loadReviewsForCurrentVertical(){
       }
     }
     if (!anyReal){
+      // Fix 76: los comentarios de ejemplo ahora traen texto extendido (more)
+      // y, en algunos, una foto de ejemplo (photo) -- se muestran ocultos
+      // detras de un link "Ver mas/Ver menos" (toggleDemoCommentMore) en vez
+      // de mostrar todo de un jalon, para que se sienta como una resena real
+      // con espacio a expandir. Las fotos usadas son fotografia real de
+      // producto que ya vive en el sitio (no fotos de personas reales) --
+      // el disclaimer de abajo ya deja claro que estos comentarios son de
+      // ejemplo, asi que no se presentan como testimonios verificados.
       var demo = DYN[currentLang].demoComments();
+      var readMoreLabel = DYN[currentLang].reviewReadMore();
       for (var d=0;d<demo.length;d++){
-        html += '<div class="comment-item"><div class="c-head"><span>' + demo[d].name + '</span><span class="c-stars">' + starsHtml(demo[d].stars) + '</span></div><p>' + demo[d].text + '</p></div>';
+        var dc = demo[d];
+        var moreId = 'demoCommentMore' + d;
+        var moreInner = (dc.more ? ('<p>' + dc.more + '</p>') : '') + (dc.photo ? ('<img class="review-photo-thumb" src="' + dc.photo + '" alt="' + dc.name + '">') : '');
+        html += '<div class="comment-item"><div class="c-head"><span>' + dc.name + '</span><span class="c-stars">' + starsHtml(dc.stars) + '</span></div>' +
+          '<p>' + dc.text + '</p>' +
+          (moreInner ? ('<div class="comment-more" id="' + moreId + '">' + moreInner + '</div><a class="comment-readmore-link" onclick="toggleDemoCommentMore(this,\'' + moreId + '\')">' + readMoreLabel + '</a>') : '') +
+          '</div>';
       }
       html += '<div class="comments-disclaimer">' + DYN[currentLang].commentsDisclaimer() + '</div>';
     }
