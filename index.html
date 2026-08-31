@@ -190,7 +190,11 @@ section{padding:92px 0;}
 .phil-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;}
 /* Fix 61: #F0F0EF quedaba casi identico al --cream de siempre (#F8F7F3) --
    apenas se notaba el cambio. Se sube el contraste a un gris mas franco. */
-.phil-visual{background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:340px; display:flex; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:44px;}
+.phil-visual{background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--navy); text-align:center; padding:36px 44px 44px;}
+/* Fix 71: imagen del Suero arriba de la cita -- ancho fijo (no 100%) para
+   que en pantallas grandes no se estire mas alla de su resolucion nativa;
+   el archivo ya viene a 1600px, de sobra para el max-width de 420px. */
+.phil-visual-img{width:100%; max-width:420px; height:auto; border-radius:8px; margin-bottom:26px; box-shadow:0 14px 34px rgba(0,0,0,.16); display:block;}
 .phil-visual .quote{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:25px; line-height:1.55; color:var(--navy);}
 /* La palabra dorada ya no es solo un cambio de color -- cambia a Bodoni Moda
    en redonda (no italica, a proposito, para que contraste contra el resto de
@@ -948,6 +952,11 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div class="phil-visual reveal">
+      <!-- Fix 71: la caja de la cita ahora encabeza con la foto del Suero
+           Facial (grande, sin recorte forzado -- max-width fijo y la fuente
+           ya viene a 1600px de ancho para que no se pixelee ni en pantallas
+           retina/zoom). La cita de siempre se queda debajo, sin cambios. -->
+      <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ">
       <div class="quote" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;</div>
     </div>
   </div>
@@ -1253,7 +1262,7 @@ var AZURA_CONFIG = {
       <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyCatalog();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
         <h4 id="beautyChoiceCatalogTitle">Ver catalogo completo</h4>
-        <p id="beautyChoiceCatalogBody">Explora los 4 productos de System Luminous a tu ritmo.</p>
+        <p id="beautyChoiceCatalogBody">Explora los 5 productos de System Luminous a tu ritmo.</p>
       </div>
       <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyQuiz();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.3v.2h6v-.2c0-.9.4-1.7 1-2.3A6 6 0 0 0 12 3Z"/></svg></div>
@@ -1523,7 +1532,13 @@ var V = {
           usage:"Aplica de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplica cada 3 horas y despues de nadar, transpirar o secarte con la toalla.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
-          related:["NACAR-07"]}
+          related:["NACAR-07"]},
+        {sku:"NACAR-10", tag:"Suero facial", name:"Suero Facial de Hidratación Profunda con Aloe Vera", desc:"El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.", price:"$430 MXN",
+          longDesc:"Ideal para ayudar a mejorar la apariencia de las finas líneas de expresión causadas por la resequedad. Textura suave y ligera de fácil absorción.",
+          usage:"Aplica 2-3 gotas sobre rostro limpio, por la mañana y por la noche, con un ligero masaje hasta su absorción completa. Puedes usarlo antes de tu crema hidratante.",
+          ingredients:["Enriquecido con péptidos precursores del colágeno y ácido hialurónico."],
+          img:"media/nacar-10-suero-lifestyle-mano.webp", thumb:"media/nacar-10-suero-thumb.webp", gallery:["media/nacar-10-suero-lifestyle-aloe.webp","media/nacar-10-suero-lifestyle-splash.webp"],
+          related:["NACAR-06","NACAR-08"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
@@ -1556,7 +1571,13 @@ var V = {
           usage:"Apply evenly to dry skin before sun exposure. Reapply every 3 hours and after swimming, sweating or towel-drying.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
-          related:["NACAR-07"]}
+          related:["NACAR-07"]},
+        {sku:"NACAR-10", tag:"Facial serum", name:"Aloe Vera Deep Moisturizing Facial Serum", desc:"SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", price:"$430 MXN",
+          longDesc:"Ideal to help improve the appearance of fine expression lines caused by dryness. Soft, lightweight texture that absorbs easily.",
+          usage:"Apply 2-3 drops to clean skin, morning and night, with a gentle massage until fully absorbed. Use before your moisturizer.",
+          ingredients:["Enriched with collagen-precursor peptides and hyaluronic acid."],
+          img:"media/nacar-10-suero-lifestyle-mano.webp", thumb:"media/nacar-10-suero-thumb.webp", gallery:["media/nacar-10-suero-lifestyle-aloe.webp","media/nacar-10-suero-lifestyle-splash.webp"],
+          related:["NACAR-06","NACAR-08"]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
@@ -1589,7 +1610,13 @@ var V = {
           usage:"Appliquer uniformement sur peau seche avant l'exposition au soleil. Reappliquer toutes les 3 heures et apres la baignade, la transpiration ou le sechage a la serviette.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
-          related:["NACAR-07"]}
+          related:["NACAR-07"]},
+        {sku:"NACAR-10", tag:"Serum facial", name:"Serum Facial Hydratant Profond a l'Aloe Vera", desc:"Le Serum Facial Hydratant Profond a l'Aloe Vera SEYTU hydrate en profondeur et aide a ameliorer la fermete et l'elasticite de votre peau.", price:"$430 MXN",
+          longDesc:"Ideal pour aider a ameliorer l'apparence des fines lignes d'expression causees par la secheresse. Texture douce et legere, absorption facile.",
+          usage:"Appliquer 2 a 3 gouttes sur peau propre, matin et soir, avec un leger massage jusqu'a absorption complete. A utiliser avant votre creme hydratante.",
+          ingredients:["Enrichi en peptides precurseurs du collagene et en acide hyaluronique."],
+          img:"media/nacar-10-suero-lifestyle-mano.webp", thumb:"media/nacar-10-suero-thumb.webp", gallery:["media/nacar-10-suero-lifestyle-aloe.webp","media/nacar-10-suero-lifestyle-splash.webp"],
+          related:["NACAR-06","NACAR-08"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complete", desc:"routine en 5 etapes avec contour et protection."}]
     }
@@ -2155,7 +2182,7 @@ var DYN = {
            title:'¿Como quieres descubrir tu belleza?',
            subtitle:'Elige explorar el catalogo completo o responde 4 preguntas rapidas para una preseleccion hecha para ti.',
            catalogTitle:'Ver catalogo completo',
-           catalogBody:'Explora los 4 productos de System Luminous a tu ritmo.',
+           catalogBody:'Explora los 5 productos de System Luminous a tu ritmo.',
            quizTitle:'Diagnostico personalizado',
            quizBody:'4 preguntas y te preseleccionamos tus productos ideales.'
          },
@@ -2314,7 +2341,7 @@ var DYN = {
            title:'How do you want to discover your beauty routine?',
            subtitle:'Browse the full catalog, or answer 4 quick questions and get a picked-for-you preselection.',
            catalogTitle:'View full catalog',
-           catalogBody:'Explore all 4 System Luminous products at your own pace.',
+           catalogBody:'Explore all 5 System Luminous products at your own pace.',
            quizTitle:'Personalized diagnosis',
            quizBody:'4 questions and we preselect your ideal products.'
          },
@@ -2473,7 +2500,7 @@ var DYN = {
            title:'Comment souhaitez-vous decouvrir votre beaute?',
            subtitle:'Explorez le catalogue complet, ou repondez a 4 questions rapides pour une preselection faite pour vous.',
            catalogTitle:'Voir le catalogue complet',
-           catalogBody:'Explorez les 4 produits System Luminous a votre rythme.',
+           catalogBody:'Explorez les 5 produits System Luminous a votre rythme.',
            quizTitle:'Diagnostic personnalise',
            quizBody:'4 questions et nous preselectionnons vos produits ideaux.'
          },
@@ -4069,11 +4096,18 @@ function bqGoBack(){
 }
 
 function computeBeautyScores(answers){
-  // Motor de puntaje alineado a los 4 productos reales del catalogo Nacar:
+  // Motor de puntaje alineado a los 4 productos originales del catalogo Nacar:
   // NACAR-06 Espuma (limpieza), NACAR-07 Gel (antioxidante/hidratacion),
   // NACAR-08 Dia FPS30 (firmeza/proteccion diaria), NACAR-09 Protector FPS50+
   // (proteccion solar dedicada). Sin preguntas de cabello: ese producto no
   // existe en el catalogo actual.
+  // Fix 71: NACAR-10 (Suero de Aloe Vera) se agrego al catalogo pero
+  // NO esta cableado a este cuestionario -- ninguna de las 4 preguntas
+  // actuales (limpieza/antioxidante/firmeza/sol, tipo de piel, sol, tiempo)
+  // mapea de forma natural a "lineas de expresion por resequedad". Si se
+  // quiere que el diagnostico tambien pueda recomendar el Suero, hace falta
+  // una nueva pregunta o remapear las existentes -- pendiente, no incluido
+  // en este cambio.
   var scores = { 'NACAR-06':0, 'NACAR-07':0, 'NACAR-08':0, 'NACAR-09':0 };
   var goalMap = { cleanse:'NACAR-06', antioxidant:'NACAR-07', firmness:'NACAR-08', sun:'NACAR-09' };
   if (answers.goal === 'complete'){

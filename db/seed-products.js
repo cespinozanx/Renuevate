@@ -91,6 +91,18 @@ const PRODUCTS = [
     long_description_es: 'Un protector solar facial de toque seco y absorcion inmediata, formulado con 89% de ingredientes de origen natural. Resistente al agua, libre de fragancia y clinica y dermatologicamente probado, ideal para pieles sensibles y para toda la familia. Formulado sin ingredientes daninos para los arrecifes de coral. Presentacion de 40 ml.',
     ingredients_es: ['Aqua (Water)', 'Dicaprylyl Carbonate', 'Hydrogenated Ethylhexyl Olivate', 'Titanium Dioxide', 'Zinc Oxide (Nano)', 'Butyloctyl Salicylate', 'Hydrogenated Farnesene', 'Beeswax', 'Caprylyl Methicone', 'Glycerin', 'Silica', 'Aluminum Starch Octenylsuccinate', 'Polyhydroxystearic Acid', 'Sodium Chloride', 'Polysilicone-11', 'Sodium Stearoyl Lactylate', 'Benzotriazolyl Dodecyl P-Cresol', 'Cetyl PEG/PPG-10/1 Dimethicone', 'Caprylic/Capric Triglyceride', 'Stearic Acid', 'Hydrogenated Olive Oil Unsaponifiables', 'Dimethicone/Vinyl Dimethicone Crosspolymer', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Glyceryl Caprylate', 'Glyceryl Undecylenate', 'Helianthus Annuus (Sunflower) Seed Oil', 'Aluminum Hydroxide', 'Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate', 'Laureth-12', 'Laminaria Ochroleuca Extract', 'Tocopherol', 'Bisabolol', 'Triethoxycaprylylsilane', 'Benzyl Alcohol'],
     usage_es: 'Aplica de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplica cada 3 horas y despues de nadar, transpirar o secarte con la toalla.' },
+  // Fix 71: 5to producto real de Nacar (Carlos, 2026-08-30). Mismo criterio
+  // que 06-09: foto/precio/ingredientes verdaderos. No tiene related reciproco
+  // desde 06/08 todavia (solo se agrego related en este sku hacia ellos) --
+  // ver mismo comentario en index.html sobre el motor de puntaje del
+  // cuestionario de belleza, que tampoco lo cubre todavia.
+  { sku: 'NACAR-10', vertical: 'nacar', price: '$430 MXN', related: ['NACAR-06', 'NACAR-08'],
+    name_i18n: { es: 'Suero Facial de Hidratación Profunda con Aloe Vera', en: 'Aloe Vera Deep Moisturizing Facial Serum', fr: "Serum Facial Hydratant Profond a l'Aloe Vera" },
+    description_i18n: { es: 'El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.', en: "SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", fr: 'Le Serum Facial Hydratant Profond a l\'Aloe Vera SEYTU hydrate en profondeur et aide a ameliorer la fermete et l\'elasticite de votre peau.' },
+    image: 'media/nacar-10-suero-lifestyle-mano.webp',
+    long_description_es: 'Ideal para ayudar a mejorar la apariencia de las finas líneas de expresión causadas por la resequedad. Textura suave y ligera de fácil absorción.',
+    ingredients_es: ['Enriquecido con péptidos precursores del colágeno y ácido hialurónico.'],
+    usage_es: 'Aplica 2-3 gotas sobre rostro limpio, por la mañana y por la noche, con un ligero masaje hasta su absorción completa. Puedes usarlo antes de tu crema hidratante.' },
 
   // VIGOR
   { sku: 'VIGOR-01', vertical: 'vigor', price: '$699 MXN', rating: { stars: 4.8, count: 521 }, related: ['VIGOR-03'],
