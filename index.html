@@ -225,18 +225,25 @@ section{padding:92px 0;}
 .phil-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;}
 /* Fix 61: #F0F0EF quedaba casi identico al --cream de siempre (#F8F7F3) --
    apenas se notaba el cambio. Se sube el contraste a un gris mas franco. */
-/* Fix 73: Carlos marco esta caja con "2" en captura y pidio agrandarla al
-   doble para que la foto ocupe el contenedor completo -- el padding de
-   36/44/44px que quedaba de cuando esta caja tenia foto+cita adentro (Fix 71)
-   dejaba un margen visible alrededor de la imagen en vez de llenarla borde a
-   borde. Se quita el padding y se dobla min-height (340px -> 680px, ver
-   tambien el tope para movil mas abajo en @media max-width:760). */
-.phil-visual{background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:680px; overflow:hidden; padding:0;}
+/* Fix 75: Carlos reporto (con captura) que seguia quedando una franja gris
+   vacia debajo de la foto, pese al min-height:680px de Fix 73. Causa real:
+   .phil-visual-img tenia height:100%, pero un % de altura solo se resuelve
+   si el contenedor padre tiene una altura DEFINIDA -- min-height no cuenta
+   para eso en CSS, asi que el navegador trataba ese 100% como "auto" y la
+   imagen se quedaba en su alto natural (mas corto que la caja), dejando el
+   resto de min-height:680px como hueco vacio. Se cambia al mismo patron ya
+   usado y probado en el carrusel del hero (.hero-media-frame + .hero-slide):
+   position:absolute; inset:0 sobre la imagen + position:relative en el
+   contenedor -- esto SI garantiza llenar el 100% real del alto sin depender
+   de resolucion de porcentajes. De paso, "mucho mas grande" por instruccion
+   de Carlos: min-height sube de 680px a 960px en desktop (ver tambien el
+   tope para movil mas abajo en @media max-width:760, tambien subido). */
+.phil-visual{position:relative; background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:960px; overflow:hidden; padding:0;}
 /* Fix 72: Carlos pidio sacar la cita de esta caja -- ahora .phil-visual solo
    contiene la foto del Suero, a maximo tamano (100% del contenedor, sin el
    max-width fijo de Fix 71). La cita se movio a .phil-quote-below, debajo de
    todo el grid (ver mas abajo y el HTML de #filosofia). */
-.phil-visual-img{width:100%; max-width:100%; height:100%; object-fit:cover; border-radius:6px; margin-bottom:0; box-shadow:none; display:block;}
+.phil-visual-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:6px; margin-bottom:0; box-shadow:none; display:block;}
 /* Fix 72: la cita ya no vive dentro de .phil-visual (que ahora es solo la
    foto) -- vive en su propio bloque, debajo de las 2 columnas del grid
    (grid-column:1/-1 la hace ocupar todo el ancho para quedar centrada bajo
@@ -704,10 +711,11 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .verticals-grid{grid-template-columns:repeat(2,1fr);}
   .products-grid{grid-template-columns:repeat(2,1fr);}
   .phil-grid{grid-template-columns:1fr;}
-  /* Fix 73: min-height:680px (desktop, ver arriba) se ve exagerado en una
-     columna angosta de movil -- se topa a 420px, sigue siendo mas grande que
-     el original de 340px sin quedar absurdamente alto en pantalla chica. */
-  .phil-visual{min-height:420px;}
+  /* Fix 75: min-height:960px (desktop, ver arriba) se ve exagerado en una
+     columna angosta de movil -- se topa a 520px (subido de 420px de Fix 73,
+     proporcional al nuevo tamano desktop) sin quedar absurdamente alto en
+     pantalla chica. */
+  .phil-visual{min-height:520px;}
   .footer-grid{grid-template-columns:1fr 1fr; row-gap:32px;}
 }
 @media(max-width:760px){
