@@ -3,11 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Renuévate</title>
+<title>Renuévate | Cuidado facial y bienestar SEYTÚ — México</title>
+<!-- Fix 78: bloque SEO -- no existia ninguno de estos tags (meta description,
+     canonical, Open Graph, Twitter Card, robots, JSON-LD). Sin meta
+     description Google arma su propio snippet (a veces con texto irrelevante
+     del footer/legal), sin canonical/OG los links compartidos en WhatsApp o
+     redes no muestran preview, y sin JSON-LD Google no entiende que esto es
+     una Organization/tienda. Nota importante: este es un sitio de una sola
+     página (SPA) -- todo el catalogo/categorías viven en la misma URL con
+     estado manejado por JS, así que no hay URLs individuales por producto
+     que indexar todavia. Eso limita el techo de SEO real: para que Google
+     indexe fichas de producto por separado (y aparezcan en busquedas tipo
+     "protector solar FPS 50 Cancun") se necesitarian rutas propias por
+     producto (server-rendered o al menos con SSR/prerender) -- ese es un
+     cambio de arquitectura, no algo que se resuelva solo con meta tags. -->
+<meta name="description" content="Renuévate: cuidado facial SEYTÚ en México. Limpiadores, protector solar FPS 50+, crema de día y sueros faciales con envío a todo el país.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://renuevatehoy.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Renuévate">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Renuévate | Cuidado facial y bienestar SEYTÚ">
+<meta property="og:description" content="Cuidado facial SEYTÚ en México: limpiadores, protector solar FPS 50+, crema de día y sueros faciales. Envío a todo el país.">
+<meta property="og:url" content="https://renuevatehoy.vercel.app/">
+<!-- JPG, no webp -- algunos crawlers de redes sociales (Facebook/WhatsApp/
+     Twitter) siguen sin renderizar bien el preview cuando la imagen OG es
+     .webp; jpg es el formato mas compatible para esto especificamente. -->
+<meta property="og:image" content="https://renuevatehoy.vercel.app/media/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="896">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Renuévate | Cuidado facial y bienestar SEYTÚ">
+<meta name="twitter:description" content="Cuidado facial SEYTÚ en México: limpiadores, protector solar FPS 50+, crema de día y sueros faciales. Envío a todo el país.">
+<meta name="twitter:image" content="https://renuevatehoy.vercel.app/media/og-image.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="media/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="media/favicon-180.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Renuévate","url":"https://renuevatehoy.vercel.app/","logo":"https://renuevatehoy.vercel.app/media/logo-icon.png","image":"https://renuevatehoy.vercel.app/media/og-image.jpg","description":"Cuidado facial SEYTÚ en México: limpiadores, protector solar, crema de día y sueros faciales.","address":{"@type":"PostalAddress","addressLocality":"Cancún","addressRegion":"Quintana Roo","addressCountry":"MX"}}
+</script>
+<!-- Fix 78: preload de la imagen del hero (LCP) -- es la imagen mas grande
+     que se pinta primero en pantalla; sin este preload el navegador la
+     descubre tarde (compite con fuentes/CSS) y retrasa el LCP. -->
+<link rel="preload" as="image" href="media/hero-carousel-1-labial.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=Archivo+Black&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;1,500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=Archivo+Black&family=Bodoni+Moda:ital,wght@0,400;0,500;1,500&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -36,7 +76,7 @@ img,svg{display:block;}
 .btn-vertical{background:var(--active); color:#fff;}
 .btn-vertical:hover{filter:brightness(1.15);}
 
-/* Fix 72: banner de envio gratis arriba del topbar, instruccion Carlos. */
+/* Fix 72: banner de envío gratis arriba del topbar, instruccion Carlos. */
 .promo-banner{background:var(--navy); color:#fff; text-align:center; font-size:11.5px; letter-spacing:.5px; padding:9px 14px; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;}
 .promo-banner .promo-cta{background:var(--gold); color:var(--navy); border:0; border-radius:3px; padding:5px 16px; font-size:10.5px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; cursor:pointer; font-family:'Manrope',sans-serif;}
 .promo-banner .promo-cta:hover{opacity:.88;}
@@ -87,8 +127,8 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
   .nav-dropdown-menu{position:absolute; top:100%; left:50%; transform:translateX(-50%); background:#fff; box-shadow:0 10px 28px rgba(0,0,0,.14); padding:12px 18px; min-width:210px; border-radius:6px; z-index:80; margin-top:14px;}
   .nav-dropdown-menu a{padding:8px 4px !important; white-space:nowrap; border-bottom:none !important;}
 }
-/* Fix 68: el video unico del hero se sustituye por un carrusel de 3 fotos
-   lifestyle (rotacion automatica + control manual con puntos). Mismo marco
+/* Fix 68: el video único del hero se sustituye por un carrusel de 3 fotos
+   lifestyle (rotacion automática + control manual con puntos). Mismo marco
    (posicion, margen desktop, sombra) que el video, solo cambia el contenido:
    ahora son <img class="hero-slide"> apiladas con crossfade por opacity. */
 .hero-media-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#F8F7F3; z-index:0;}
@@ -102,7 +142,7 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 .hero-slide:nth-of-type(3){object-position:center 55%;}
 .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(20,18,14,.22) 0%, rgba(20,18,14,.08) 38%, rgba(20,18,14,.62) 100%);}
 /* Fix 69: los puntos no respondian al clic -- .hero-grid (el bloque de texto
-   H1/parrafo/botones) tambien tiene z-index:2 y, aunque su fondo es
+   H1/parrafo/botones) también tiene z-index:2 y, aunque su fondo es
    transparente, su caja SI es "clickeable" en toda su area (incluido el
    padding-bottom de 52px que usa para pegarse abajo via align-items:flex-end
    del .hero). Esa franja transparente caia justo encima de los puntos y,
@@ -133,7 +173,7 @@ body.nav-lock{overflow:hidden;}
 
 /* Fix 69: en movil el carrusel se sentia "chico" comparado con desktop.
    68vh dejaba la caja casi del mismo aspecto que las fotos (poco recorte,
-   pero tambien poca presencia en pantalla). Subir a 84vh hace que la foto
+   pero también poca presencia en pantalla). Subir a 84vh hace que la foto
    ocupe mas alto de la pantalla (se siente "maximizada", igual de grande que
    en desktop) -- el recorte que se gana es lateral, no de arriba/abajo, y
    con el object-position de cada slide (ver .hero-slide:nth-of-type) el
@@ -152,15 +192,18 @@ body.nav-lock{overflow:hidden;}
    ejemplo que mando. Razon real: al ser una caja mas alta, object-fit:cover
    solo gana recorte LATERAL (izq/der), no vertical -- el rostro completo
    sigue cabiendo dentro del marco en vez de sentirse "en primer plano". La
-   unica forma de garantizar un acercamiento real, sin importar el aspect
+   única forma de garantizar un acercamiento real, sin importar el aspect
    ratio de cada foto, es escalar la imagen por encima de su ajuste natural
    con transform:scale() -- esto la agranda de verdad y empuja bordes (pelo,
    hombros, fondo) fuera de cuadro, dejando el rostro/producto en un recorte
-   parcial mas dramatico, igual en cualquier telefono. transform-origin usa
+   parcial mas dramatico, igual en cualquier teléfono. transform-origin usa
    el mismo punto vertical que cada object-position de arriba, para que el
    zoom no se desalinee del encuadre ya elegido por slide. */
 @media(max-width:760px){
-  .hero-slide{transform:scale(1.35);}
+  /* Fix 78: Carlos volvio a pedir mas recorte/zoom de rostro en movil pese
+     al fix anterior (1.35) -- se sube a 1.5 para que el acercamiento sea
+     mas notorio de entrada, sin necesidad de otra vuelta. */
+  .hero-slide{transform:scale(1.5);}
   .hero-slide:nth-of-type(1){transform-origin:center 30%;}
   .hero-slide:nth-of-type(2){transform-origin:center 35%;}
   .hero-slide:nth-of-type(3){transform-origin:center 55%;}
@@ -175,7 +218,7 @@ body.nav-lock{overflow:hidden;}
      (linea de arriba). Con left+right+width:100% los tres puestos a la vez,
      CSS ignora "right" (elemento sobre-restringido) y el marco se corria
      hacia la derecha, quedando recortado por el overflow:hidden de .hero --
-     eso era el "lado derecho recortado". width:auto aqui resuelve el
+     eso era el "lado derecho recortado". width:auto aquí resuelve el
      ancho real entre left y right en vez de heredar el 100% fijo. */
   .hero{min-height:56vh; background:#fff;}
   .hero-media-frame{left:64px; right:64px; width:auto; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
@@ -229,18 +272,18 @@ section{padding:92px 0;}
    vacia debajo de la foto, pese al min-height:680px de Fix 73. Causa real:
    .phil-visual-img tenia height:100%, pero un % de altura solo se resuelve
    si el contenedor padre tiene una altura DEFINIDA -- min-height no cuenta
-   para eso en CSS, asi que el navegador trataba ese 100% como "auto" y la
+   para eso en CSS, así que el navegador trataba ese 100% como "auto" y la
    imagen se quedaba en su alto natural (mas corto que la caja), dejando el
    resto de min-height:680px como hueco vacio. Se cambia al mismo patron ya
    usado y probado en el carrusel del hero (.hero-media-frame + .hero-slide):
    position:absolute; inset:0 sobre la imagen + position:relative en el
    contenedor -- esto SI garantiza llenar el 100% real del alto sin depender
    de resolucion de porcentajes. De paso, "mucho mas grande" por instruccion
-   de Carlos: min-height sube de 680px a 960px en desktop (ver tambien el
-   tope para movil mas abajo en @media max-width:760, tambien subido). */
+   de Carlos: min-height sube de 680px a 960px en desktop (ver también el
+   tope para movil mas abajo en @media max-width:760, también subido). */
 .phil-visual{position:relative; background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:960px; overflow:hidden; padding:0;}
 /* Fix 72: Carlos pidio sacar la cita de esta caja -- ahora .phil-visual solo
-   contiene la foto del Suero, a maximo tamano (100% del contenedor, sin el
+   contiene la foto del Suero, a máximo tamano (100% del contenedor, sin el
    max-width fijo de Fix 71). La cita se movio a .phil-quote-below, debajo de
    todo el grid (ver mas abajo y el HTML de #filosofia). */
 .phil-visual-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:6px; margin-bottom:0; box-shadow:none; display:block;}
@@ -261,7 +304,7 @@ section{padding:92px 0;}
 .phil-quote-below .accent{color:var(--gold); border-color:var(--gold); font-family:'Bodoni Moda',serif; font-style:normal; font-weight:500; letter-spacing:.6px;}
 /* El texto (eyebrow/h2) de esta columna debe seguir alineado a la izquierda;
    solo el video/imagen de abajo (.phil-showcase) debe quedar centrado. Se
-   fuerza con flex+align-self ademas del margin:auto de abajo (doble
+   fuerza con flex+align-self además del margin:auto de abajo (doble
    aseguramiento) porque un margin:auto por si solo no estaba centrando el
    video en pantalla real -- reportado por Carlos ("la veo a la izquierda"). */
 .phil-grid > .reveal-stagger{display:flex; flex-direction:column; align-items:flex-start;}
@@ -271,13 +314,13 @@ section{padding:92px 0;}
 @media(max-width:760px){ .phil-showcase{width:190px; max-width:52%;} }
 
 /* .zoom-section reduce su padding-top respecto al "section{padding:92px 0}"
-   generico: al ser una pagina aislada (ver comentario de abajo), esos 92px
+   generico: al ser una página aislada (ver comentario de abajo), esos 92px
    mas el margen del boton "Volver a inicio" dejaban un bloque de espacio en
    blanco muy grande justo debajo del header, antes de llegar a cualquier
    contenido util. */
 .zoom-section{border-top:1px solid var(--line); padding-top:32px;}
 .zoom-section.zoom-hidden{display:none;}
-/* Modo catalogo: la ficha #zoom se reusa como pagina de solo-lista (sin tabs
+/* Modo catalogo: la ficha #zoom se reusa como página de solo-lista (sin tabs
    Luminous/Health/Spot ni banner narrativo de "sistema destacado" ni bloque de
    rutinas) para el CTA "Catalogo" del menu Belleza y el resultado del
    diagnostico -- ver openBeautyCatalog(). goVertical() (System Speciality
@@ -288,7 +331,7 @@ section{padding:92px 0;}
 /* Cuando se ve el catalogo o un System Speciality especifico (goVertical /
    openBeautyCatalog), el resto de la home (hero, verticales, filosofia,
    newsletter) se oculta por completo -- ya no es un scroll largo de una sola
-   pagina, se siente como una pagina propia. goHome() quita esta clase y
+   página, se siente como una página propia. goHome() quita esta clase y
    vuelve a mostrar todo. Sin esto, aunque #zoom se revelaba correctamente,
    el usuario seguia topandose con el resto de la home al hacer scroll. */
 body.viewing-product-page .home-only{display:none;}
@@ -319,7 +362,7 @@ body.viewing-product-page .home-only{display:none;}
 .product-img svg{width:52px; height:52px; opacity:.7; color:var(--active);}
 .product-body{padding:20px; flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;}
 .product-body .p-eyebrow{font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--active); font-weight:700;}
-/* Regla permanente: nombre a 1 linea + descripcion a 2 lineas = 3 lineas de texto maximo por tarjeta */
+/* Regla permanente: nombre a 1 linea + descripcion a 2 lineas = 3 lineas de texto máximo por tarjeta */
 .product-body h4{font-family:'Playfair Display',serif; font-size:15.5px; font-weight:600; margin:7px 0 5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .product-body p{font-size:12.5px; color:var(--grey); margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.6em;}
 .product-rating{display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--grey); margin-bottom:8px;}
@@ -773,7 +816,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 /* Nota: el video del hero ya no vive dentro de .hero-content (ver seccion hero
    mas abajo, ahora es full-bleed a nivel de .hero) por lo que nunca entra al
    ciclo de opacity:0 de .reveal-stagger -- ya no necesita una regla de excepcion
-   aqui. Si el video se vuelve a anidar en .hero-content, revisar este comentario. */
+   aquí. Si el video se vuelve a anidar en .hero-content, revisar este comentario. */
 @keyframes revealLR{from{opacity:0; transform:translateX(-28px);}to{opacity:1; transform:translateX(0);}}
 .product-card, .routine-card{animation:revealLR .65s ease-out both;}
 .product-card:nth-child(1), .routine-card:nth-child(1){animation-delay:.05s;}
@@ -841,10 +884,10 @@ var AZURA_CONFIG = {
 </script>
 
 
-<!-- Fix 72: banner de envio gratis, instruccion explicita de Carlos.
+<!-- Fix 72: banner de envío gratis, instruccion explicita de Carlos.
      NOTA: el link "COMPRAR AHORA" que Carlos pego en su mensaje apuntaba a
      clinique.com.mx (sitio de un competidor) -- casi seguro un pegado
-     accidental, asi que el boton abre el catalogo propio del sitio en su
+     accidental, así que el boton abre el catalogo propio del sitio en su
      lugar. Se flagea esto en la respuesta de este Fix para que Carlos
      confirme el destino real que quiere. -->
 <div class="promo-banner">
@@ -855,7 +898,7 @@ var AZURA_CONFIG = {
 <div class="topbar">
   <div class="container">
     <div class="topbar-links">
-      <span data-i18n="top.shipping">Envio calculado en checkout . Entrega en 4 dias habiles</span>
+      <span data-i18n="top.shipping">Envio calculado en checkout . Entrega en 4 días habiles</span>
       <span data-i18n="top.location">Cancun . Mexico</span>
       <span data-i18n="top.tagline">Bienestar real, para cada etapa de tu vida</span>
     </div>
@@ -882,8 +925,8 @@ var AZURA_CONFIG = {
            personalizado. Los skus de "Skin Care" ahora son los 5 productos
            reales (NACAR-06..10, ver Fix 72 en openBeautyCategory de abajo) y
            "Maquillaje" queda temporalmente vacio ([]) hasta que Carlos cargue
-           productos que de verdad sean de esa categoria -- renderVertical ya
-           muestra un estado vacio con mensaje (categoria.empty) en vez de
+           productos que de verdad sean de esa categoría -- renderVertical ya
+           muestra un estado vacio con mensaje (categoría.empty) en vez de
            dejar la caja en blanco. -->
       <div class="nav-dropdown" id="navBeautyDropdown">
         <a class="nav-dropdown-trigger" data-v="nacar" onclick="toggleBeautyDropdown(event)"><span data-i18n="nav.nacar">Belleza</span> <span class="caret">&#9660;</span></a>
@@ -933,7 +976,7 @@ var AZURA_CONFIG = {
 
 <section class="hero home-only">
   <div class="hero-media-frame" id="heroCarouselFrame">
-    <img class="hero-slide is-active" src="media/hero-carousel-1-labial.webp" alt="" loading="eager">
+    <img class="hero-slide is-active" src="media/hero-carousel-1-labial.webp" alt="" loading="eager" fetchpriority="high">
     <img class="hero-slide" src="media/hero-carousel-2-crema.webp" alt="" loading="lazy">
     <img class="hero-slide" src="media/hero-carousel-3-flatlay.webp" alt="" loading="lazy">
     <div class="hero-scrim"></div>
@@ -1033,7 +1076,7 @@ var AZURA_CONFIG = {
            en su lugar, un mini video/transicion cinematografica hecho con
            2 fotos de campana oficiales SEYTU (Seccion A-1 y Seccion A-1-B)
            via ffmpeg: zoom lento tipo Ken Burns en cada foto + crossfade
-           de 1s entre ambas, loop de ~9s. No se usa reveal-stagger aqui
+           de 1s entre ambas, loop de ~9s. No se usa reveal-stagger aquí
            (mismo motivo que .v-card.has-video mas abajo: un video autoplay
            no debe arrancar en opacity:0, el decodificador se puede quedar
            suspendido en algunos navegadores). -->
@@ -1046,7 +1089,7 @@ var AZURA_CONFIG = {
     <div class="phil-visual reveal">
       <!-- Fix 72: esta caja ahora es solo la foto, a 100% del contenedor --
            sin la cita adentro (ver .phil-quote-below, 3er hijo del grid). -->
-      <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ">
+      <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ" loading="lazy">
     </div>
     <!-- Fix 72: la cita se saca de .phil-visual y baja de tamano a la mitad
          (25px -> 12.5px), por instruccion de Carlos. Es 3er hijo directo de
@@ -1088,7 +1131,7 @@ var AZURA_CONFIG = {
       </div>
       <div class="zoom-stats reveal-stagger">
         <div><b id="stat1">94%</b><span data-i18n="zoom.stat1Label">SATISFACCION*</span></div>
-        <div><b id="stat2">14 dias</b><span data-i18n="zoom.stat2Label">PARA VER RESULTADOS*</span></div>
+        <div><b id="stat2">14 días</b><span data-i18n="zoom.stat2Label">PARA VER RESULTADOS*</span></div>
         <div><b id="stat3">+87%</b><span data-i18n="zoom.stat3Label">ORIGEN VERIFICADO</span></div>
       </div>
     </div>
@@ -1178,7 +1221,7 @@ var AZURA_CONFIG = {
     <p class="pm-subtitle" data-i18n="profile.subtitle">Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.</p>
     <form id="profileForm" onsubmit="submitProfileForm(event)">
       <div class="pm-field">
-        <label for="pmPhone" data-i18n="profile.phoneLabel">Telefono (con codigo de pais)</label>
+        <label for="pmPhone" data-i18n="profile.phoneLabel">Telefono (con código de pais)</label>
         <input type="tel" id="pmPhone" name="pmPhone" required placeholder="+525512345678">
         <div class="pm-hint" data-i18n="profile.phoneHint">Formato internacional E.164, ej. +52 para Mexico.</div>
       </div>
@@ -1223,7 +1266,7 @@ var AZURA_CONFIG = {
         <span>Nuevo en Renuévate?</span>
         <a onclick="setAuthTab('signup')">Crea tu cuenta</a>
       </p>
-      <div class="auth-privacy-note" data-i18n-html="auth.privacyNote">Usamos tu correo de Google o Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick="openPrivacyModal()" data-i18n="auth.privacyLink">Ver aviso de privacidad completo.</a></div>
+      <div class="auth-privacy-note" data-i18n-html="auth.privacyNote">Usamos tu correo de Google o Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contraseña</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick="openPrivacyModal()" data-i18n="auth.privacyLink">Ver aviso de privacidad completo.</a></div>
     </div>
   </div>
 </div>
@@ -1251,9 +1294,9 @@ var AZURA_CONFIG = {
     <button class="privacy-modal-close" onclick="closeAboutModal()" aria-label="Cerrar">&times;</button>
     <div class="about-hero">
       <div class="about-hero-imgs">
-        <img src="media/nacar-08-dia-fps30-front.webp" alt="">
-        <img src="media/nacar-09-spf50-front.webp" alt="">
-        <img src="media/nacar-06-espuma-front.webp" alt="">
+        <img src="media/nacar-08-dia-fps30-front.webp" alt="" loading="lazy">
+        <img src="media/nacar-09-spf50-front.webp" alt="" loading="lazy">
+        <img src="media/nacar-06-espuma-front.webp" alt="" loading="lazy">
       </div>
       <div class="about-hero-overlay"></div>
       <div class="about-hero-text">
@@ -1269,7 +1312,7 @@ var AZURA_CONFIG = {
   <div class="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="cookieTitle">
     <button class="privacy-modal-close" onclick="closeCookieModal()" aria-label="Cerrar">&times;</button>
     <h3 id="cookieTitle" data-i18n="cookie.modalTitle">Política de Cookies</h3>
-    <p class="pm-subtitle" data-i18n="cookie.modalSubtitle">Elige que categorias de cookies quieres permitir.</p>
+    <p class="pm-subtitle" data-i18n="cookie.modalSubtitle">Elige que categorías de cookies quieres permitir.</p>
     <div id="cookieBody"></div>
     <div class="cookie-toggle-row">
       <div><b data-i18n="cookie.necessaryLabel">Necesarias</b><p data-i18n="cookie.necessaryDesc">Indispensables para el funcionamiento del sitio (carrito, sesión, seguridad). Siempre activas.</p></div>
@@ -1359,7 +1402,7 @@ var AZURA_CONFIG = {
     </div>
     <span class="eyebrow" id="beautyChoiceEyebrow">Speciality Luminous</span>
     <h3 id="beautyChoiceTitle">&iquest;Como quieres descubrir tu belleza?</h3>
-    <p class="pm-subtitle" id="beautyChoiceSubtitle">Elige explorar el catalogo completo o responde 4 preguntas rapidas para una preseleccion hecha para ti.</p>
+    <p class="pm-subtitle" id="beautyChoiceSubtitle">Elige explorar el catalogo completo o responde 4 preguntas rápidas para una preseleccion hecha para ti.</p>
     <div class="beauty-choice-options">
       <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyCatalog();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
@@ -1437,7 +1480,7 @@ var AZURA_CONFIG = {
     <div class="cart-subtotal"><span data-i18n="cart.subtotal">Subtotal</span><span id="cartSubtotalValue">$0 MXN</span></div>
     <button class="btn btn-dark" id="cartCheckoutBtn" style="width:100%; justify-content:center;" onclick="startCheckout()" data-i18n="cart.checkout">Proceder al pago</button>
     <div class="cart-checkout-error" id="cartCheckoutError" style="display:none; color:#B3261E; font-size:12px; text-align:center; margin-top:8px;"></div>
-    <div class="cart-checkout-note" data-i18n="cart.checkoutNote">Pago seguro con Mercado Pago. Nunca almacenamos el numero de tu tarjeta.</div>
+    <div class="cart-checkout-note" data-i18n="cart.checkoutNote">Pago seguro con Mercado Pago. Nunca almacenamos el número de tu tarjeta.</div>
   </div>
 </div>
 
@@ -1558,7 +1601,7 @@ var AZURA_CONFIG = {
             <input type="email" id="pmPaypalEmail" placeholder="tu@correo.com" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
           </div>
         </div>
-        <div class="pm-pci-note" data-i18n="account.pciNote">Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.</div>
+        <div class="pm-pci-note" data-i18n="account.pciNote">Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los últimos 4 digitos para identificar tu metodo de pago.</div>
         <div class="pm-actions">
           <button type="submit" class="btn btn-dark" style="flex:1;" data-i18n="account.saveLabel">Guardar metodo de pago</button>
           <button type="button" class="btn btn-outline" onclick="closeAccountModal()" data-i18n="account.closeLabel">Cerrar</button>
@@ -1609,7 +1652,7 @@ var V = {
       bannerTitle:"System Luminous Speciality: luminosidad",
       bannerText:"Una rutina facial y capilar de tres pasos para una piel con brillo saludable, sin ingredientes agresivos.",
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"Speciality Luminous",
-      stats:["94%","14 dias","+87%"],
+      stats:["94%","14 días","+87%"],
       products:[
         {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Limpiadora Facial", desc:"Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.", price:"$370 MXN", favorito:true,
           longDesc:"Ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel. Intensa sensacion de frescura. Ideal para todo tipo de piel. Presentacion de 150 ml.",
@@ -1618,18 +1661,18 @@ var V = {
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
         {sku:"NACAR-07", tag:"Gel antioxidante", name:"Gel Antioxidante Nacar", desc:"Protege de radicales libres, hidratacion profunda.", price:"$340 MXN", favorito:false,
-          longDesc:"Tu mejor aliado para hidratar, humectar y acondicionar la piel: ayuda a mantenerla protegida frente a los radicales libres y aumenta su nivel de hidratacion. Brinda mayor proteccion, un aspecto saludable y ayuda a mejorar la elasticidad. Presentacion de 30 g.",
+          longDesc:"Tu mejor aliado para hidratar, humectar y acondicionar la piel: ayuda a mantenerla protegida frente a los radicales libres y aumenta su nivel de hidratacion. Brinda mayor protección, un aspecto saludable y ayuda a mejorar la elasticidad. Presentacion de 30 g.",
           usage:"Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.",
           ingredients:["Extracto de levadura","Extracto de hoja de olivo","Extracto de arnica","Extractos de frutas silvestres","Aceite de jojoba"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Crema de dia", name:"Seytú System Time-Specialist", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN", favorito:true,
+        {sku:"NACAR-08", tag:"Crema de día", name:"Seytú System Time-Specialist", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN", favorito:true,
           longDesc:"Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.",
-          usage:"Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.",
+          usage:"Aplica cada mañana sobre el rostro limpio, como último paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
-        {sku:"NACAR-09", tag:"Protector solar", name:"Escudo Solar FPS 50+ Nacar", desc:"Toque seco, proteccion FPS 50+ para todos los dias.", price:"$390 MXN", favorito:false,
+        {sku:"NACAR-09", tag:"Protector solar", name:"Escudo Solar FPS 50+ Nacar", desc:"Toque seco, protección FPS 50+ para todos los días.", price:"$390 MXN", favorito:false,
           longDesc:"Un protector solar facial de toque seco y absorcion inmediata, formulado con 89% de ingredientes de origen natural. Resistente al agua, libre de fragancia y clinica y dermatologicamente probado, ideal para pieles sensibles y para toda la familia. Formulado sin ingredientes daninos para los arrecifes de coral. Presentacion de 40 ml.",
           usage:"Aplica de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplica cada 3 horas y despues de nadar, transpirar o secarte con la toalla.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
@@ -1725,18 +1768,18 @@ var V = {
   },
   vigor: {
     name:"System Health Speciality",
-    es:{ full:"System Health Speciality - Nutrición y rendimiento", sub:"Nutricion funcional para sostener tu energía en el dia a dia.",
+    es:{ full:"System Health Speciality - Nutrición y rendimiento", sub:"Nutricion funcional para sostener tu energía en el día a día.",
       bannerTitle:"System Health Speciality: rendimiento diario",
       bannerText:"Nutricion pensada para antes, durante y despues de tu actividad fisica o jornada laboral exigente.",
       tag:"Nutrición y rendimiento", msg:"Energia que se sostiene.", bmLabel:"Speciality Health",
-      stats:["92%","7 dias","100%"],
+      stats:["92%","7 días","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Proteina", name:"Proteina Vegetal Vigor", desc:"22g de proteina limpia por porcion.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
         {sku:"VIGOR-02", tag:"Pre-actividad", name:"Energia Natural Pre-Entreno", desc:"Foco y energía sin picos ni caidas.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
         {sku:"VIGOR-03", tag:"Recuperación", name:"Recovery Magnesio+", desc:"Apoyo muscular post actividad.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
         {sku:"VIGOR-04", tag:"Hidratacion", name:"Electrolitos Naturales", desc:"Hidratacion funcional sin azucares anadidos.", price:"$299 MXN", rating:{stars:4.7,count:245}, related:["VIGOR-02"]}
       ],
-      routines:[{title:"Rutina esencial", desc:"proteina diaria."},{title:"Rutina activa", desc:"proteina + pre-entreno."},{title:"Rutina de rendimiento", desc:"protocolo completo con recuperacion."}]
+      routines:[{title:"Rutina esencial", desc:"proteina diaria."},{title:"Rutina activa", desc:"proteina + pre-entreno."},{title:"Rutina de rendimiento", desc:"protocolo completo con recuperación."}]
     },
     en:{ full:"System Health Speciality - Nutrition & Performance", sub:"Functional nutrition to sustain your energy day to day.",
       bannerTitle:"The System Health Speciality daily performance",
@@ -1769,9 +1812,9 @@ var V = {
     name:"System Spot Speciality",
     es:{ full:"System Spot Speciality - Cuidado para hombre", sub:"Grooming práctico y sin rodeos, pensado para tu rutina diaria.",
       bannerTitle:"System Spot Speciality: cuidado esencial",
-      bannerText:"Una rutina de cuidado simple y efectiva, pensada para integrarse en menos de cinco minutos al dia.",
+      bannerText:"Una rutina de cuidado simple y efectiva, pensada para integrarse en menos de cinco minutos al día.",
       tag:"Cuidado para hombre", msg:"Fuerza que se cuida a si misma.", bmLabel:"Speciality Spot",
-      stats:["95%","21 dias","100%"],
+      stats:["95%","21 días","100%"],
       products:[
         {sku:"ROBLE-01", tag:"Facial", name:"Limpiador Roble Carbon", desc:"Limpieza profunda sin resecar.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
         {sku:"ROBLE-02", tag:"Barba", name:"Aceite de Barba Cedro", desc:"Suaviza y da forma sin efecto grasoso.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
@@ -1813,14 +1856,14 @@ var V = {
 var I18N = {
   es:{
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
-    "top.shipping":"Envio calculado en checkout . Entrega en 4 dias habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
+    "top.shipping":"Envio calculado en checkout . Entrega en 4 días habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de dia", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
     "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
-    "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su ficha...", "search.foundCategory":"Mostrando productos de {name}...", "category.empty":"Proximamente nuevos productos en esta categoria.",
+    "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su ficha...", "search.foundCategory":"Mostrando productos de {name}...", "category.empty":"Proximamente nuevos productos en esta categoría.",
     "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesión para guardar tus productos favoritos y tu historial de pedidos.",
     "cart.title":"Tu carrito", "cart.empty":"Tu carrito esta vacio por ahora.", "cart.cta":"Explorar catálogo",
     "vert.h2":"Lo mejor para ti",
@@ -1848,7 +1891,7 @@ var I18N = {
     "chat.subtitle":"En linea . tu asesora de bienestar Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
     "chat.menu.categories":"Categorias", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
     "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.",
-    "profile.phoneLabel":"Telefono (con codigo de pais)", "profile.phoneHint":"Si eres de Mexico, puedes escribir solo tu numero a 10 digitos. Otros paises: formato internacional, ej. +1 para EE.UU.",
+    "profile.phoneLabel":"Telefono (con código de pais)", "profile.phoneHint":"Si eres de Mexico, puedes escribir solo tu número a 10 digitos. Otros paises: formato internacional, ej. +1 para EE.UU.",
     "profile.birthLabel":"Fecha de nacimiento",
     "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)",
     "profile.consentSmsLabel":"Tambien por SMS", "profile.consentWhatsappLabel":"Tambien por WhatsApp",
@@ -1856,10 +1899,10 @@ var I18N = {
     "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de bienestar Renuévate. ¿En que te ayudo hoy?",
     "chat.q.identity":"Quien eres", "chat.a.identity":"Soy Julieta, tu asesora de belleza y bienestar de Renuévate. ¿En que te ayudo?",
     "chat.a.greeting":"Hola! ¿En que te ayudo?",
-    "chat.a.capability":"Te ayudo con envios, pagos, devoluciones, elegir tu sistema o hablar con un asesor.",
-    "chat.a.purpose":"Te ayudo a encontrar tu sistema ideal, rapido y sin vueltas.",
+    "chat.a.capability":"Te ayudo con envíos, pagos, devoluciones, elegir tu sistema o hablar con un asesor.",
+    "chat.a.purpose":"Te ayudo a encontrar tu sistema ideal, rápido y sin vueltas.",
     "chat.q.shipping":"Envios", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
-    "chat.a.shipping":"Hacemos envios a todo Mexico, entrega en 4 dias habiles.",
+    "chat.a.shipping":"Hacemos envíos a todo Mexico, entrega en 4 días habiles.",
     "chat.a.verticals":"3 sistemas: System Luminous, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
     "chat.a.diagnostic":"Cuentame tu prioridad (energía, piel o rendimiento) y te recomiendo tu sistema.",
     "chat.a.prices":"Precios desde $259 hasta $699 MXN, segun producto.",
@@ -1875,27 +1918,27 @@ var I18N = {
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o adabueo18@gmail.com.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
-    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System Luminous, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la pagina.",
+    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System Luminous, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la página.",
     "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System Luminous, System Health y System Spot Speciality.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario habil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
     "chat.a.account":"No necesitas cuenta para comprar. Si inicias sesión con Google o Facebook guardamos tu perfil y tus promociones.",
     "chat.a.cancelorder":"Escribenos por WhatsApp con tu número de pedido antes de que se despache y lo cancelamos.",
-    "chat.a.discount":"Los codigos de descuento se aplican en el campo de cupon del checkout.",
+    "chat.a.discount":"Los códigos de descuento se aplican en el campo de cupon del checkout.",
     "chat.a.warranty":"Si tu producto llega defectuoso lo cambiamos sin costo. Escribenos por WhatsApp con fotos de tu pedido.",
     "chat.q.payment":"Pagos", "chat.q.returns":"Devoluciones",
     "chat.a.recommend.needAge":"Para afinar tu recomendacion, cuentame tu edad. Por ejemplo: tengo 40 años.",
     "chat.a.recommend.needGender":"Para afinar tu recomendacion, cuentame si buscas algo para mujer u hombre.",
     "chat.a.recommend.needBoth":"Cuentame tu edad y si buscas algo para mujer u hombre y te doy una recomendacion puntual. Por ejemplo: tengo 40 años, soy mujer.",
-    "chat.a.fallback":"No tengo esa respuesta. Prueba con envios, pagos, devoluciones, o habla con un asesor.",
+    "chat.a.fallback":"No tengo esa respuesta. Prueba con envíos, pagos, devoluciones, o habla con un asesor.",
     "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
-    "cart.checkoutNote":"Pago seguro con Mercado Pago. Nunca almacenamos el numero de tu tarjeta.",
+    "cart.checkoutNote":"Pago seguro con Mercado Pago. Nunca almacenamos el número de tu tarjeta.",
     "cart.shipToLabel":"Enviar a", "cart.shipToChange":"Cambiar / agregar dirección",
     "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesión para administrar tus direcciones de envío y tus metodos de pago guardados.",
     "account.paymentTitle":"Métodos de pago", "account.paymentSubtitle":"Guarda tu forma de pago preferida para agilizar tu compra.",
     "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Ultimos 4 digitos",
     "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Año exp.", "account.paypalEmailLabel":"Correo de PayPal",
-    "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los ultimos 4 digitos para identificar tu metodo de pago.",
+    "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los últimos 4 digitos para identificar tu metodo de pago.",
     "account.saveLabel":"Guardar metodo de pago", "account.closeLabel":"Cerrar",
     "account.addressesTitle":"Direcciones de envío", "account.addressesSubtitle":"Guarda una o varias direcciones para tus pedidos.",
     "account.addrLabelLabel":"Etiqueta", "account.addrLabelHome":"Casa", "account.addrLabelOffice":"Oficina", "account.addrLabelOther":"Otro",
@@ -1905,7 +1948,7 @@ var I18N = {
     "account.addrReferencesLabel":"Referencias (opcional)", "account.addrDefaultLabel":"Usar como dirección predeterminada",
     "account.addrSaveLabel":"Guardar dirección", "account.logoutLabel":"Cerrar sesión",
     "auth.tabSignin":"Iniciar sesión", "auth.tabSignup":"Crear cuenta",
-    "auth.privacyNote":"Usamos tu correo o datos de Google/Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contrasena</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick=\"openPrivacyModal()\">Ver aviso de privacidad completo</a>.",
+    "auth.privacyNote":"Usamos tu correo o datos de Google/Facebook solo para identificarte y guardar tus promociones. <b>Nunca vemos ni guardamos tu contraseña</b> — cumplimos ISO 27001 y minimizacion de datos personales. <a onclick=\"openPrivacyModal()\">Ver aviso de privacidad completo</a>.",
     "nl.accountHint":"¿Ya tienes cuenta o quieres crear una? Usa el icono de perfil arriba a la derecha.",
     "auth.privacyLink":"Ver aviso de privacidad completo.",
     "privacy.title":"Aviso de Privacidad", "privacy.updated":"Última actualización: julio 2026.",
@@ -2173,7 +2216,7 @@ var I18N = {
 /* Textos dinamicos (con datos insertados en tiempo real) por idioma */
 var DYN = {
   es:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Ahora mismo son las ' + hh + ':' + mm + ' (hora de tu dispositivo). Te ayudo con algo mas?'; },
-       routineResult:function(name,title){ return 'Recomendacion registrada para <b>' + name + '</b>: <em>' + title + '</em>. En produccion, esto dispara un evento select_routine a GA4 y una propuesta automatica via WhatsApp.'; },
+       routineResult:function(name,title){ return 'Recomendacion registrada para <b>' + name + '</b>: <em>' + title + '</em>. En produccion, esto dispara un evento select_routine a GA4 y una propuesta automática via WhatsApp.'; },
        subscribeOk:'Gracias por suscribirte. En produccion esto se conecta a Klaviyo/CRM mas evento GA4 newsletter_signup.',
        configMissing:function(field){ return 'Falta configurar ' + field + ' en AZURA_CONFIG (ver README de azura-site) antes de que este boton funcione.'; },
        registerOk:function(name){ return 'Listo' + (name ? ', ' + name : '') + '. Tu registro quedo guardado en la base de datos de Renuévate.'; },
@@ -2183,11 +2226,11 @@ var DYN = {
        hideComments:function(){ return 'Ocultar comentarios'; },
        commentsDisclaimer:function(){ return 'Comentarios de ejemplo con fines de demostracion del prototipo.'; },
        demoComments:function(){ return [
-         {name:'Renata M.', stars:5, text:'Llego rapido y bien empacado. La espuma no reseca, la uso a diario.', more:'Ya voy en el segundo frasco, no me ha batallado la piel desde que la uso.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
-         {name:'Diego H.', stars:4, text:'Buen producto, aunque el envio se tardo un poco mas de lo que decia.', more:'El resultado si se nota, solo esperaba que llegara en los 4 dias que dice la pagina.'},
-         {name:'Paola S.', stars:5, text:'Me encanto la textura, no deja la piel grasosa.', more:'La compre por recomendacion de una amiga y ahora yo tambien la recomiendo.'},
-         {name:'Fernanda L.', stars:5, text:'El protector solar no deja la cara blanca, eso ya es ganancia.', more:'Lo uso todos los dias antes de salir, huele rico y no irrita los ojos.', photo:'media/nacar-09-spf50-abierto.webp'},
-         {name:'Andrea Q.', stars:4, text:'Cumple, aunque el precio esta un poco alto para lo que rinde.', more:'Aun asi voy a seguir comprando porque no me ha generado ninguna reaccion.'},
+         {name:'Renata M.', stars:5, text:'Llego rápido y bien empacado. La espuma no reseca, la uso a diario.', more:'Ya voy en el segundo frasco, no me ha batallado la piel desde que la uso.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
+         {name:'Diego H.', stars:4, text:'Buen producto, aunque el envío se tardo un poco mas de lo que decia.', more:'El resultado si se nota, solo esperaba que llegara en los 4 días que dice la página.'},
+         {name:'Paola S.', stars:5, text:'Me encanto la textura, no deja la piel grasosa.', more:'La compre por recomendacion de una amiga y ahora yo también la recomiendo.'},
+         {name:'Fernanda L.', stars:5, text:'El protector solar no deja la cara blanca, eso ya es ganancia.', more:'Lo uso todos los días antes de salir, huele rico y no irrita los ojos.', photo:'media/nacar-09-spf50-abierto.webp'},
+         {name:'Andrea Q.', stars:4, text:'Cumple, aunque el precio esta un poco alto para lo que rinde.', more:'Aun así voy a seguir comprando porque no me ha generado ninguna reaccion.'},
          {name:'Miguel T.', stars:5, text:'Se la regale a mi esposa y le encanto, ya la volvio a pedir.', more:'Buen empaque, llego a tiempo y el producto se ve de calidad.'}
        ]; },
        reviewReadMore:function(){ return 'Ver mas'; },
@@ -2230,7 +2273,7 @@ var DYN = {
        profile:{
          title:'Completa tu perfil',
          subtitle:'Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.',
-         phoneLabel:'Telefono (con codigo de pais)',
+         phoneLabel:'Telefono (con código de pais)',
          phonePlaceholder:'+525512345678',
          phoneHint:'Formato internacional E.164, ej. +52 para Mexico.',
          birthLabel:'Fecha de nacimiento',
@@ -2281,16 +2324,16 @@ var DYN = {
            { label:'Ver catálogo completo', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
            { label:'Hablar con un asesor', action:function(){ answerTopic('human'); renderChatQuickButtons(); } }
          ]; },
-         medicalGuard:function(){ return 'Gracias por contarme. Por tu seguridad, en temas de embarazo, lactancia, alergias o medicamentos no hago recomendaciones — te conecto con un asesor humano; te sugiero tambien consultar a tu profesional de salud.'; },
+         medicalGuard:function(){ return 'Gracias por contarme. Por tu seguridad, en temas de embarazo, lactancia, alergias o medicamentos no hago recomendaciones — te conecto con un asesor humano; te sugiero también consultar a tu profesional de salud.'; },
          complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu número de pedido por WhatsApp.'; },
-         certUnknown:function(){ return 'Para darte informacion 100% correcta sobre esa certificacion, te conecto con un asesor humano que te la valida directamente.'; },
+         certUnknown:function(){ return 'Para darte información 100% correcta sobre esa certificacion, te conecto con un asesor humano que te la valida directamente.'; },
          frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; }
        },
        beautyQuiz:{
          choice:{
            eyebrow:'Speciality Luminous',
            title:'¿Como quieres descubrir tu belleza?',
-           subtitle:'Elige explorar el catalogo completo o responde 4 preguntas rapidas para una preseleccion hecha para ti.',
+           subtitle:'Elige explorar el catalogo completo o responde 4 preguntas rápidas para una preseleccion hecha para ti.',
            catalogTitle:'Ver catalogo completo',
            catalogBody:'Explora los 5 productos de System Luminous a tu ritmo.',
            quizTitle:'Diagnostico personalizado',
@@ -2300,7 +2343,7 @@ var DYN = {
          steps:[
            { question:'¿Que te gustaria conseguir?', type:'single', key:'goal', options:[
                {value:'cleanse', label:'Piel limpia y libre de impurezas'},
-               {value:'antioxidant', label:'Hidratacion y proteccion contra el dano diario'},
+               {value:'antioxidant', label:'Hidratacion y protección contra el dano diario'},
                {value:'firmness', label:'Firmeza y luminosidad con cuidado anti-edad'},
                {value:'sun', label:'Proteccion solar dedicada'},
                {value:'complete', label:'Quiero una rutina completa'}
@@ -2312,7 +2355,7 @@ var DYN = {
                {value:'sensitive', label:'Sensible o reactiva'},
                {value:'normal', label:'Normal y equilibrada'}
            ]},
-           { question:'¿Cuanto tiempo pasas expuesta al sol en tu dia a dia?', type:'single', key:'sun', options:[
+           { question:'¿Cuanto tiempo pasas expuesta al sol en tu día a día?', type:'single', key:'sun', options:[
                {value:'high', label:'Mucho tiempo al aire libre'},
                {value:'commute', label:'Solo el trayecto diario (calle, auto, oficina con ventanas)'},
                {value:'low', label:'Casi nada, la mayoria del tiempo en interiores'}
@@ -2329,9 +2372,9 @@ var DYN = {
          recommendedBadge:'Recomendado para ti',
          leadNote:'¿Quieres recibir esta rutina por correo o WhatsApp? Es opcional, solo para darte un mejor servicio.',
          leadEmailPh:'Tu correo (opcional)',
-         leadPhonePh:'Tu telefono (opcional)',
+         leadPhonePh:'Tu teléfono (opcional)',
          leadSubmit:'Enviarme mi rutina',
-         leadEmptyError:'Escribe al menos un correo o telefono, o simplemente ignora esto y continua.',
+         leadEmptyError:'Escribe al menos un correo o teléfono, o simplemente ignora esto y continua.',
          leadInvalidEmail:'Ese correo no se ve valido, revisalo.',
          leadOk:'Listo, guardamos tu contacto para darte seguimiento.',
          leadError:'No pudimos guardar tu contacto. Intenta de nuevo en unos minutos.'
@@ -2680,7 +2723,7 @@ function findProductBySku(products, sku){
 
 // Formatea montos como "$1,148.00 MXN" (miles con coma, 2 decimales) --
 // usado en el carrito, donde los totales son calculados en JS y antes se
-// mostraban como numero crudo ($1148) sin separador de miles ni centavos.
+// mostraban como número crudo ($1148) sin separador de miles ni centavos.
 function formatMXN(amount){
   var n = Number(amount);
   if (isNaN(n)) n = 0;
@@ -2713,12 +2756,12 @@ function toggleDemoCommentMore(link, moreId){
 // Fix 60/61: el panel de comentarios es por vertical (un solo formulario para
 // todos los skus visibles), pero la resena real se asocia a UN sku. Antes
 // siempre era products[0] (el primero de la vertical), incluso si el
-// visitante llego por una categoria especifica del menu Belleza (Fix 58,
+// visitante llego por una categoría especifica del menu Belleza (Fix 58,
 // categoryFilterSku). Ahora, si hay un categoryFilterSku activo, la resena se
 // asocia al primer producto de ese arreglo que exista en la vertical actual
 // -- mas correcto para el flujo "compra verificada" (ver hasPurchased() en
-// api/reviews.js). Nota: en categorias con 2 productos (ej. "Tratamiento")
-// esto sigue siendo un formulario unico para ambos -- redisenar a un
+// api/reviews.js). Nota: en categorías con 2 productos (ej. "Tratamiento")
+// esto sigue siendo un formulario único para ambos -- redisenar a un
 // formulario por producto queda fuera de este alcance.
 function getReviewTargetSku(products){
   if (categoryFilterSku){
@@ -2760,7 +2803,7 @@ function loadReviewsForCurrentVertical(){
           html += '<div class="comment-item"><div class="c-head"><span>' + rv.customer_display_name + ' &middot; ' + r.name + '</span><span class="c-stars">' + starsHtml(rv.stars) + '</span></div>';
           if (rv.text) html += '<p>' + rv.text + '</p>';
           if (rv.photos && rv.photos.length){
-            for (var k=0;k<rv.photos.length;k++){ html += '<img class="review-photo-thumb" src="' + rv.photos[k].data_url + '">'; }
+            for (var k=0;k<rv.photos.length;k++){ html += '<img class="review-photo-thumb" src="' + rv.photos[k].data_url + '" loading="lazy">'; }
           }
           html += '</div>';
         }
@@ -2774,13 +2817,13 @@ function loadReviewsForCurrentVertical(){
       // con espacio a expandir. Las fotos usadas son fotografia real de
       // producto que ya vive en el sitio (no fotos de personas reales) --
       // el disclaimer de abajo ya deja claro que estos comentarios son de
-      // ejemplo, asi que no se presentan como testimonios verificados.
+      // ejemplo, así que no se presentan como testimonios verificados.
       var demo = DYN[currentLang].demoComments();
       var readMoreLabel = DYN[currentLang].reviewReadMore();
       for (var d=0;d<demo.length;d++){
         var dc = demo[d];
         var moreId = 'demoCommentMore' + d;
-        var moreInner = (dc.more ? ('<p>' + dc.more + '</p>') : '') + (dc.photo ? ('<img class="review-photo-thumb" src="' + dc.photo + '" alt="' + dc.name + '">') : '');
+        var moreInner = (dc.more ? ('<p>' + dc.more + '</p>') : '') + (dc.photo ? ('<img class="review-photo-thumb" src="' + dc.photo + '" alt="' + dc.name + '" loading="lazy">') : '');
         html += '<div class="comment-item"><div class="c-head"><span>' + dc.name + '</span><span class="c-stars">' + starsHtml(dc.stars) + '</span></div>' +
           '<p>' + dc.text + '</p>' +
           (moreInner ? ('<div class="comment-more" id="' + moreId + '">' + moreInner + '</div><a class="comment-readmore-link" onclick="toggleDemoCommentMore(this,\'' + moreId + '\')">' + readMoreLabel + '</a>') : '') +
@@ -2798,12 +2841,12 @@ function loadReviewsForCurrentVertical(){
   });
 }
 
-// Fix 60: 3 estados posibles -- (1) sin sesion: invita a iniciar sesion,
-// (2) con sesion pero sin compra verificada de "sku": mensaje explicando que
-// solo clientes que ya compraron pueden opinar, (3) con sesion y compra
+// Fix 60: 3 estados posibles -- (1) sin sesión: invita a iniciar sesión,
+// (2) con sesión pero sin compra verificada de "sku": mensaje explicando que
+// solo clientes que ya compraron pueden opinar, (3) con sesión y compra
 // verificada: formulario completo. El backend (api/reviews.js) vuelve a
 // validar la compra en el POST -- este gate del frontend es solo UX, no la
-// unica linea de defensa.
+// única linea de defensa.
 function buildReviewFormHtml(sku, purchased){
   var bodyHtml;
   if (!CURRENT_CUSTOMER.id){
@@ -2922,10 +2965,10 @@ function renderBagUpsell(cart){
    B2C: exigir cuenta para agregar al carrito cuesta conversion (Baymard: ~26%
    abandona por registro forzado). Decision: se permite agregar/editar el
    carrito sin loguearse, guardado 100% en localStorage -- nunca toca
-   /api/cart ni el backend de promociones/lealtad mientras no hay sesion. El
+   /api/cart ni el backend de promociones/lealtad mientras no hay sesión. El
    login sigue siendo obligatorio para pagar (startCheckout ya lo exige, no se
    toca) porque ahi si se necesita un customer_id real (direccion, metodo de
-   pago, orden). Al iniciar sesion, mergeGuestCartIntoAccount() sube cada
+   pago, orden). Al iniciar sesión, mergeGuestCartIntoAccount() sube cada
    linea del carrito de invitado al carrito real del customer en Mongo. */
 var GUEST_CART_KEY = 'renuevate_guest_cart';
 
@@ -2946,7 +2989,7 @@ function clearGuestCart(){
   try { localStorage.removeItem(GUEST_CART_KEY); } catch (e) { /* no fatal */ }
 }
 
-// El carrito de invitado no tiene Mongo detras, asi que hidrata contra el
+// El carrito de invitado no tiene Mongo detras, así que hidrata contra el
 // mismo catalogo que ya esta cargado en el navegador (las 3 verticales +
 // accesorios de bolsa) en vez de contra /api/cart.
 function guestFindProduct(sku){
@@ -3085,7 +3128,7 @@ function refreshCart(){
 }
 
 // Invoca la pasarela de pago (Mercado Pago Checkout Pro). El sitio NUNCA pide
-// ni ve el numero de tarjeta: este endpoint solo crea una "preferencia" en
+// ni ve el número de tarjeta: este endpoint solo crea una "preferencia" en
 // Mercado Pago y redirige al cliente al formulario de pago hospedado por
 // ellos (ver api/checkout.js). Si MERCADOPAGO_ACCESS_TOKEN todavia no esta
 // configurado en el servidor, se avisa con el mismo modal de "contenido en
@@ -3262,10 +3305,10 @@ function closeAccountModal(){
   document.getElementById('accountModalOverlay').classList.remove('is-open');
 }
 
-// Solo cierra la sesion local (ver saveSessionLocal/restoreSessionLocal) --
-// no hay sesion firmada del lado del servidor todavia (ver db/schema.md
-// seccion 0/9), asi que "cerrar sesion" simplemente olvida quien eres en
-// este navegador y refresca la UI como si nadie hubiera iniciado sesion.
+// Solo cierra la sesión local (ver saveSessionLocal/restoreSessionLocal) --
+// no hay sesión firmada del lado del servidor todavia (ver db/schema.md
+// seccion 0/9), así que "cerrar sesión" simplemente olvida quien eres en
+// este navegador y refresca la UI como si nadie hubiera iniciado sesión.
 function logout(){
   CURRENT_CUSTOMER.id = null;
   CURRENT_CUSTOMER.name = null;
@@ -3312,10 +3355,10 @@ var PRIVACY_CONTENT = {
   es: {
     sections: [
       { h:'1. Responsable de tus datos', p:'Renuévate es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
-      { h:'2. Que datos recabamos', p:'Nombre, correo y/o telefono, fecha de nacimiento, historial de pedidos, reseñas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y ultimos 4 digitos -- nunca el número completo ni el CVV).' },
+      { h:'2. Que datos recabamos', p:'Nombre, correo y/o teléfono, fecha de nacimiento, historial de pedidos, reseñas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y últimos 4 digitos -- nunca el número completo ni el CVV).' },
       { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleaños y tu programa de lealtad, mostrar tus reseñas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
       { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos además los controles tecnicos del estándar ISO 27001 sobre estos datos.' },
-      { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesión con ellos (solo reciben la solicitud de autenticacion, nunca tu contrasena de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
+      { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesión con ellos (solo reciben la solicitud de autenticacion, nunca tu contraseña de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
       { h:'6. Cuanto tiempo los conservamos', p:'Mientras tu cuenta este activa.' },
       { h:'7. Tus derechos (ARCO)', p:'Puedes Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales en cualquier momento, escribiendo al contacto que aparece abajo.' },
       { h:'8. Seguridad', p:'Nunca capturamos ni guardamos el número completo de tu tarjeta ni el CVV (control PCI-DSS/ISO 27001 A.8.24).' },
@@ -3530,7 +3573,7 @@ function wireSocialLinks(){
 document.addEventListener("DOMContentLoaded", wireSocialLinks);
 document.addEventListener("DOMContentLoaded", wireWhatsappFloat);
 
-/* Fix 68: carrusel del hero (reemplaza al video unico). Rotacion automatica
+/* Fix 68: carrusel del hero (reemplaza al video único). Rotacion automática
    cada 5.5s + control manual con los puntos (heroGoToSlide(i,true) reinicia
    el temporizador para que no "salte" justo despues de un click manual). Se
    pausa el auto-rotate si la pestaña esta oculta (ahorro de batería/CPU en
@@ -3666,10 +3709,10 @@ function submitPaymentMethod(evt){
   });
 }
 
-/* ===================== Direcciones de envio (conectado a /api/addresses) ===================== */
+/* ===================== Direcciones de envío (conectado a /api/addresses) ===================== */
 // Un cliente puede tener varias direcciones (Casa, Oficina, etc.). loadAddresses()
 // alimenta a la vez la lista del modal "Mi cuenta" (si esta abierto) y el resumen
-// "Enviar a" del carrito -- asi no se duplica el fetch en cada lugar que lo necesita.
+// "Enviar a" del carrito -- así no se duplica el fetch en cada lugar que lo necesita.
 function formatAddressSummary(a){
   var line1 = a.street + (a.ext_no ? (' ' + a.ext_no) : '') + (a.int_no ? (' Int. ' + a.int_no) : '');
   var line2 = a.neighborhood + ', ' + a.city + ', ' + a.state + ' ' + a.zip;
@@ -3832,7 +3875,7 @@ function openProductDetail(sku){
   if (allPhotos.length > 1){
     var thumbsHtml = '';
     for (var t=0;t<allPhotos.length;t++){
-      thumbsHtml += '<button type="button" class="pd-thumb' + (t===0 ? ' is-active' : '') + '" onclick="setPdMainImage(this,\'' + allPhotos[t] + '\')"><img src="' + allPhotos[t] + '" alt="' + p.name + ' ' + (t+1) + '"></button>';
+      thumbsHtml += '<button type="button" class="pd-thumb' + (t===0 ? ' is-active' : '') + '" onclick="setPdMainImage(this,\'' + allPhotos[t] + '\')"><img src="' + allPhotos[t] + '" alt="' + p.name + ' ' + (t+1) + '" loading="lazy"></button>';
     }
     thumbs.innerHTML = thumbsHtml;
   } else {
@@ -3927,9 +3970,9 @@ var CURRENT_RENDERED_PRODUCTS = [];
 var pdCurrentSku = null;
 var lastBeautyRecommendation = null; // {order:[sku,...], routineIdx:0-2} -- set por el cuestionario de diagnostico de Belleza
 // Fix 58/61: arreglo de sku(s) a mostrar en productsGrid cuando se entra por
-// una categoria del menu Belleza (ver openBeautyCategory). null = mostrar
+// una categoría del menu Belleza (ver openBeautyCategory). null = mostrar
 // todos los productos de la vertical (comportamiento de siempre). La mayoria
-// de categorias traen 1 solo sku, pero "Tratamiento" agrupa 2 (NACAR-07 +
+// de categorías traen 1 solo sku, pero "Tratamiento" agrupa 2 (NACAR-07 +
 // NACAR-08) -- por eso es arreglo y no un sku suelto. Se resetea en
 // goVertical() y openBeautyCatalog() para no dejar "pegado" el filtro.
 var categoryFilterSku = null;
@@ -3960,9 +4003,9 @@ function renderVertical(v){
 
   var grid = document.getElementById('productsGrid');
   var html = '';
-  // Fix 58/61: si categoryFilterSku esta activo (llego por una categoria del
+  // Fix 58/61: si categoryFilterSku esta activo (llego por una categoría del
   // menu Belleza), el grid solo pinta los productos de ese arreglo (1 para la
-  // mayoria de categorias, 2 para "Tratamiento"). relatedHtml sigue buscando
+  // mayoria de categorías, 2 para "Tratamiento"). relatedHtml sigue buscando
   // en d.products (lista completa) para que "se compra junto con" no se
   // pierda solo por estar en vista filtrada.
   var listToRender = categoryFilterSku ? d.products.filter(function(pp){ return categoryFilterSku.indexOf(pp.sku) !== -1; }) : d.products;
@@ -3993,7 +4036,7 @@ function renderVertical(v){
       ? '<img src="' + cardImgSrc + '" alt="' + p.name + '" loading="lazy" onerror="handleProductImgError(this,\'' + v + '\')">'
       : iconSvg(v);
     // Fichas "dummy" (p.dummy===true): no existen como SKU real en MongoDB,
-    // asi que nunca se ofrece "Agregar al carrito" sobre ellas -- pero si
+    // así que nunca se ofrece "Agregar al carrito" sobre ellas -- pero si
     // traen ficha completa (longDesc/ingredients/usage) si dejamos ver el
     // detalle, para poder previsualizar el producto mientras se define precio.
     var priceHtml = p.dummy
@@ -4017,14 +4060,14 @@ function renderVertical(v){
   // Fix 72: "Maquillaje" ahora se navega con categoryFilterSku=[] (sin
   // productos reales todavia) -- sin este bloque, listToRender quedaba vacio
   // y el usuario solo veia una caja en blanco, sin explicacion. Se agrega un
-  // estado vacio con mensaje de marca (categoria.empty) antes del link de
+  // estado vacio con mensaje de marca (categoría.empty) antes del link de
   // "ver catalogo completo".
   if (categoryFilterSku && listToRender.length === 0){
     html += '<div class="category-empty-state">' + I18N[currentLang]['category.empty'] + '</div>';
   }
-  // Fix 58: en vista filtrada por categoria (un solo producto), se ofrece
+  // Fix 58: en vista filtrada por categoría (un solo producto), se ofrece
   // salida directa al catalogo completo en vez de dejar al usuario varado
-  // en una ficha unica.
+  // en una ficha única.
   if (categoryFilterSku){
     html += '<div class="catalog-view-all-link"><a onclick="openBeautyCatalog()">' + I18N[currentLang]['catalog.viewAll'] + '</a></div>';
   }
@@ -4067,7 +4110,7 @@ function goVertical(v){
   // El catalogo (#zoom) vive oculto por default -- solo se revela cuando el
   // usuario pide explicitamente ver un sistema (menu Belleza/System Speciality,
   // footer, busqueda, zoom-tabs o el resultado del diagnostico). Asi la home
-  // no arrastra la ficha de producto dentro del scroll normal de la pagina.
+  // no arrastra la ficha de producto dentro del scroll normal de la página.
   var zoomSection = document.getElementById('zoom');
   zoomSection.classList.remove('zoom-hidden');
   // Si veniamos del modo "solo catalogo" (openBeautyCatalog), restauramos la
@@ -4081,9 +4124,9 @@ function goVertical(v){
   catalogModeActive = false;
   // Se oculta el resto de la home (hero/verticales/filosofia/newsletter, ver
   // clase .home-only) para que System Speciality y el catalogo se sientan
-  // como su propia pagina -- ya no basta con mostrar/ocultar #zoom, porque
+  // como su propia página -- ya no basta con mostrar/ocultar #zoom, porque
   // seguia viviendo en el mismo scroll largo de la home (bug reportado: "si
-  // hago scroll en la pagina principal sigo viendo el catalogo"). goHome()
+  // hago scroll en la página principal sigo viendo el catalogo"). goHome()
   // revierte esto.
   document.body.classList.add('viewing-product-page');
   window.scrollTo({top:0, behavior:'auto'});
@@ -4093,7 +4136,7 @@ function goVertical(v){
 function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
 
 // Regresa de la vista de catalogo/System Speciality a la home completa.
-// Punto de salida unico: boton "Volver a inicio" dentro de #zoom, el logo del
+// Punto de salida único: boton "Volver a inicio" dentro de #zoom, el logo del
 // header, y el link "Nuestra filosofia" del nav (que primero debe traer de
 // vuelta el resto de la home antes de poder desplazarse hasta esa seccion,
 // ya que .home-only la mantiene oculta mientras viewing-product-page este activo).
@@ -4122,7 +4165,7 @@ function goToFilosofia(){ goToHomeSection('filosofia'); }
 // panel de comentarios y banner de recomendacion) pero oculta los tabs
 // Luminous/Health/Spot, el banner narrativo de "sistema destacado" y el
 // bloque de rutinas -- ver CSS .zoom-section.catalog-mode. Punto de entrada
-// unico para: 1) CTA "Catalogo" del menu Belleza, 2) CTA "Ver mi preseleccion"
+// único para: 1) CTA "Catalogo" del menu Belleza, 2) CTA "Ver mi preseleccion"
 // al final del diagnostico (goToBeautyRecommendation). El catalogo hoy solo
 // cubre System Luminous (Nacar) porque es lo que vive bajo el menu Belleza;
 // si crece a mas de una vertical, este es el lugar para unificar productos.
@@ -4135,8 +4178,8 @@ function openBeautyCatalog(){
   zoomSection.classList.add('catalog-mode');
   catalogModeActive = true;
   applyCatalogPageLabels();
-  // Misma logica que goVertical(): el catalogo tambien debe verse como su
-  // propia pagina, sin arrastrar hero/verticales/filosofia/newsletter al
+  // Misma logica que goVertical(): el catalogo también debe verse como su
+  // propia página, sin arrastrar hero/verticales/filosofia/newsletter al
   // hacer scroll.
   document.body.classList.add('viewing-product-page');
   window.scrollTo({top:0, behavior:'auto'});
@@ -4150,13 +4193,13 @@ function applyCatalogPageLabels(){
   document.getElementById('zoomSubtitle').textContent = dict['catalog.subtitle'];
 }
 
-// Fix 58/61: punto de entrada de cada categoria del dropdown "Belleza" --
+// Fix 58/61: punto de entrada de cada categoría del dropdown "Belleza" --
 // reusa la misma ficha #zoom/catalog-mode que openBeautyCatalog(), pero fija
 // categoryFilterSku antes de renderizar para que productsGrid pinte solo los
-// productos de esa categoria (ver filtro en renderVertical). "skus" es
-// siempre un arreglo (1 elemento para la mayoria de categorias, 2 para
+// productos de esa categoría (ver filtro en renderVertical). "skus" es
+// siempre un arreglo (1 elemento para la mayoria de categorías, 2 para
 // "Tratamiento"). "labelKey" es la clave i18n a usar como titulo de la
-// pagina -- ya no se deriva del tag de un solo producto porque una categoria
+// página -- ya no se deriva del tag de un solo producto porque una categoría
 // puede agrupar 2 productos con tags distintos.
 function openBeautyCategory(skus, labelKey){
   categoryFilterSku = skus;
@@ -4171,10 +4214,10 @@ function openBeautyCategory(skus, labelKey){
   scrollToId('zoom');
   closeNav();
 }
-// Fix 74: "Favoritos de Renuevate" (link debajo de Nuestra filosofia + ultimo
+// Fix 74: "Favoritos de Renuevate" (link debajo de Nuestra filosofia + último
 // item del dropdown Belleza), instruccion Carlos. A diferencia de las demas
-// categorias (Skin Care, Maquillaje, etc.) que usan un arreglo de skus fijo,
-// esta filtra en vivo por el atributo favorito:true de cada producto -- asi
+// categorías (Skin Care, Maquillaje, etc.) que usan un arreglo de skus fijo,
+// esta filtra en vivo por el atributo favorito:true de cada producto -- así
 // que agregar/quitar favoritos a futuro solo requiere tocar ese atributo en
 // el catalogo (V.nacar.<lang>.products), no esta funcion.
 function openFavoritesCategory(){
@@ -4261,14 +4304,14 @@ function bqGoBack(){
 function computeBeautyScores(answers){
   // Motor de puntaje alineado a los 4 productos originales del catalogo Nacar:
   // NACAR-06 Espuma (limpieza), NACAR-07 Gel (antioxidante/hidratacion),
-  // NACAR-08 Dia FPS30 (firmeza/proteccion diaria), NACAR-09 Protector FPS50+
-  // (proteccion solar dedicada). Sin preguntas de cabello: ese producto no
+  // NACAR-08 Dia FPS30 (firmeza/protección diaria), NACAR-09 Protector FPS50+
+  // (protección solar dedicada). Sin preguntas de cabello: ese producto no
   // existe en el catalogo actual.
   // Fix 71: NACAR-10 (Suero de Aloe Vera) se agrego al catalogo pero
   // NO esta cableado a este cuestionario -- ninguna de las 4 preguntas
   // actuales (limpieza/antioxidante/firmeza/sol, tipo de piel, sol, tiempo)
   // mapea de forma natural a "lineas de expresion por resequedad". Si se
-  // quiere que el diagnostico tambien pueda recomendar el Suero, hace falta
+  // quiere que el diagnostico también pueda recomendar el Suero, hace falta
   // una nueva pregunta o remapear las existentes -- pendiente, no incluido
   // en este cambio.
   var scores = { 'NACAR-06':0, 'NACAR-07':0, 'NACAR-08':0, 'NACAR-09':0 };
@@ -4308,11 +4351,11 @@ function renderBQResult(){
   var topProduct = findProductBySku(V.nacar[currentLang].products, finalOrder[0]);
   var topName = topProduct ? topProduct.name : '';
 
-  // La captura de correo/telefono va AL FINAL del resultado, no al inicio del
+  // La captura de correo/teléfono va AL FINAL del resultado, no al inicio del
   // cuestionario: primero se entrega el valor (la preseleccion), y solo despues
   // se pide el contacto -- pedirlo antes de mostrar nada sube el abandono. Es
-  // 100% opcional y solo se muestra si el visitante no tiene sesion iniciada
-  // (si ya inicio sesion, ya tenemos su contacto real de su cuenta).
+  // 100% opcional y solo se muestra si el visitante no tiene sesión iniciada
+  // (si ya inicio sesión, ya tenemos su contacto real de su cuenta).
   var leadHtml = '';
   if (!CURRENT_CUSTOMER.id){
     leadHtml =
@@ -4484,14 +4527,14 @@ function closeSearchModal(){
 }
 // Fix 72: Carlos reporto "no estas buscando bien los productos". 2 huecos
 // reales encontrados: (1) nunca se buscaba por SKU, y (2) escribir el nombre
-// de una categoria del menu Belleza (p.ej. "Skin Care", tal cual la ve el
+// de una categoría del menu Belleza (p.ej. "Skin Care", tal cual la ve el
 // usuario en el nav) siempre devolvia "no encontramos resultados", porque el
 // buscador solo conocia nombre/tag de producto y nombre de sistema (bmLabel),
-// nunca las etiquetas de categoria. Tambien: al encontrar un producto, antes
+// nunca las etiquetas de categoría. Tambien: al encontrar un producto, antes
 // solo abria el sistema completo sin filtro (goVertical) -- el usuario nunca
 // veia "su" producto, solo aterrizaba en una lista larga. Ahora abre
 // directo la ficha de detalle (openProductDetail) del producto encontrado.
-// Orden de busqueda: 1) producto por nombre/tag/sku, 2) categoria del menu
+// Orden de busqueda: 1) producto por nombre/tag/sku, 2) categoría del menu
 // Belleza por su nombre visible, 3) sistema completo por bmLabel/tag.
 function runProductSearch(e){
   if (e) e.preventDefault();
@@ -4517,7 +4560,7 @@ function runProductSearch(e){
     }
   }
 
-  // Fix 72: categorias reales del menu Belleza (ver openBeautyCategory en el
+  // Fix 72: categorías reales del menu Belleza (ver openBeautyCategory en el
   // nav) -- "Maquillaje" hoy va con arreglo vacio a proposito (sin productos
   // todavia), igual que en el nav.
   var matchCategory = null;
@@ -4603,8 +4646,8 @@ function initGoogleButton(containerId, retries){
   }
   // Nota: si el contenedor se mide con ancho 0 (ej. el modal aun tiene display:none),
   // el boton de Google cae en un modo compacto de solo-icono ("bolita" sin texto) y se
-  // queda asi de forma permanente -- no se vuelve a medir despues. Por eso este init se
-  // vuelve a llamar cada vez que se abre el modal (ver openAuthModal), y aqui se fija un
+  // queda así de forma permanente -- no se vuelve a medir despues. Por eso este init se
+  // vuelve a llamar cada vez que se abre el modal (ver openAuthModal), y aquí se fija un
   // ancho explicito en px tomado del contenedor ya visible, para que quede del mismo
   // ancho que el boton de Facebook en vez de un icono suelto.
   var measuredWidth = Math.round(container.getBoundingClientRect().width);
@@ -4629,17 +4672,17 @@ function facebookLogin(){
 var CURRENT_CUSTOMER = { id: null, profileComplete: false, name: null };
 
 // Muestra el nombre de pila junto al icono de cuenta una vez logueado (Google,
-// Facebook o telefono). Antes esto nunca se llamaba desde ningun lado -- el
-// login guardaba CURRENT_CUSTOMER.id pero jamas el nombre, asi que el icono se
-// quedaba mudo despues de iniciar sesion.
+// Facebook o teléfono). Antes esto nunca se llamaba desde ningun lado -- el
+// login guardaba CURRENT_CUSTOMER.id pero jamas el nombre, así que el icono se
+// quedaba mudo despues de iniciar sesión.
 function updateAccountNameDisplay(){
   var el = document.getElementById('accountNameLabel');
   if (!el) return;
   if (CURRENT_CUSTOMER.id && CURRENT_CUSTOMER.name){
     var firstName = CURRENT_CUSTOMER.name.split(/\s+/)[0];
-    // Muchos proveedores (Google/Facebook/registro por telefono) regresan el
+    // Muchos proveedores (Google/Facebook/registro por teléfono) regresan el
     // nombre tal cual lo capturo el usuario -- si lo escribio en minusculas
-    // ("carlos"), aqui se normaliza para mostrar siempre con mayuscula inicial.
+    // ("carlos"), aquí se normaliza para mostrar siempre con mayuscula inicial.
     el.textContent = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     el.style.display = '';
   } else {
@@ -4649,12 +4692,12 @@ function updateAccountNameDisplay(){
 }
 
 // Sesion ligera del lado del cliente (localStorage) -- SOLO para que el icono
-// de cuenta y el nombre no desaparezcan al recargar la pagina o abrir una
-// pestana nueva. Esto NO es una sesion de servidor firmada (ver gap conocido
+// de cuenta y el nombre no desaparezcan al recargar la página o abrir una
+// pestana nueva. Esto NO es una sesión de servidor firmada (ver gap conocido
 // en db/schema.md, seccion 0 y 9): sigue siendo el mismo MVP donde el navegador
-// "recuerda" el customerId, ahora tambien entre recargas y no solo dentro de
-// la misma carga de pagina. Antes de trafico real, esto debe amarrarse a una
-// cookie de sesion firmada por el servidor.
+// "recuerda" el customerId, ahora también entre recargas y no solo dentro de
+// la misma carga de página. Antes de trafico real, esto debe amarrarse a una
+// cookie de sesión firmada por el servidor.
 function saveSessionLocal(){
   try {
     localStorage.setItem('renuevate_session', JSON.stringify({
@@ -4676,10 +4719,10 @@ function restoreSessionLocal(){
         updateAccountNameDisplay();
       }
     }
-  } catch (e) { /* sesion guardada corrupta -- se ignora, no se rompe la carga de la pagina */ }
+  } catch (e) { /* sesión guardada corrupta -- se ignora, no se rompe la carga de la página */ }
   // refreshCart() ya sabe elegir entre el carrito real (logueado) y el de
   // invitado (localStorage) -- se llama siempre para que el badge del
-  // carrito sea correcto desde que carga la pagina, con o sin sesion.
+  // carrito sea correcto desde que carga la página, con o sin sesión.
   refreshCart();
 }
 document.addEventListener('DOMContentLoaded', restoreSessionLocal);
@@ -4696,11 +4739,11 @@ function closeProfileModal(){
   if (el) el.classList.remove('is-open');
 }
 // El backend exige formato E.164 (+52...) y la gran mayoria de clientes va a
-// escribir solo su numero local a 10 digitos, sin codigo de pais -- eso es
+// escribir solo su número local a 10 digitos, sin código de pais -- eso es
 // justo lo que tronaba el registro con "Telefono invalido". En vez de rechazar
 // a todo mundo que no sepa que es E.164, se asume Mexico (+52) cuando el
 // usuario no puso "+", que es el mercado del sitio (Cancun . Mexico en el
-// topbar). Si el usuario ya escribio su propio codigo de pais con "+", se
+// topbar). Si el usuario ya escribio su propio código de pais con "+", se
 // respeta tal cual.
 function normalizeMxPhone(raw){
   var v = (raw || '').trim().replace(/[\s\-().]/g, '');
@@ -4880,31 +4923,31 @@ function applyLanguage(lang){
 /* ===================== Chatbot (FAQ por palabra clave, 100% cliente) ===================== */
 var chatInitialized = false;
 var CHAT_KEYWORDS = {
-  greeting:['hola','buenos dias','buenas tardes','buenas noches','hello','hi ','hi,','hey','bonjour','salut'],
+  greeting:['hola','buenos días','buenas tardes','buenas noches','hello','hi ','hi,','hey','bonjour','salut'],
   time:['que hora es','hora es','dame la hora','what time','time is it','quelle heure'],
   identity:['quien eres','quién eres','tu nombre','como te llamas','eres un bot','eres humano','who are you','your name','are you a bot','are you human','qui es tu','qui es-tu','ton nom','es-tu un robot'],
   capability:['como me ayudas','como puedes ayudarme','que puedes hacer','que haces','que hace este chat','en que me ayudas','como me pueden ayudar','en que nos pueden ayudar','como pueden ayudarme','en que me pueden apoyar','how can you help','how can you guys help','what can you do','what do you do','how can i get help','comment peux tu m\'aider','comment pouvez vous m\'aider','comment pouvez-vous m\'aider','que peux tu faire','que fais tu'],
   beautyritual:['ritual de belleza','rituales de belleza','que es un ritual','como armo mi ritual','beauty ritual','skincare ritual','what is a ritual','routine de beaute','quel est le rituel'],
   nutritionadvice:['consejo de nutricion','consejos de nutricion','recomendacion nutricional','como mejorar mi alimentacion','tips de nutricion','asesoria nutricional','nutrition advice','nutrition tips','general nutrition','conseil nutrition','conseils nutritionnels'],
   productadvisor:['asesor de productos','ayudame a elegir un producto','product advisor','help me choose a product','conseiller produit'],
-  purpose:['para que sirves','cual es tu funcion','para que es el sitio','para que es esta pagina','para que es esta web','que es este sitio','que es renuevate','de que trata este sitio','de que trata esta pagina','sobre renuevate','what are you for','what is your purpose','what is this site for','what is this website about','what is renuevate','about renuevate','a quoi sers tu','a quoi tu sers','a quoi sert ce site','qu\'est-ce que ce site','qu\'est-ce qu\'renuevate','a propos d\'renuevate'],
+  purpose:['para que sirves','cual es tu funcion','para que es el sitio','para que es esta página','para que es esta web','que es este sitio','que es renuevate','de que trata este sitio','de que trata esta página','sobre renuevate','what are you for','what is your purpose','what is this site for','what is this website about','what is renuevate','about renuevate','a quoi sers tu','a quoi tu sers','a quoi sert ce site','qu\'est-ce que ce site','qu\'est-ce qu\'renuevate','a propos d\'renuevate'],
   products:['que venden','que productos tienen','que productos venden','que vendes','productos tienen','what do you sell','your products','what products do you have','do you sell','que vendez vous','quels produits','vous vendez quoi'],
-  hours:['horario','horario de atencion','horas de atencion','a que hora abren','business hours','opening hours','are you open','what time do you open','heures d\'ouverture','horaires','vous ouvrez a quelle heure'],
+  hours:['horario','horario de atención','horas de atención','a que hora abren','business hours','opening hours','are you open','what time do you open','heures d\'ouverture','horaires','vous ouvrez a quelle heure'],
   security:['es seguro','sitio seguro','seguridad del pago','es confiable este sitio','is it safe','is this site secure','is this safe','secure payment','is this legit','site securise','paiement securise','c\'est securise','c\'est fiable'],
   account:['necesito cuenta','crear cuenta','tengo que registrarme','necesito registrarme','do i need an account','create an account','sign up','need an account','besoin d\'un compte','creer un compte','dois-je creer un compte'],
   cancelorder:['cancelar pedido','cancelar mi pedido','cancelar orden','cancelar compra','cancel order','cancel my order','can i cancel','annuler ma commande','annuler la commande','puis-je annuler'],
-  discount:['codigo de descuento','cupon','cupones','codigo promocional','codigo de promocion','discount code','promo code','coupon','discount codes','code promo','code de reduction','avez vous des codes'],
-  warranty:['garantia','garantia del producto','tiene garantia','warranty','guarantee','is it guaranteed','garantie','est-ce garanti'],
-  shipping:['envio','envios','shipping','envoi','livraison','entrega','delivery'],
+  discount:['código de descuento','cupon','cupones','código promocional','código de promocion','discount code','promo code','coupon','discount codes','code promo','code de reduction','avez vous des codes'],
+  warranty:['garantía','garantía del producto','tiene garantía','warranty','guarantee','is it guaranteed','garantie','est-ce garanti'],
+  shipping:['envío','envíos','shipping','envoi','livraison','entrega','delivery'],
   verticals:['vertical','verticales','marca','marcas','nacar','vigor','roble','brand','brands'],
   diagnostic:['diagnostico','diagnostic','quiz','cuestionario','questionnaire','assessment'],
   prices:['precio','precios','price','prices','prix','costo','cost'],
   ingredients:['ingrediente','ingredientes','ingredient','ingredients','composicion'],
   payment:['pago','pagos','payment','paiement','tarjeta','card','carte','paypal'],
   tracking:['rastreo','rastrear','tracking','seguimiento','suivi','guia','paquete','package'],
-  returns:['devolucion','devoluciones','return','returns','retour','retours','cambio','reembolso','refund'],
+  returns:['devolución','devoluciones','return','returns','retour','retours','cambio','reembolso','refund'],
   loyalty:['puntos','lealtad','loyalty','points','fidelite','recompensa','rewards'],
-  contact:['contacto','contact','correo','email','telefono','phone'],
+  contact:['contacto','contact','correo','email','teléfono','phone'],
   sustainability:['sostenibilidad','sustainability','durabilite','reciclable','reciclado','recycled','ambiente','environnement'],
   human:['humano','human','humain','asesor','advisor','conseiller','agente','persona'],
   store:['tienda fisica','tienda en','punto de venta','sucursal','tienen tienda','physical store','store location','have a store','magasin physique','boutique physique','avez vous un magasin']
@@ -4914,7 +4957,7 @@ var CHAT_QUICK_KEYMAP = {identity:'chat.q.identity', shipping:'chat.q.shipping',
 var CHAT_ANSWER_KEYMAP = {greeting:'chat.a.greeting', identity:'chat.a.identity', capability:'chat.a.capability', purpose:'chat.a.purpose', products:'chat.a.products', hours:'chat.a.hours', security:'chat.a.security', account:'chat.a.account', cancelorder:'chat.a.cancelorder', discount:'chat.a.discount', warranty:'chat.a.warranty', shipping:'chat.a.shipping', verticals:'chat.a.verticals', diagnostic:'chat.a.diagnostic', prices:'chat.a.prices', ingredients:'chat.a.ingredients', human:'chat.a.human', payment:'chat.a.payment', tracking:'chat.a.tracking', returns:'chat.a.returns', loyalty:'chat.a.loyalty', contact:'chat.a.contact', sustainability:'chat.a.sustainability', store:'chat.a.store', beautyritual:'chat.a.beautyritual', nutritionadvice:'chat.a.nutritionadvice', productadvisor:'chat.a.productadvisor'};
 
 /* Guardrails: temas medicos, quejas y certificaciones no confirmadas en catálogo */
-var MEDICAL_TRIGGERS = ['embarazo','embarazada','lactancia','lactando','alergia','alergico','alergica','medicamento','medicacion','receta medica','diabetes','presion alta','enfermedad','tratamiento medico','pregnant','pregnancy','breastfeeding','allergic','allergy','medication','prescription','enceinte','allaitement','allergique','medicament','grossesse'];
+var MEDICAL_TRIGGERS = ['embarazo','embarazada','lactancia','lactando','alergia','alergico','alergica','medicamento','medicacion','receta médica','diabetes','presion alta','enfermedad','tratamiento médico','pregnant','pregnancy','breastfeeding','allergic','allergy','medication','prescription','enceinte','allaitement','allergique','medicament','grossesse'];
 var COMPLAINT_TRIGGERS = ['queja','reclamo','no llego','no ha llegado','pedido dañado','pedido danado','cobro duplicado','cobro doble','mal servicio','problema con mi pedido','no funciona','defectuoso','complaint','order problem','didn\'t arrive','damaged','double charge','plainte','probleme avec ma commande','n\'est pas arrive','endommage'];
 var CERT_TRIGGERS = ['vegano','vegana','vegan','sin gluten','gluten free','cruelty free','crueltyfree','sin crueldad','organico certificado','certificacion organica','organic certified','certification bio','vegetalien'];
 
@@ -4983,7 +5026,7 @@ function phraseFuzzyScore(messageWords, phrase){
    respuesta debe ser empatica y escalar a un humano, nunca el fallback generico
    neutro (hallazgo #3 y #6 del QA: hoy no hay ningun manejo diferenciado). */
 var PROFANITY_WORDS = ['mierda','pendejo','pendeja','pendejada','verga','idiota','idiotas','estupido','estupida','maldito','maldita','chinga','chingada','carajo','joder','pinche','fuck','shit','idiot','stupid','damn'];
-var FRUSTRATION_SIGNALS = ['no sirve','no sirven','pesimo servicio','pesima atencion','estoy harto','estoy harta','estoy encabronado','estoy encabronada','quiero mi dinero de vuelta','ya no aguanto','esto es el colmo','terrible servicio','muy mal servicio','worst service','so angry','fed up','ras le bol'];
+var FRUSTRATION_SIGNALS = ['no sirve','no sirven','pesimo servicio','pesima atención','estoy harto','estoy harta','estoy encabronado','estoy encabronada','quiero mi dinero de vuelta','ya no aguanto','esto es el colmo','terrible servicio','muy mal servicio','worst service','so angry','fed up','ras le bol'];
 function detectFrustration(text){
   if (textHasAny(text, PROFANITY_WORDS) || textHasAny(text, FRUSTRATION_SIGNALS)) return true;
   var exclam = (String(text).match(/!/g) || []).length;
@@ -5044,7 +5087,7 @@ function initChat(){
   showTyping();
   setTimeout(function(){ hideTyping(); startGoalFlow(); }, 600);
 }
-// Cierra el panel de chat (y el carrito, por si tambien estaba abierto) antes
+// Cierra el panel de chat (y el carrito, por si también estaba abierto) antes
 // de navegar a un producto/catalogo desde una tarjeta o boton del chatbot --
 // se llama desde el "Ver detalle"/"Ver catalogo de X" de Julieta. NOTA: esta
 // funcion faltaba por completo (bug pre-existente); sin ella, esos dos
@@ -5105,7 +5148,7 @@ function renderChatQuickButtons(){
 /* Estado de la conversacion guiada de Julieta (objetivo, refinamiento, idioma ya detectado) */
 var JULIETA = { goal: null, refine: null, langChecked: false, pendingOptions: null };
 
-/* Lista numerada y seleccionable (reemplaza temporalmente los accesos rapidos de FAQ) */
+/* Lista numerada y seleccionable (reemplaza temporalmente los accesos rápidos de FAQ) */
 function renderDynamicOptions(options){
   var box = document.getElementById('chatQuick');
   if (!box) return;
@@ -5150,7 +5193,7 @@ function matchTopic(text){
   var norm = normalizeText(text);
   var t = norm + ' ';
   var topic;
-  /* 1) coincidencia exacta normalizada (rapido, mismo comportamiento de antes) */
+  /* 1) coincidencia exacta normalizada (rápido, mismo comportamiento de antes) */
   for (topic in CHAT_KEYWORDS){
     var kws = CHAT_KEYWORDS[topic];
     for (var i=0;i<kws.length;i++){
@@ -5396,7 +5439,7 @@ window.addEventListener('scroll', function(){
   var io = new IntersectionObserver(function(entries){
     for (var e=0;e<entries.length;e++){
       // Se alterna en vez de fijarse una sola vez: al salir del viewport (subiendo
-      // o bajando) se quita is-visible, asi que al volver a entrar la transicion
+      // o bajando) se quita is-visible, así que al volver a entrar la transicion
       // se repite -- funciona igual scrolleando hacia abajo que hacia arriba.
       entries[e].target.classList.toggle('is-visible', entries[e].isIntersecting);
     }
