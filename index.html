@@ -200,10 +200,16 @@ body.nav-lock{overflow:hidden;}
    el mismo punto vertical que cada object-position de arriba, para que el
    zoom no se desalinee del encuadre ya elegido por slide. */
 @media(max-width:760px){
-  /* Fix 78: Carlos volvio a pedir mas recorte/zoom de rostro en movil pese
-     al fix anterior (1.35) -- se sube a 1.5 para que el acercamiento sea
-     mas notorio de entrada, sin necesidad de otra vuelta. */
-  .hero-slide{transform:scale(1.5);}
+  /* Fix 79: Carlos pidio explicitamente el doble de acercamiento ("se vean
+     como al doble de cerca... aunque no quepan completos, eso quiero") --
+     el deploy de Fix 78 (1.5) ya mostraba recorte real al probarlo en modo
+     movil, pero para el sitio publicado no genera cache de CSS por
+     separado (todo va inline en este mismo HTML), asi que si en el
+     telefono seguia viendose "normal" lo mas probable es cache del
+     navegador/CDN del deploy anterior a Fix 78, no que el fix no aplique.
+     Aun asi se sube de 1.5 a 2.0 -- doble de acercamiento real, tal como
+     lo pidio, sin importar que la cara ya no quepa completa en cuadro. */
+  .hero-slide{transform:scale(2);}
   .hero-slide:nth-of-type(1){transform-origin:center 30%;}
   .hero-slide:nth-of-type(2){transform-origin:center 35%;}
   .hero-slide:nth-of-type(3){transform-origin:center 55%;}
