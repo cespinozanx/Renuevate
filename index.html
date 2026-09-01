@@ -1034,7 +1034,7 @@ var AZURA_CONFIG = {
     <div class="verticals-grid reveal-stagger">
       <div class="v-card nacar has-video" onclick="goVertical('nacar')">
         <div class="v-media">
-          <video class="v-media-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-system8-showcase-poster.jpg" aria-hidden="true">
+          <video class="v-media-el" muted loop playsinline preload="none" poster="media/seytu-system8-showcase-poster.jpg" aria-hidden="true">
             <source src="media/seytu-system8-showcase-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
             <source src="media/seytu-system8-showcase.mp4" type="video/mp4">
           </video>
@@ -1046,7 +1046,7 @@ var AZURA_CONFIG = {
       </div>
       <div class="v-card vigor has-video" onclick="goVertical('vigor')">
         <div class="v-media">
-          <video class="v-media-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-system-h-showcase-poster.jpg" aria-hidden="true">
+          <video class="v-media-el" muted loop playsinline preload="none" poster="media/seytu-system-h-showcase-poster.jpg" aria-hidden="true">
             <source src="media/seytu-system-h-showcase-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
             <source src="media/seytu-system-h-showcase-desktop.mp4" type="video/mp4">
           </video>
@@ -1058,7 +1058,7 @@ var AZURA_CONFIG = {
       </div>
       <div class="v-card roble has-video" onclick="goVertical('roble')">
         <div class="v-media">
-          <video class="v-media-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-system-spot-showcase-poster.jpg" aria-hidden="true">
+          <video class="v-media-el" muted loop playsinline preload="none" poster="media/seytu-system-spot-showcase-poster.jpg" aria-hidden="true">
             <source src="media/seytu-system-spot-showcase-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
             <source src="media/seytu-system-spot-showcase-desktop.mp4" type="video/mp4">
           </video>
@@ -1087,7 +1087,7 @@ var AZURA_CONFIG = {
            no debe arrancar en opacity:0, el decodificador se puede quedar
            suspendido en algunos navegadores). -->
       <div class="phil-showcase reveal">
-        <video class="phil-showcase-el" autoplay muted loop playsinline preload="metadata" poster="media/seytu-filosofia-showcase-poster.jpg" aria-hidden="true">
+        <video class="phil-showcase-el" muted loop playsinline preload="none" poster="media/seytu-filosofia-showcase-poster.jpg" aria-hidden="true">
           <source src="media/seytu-filosofia-showcase.mp4" type="video/mp4">
         </video>
       </div>
@@ -3612,6 +3612,39 @@ function initHeroCarousel(){
   });
 }
 document.addEventListener("DOMContentLoaded", initHeroCarousel);
+
+// Fix 80: los 4 videos decorativos (3 System speciality + filosofia) traian
+// atributo autoplay -- eso obliga al navegador a descargar y reproducir el
+// video en cuanto entra al DOM, sin importar si esta fuera de pantalla.
+// Confirmado con trace de red en produccion: los 4 se descargaban de
+// inmediato al cargar la home (~1.9MB combinados en movil), aunque 3 de
+// ellos viven muy por debajo del fold. Se quito autoplay + preload paso a
+// "none", y en su lugar un IntersectionObserver dispara .play() solo
+// cuando la tarjeta esta por entrar a pantalla (rootMargin da margen para
+// que el video ya este listo cuando el usuario llega) y pausa cuando sale,
+// asi no se re-descarga (el buffer ya cargado se queda en el elemento).
+// Nota: los videos NO usan reveal-stagger (ver comentario junto a
+// .phil-showcase mas arriba) porque un video que arranca en opacity:0
+// puede quedar con el decodificador suspendido en algunos navegadores --
+// este fix no toca esa parte, solo cuando se llama a .play().
+function initLazyAutoplayVideos(){
+  var vids = document.querySelectorAll('.v-media-el, .phil-showcase-el');
+  if (!vids.length) return;
+  if (!('IntersectionObserver' in window)){
+    // Fallback sin soporte: reproducir todo de una vez, como antes.
+    vids.forEach(function(v){ v.play().catch(function(){}); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var v = entry.target;
+      if (entry.isIntersecting){ v.play().catch(function(){}); }
+      else { v.pause(); }
+    });
+  }, { rootMargin: '200px 0px', threshold: 0.01 });
+  vids.forEach(function(v){ io.observe(v); });
+}
+document.addEventListener("DOMContentLoaded", initLazyAutoplayVideos);
 
 function saveCookiePrefs(){
   var a = document.getElementById('cookieAnalyticsToggle');
