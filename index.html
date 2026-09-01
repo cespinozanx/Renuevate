@@ -204,10 +204,10 @@ body.nav-lock{overflow:hidden;}
      como al doble de cerca... aunque no quepan completos, eso quiero") --
      el deploy de Fix 78 (1.5) ya mostraba recorte real al probarlo en modo
      movil, pero para el sitio publicado no genera cache de CSS por
-     separado (todo va inline en este mismo HTML), asi que si en el
-     telefono seguia viendose "normal" lo mas probable es cache del
+     separado (todo va inline en este mismo HTML), así que si en el
+     teléfono seguia viendose "normal" lo mas probable es cache del
      navegador/CDN del deploy anterior a Fix 78, no que el fix no aplique.
-     Aun asi se sube de 1.5 a 2.0 -- doble de acercamiento real, tal como
+     Aun así se sube de 1.5 a 2.0 -- doble de acercamiento real, tal como
      lo pidio, sin importar que la cara ya no quepa completa en cuadro. */
   .hero-slide{transform:scale(2);}
   .hero-slide:nth-of-type(1){transform-origin:center 30%;}
@@ -677,7 +677,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .product-detail-modal{flex-direction:column; max-height:90vh; overflow-y:auto;}
   .pd-media-col{width:100%; flex:none; max-height:none; overflow-y:visible;}
   /* Fix 67: en escritorio .pd-media es 3/4 (retrato), que es la proporcion
-     real de nuestras fotos de producto (1200x1600, 1200x1200, etc). Aqui en
+     real de nuestras fotos de producto (1200x1600, 1200x1200, etc). Aquí en
      movil quedaba forzado a 4/3 (horizontal) -- un contenedor apaisado para
      fotos verticales hace que object-fit:contain deje franjas enormes
      arriba/abajo, o sea la imagen se ve chica dentro de su caja ("no
@@ -904,7 +904,7 @@ var AZURA_CONFIG = {
 <div class="topbar">
   <div class="container">
     <div class="topbar-links">
-      <span data-i18n="top.shipping">Envio calculado en checkout . Entrega en 4 días habiles</span>
+      <span data-i18n="top.shipping">Envío calculado en checkout . Entrega en 4 días hábiles</span>
       <span data-i18n="top.location">Cancun . Mexico</span>
       <span data-i18n="top.tagline">Bienestar real, para cada etapa de tu vida</span>
     </div>
@@ -1195,7 +1195,7 @@ var AZURA_CONFIG = {
     </div>
     <div><h5 data-i18n="footer.hAyuda">Ayuda</h5>
       <a onclick="goToHomeSection('verticales')" data-i18n="footer.diag">Como elegir tu sistema</a>
-      <a onclick="openTermsModal()" data-i18n="footer.shipping">Envios y devoluciones</a>
+      <a onclick="openTermsModal()" data-i18n="footer.shipping">Envíos y devoluciones</a>
       <a onclick="openFaqModal()" data-i18n="footer.faq">Preguntas frecuentes</a>
       <a onclick="openChat()" data-i18n="footer.chat">Chatea con el asistente</a>
     </div>
@@ -1227,7 +1227,7 @@ var AZURA_CONFIG = {
     <p class="pm-subtitle" data-i18n="profile.subtitle">Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.</p>
     <form id="profileForm" onsubmit="submitProfileForm(event)">
       <div class="pm-field">
-        <label for="pmPhone" data-i18n="profile.phoneLabel">Telefono (con código de pais)</label>
+        <label for="pmPhone" data-i18n="profile.phoneLabel">Teléfono (con código de pais)</label>
         <input type="tel" id="pmPhone" name="pmPhone" required placeholder="+525512345678">
         <div class="pm-hint" data-i18n="profile.phoneHint">Formato internacional E.164, ej. +52 para Mexico.</div>
       </div>
@@ -1236,8 +1236,8 @@ var AZURA_CONFIG = {
         <input type="date" id="pmBirthDate" name="pmBirthDate" required>
       </div>
       <label class="pm-consent"><input type="checkbox" id="pmConsentEmail" required> <span data-i18n="profile.consentEmailLabel">Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)</span></label>
-      <label class="pm-consent"><input type="checkbox" id="pmConsentSms"> <span data-i18n="profile.consentSmsLabel">Tambien por SMS</span></label>
-      <label class="pm-consent"><input type="checkbox" id="pmConsentWhatsapp"> <span data-i18n="profile.consentWhatsappLabel">Tambien por WhatsApp</span></label>
+      <label class="pm-consent"><input type="checkbox" id="pmConsentSms"> <span data-i18n="profile.consentSmsLabel">También por SMS</span></label>
+      <label class="pm-consent"><input type="checkbox" id="pmConsentWhatsapp"> <span data-i18n="profile.consentWhatsappLabel">También por WhatsApp</span></label>
       <div class="pm-actions">
         <button type="submit" class="btn btn-dark" style="flex:1;" data-i18n="profile.submitLabel">Guardar perfil</button>
         <button type="button" class="btn btn-outline" onclick="closeProfileModal()" data-i18n="profile.skipLabel">Ahora no</button>
@@ -1516,7 +1516,7 @@ var AZURA_CONFIG = {
           <input type="text" id="addrRecipient" style="width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px;">
         </div>
         <div class="pm-field">
-          <label data-i18n="account.addrPhoneLabel">Telefono de contacto</label>
+          <label data-i18n="account.addrPhoneLabel">Teléfono de contacto</label>
           <input type="tel" id="addrPhone" style="width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:2px;">
         </div>
         <div class="pm-field">
@@ -1587,7 +1587,7 @@ var AZURA_CONFIG = {
             </select>
           </div>
           <div class="pm-field">
-            <label data-i18n="account.last4Label">Ultimos 4 digitos</label>
+            <label data-i18n="account.last4Label">Últimos 4 digitos</label>
             <input type="text" id="pmLast4" maxlength="4" pattern="[0-9]{4}" placeholder="1234" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
           </div>
           <div style="display:flex; gap:10px;">
@@ -1638,7 +1638,7 @@ var AZURA_CONFIG = {
   <div class="chat-body" id="chatBody"></div>
   <div class="chat-quick" id="chatQuick"></div>
   <div class="chat-menu" id="chatMenu">
-    <button onclick="menuCategorias()" data-i18n="chat.menu.categories">Categorias</button>
+    <button onclick="menuCategorias()" data-i18n="chat.menu.categories">Categorías</button>
     <button onclick="menuOfertas()" data-i18n="chat.menu.offers">Ofertas</button>
     <button onclick="menuCarrito()" data-i18n="chat.menu.cart">Mi carrito</button>
     <button onclick="menuAsesor()" data-i18n="chat.menu.advisor">Asesor</button>
@@ -1732,44 +1732,44 @@ var V = {
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
-    fr:{ full:"System Luminous Speciality - Beaute Feminine", sub:"Habitudes de beaute avec appui dermo-cosmetique et texture premium.",
-      bannerTitle:"Le System Luminous Speciality de luminosite",
-      bannerText:"Une routine visage et cheveux en trois etapes pour un eclat sain, sans ingredients agressifs.",
-      tag:"Beaute feminine", msg:"Une luminosite qui prend soin d'elle-meme.", bmLabel:"Speciality Luminous",
+    fr:{ full:"System Luminous Speciality - Beauté Féminine", sub:"Habitudes de beauté avec appui dermo-cosmetique et texture premium.",
+      bannerTitle:"Le System Luminous Speciality de luminosité",
+      bannerText:"Une routine visage et cheveux en trois étapes pour un éclat sain, sans ingrédients agressifs.",
+      tag:"Beauté féminine", msg:"Une luminosité qui prend soin d'elle-même.", bmLabel:"Speciality Luminous",
       stats:["94%","14 jours","+87%"],
       products:[
-        {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Nettoyante Faciale", desc:"Avec certains ingredients naturels, la formule de la mousse nettoyante faciale SEYTU est ideale pour un nettoyage en profondeur.", price:"$370 MXN", favorito:true,
-          longDesc:"Ideal pour le nettoyage quotidien du teint, il aide a eliminer les impuretes de la peau. Sensation de fraicheur intense. Ideal pour tous types de peau. Format 150 ml.",
-          usage:"1. Humidifiez le visage a l'eau tiede. 2. Appliquez une petite quantite de mousse et massez avec des mouvements circulaires, en evitant le contour des yeux. 3. Rincez abondamment a l'eau tiede et sechez avec une serviette propre. A utiliser matin et soir.",
+        {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Nettoyante Faciale", desc:"Avec certains ingrédients naturels, la formule de la mousse nettoyante faciale SEYTU est idéale pour un nettoyage en profondeur.", price:"$370 MXN", favorito:true,
+          longDesc:"Idéal pour le nettoyage quotidien du teint, il aide a eliminer les impuretés de la peau. Sensation de fraîcheur intense. Idéal pour tous types de peau. Format 150 ml.",
+          usage:"1. Humidifiez le visage a l'eau tiède. 2. Appliquez une petite quantité de mousse et massez avec des mouvements circulaires, en évitant le contour des yeux. 3. Rincez abondamment a l'eau tiède et séchez avec une serviette propre. A utiliser matin et soir.",
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
-        {sku:"NACAR-07", tag:"Gel antioxydant", name:"Gel Antioxydant Nacar", desc:"Protege des radicaux libres, hydratation profonde.", price:"$340 MXN", favorito:false,
-          longDesc:"Votre meilleur allie pour hydrater et conditionner la peau : aide a la proteger des radicaux libres et augmente son niveau d'hydratation. Offre une meilleure protection, un aspect sain et aide a ameliorer l'elasticite. Format 30 g.",
-          usage:"Appliquer une petite quantite sur le visage et/ou le corps propre avec un massage doux jusqu'a absorption complete. Usage quotidien.",
+        {sku:"NACAR-07", tag:"Gel antioxydant", name:"Gel Antioxydant Nacar", desc:"Protège des radicaux libres, hydratation profonde.", price:"$340 MXN", favorito:false,
+          longDesc:"Votre meilleur allié pour hydrater et conditionner la peau : aide a la protéger des radicaux libres et augmente son niveau d'hydratation. Offre une meilleure protection, un aspect sain et aide a améliorer l'élasticité. Format 30 g.",
+          usage:"Appliquer une petite quantité sur le visage et/ou le corps propre avec un massage doux jusqu'a absorption complète. Usage quotidien.",
           ingredients:["Extrait de levure","Extrait de feuille d'olivier","Extrait d'arnica","Extraits de fruits sauvages","Huile de jojoba"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Creme de jour", name:"Seytú System Time-Specialist", desc:"Renove et protege, hydratation avec FPS 30.", price:"$725 MXN", favorito:true,
-          longDesc:"Combat l'apparence des principaux signes de l'age, stimule la production de collagene et d'elastine et aide a ameliorer la texture et la fermete de la peau. Avec des proprietes antioxydantes et hydratantes, elle protege la peau contre les rayons UVA/UVB. Pour de meilleurs resultats, utilisez-la avec le reste de votre routine Nacar. Format 50 ml.",
-          usage:"Appliquer chaque matin sur une peau propre, comme derniere etape de votre routine avant le maquillage. Eviter le contact avec les yeux. Reappliquer en cas d'exposition prolongee au soleil.",
+        {sku:"NACAR-08", tag:"Crème de jour", name:"Seytú System Time-Specialist", desc:"Rénove et protège, hydratation avec FPS 30.", price:"$725 MXN", favorito:true,
+          longDesc:"Combat l'apparence des principaux signes de l'âge, stimule la production de collagène et d'elastine et aide a améliorer la texture et la fermeté de la peau. Avec des propriétés antioxydantes et hydratantes, elle protège la peau contre les rayons UVA/UVB. Pour de meilleurs résultats, utilisez-la avec le reste de votre routine Nacar. Format 50 ml.",
+          usage:"Appliquer chaque matin sur une peau propre, comme dernière étape de votre routine avant le maquillage. Eviter le contact avec les yeux. Reappliquer en cas d'exposition prolongée au soleil.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
         {sku:"NACAR-09", tag:"Protection solaire", name:"Bouclier Solaire FPS 50+ Nacar", desc:"Toucher sec, protection FPS 50+ au quotidien.", price:"$390 MXN", favorito:false,
-          longDesc:"Une protection solaire visage au toucher sec et a absorption immediate, formulee avec 89% d'ingredients d'origine naturelle. Resistante a l'eau, sans parfum, testee cliniquement et dermatologiquement, ideale pour les peaux sensibles et toute la famille. Formulee sans ingredients nocifs pour les recifs coralliens. Format 40 ml.",
-          usage:"Appliquer uniformement sur peau seche avant l'exposition au soleil. Reappliquer toutes les 3 heures et apres la baignade, la transpiration ou le sechage a la serviette.",
+          longDesc:"Une protection solaire visage au toucher sec et a absorption immédiate, formulée avec 89% d'ingrédients d'origine naturelle. Résistante a l'eau, sans parfum, testee cliniquement et dermatologiquement, idéale pour les peaux sensibles et toute la famille. Formulée sans ingrédients nocifs pour les recifs coralliens. Format 40 ml.",
+          usage:"Appliquer uniformément sur peau sèche avant l'exposition au soleil. Reappliquer toutes les 3 heures et après la baignade, la transpiration ou le séchage a la serviette.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
           related:["NACAR-07"]},
-        {sku:"NACAR-10", tag:"Serum facial", name:"Serum Facial Hydratant Profond a l'Aloe Vera", desc:"Le Serum Facial Hydratant Profond a l'Aloe Vera SEYTU hydrate en profondeur et aide a ameliorer la fermete et l'elasticite de votre peau.", price:"$430 MXN", favorito:true,
-          longDesc:"Ideal pour aider a ameliorer l'apparence des fines lignes d'expression causees par la secheresse. Texture douce et legere, absorption facile.",
-          usage:"Appliquer 2 a 3 gouttes sur peau propre, matin et soir, avec un leger massage jusqu'a absorption complete. A utiliser avant votre creme hydratante.",
-          ingredients:["Enrichi en peptides precurseurs du collagene et en acide hyaluronique."],
+        {sku:"NACAR-10", tag:"Serum facial", name:"Serum Facial Hydratant Profond a l'Aloe Vera", desc:"Le Serum Facial Hydratant Profond a l'Aloe Vera SEYTU hydrate en profondeur et aide a améliorer la fermeté et l'élasticité de votre peau.", price:"$430 MXN", favorito:true,
+          longDesc:"Idéal pour aider a améliorer l'apparence des fines lignes d'expression causées par la secheresse. Texture douce et légère, absorption facile.",
+          usage:"Appliquer 2 a 3 gouttes sur peau propre, matin et soir, avec un léger massage jusqu'a absorption complète. A utiliser avant votre crème hydratante.",
+          ingredients:["Enrichi en peptides précurseurs du collagène et en acide hyaluronique."],
           img:"media/nacar-10-suero-lifestyle-mano.webp", thumb:"media/nacar-10-suero-thumb.webp", gallery:["media/nacar-10-suero-lifestyle-aloe.webp","media/nacar-10-suero-lifestyle-splash.webp"],
           related:["NACAR-06","NACAR-08"]}
       ],
-      routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complete", desc:"routine en 5 etapes avec contour et protection."}]
+      routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complète", desc:"routine en 5 étapes avec contour et protection."}]
     }
   },
   vigor: {
@@ -1800,18 +1800,18 @@ var V = {
       ],
       routines:[{title:"Essential routine", desc:"daily protein."},{title:"Active routine", desc:"protein + pre-workout."},{title:"Performance routine", desc:"complete protocol with recovery."}]
     },
-    fr:{ full:"System Health Speciality - Nutrition et Performance", sub:"Nutrition fonctionnelle pour soutenir votre energie au quotidien.",
+    fr:{ full:"System Health Speciality - Nutrition et Performance", sub:"Nutrition fonctionnelle pour soutenir votre énergie au quotidien.",
       bannerTitle:"Le System Health Speciality de performance quotidienne",
-      bannerText:"Nutrition pensee pour avant, pendant et apres votre activite physique ou une journee de travail exigeante.",
-      tag:"Nutrition et performance", msg:"Une energie qui dure.", bmLabel:"Speciality Health",
+      bannerText:"Nutrition pensée pour avant, pendant et après votre activité physique ou une journee de travail exigeante.",
+      tag:"Nutrition et performance", msg:"Une énergie qui dure.", bmLabel:"Speciality Health",
       stats:["92%","7 jours","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Proteine", name:"Proteine Vegetale Vigor", desc:"22g de proteine pure par portion.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
-        {sku:"VIGOR-02", tag:"Pre-entrainement", name:"Energie Naturelle Pre-Entrainement", desc:"Concentration et energie sans pics ni chutes.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
-        {sku:"VIGOR-03", tag:"Recuperation", name:"Recovery Magnesium+", desc:"Soutien musculaire apres l'effort.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
-        {sku:"VIGOR-04", tag:"Hydratation", name:"Electrolytes Naturels", desc:"Hydratation fonctionnelle sans sucres ajoutes.", price:"$299 MXN", rating:{stars:4.7,count:245}, related:["VIGOR-02"]}
+        {sku:"VIGOR-02", tag:"Pre-entraînement", name:"Énergie Naturelle Pre-Entraînement", desc:"Concentration et énergie sans pics ni chutes.", price:"$459 MXN", rating:{stars:4.5,count:178}, related:["VIGOR-04"]},
+        {sku:"VIGOR-03", tag:"Récupération", name:"Recovery Magnesium+", desc:"Soutien musculaire après l'effort.", price:"$389 MXN", rating:{stars:4.6,count:134}, related:["VIGOR-01"]},
+        {sku:"VIGOR-04", tag:"Hydratation", name:"Electrolytes Naturels", desc:"Hydratation fonctionnelle sans sucres ajoutés.", price:"$299 MXN", rating:{stars:4.7,count:245}, related:["VIGOR-02"]}
       ],
-      routines:[{title:"Routine essentielle", desc:"proteine quotidienne."},{title:"Routine active", desc:"proteine + pre-entrainement."},{title:"Routine de performance", desc:"protocole complet avec recuperation."}]
+      routines:[{title:"Routine essentielle", desc:"proteine quotidienne."},{title:"Routine active", desc:"proteine + pre-entraînement."},{title:"Routine de performance", desc:"protocole complet avec récupération."}]
     }
   },
   roble: {
@@ -1824,7 +1824,7 @@ var V = {
       products:[
         {sku:"ROBLE-01", tag:"Facial", name:"Limpiador Roble Carbon", desc:"Limpieza profunda sin resecar.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
         {sku:"ROBLE-02", tag:"Barba", name:"Aceite de Barba Cedro", desc:"Suaviza y da forma sin efecto grasoso.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
-        {sku:"ROBLE-03", tag:"Corporal", name:"Desodorante Natural Roble", desc:"Proteccion 24h sin sales de aluminio.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
+        {sku:"ROBLE-03", tag:"Corporal", name:"Desodorante Natural Roble", desc:"Protección 24h sin sales de aluminio.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
         {sku:"ROBLE-04", tag:"Cabello", name:"Shampoo Anticaída Roble", desc:"Fortalece desde la raíz.", price:"$389 MXN", rating:{stars:4.4,count:176}, related:["ROBLE-03"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza facial diaria."},{title:"Rutina intermedia", desc:"suma cuidado de barba."},{title:"Rutina completa", desc:"protocolo facial + corporal + capilar."}]
@@ -1842,18 +1842,18 @@ var V = {
       ],
       routines:[{title:"Essential routine", desc:"daily facial cleansing."},{title:"Intermediate routine", desc:"adds beard care."},{title:"Complete routine", desc:"facial + body + hair protocol."}]
     },
-    fr:{ full:"System Spot Speciality - Soin pour Homme", sub:"Grooming pratique et sans detour, pense pour votre routine quotidienne.",
+    fr:{ full:"System Spot Speciality - Soin pour Homme", sub:"Grooming pratique et sans détour, pensé pour votre routine quotidienne.",
       bannerTitle:"Le System Spot Speciality de soin essentiel",
-      bannerText:"Une routine de soin simple et efficace, concue pour tenir en moins de cinq minutes par jour.",
-      tag:"Soin pour homme", msg:"Une force qui prend soin d'elle-meme.", bmLabel:"Speciality Spot",
+      bannerText:"Une routine de soin simple et efficace, conçue pour tenir en moins de cinq minutes par jour.",
+      tag:"Soin pour homme", msg:"Une force qui prend soin d'elle-même.", bmLabel:"Speciality Spot",
       stats:["95%","21 jours","100%"],
       products:[
-        {sku:"ROBLE-01", tag:"Visage", name:"Nettoyant Roble au Charbon", desc:"Nettoyage profond sans dessecher.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
-        {sku:"ROBLE-02", tag:"Barbe", name:"Huile a Barbe Cedre", desc:"Adoucit et sculpte sans effet gras.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
-        {sku:"ROBLE-03", tag:"Corps", name:"Deodorant Naturel Roble", desc:"Protection 24h sans sels d'aluminium.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
+        {sku:"ROBLE-01", tag:"Visage", name:"Nettoyant Roble au Charbon", desc:"Nettoyage profond sans dessécher.", price:"$339 MXN", rating:{stars:4.5,count:167}, related:["ROBLE-02"]},
+        {sku:"ROBLE-02", tag:"Barbe", name:"Huile a Barbe Cèdre", desc:"Adoucit et sculpte sans effet gras.", price:"$379 MXN", rating:{stars:4.6,count:142}, related:["ROBLE-01"]},
+        {sku:"ROBLE-03", tag:"Corps", name:"Déodorant Naturel Roble", desc:"Protection 24h sans sels d'aluminium.", price:"$259 MXN", rating:{stars:4.3,count:98}, related:["ROBLE-04"]},
         {sku:"ROBLE-04", tag:"Cheveux", name:"Shampoing Anti-Chute Roble", desc:"Renforce depuis la racine.", price:"$389 MXN", rating:{stars:4.4,count:176}, related:["ROBLE-03"]}
       ],
-      routines:[{title:"Routine essentielle", desc:"nettoyage facial quotidien."},{title:"Routine intermediaire", desc:"ajoute le soin de la barbe."},{title:"Routine complete", desc:"protocole visage + corps + cheveux."}]
+      routines:[{title:"Routine essentielle", desc:"nettoyage facial quotidien."},{title:"Routine intermédiaire", desc:"ajoute le soin de la barbe."},{title:"Routine complète", desc:"protocole visage + corps + cheveux."}]
     }
   }
 };
@@ -1862,7 +1862,7 @@ var V = {
 var I18N = {
   es:{
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
-    "top.shipping":"Envio calculado en checkout . Entrega en 4 días habiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
+    "top.shipping":"Envío calculado en checkout . Entrega en 4 días hábiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
     "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
@@ -1889,26 +1889,26 @@ var I18N = {
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
     "footer.brandP":"System Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
-    "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envios y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
+    "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envíos y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate",
     "about.eyebrow":"Sobre Renuévate", "about.heroTitle":"Belleza y bienestar, con criterio.",
     "footer.hLegal":"Legal", "footer.privacy":"Aviso de privacidad", "footer.terms":"Términos y condiciones", "footer.cookies":"Política de cookies",
     "footer.copyright":"&copy; 2026 Renuévate. Todos los derechos reservados.", "footer.prototypeNote":"Diseñado en México, para tu bienestar.",
     "chat.subtitle":"En linea . tu asesora de bienestar Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
-    "chat.menu.categories":"Categorias", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
+    "chat.menu.categories":"Categorías", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
     "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.",
-    "profile.phoneLabel":"Telefono (con código de pais)", "profile.phoneHint":"Si eres de Mexico, puedes escribir solo tu número a 10 digitos. Otros paises: formato internacional, ej. +1 para EE.UU.",
+    "profile.phoneLabel":"Teléfono (con código de pais)", "profile.phoneHint":"Si eres de Mexico, puedes escribir solo tu número a 10 digitos. Otros paises: formato internacional, ej. +1 para EE.UU.",
     "profile.birthLabel":"Fecha de nacimiento",
     "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)",
-    "profile.consentSmsLabel":"Tambien por SMS", "profile.consentWhatsappLabel":"Tambien por WhatsApp",
+    "profile.consentSmsLabel":"También por SMS", "profile.consentWhatsappLabel":"También por WhatsApp",
     "profile.submitLabel":"Guardar perfil", "profile.skipLabel":"Ahora no", "profile.phonePlaceholder":"+525512345678",
     "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de bienestar Renuévate. ¿En que te ayudo hoy?",
     "chat.q.identity":"Quien eres", "chat.a.identity":"Soy Julieta, tu asesora de belleza y bienestar de Renuévate. ¿En que te ayudo?",
     "chat.a.greeting":"Hola! ¿En que te ayudo?",
     "chat.a.capability":"Te ayudo con envíos, pagos, devoluciones, elegir tu sistema o hablar con un asesor.",
     "chat.a.purpose":"Te ayudo a encontrar tu sistema ideal, rápido y sin vueltas.",
-    "chat.q.shipping":"Envios", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
-    "chat.a.shipping":"Hacemos envíos a todo Mexico, entrega en 4 días habiles.",
+    "chat.q.shipping":"Envíos", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
+    "chat.a.shipping":"Hacemos envíos a todo Mexico, entrega en 4 días hábiles.",
     "chat.a.verticals":"3 sistemas: System Luminous, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
     "chat.a.diagnostic":"Cuentame tu prioridad (energía, piel o rendimiento) y te recomiendo tu sistema.",
     "chat.a.prices":"Precios desde $259 hasta $699 MXN, segun producto.",
@@ -1926,7 +1926,7 @@ var I18N = {
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
     "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System Luminous, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la página.",
     "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System Luminous, System Health y System Spot Speciality.",
-    "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario habil.",
+    "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario hábil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
     "chat.a.account":"No necesitas cuenta para comprar. Si inicias sesión con Google o Facebook guardamos tu perfil y tus promociones.",
     "chat.a.cancelorder":"Escribenos por WhatsApp con tu número de pedido antes de que se despache y lo cancelamos.",
@@ -1942,13 +1942,13 @@ var I18N = {
     "cart.shipToLabel":"Enviar a", "cart.shipToChange":"Cambiar / agregar dirección",
     "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesión para administrar tus direcciones de envío y tus metodos de pago guardados.",
     "account.paymentTitle":"Métodos de pago", "account.paymentSubtitle":"Guarda tu forma de pago preferida para agilizar tu compra.",
-    "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Ultimos 4 digitos",
+    "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Últimos 4 digitos",
     "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Año exp.", "account.paypalEmailLabel":"Correo de PayPal",
     "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los últimos 4 digitos para identificar tu metodo de pago.",
     "account.saveLabel":"Guardar metodo de pago", "account.closeLabel":"Cerrar",
     "account.addressesTitle":"Direcciones de envío", "account.addressesSubtitle":"Guarda una o varias direcciones para tus pedidos.",
     "account.addrLabelLabel":"Etiqueta", "account.addrLabelHome":"Casa", "account.addrLabelOffice":"Oficina", "account.addrLabelOther":"Otro",
-    "account.addrRecipientLabel":"Nombre de quien recibe", "account.addrPhoneLabel":"Telefono de contacto",
+    "account.addrRecipientLabel":"Nombre de quien recibe", "account.addrPhoneLabel":"Teléfono de contacto",
     "account.addrStreetLabel":"Calle", "account.addrExtLabel":"No. exterior", "account.addrIntLabel":"No. interior (opcional)",
     "account.addrNeighborhoodLabel":"Colonia", "account.addrCityLabel":"Ciudad", "account.addrStateLabel":"Estado", "account.addrZipLabel":"C.P.",
     "account.addrReferencesLabel":"Referencias (opcional)", "account.addrDefaultLabel":"Usar como dirección predeterminada",
@@ -2100,39 +2100,39 @@ var I18N = {
   },
   fr:{
     "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
-    "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre reel, a chaque etape de votre vie",
-    "nav.nacar":"Beaute", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Creme de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
+    "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre réel, a chaque étape de votre vie",
+    "nav.nacar":"Beauté", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
+    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
     "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
-    "hero.visualCaption":"Quatre systemes de bien-etre, un seul standard d'origine et de qualite.",
-    "search.placeholder":"Recherchez un produit ou un systeme...", "search.btn":"Rechercher", "search.notfound":"Aucun resultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture de sa fiche...", "search.foundCategory":"Affichage des produits de {name}...", "category.empty":"Nouveaux produits bientot disponibles dans cette categorie.",
+    "hero.visualCaption":"Quatre systèmes de bien-etre, un seul standard d'origine et de qualite.",
+    "search.placeholder":"Recherchez un produit ou un système...", "search.btn":"Rechercher", "search.notfound":"Aucun résultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture de sa fiche...", "search.foundCategory":"Affichage des produits de {name}...", "category.empty":"Nouveaux produits bientot disponibles dans cette categorie.",
     "account.title":"Votre compte Renuévate", "account.p":"Connectez-vous pour enregistrer vos produits favoris et votre historique de commandes.",
     "cart.title":"Votre panier", "cart.empty":"Votre panier est vide pour le moment.", "cart.cta":"Explorer le catalogue",
     "vert.h2":"Le meilleur pour vous",
-    "vert.p":"Chaque ingredient repond a un besoin precis, partageant la meme essence et la meme conviction : prendre soin de soi, c'est investir en soi.",
+    "vert.p":"Chaque ingredient repond a un besoin précis, partageant la même essence et la même conviction : prendre soin de soi, c'est investir en soi.",
     "vert.cta":"Decouvrir &#8594;",
     "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous pensons a votre bien-etre. Nous soutenons des <span class="accent">habitudes</span>.',
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le <span class=\"accent\">bien-etre</span> d'abord.&rdquo;",
-    "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Systeme phare", "zoom.knowRitual":"Decouvrir le systeme",
+    "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Système phare", "zoom.knowRitual":"Decouvrir le système",
     "catalog.eyebrow":"", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"",
     "catalog.categorySubtitle":"Le produit System Luminous conçu pour ce besoin.", "catalog.viewAll":"Voir le catalogue complet &#8594;",
     "zoom.backHome":"&#8592; Retour à l'accueil",
-    "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce systeme pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
-    "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RESULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
-    "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo ideal", "zoom.routineP":"Selectionnez votre niveau d'experience et nous vous suggerons la routine adaptee.",
-    "nl.eyebrow":"Rejoindre Renuévate", "nl.h2":'Recevez des <span class="accent">nouveautes</span> et un acces anticipe a vos systemes favoris',
+    "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce système pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
+    "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RÉSULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
+    "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo idéal", "zoom.routineP":"Sélectionnez votre niveau d'experience et nous vous suggérons la routine adaptée.",
+    "nl.eyebrow":"Rejoindre Renuévate", "nl.h2":'Recevez des <span class="accent">nouveautes</span> et un accès anticipé a vos systèmes favoris',
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
-    "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un acces anticipe a nos systemes.", "subscribeThanks.cta":"Compris",
-    "footer.brandP":"System Luminous, Health et Spot : des habitudes de bien-etre pour chaque etape de votre vie.",
+    "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un accès anticipé a nos systèmes.", "subscribeThanks.cta":"Compris",
+    "footer.brandP":"System Luminous, Health et Spot : des habitudes de bien-etre pour chaque étape de votre vie.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
-    "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre systeme", "footer.shipping":"Livraison et retours", "footer.faq":"Questions frequentes", "footer.chat":"Discuter avec l'assistant",
+    "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre système", "footer.shipping":"Livraison et retours", "footer.faq":"Questions fréquentes", "footer.chat":"Discuter avec l'assistant",
     "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate",
-    "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beaute et bien-etre, avec discernement.",
-    "footer.hLegal":"Mentions legales", "footer.privacy":"Politique de confidentialite", "footer.terms":"Conditions generales", "footer.cookies":"Politique de cookies",
-    "footer.copyright":"&copy; 2026 Renuévate. Tous droits reserves.", "footer.prototypeNote":"Concu au Mexique, pour votre bien-etre.",
-    "chat.subtitle":"En ligne . votre conseillere bien-etre Renuévate", "chat.placeholder":"Ecrivez votre question...", "chat.send":"Envoyer",
+    "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beauté et bien-etre, avec discernement.",
+    "footer.hLegal":"Mentions legales", "footer.privacy":"Politique de confidentialité", "footer.terms":"Conditions générales", "footer.cookies":"Politique de cookies",
+    "footer.copyright":"&copy; 2026 Renuévate. Tous droits reserves.", "footer.prototypeNote":"Conçu au Mexique, pour votre bien-etre.",
+    "chat.subtitle":"En ligne . votre conseillère bien-etre Renuévate", "chat.placeholder":"Ecrivez votre question...", "chat.send":"Envoyer",
     "chat.menu.categories":"Categories", "chat.menu.offers":"Offres", "chat.menu.cart":"Mon panier", "chat.menu.advisor":"Conseiller",
     "profile.title":"Completez votre profil", "profile.subtitle":"Cela active vos promotions d'anniversaire et votre programme de fidelite.",
     "profile.phoneLabel":"Telephone (avec indicatif pays)", "profile.phoneHint":"Format international E.164, ex. +33 pour la France.",
@@ -2140,78 +2140,78 @@ var I18N = {
     "profile.consentEmailLabel":"J'accepte de recevoir des promotions par courriel (requis pour anniversaire et fidelite)",
     "profile.consentSmsLabel":"Aussi par SMS", "profile.consentWhatsappLabel":"Aussi par WhatsApp",
     "profile.submitLabel":"Enregistrer le profil", "profile.skipLabel":"Pas maintenant", "profile.phonePlaceholder":"+33612345678",
-    "chat.greeting":"Bonjour ! Je suis Julieta 🌿, votre conseillere bien-etre Renuévate. Comment puis-je vous aider ?",
-    "chat.q.identity":"Qui es-tu", "chat.a.identity":"Je suis Julieta, votre conseillere beaute et bien-etre de Renuévate. Comment puis-je vous aider ?",
+    "chat.greeting":"Bonjour ! Je suis Julieta 🌿, votre conseillère bien-etre Renuévate. Comment puis-je vous aider ?",
+    "chat.q.identity":"Qui es-tu", "chat.a.identity":"Je suis Julieta, votre conseillère beauté et bien-etre de Renuévate. Comment puis-je vous aider ?",
     "chat.a.greeting":"Bonjour ! Comment puis-je vous aider ?",
-    "chat.a.capability":"Je peux vous aider avec la livraison, le paiement, les retours, choisir votre systeme, ou un conseiller humain.",
-    "chat.a.purpose":"Je vous aide a trouver votre systeme ideal, vite et simplement.",
-    "chat.q.shipping":"Livraison", "chat.q.verticals":"Marques", "chat.q.diagnostic":"Comment choisir mon systeme", "chat.q.human":"Parler a un humain",
+    "chat.a.capability":"Je peux vous aider avec la livraison, le paiement, les retours, choisir votre système, ou un conseiller humain.",
+    "chat.a.purpose":"Je vous aide a trouver votre système idéal, vite et simplement.",
+    "chat.q.shipping":"Livraison", "chat.q.verticals":"Marques", "chat.q.diagnostic":"Comment choisir mon système", "chat.q.human":"Parler a un humain",
     "chat.a.shipping":"Nous livrons partout au Mexique, en 4 jours ouvres.",
-    "chat.a.verticals":"3 systemes : System Luminous, System Health et System Spot Speciality. Explorez-les dans le menu System Speciality.",
-    "chat.a.diagnostic":"Dites-moi votre priorite (energie, peau, performance) et je recommande votre systeme.",
+    "chat.a.verticals":"3 systèmes : System Luminous, System Health et System Spot Speciality. Explorez-les dans le menu System Speciality.",
+    "chat.a.diagnostic":"Dites-moi votre priorite (énergie, peau, performance) et je recommande votre système.",
     "chat.a.prices":"Prix de $259 a $699 MXN, selon le produit.",
-    "chat.a.ingredients":"Chaque fiche produit affiche ses ingredients et son origine.",
+    "chat.a.ingrédients":"Chaque fiche produit affiche ses ingrédients et son origine.",
     "chat.a.human":"Bien sur, je vous mets en relation via WhatsApp.",
-    "chat.a.payment":"Carte, debit et PayPal acceptes. Paiement securise au checkout.",
-    "chat.a.tracking":"Numero de suivi envoye par e-mail et WhatsApp des l'expedition.",
+    "chat.a.payment":"Carte, debit et PayPal acceptes. Paiement sécurisé au checkout.",
+    "chat.a.tracking":"Número de suivi envoye par e-mail et WhatsApp des l'expedition.",
     "chat.a.returns":"Nous finalisons notre politique de retours. Ecrivez-nous sur WhatsApp avec votre commande et nous le resolvons au cas par cas.",
     "chat.a.store":"Renuévate est 100% en ligne, nous n'avons pas de boutique physique pour le moment.",
-    "chat.a.beautyritual":"Une habitude Renuévate est une routine courte et constante (2 a 3 etapes) pensee pour un objectif precis : energie, peau, cheveux ou bien-etre. Chaque systeme (Time, Luminous, Health, Spot) a le sien. Dites-moi votre priorite et je construis le votre.",
+    "chat.a.beautyritual":"Une habitude Renuévate est une routine courte et constante (2 a 3 étapes) pensée pour un objectif précis : énergie, peau, cheveux ou bien-etre. Chaque système (Time, Luminous, Health, Spot) a le sien. Dites-moi votre priorite et je construis le votre.",
     "chat.a.nutritionadvice":"Je peux vous donner des conseils generaux de bien-etre (hydratation, constance dans votre routine, repos), mais je ne remplace pas un nutritionniste et je ne donne pas de plan personnalise. Pour cela, consultez un professionnel de sante. Si vous voulez, dites-moi votre priorite et je vous suggere des produits de nos lignes.",
-    "chat.a.productadvisor":"Bien sur, je suis votre conseillere produits. Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, ou dites-moi votre priorite (peau, cheveux, bien-etre) et je vous donne une recommandation precise.",
+    "chat.a.productadvisor":"Bien sur, je suis votre conseillère produits. Dites-moi votre âge et si vous cherchez quelque chose pour une femme ou un homme, ou dites-moi votre priorite (peau, cheveux, bien-etre) et je vous donne une recommandation précise.",
     "chat.a.loyalty":"Chaque achat cumule des points Renuévate, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.",
-    "chat.a.sustainability":"Emballages recyclables et ingredients d'origine certifiee.",
-    "chat.a.about":"Renuévate est la boutique en ligne beaute et bien-etre : nous reunissons des produits selectionnes en 3 systemes (System Luminous, System Health et System Spot Speciality) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
-    "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systemes : System Luminous, System Health et System Spot Speciality.",
+    "chat.a.sustainability":"Emballages recyclables et ingrédients d'origine certifiee.",
+    "chat.a.about":"Renuévate est la boutique en ligne beauté et bien-etre : nous reunissons des produits sélectionnés en 3 systèmes (System Luminous, System Health et System Spot Speciality) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
+    "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systèmes : System Luminous, System Health et System Spot Speciality.",
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
-    "chat.a.security":"Paiement securise et chiffre. Nous ne stockons jamais les donnees de votre carte.",
+    "chat.a.security":"Paiement sécurisé et chiffre. Nous ne stockons jamais les données de votre carte.",
     "chat.a.account":"Pas besoin de compte pour acheter. En vous connectant avec Google ou Facebook, nous gardons votre profil et vos promotions.",
     "chat.a.cancelorder":"Ecrivez-nous sur WhatsApp avec votre número de commande avant l'expedition et nous l'annulons.",
     "chat.a.discount":"Les codes de reduction s'appliquent dans le champ coupon au checkout.",
     "chat.a.warranty":"Si votre produit arrive defectueux, nous le remplacons gratuitement. Ecrivez-nous sur WhatsApp avec des photos.",
     "chat.q.payment":"Paiement", "chat.q.returns":"Retours",
-    "chat.a.recommend.needAge":"Pour affiner ma recommandation, dites-moi votre age. Par exemple : j'ai 40 ans.",
+    "chat.a.recommend.needAge":"Pour affiner ma recommandation, dites-moi votre âge. Par exemple : j'ai 40 ans.",
     "chat.a.recommend.needGender":"Pour affiner ma recommandation, dites-moi si vous cherchez quelque chose pour une femme ou un homme.",
-    "chat.a.recommend.needBoth":"Dites-moi votre age et si vous cherchez quelque chose pour une femme ou un homme, et je vous donne une recommandation precise. Par exemple : j'ai 40 ans, femme.",
-    "chat.a.fallback":"Je n'ai pas cette reponse. Essayez livraison, paiement, retours, ou un conseiller.",
+    "chat.a.recommend.needBoth":"Dites-moi votre âge et si vous cherchez quelque chose pour une femme ou un homme, et je vous donne une recommandation précise. Par exemple : j'ai 40 ans, femme.",
+    "chat.a.fallback":"Je n'ai pas cette réponse. Essayez livraison, paiement, retours, ou un conseiller.",
     "cart.title":"Votre panier", "cart.subtotal":"Sous-total", "cart.checkout":"Passer au paiement",
-    "cart.checkoutNote":"Paiement securise avec Mercado Pago. Nous ne stockons jamais le número de votre carte.",
+    "cart.checkoutNote":"Paiement sécurisé avec Mercado Pago. Nous ne stockons jamais le número de votre carte.",
     "cart.shipToLabel":"Expedier a", "cart.shipToChange":"Changer / ajouter une adresse",
     "account.title":"Mon compte et moyens de paiement", "account.subtitle":"Connectez-vous pour gerer vos adresses de livraison et vos moyens de paiement enregistres.",
     "account.paymentTitle":"Moyens de paiement", "account.paymentSubtitle":"Enregistrez votre moyen de paiement prefere pour accelerer votre achat.",
     "account.card":"Carte", "account.paypal":"PayPal", "account.brandLabel":"Marque", "account.last4Label":"4 derniers chiffres",
-    "account.expMonthLabel":"Mois exp.", "account.expYearLabel":"Annee exp.", "account.paypalEmailLabel":"Email PayPal",
-    "account.pciNote":"Par securite (PCI-DSS/ISO 27001), ce site ne capture ni ne stocke jamais le número de carte complet ni le CVV. Seuls les 4 derniers chiffres sont conserves pour identifier votre moyen de paiement.",
+    "account.expMonthLabel":"Mois exp.", "account.expYearLabel":"Année exp.", "account.paypalEmailLabel":"Email PayPal",
+    "account.pciNote":"Par sécurité (PCI-DSS/ISO 27001), ce site ne capture ni ne stocke jamais le número de carte complet ni le CVV. Seuls les 4 derniers chiffres sont conserves pour identifier votre moyen de paiement.",
     "account.saveLabel":"Enregistrer le moyen de paiement", "account.closeLabel":"Fermer",
     "account.addressesTitle":"Adresses de livraison", "account.addressesSubtitle":"Enregistrez une ou plusieurs adresses pour vos commandes.",
     "account.addrLabelLabel":"Etiquette", "account.addrLabelHome":"Domicile", "account.addrLabelOffice":"Bureau", "account.addrLabelOther":"Autre",
     "account.addrRecipientLabel":"Nom du destinataire", "account.addrPhoneLabel":"Telephone de contact",
-    "account.addrStreetLabel":"Rue", "account.addrExtLabel":"No. exterieur", "account.addrIntLabel":"No. interieur (optionnel)",
-    "account.addrNeighborhoodLabel":"Quartier", "account.addrCityLabel":"Ville", "account.addrStateLabel":"Etat", "account.addrZipLabel":"Code postal",
+    "account.addrStreetLabel":"Rue", "account.addrExtLabel":"No. extérieur", "account.addrIntLabel":"No. intérieur (optionnel)",
+    "account.addrNeighborhoodLabel":"Quartier", "account.addrCityLabel":"Ville", "account.addrStateLabel":"État", "account.addrZipLabel":"Code postal",
     "account.addrReferencesLabel":"References (optionnel)", "account.addrDefaultLabel":"Utiliser comme adresse par defaut",
     "account.addrSaveLabel":"Enregistrer l'adresse", "account.logoutLabel":"Se deconnecter",
     "auth.tabSignin":"Connexion", "auth.tabSignup":"Creer un compte",
-    "auth.privacyNote":"Nous utilisons votre email ou vos donnees Google/Facebook uniquement pour vous identifier et enregistrer vos promotions. <b>Nous ne voyons ni ne stockons jamais votre mot de passe</b> — conforme ISO 27001, minimisation des donnees personnelles. <a onclick=\"openPrivacyModal()\">Voir l'avis de confidentialite complet</a>.",
-    "nl.accountHint":"Vous avez deja un compte ou voulez en creer un ? Utilisez l'icone de profil en haut a droite.",
-    "auth.privacyLink":"Voir l'avis de confidentialite complet.",
-    "privacy.title":"Avis de confidentialite", "privacy.updated":"Derniere mise a jour : juillet 2026.",
-    "terms.title":"Conditions Generales", "terms.updated":"Derniere mise a jour : juillet 2026.",
-    "cookie.bannerText":"Nous utilisons des cookies necessaires au fonctionnement du site, ainsi que des cookies optionnels d'analyse et de marketing si vous les autorisez.",
-    "cookie.acceptAll":"Tout accepter", "cookie.necessaryOnly":"Necessaires uniquement", "cookie.customize":"Personnaliser",
+    "auth.privacyNote":"Nous utilisons votre email ou vos données Google/Facebook uniquement pour vous identifier et enregistrer vos promotions. <b>Nous ne voyons ni ne stockons jamais votre mot de passe</b> — conforme ISO 27001, minimisation des données personnelles. <a onclick=\"openPrivacyModal()\">Voir l'avis de confidentialité complet</a>.",
+    "nl.accountHint":"Vous avez déjà un compte ou voulez en creer un ? Utilisez l'icone de profil en haut a droite.",
+    "auth.privacyLink":"Voir l'avis de confidentialité complet.",
+    "privacy.title":"Avis de confidentialité", "privacy.updated":"Dernière mise a jour : juillet 2026.",
+    "terms.title":"Conditions Générales", "terms.updated":"Dernière mise a jour : juillet 2026.",
+    "cookie.bannerText":"Nous utilisons des cookies nécessaires au fonctionnement du site, ainsi que des cookies optionnels d'analyse et de marketing si vous les autorisez.",
+    "cookie.acceptAll":"Tout accepter", "cookie.necessaryOnly":"Nécessaires uniquement", "cookie.customize":"Personnaliser",
     "cookie.modalTitle":"Politique de Cookies", "cookie.modalSubtitle":"Choisissez les categories de cookies a autoriser.",
-    "cookie.necessaryLabel":"Necessaires", "cookie.necessaryDesc":"Indispensables au fonctionnement du site (panier, session, securite). Toujours actifs.", "cookie.alwaysOn":"Toujours actifs",
-    "cookie.analyticsLabel":"Analyse", "cookie.analyticsDesc":"Nous aident a comprendre l'utilisation du site pour l'ameliorer (GA4).",
+    "cookie.necessaryLabel":"Nécessaires", "cookie.necessaryDesc":"Indispensables au fonctionnement du site (panier, session, sécurité). Toujours actifs.", "cookie.alwaysOn":"Toujours actifs",
+    "cookie.analyticsLabel":"Analyse", "cookie.analyticsDesc":"Nous aident a comprendre l'utilisation du site pour l'améliorer (GA4).",
     "cookie.marketingLabel":"Marketing", "cookie.marketingDesc":"Personnalisation des promotions et remarketing.",
     "cookie.save":"Enregistrer les preferences",
-    "faq.title":"Questions Frequentes", "faq.subtitle":"Tout ce que Julieta repond aujourd'hui, au meme endroit.",
+    "faq.title":"Questions Fréquentes", "faq.subtitle":"Tout ce que Julieta repond aujourd'hui, au même endroit.",
     "faq.q.about":"Qu'est-ce que Renuévate ?", "faq.q.products":"Quels produits vendez-vous ?",
     "faq.q.beautyritual":"Qu'est-ce qu'une habitude Renuévate ?", "faq.q.nutritionadvice":"Offrez-vous des conseils en nutrition ?",
-    "faq.q.productadvisor":"Pouvez-vous m'aider a choisir un produit ?", "faq.q.diagnostic":"Comment choisir mon systeme ideal ?",
-    "faq.q.prices":"Quels sont vos prix ?", "faq.q.ingredients":"Puis-je voir les ingredients de chaque produit ?",
+    "faq.q.productadvisor":"Pouvez-vous m'aider a choisir un produit ?", "faq.q.diagnostic":"Comment choisir mon système idéal ?",
+    "faq.q.prices":"Quels sont vos prix ?", "faq.q.ingrédients":"Puis-je voir les ingrédients de chaque produit ?",
     "faq.q.shipping":"Livrez-vous ? Combien de temps cela prend-il ?", "faq.q.tracking":"Comment suivre ma commande ?",
     "faq.q.returns":"Quelle est votre politique de retours ?", "faq.q.cancelorder":"Puis-je annuler ma commande ?",
-    "faq.q.payment":"Quels moyens de paiement acceptez-vous ?", "faq.q.security":"Est-il securise d'acheter sur ce site ?",
+    "faq.q.payment":"Quels moyens de paiement acceptez-vous ?", "faq.q.security":"Est-il sécurisé d'acheter sur ce site ?",
     "faq.q.account":"Ai-je besoin d'un compte pour acheter ?", "faq.q.store":"Avez-vous une boutique physique ?",
     "faq.q.hours":"Quels sont vos horaires ?", "faq.q.loyalty":"Avez-vous un programme de fidelite ?",
     "faq.q.sustainability":"Vos emballages sont-ils durables ?", "faq.q.discount":"Comment appliquer un code de reduction ?",
@@ -2279,13 +2279,13 @@ var DYN = {
        profile:{
          title:'Completa tu perfil',
          subtitle:'Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.',
-         phoneLabel:'Telefono (con código de pais)',
+         phoneLabel:'Teléfono (con código de pais)',
          phonePlaceholder:'+525512345678',
          phoneHint:'Formato internacional E.164, ej. +52 para Mexico.',
          birthLabel:'Fecha de nacimiento',
          consentEmailLabel:'Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)',
-         consentSmsLabel:'Tambien por SMS',
-         consentWhatsappLabel:'Tambien por WhatsApp',
+         consentSmsLabel:'También por SMS',
+         consentWhatsappLabel:'También por WhatsApp',
          submitLabel:'Guardar perfil',
          skipLabel:'Ahora no',
          successMsg:'Perfil completo. Ya calificas a promociones de cumpleaños y lealtad.',
@@ -2351,7 +2351,7 @@ var DYN = {
                {value:'cleanse', label:'Piel limpia y libre de impurezas'},
                {value:'antioxidant', label:'Hidratacion y protección contra el dano diario'},
                {value:'firmness', label:'Firmeza y luminosidad con cuidado anti-edad'},
-               {value:'sun', label:'Proteccion solar dedicada'},
+               {value:'sun', label:'Protección solar dedicada'},
                {value:'complete', label:'Quiero una rutina completa'}
            ]},
            { question:'¿Como describirias tu piel hoy?', type:'single', key:'skin', options:[
@@ -2553,28 +2553,28 @@ var DYN = {
        routineResult:function(name,title){ return 'Recommandation enregistree pour <b>' + name + '</b> : <em>' + title + '</em>. En production, cela declenche un evenement select_routine dans GA4 et une proposition automatique via WhatsApp.'; },
        subscribeOk:'Merci de votre inscription. En production, cela se connecte a Klaviyo/CRM avec un evenement GA4 newsletter_signup.',
        configMissing:function(field){ return field + ' manquant dans AZURA_CONFIG (voir le README de azura-site) avant que ce bouton fonctionne.'; },
-       registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de donnees Renuévate.'; },
+       registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de données Renuévate.'; },
        registerFail:function(){ return 'Nous n\'avons pas pu terminer votre connexion pour le moment. Veuillez reessayer dans quelques minutes.'; },
-       boughtTogether:function(){ return 'Les clients ayant achete cet article ont egalement achete:'; },
+       boughtTogether:function(){ return 'Les clients ayant achete cet article ont également achete:'; },
        viewComments:function(){ return 'Voir les commentaires'; },
        hideComments:function(){ return 'Masquer les commentaires'; },
        commentsDisclaimer:function(){ return 'Commentaires d\'exemple a des fins de demonstration du prototype.'; },
        demoComments:function(){ return [
-         {name:'Renata M.', stars:5, text:"Arrivee rapidement et bien emballee. La mousse n'assèche pas la peau, je l'utilise tous les jours.", more:'Deja mon deuxieme flacon, ma peau est beaucoup plus calme depuis.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
-         {name:'Diego H.', stars:4, text:'Bon produit, meme si la livraison a pris un peu plus de temps que prevu.', more:'Le resultat se voit, j\'aurais juste aime qu\'il arrive dans les 4 jours annonces.'},
+         {name:'Renata M.', stars:5, text:"Arrivee rapidement et bien emballee. La mousse n'assèche pas la peau, je l'utilise tous les jours.", more:'Déjà mon deuxieme flacon, ma peau est beaucoup plus calme depuis.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
+         {name:'Diego H.', stars:4, text:'Bon produit, même si la livraison a pris un peu plus de temps que prevu.', more:'Le résultat se voit, j\'aurais juste aime qu\'il arrive dans les 4 jours annonces.'},
          {name:'Paola S.', stars:5, text:'J\'ai adore la texture, elle ne laisse pas la peau grasse.', more:'Achete sur recommandation d\'une amie, et maintenant je le recommande aussi.'},
-         {name:'Fernanda L.', stars:5, text:'La protection solaire ne laisse pas de trace blanche, c\'est deja un plus.', more:'Je l\'utilise tous les jours avant de sortir, elle sent bon et ne pique pas les yeux.', photo:'media/nacar-09-spf50-abierto.webp'},
-         {name:'Andrea Q.', stars:4, text:'Fait le travail, meme si le prix est un peu eleve pour la quantite.', more:'Je continue quand meme a en racheter, aucune reaction sur ma peau.'},
-         {name:'Miguel T.', stars:5, text:'Je l\'ai offert a ma femme, elle a adore et en a deja recommande.', more:'Bon emballage, livraison a temps et le produit semble de bonne qualite.'}
+         {name:'Fernanda L.', stars:5, text:'La protection solaire ne laisse pas de trace blanche, c\'est déjà un plus.', more:'Je l\'utilise tous les jours avant de sortir, elle sent bon et ne pique pas les yeux.', photo:'media/nacar-09-spf50-abierto.webp'},
+         {name:'Andrea Q.', stars:4, text:'Fait le travail, même si le prix est un peu eleve pour la quantité.', more:'Je continue quand même a en racheter, aucune reaction sur ma peau.'},
+         {name:'Miguel T.', stars:5, text:'Je l\'ai offert a ma femme, elle a adore et en a déjà recommande.', more:'Bon emballage, livraison a temps et le produit semble de bonne qualite.'}
        ]; },
        reviewReadMore:function(){ return 'Voir plus'; },
        reviewReadLess:function(){ return 'Voir moins'; },
        addToCart:function(){ return 'Ajouter au panier'; },
        viewDetail:function(){ return 'Voir le detail'; },
        comingSoonBadge:function(){ return 'Bientot disponible'; },
-       ingredientsLabel:function(){ return 'Ingredients'; },
+       ingredientsLabel:function(){ return 'Ingrédients'; },
        usageLabel:function(){ return 'Mode d\'emploi'; },
-       ingredientsShowAll:function(n){ return 'Voir les ' + n + ' ingredients'; },
+       ingredientsShowAll:function(n){ return 'Voir les ' + n + ' ingrédients'; },
        ingredientsShowLess:function(){ return 'Voir moins'; },
        addrDefaultBadge:function(){ return 'Par defaut'; },
        addrSetDefault:function(){ return 'Utiliser par defaut'; },
@@ -2586,7 +2586,7 @@ var DYN = {
        cartEmpty:function(){ return 'Votre panier est vide pour le moment.'; },
        productUnavailable:function(){ return 'Ce produit n\'est plus disponible.'; },
        removeItem:function(){ return 'Retirer'; },
-       checkoutRedirecting:function(){ return 'Redirection vers le paiement securise...'; },
+       checkoutRedirecting:function(){ return 'Redirection vers le paiement sécurisé...'; },
        checkoutError:function(){ return "Nous n'avons pas pu demarrer le paiement. Reessayez."; },
        bagUpsellTitle:function(){ return 'Rangez vos produits dans un sac Renuévate'; },
        bagAddLabel:function(){ return '+ Ajouter'; },
@@ -2594,15 +2594,15 @@ var DYN = {
        paymentSaved:function(){ return 'Moyen de paiement enregistre.'; },
        loadingReviews:function(){ return 'Chargement des avis...'; },
        shareExperience:function(){ return 'Partagez votre experience'; },
-       reviewPlaceholder:function(){ return 'Dites-nous ce que vous en avez pense (facultatif)'; },
+       reviewPlaceholder:function(){ return 'Dites-nous ce que vous en avez pensé (facultatif)'; },
        submitReview:function(){ return 'Publier l\'avis'; },
        loginToReview:function(){ return 'Connectez-vous pour laisser votre avis et partager des photos de votre experience.'; },
-       mustPurchaseToReview:function(){ return 'Seuls les clients ayant achete ce produit peuvent laisser un avis. Vous l\'avez deja achete ? Ecrivez-le depuis votre compte apres reception de votre commande.'; },
+       mustPurchaseToReview:function(){ return 'Seuls les clients ayant achete ce produit peuvent laisser un avis. Vous l\'avez déjà achete ? Ecrivez-le depuis votre compte après reception de votre commande.'; },
        authSigninHeadline:function(){ return 'Connectez-vous pour voir votre panier, vos commandes et vos promotions.'; },
        authSignupHeadline:function(){ return 'Creez votre compte en quelques secondes et debloquez vos promotions de bienvenue.'; },
        authNewHereText:function(){ return 'Nouveau chez Renuévate ?'; },
        authNewHereLink:function(){ return 'Creez votre compte'; },
-       authAlreadyHaveText:function(){ return 'Vous avez deja un compte ?'; },
+       authAlreadyHaveText:function(){ return 'Vous avez déjà un compte ?'; },
        authAlreadyHaveLink:function(){ return 'Connectez-vous'; },
        profile:{
          title:'Completez votre profil',
@@ -2620,19 +2620,19 @@ var DYN = {
          successPartial:'Enregistre. Sans le consentement courriel vous n\'etes pas encore eligible aux promotions d\'anniversaire ni de fidelite.',
          errorPrefix:function(msg){ return 'Nous n\'avons pas pu enregistrer votre profil (' + msg + ').'; },
        },
-       recommend:function(age,gender,v1,v2){ return 'A ' + age + ' ans, je vous recommande de commencer par <b>' + v1 + '</b> et de le completer avec <b>' + v2 + '</b> pour votre bien-etre quotidien. Je vous emmene decouvrir ' + v1 + '...'; },
+       recommend:function(âge,gender,v1,v2){ return 'A ' + âge + ' ans, je vous recommande de commencer par <b>' + v1 + '</b> et de le completer avec <b>' + v2 + '</b> pour votre bien-etre quotidien. Je vous emmene decouvrir ' + v1 + '...'; },
        julieta:{
          goalQuestion:function(){ return 'Quelle est votre priorite aujourd\'hui ? 🌿'; },
          goalOptions:function(){ return [
            { label:'Soin de la peau', action:function(){ chooseGoal('skin'); } },
            { label:'Soin des cheveux', action:function(){ chooseGoal('hair'); } },
-           { label:'Maquíllage', action:function(){ chooseGoal('makeup'); } },
+           { label:'Maquillage', action:function(){ chooseGoal('makeup'); } },
            { label:'Bien-etre global', action:function(){ chooseGoal('wellness'); } }
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'Pour votre peau, quelle est votre priorite ?' : 'Pour affiner, que recherchez-vous ?'; },
          refineOptions:function(goal){
            if (goal === 'skin'){ return [
-             { label:'Eclat', action:function(){ showRecommendation('skin','glow'); } },
+             { label:'Éclat', action:function(){ showRecommendation('skin','glow'); } },
              { label:'Hydratation profonde', action:function(){ showRecommendation('skin','hydration'); } },
              { label:'Contour des yeux', action:function(){ showRecommendation('skin','eyearea'); } }
            ]; }
@@ -2652,13 +2652,13 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Votre panier existe en demonstration fonctionnelle, mais vous devez vous connecter pour le voir et le conserver.'; },
          talkHumanLabel:function(){ return 'Parler a un conseiller'; },
          restartLabel:function(){ return 'Choisir une autre priorite'; },
-         makeupUnavailable:function(){ return "Notre specialite est le soin de la peau et le bien-etre avec System Luminous, Health et Spot. Je peux vous montrer ce qui est disponible dans notre catalogue, ou vous mettre en relation avec un conseiller humain si vous cherchez autre chose."; },
+         makeupUnavailable:function(){ return "Notre spécialité est le soin de la peau et le bien-etre avec System Luminous, Health et Spot. Je peux vous montrer ce qui est disponible dans notre catalogue, ou vous mettre en relation avec un conseiller humain si vous cherchez autre chose."; },
          makeupFallbackOptions:function(){ return [
            { label:'Voir le soin de la peau NACAR', action:function(){ chooseGoal('skin'); } },
            { label:'Voir le catalogue complet', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
            { label:'Parler a un conseiller', action:function(){ answerTopic('human'); renderChatQuickButtons(); } }
          ]; },
-         medicalGuard:function(){ return "Merci de me le dire. Pour votre securite, je ne fais pas de recommandation en cas de grossesse, allaitement, allergies ou medicaments — je vous mets en relation avec un conseiller humain ; pensez aussi a consulter votre professionnel de sante."; },
+         medicalGuard:function(){ return "Merci de me le dire. Pour votre sécurité, je ne fais pas de recommandation en cas de grossesse, allaitement, allergies ou medicaments — je vous mets en relation avec un conseiller humain ; pensez aussi a consulter votre professionnel de sante."; },
          complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre número de commande sur WhatsApp."; },
          certUnknown:function(){ return "Pour vous donner une information totalement exacte sur cette certification, je vous mets en relation avec un conseiller humain qui la verifiera directement."; },
          frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; }
@@ -2666,44 +2666,44 @@ var DYN = {
        beautyQuiz:{
          choice:{
            eyebrow:'Speciality Luminous',
-           title:'Comment souhaitez-vous decouvrir votre beaute?',
-           subtitle:'Explorez le catalogue complet, ou repondez a 4 questions rapides pour une preselection faite pour vous.',
+           title:'Comment souhaitez-vous decouvrir votre beauté?',
+           subtitle:'Explorez le catalogue complet, ou repondez a 4 questions rapides pour une présélection faite pour vous.',
            catalogTitle:'Voir le catalogue complet',
            catalogBody:'Explorez les 5 produits System Luminous a votre rythme.',
            quizTitle:'Diagnostic personnalise',
            quizBody:'4 questions et nous preselectionnons vos produits ideaux.'
          },
-         stepLabel:function(i,total){ return 'Etape ' + i + ' sur ' + total; },
+         stepLabel:function(i,total){ return 'Étape ' + i + ' sur ' + total; },
          steps:[
            { question:'Que souhaitez-vous obtenir?', type:'single', key:'goal', options:[
-               {value:'cleanse', label:'Une peau propre, sans impuretes'},
+               {value:'cleanse', label:'Une peau propre, sans impuretés'},
                {value:'antioxidant', label:'Hydratation et protection contre les agressions quotidiennes'},
-               {value:'firmness', label:'Fermete et eclat avec un soin anti-age'},
-               {value:'sun', label:'Protection solaire dediee'},
-               {value:'complete', label:'Je veux une routine complete'}
+               {value:'firmness', label:'Fermeté et éclat avec un soin anti-âge'},
+               {value:'sun', label:'Protection solaire dédiée'},
+               {value:'complète', label:'Je veux une routine complète'}
            ]},
            { question:"Comment decririez-vous votre peau aujourd'hui?", type:'single', key:'skin', options:[
-               {value:'oily', label:'Grasse ou sujette aux impuretes'},
+               {value:'oily', label:'Grasse ou sujette aux impuretés'},
                {value:'dehydrated', label:'Deshydratee ou tiraillee'},
-               {value:'tired', label:'Avec des signes de fatigue ou un manque de fermete'},
-               {value:'sensitive', label:'Sensible ou reactive'},
-               {value:'normal', label:'Normale et equilibree'}
+               {value:'tired', label:'Avec des signes de fatigue ou un manque de fermeté'},
+               {value:'sensitive', label:'Sensible ou réactive'},
+               {value:'normal', label:'Normale et équilibrée'}
            ]},
            { question:"Combien de temps passez-vous au soleil au quotidien?", type:'single', key:'sun', options:[
-               {value:'high', label:'Beaucoup de temps a l\'exterieur'},
-               {value:'commute', label:'Seulement le trajet quotidien (rue, voiture, bureau pres d\'une fenetre)'},
-               {value:'low', label:'Presque jamais, surtout en interieur'}
+               {value:'high', label:'Beaucoup de temps a l\'extérieur'},
+               {value:'commute', label:'Seulement le trajet quotidien (rue, voiture, bureau près d\'une fenêtre)'},
+               {value:'low', label:'Presque jamais, surtout en intérieur'}
            ]},
-           { question:'Sur une echelle de 1 a 5, combien de temps consacrez-vous a votre routine beaute quotidienne?', type:'scale', key:'time', minLabel:'Tres peu (moins de 5 min)', maxLabel:'Beaucoup (plus de 20 min)' }
+           { question:'Sur une echelle de 1 a 5, combien de temps consacrez-vous a votre routine beauté quotidienne?', type:'scale', key:'time', minLabel:'Très peu (moins de 5 min)', maxLabel:'Beaucoup (plus de 20 min)' }
          ],
          back:'← Retour',
          resultEyebrow:'Votre diagnostic',
          resultTitle:'Voici ce qui vous convient le mieux',
-         resultIntro:function(topName){ return "D'apres vos reponses, votre produit vedette est <b>" + topName + '</b>. Nous avons preselectionne votre routine dans le catalogue.'; },
-         ctaGoCatalog:'Voir ma preselection dans le catalogue',
+         resultIntro:function(topName){ return "D'après vos réponses, votre produit vedette est <b>" + topName + '</b>. Nous avons présélectionné votre routine dans le catalogue.'; },
+         ctaGoCatalog:'Voir ma présélection dans le catalogue',
          ctaRedo:'Refaire le diagnostic',
-         bannerHtml:function(topName){ return "D'apres votre diagnostic, nous recommandons de commencer par <b>" + topName + '</b>. <a onclick="openBeautyQuiz()">Refaire le diagnostic</a>'; },
-         recommendedBadge:'Recommande pour vous',
+         bannerHtml:function(topName){ return "D'après votre diagnostic, nous recommandons de commencer par <b>" + topName + '</b>. <a onclick="openBeautyQuiz()">Refaire le diagnostic</a>'; },
+         recommendedBadge:'Recommandé pour vous',
          leadNote:"Vous voulez recevoir cette routine par courriel ou WhatsApp ? C'est optionnel, juste pour mieux vous servir.",
          leadEmailPh:'Votre courriel (optionnel)',
          leadPhonePh:'Votre telephone (optionnel)',
@@ -2779,7 +2779,7 @@ function getReviewTargetSku(products){
 // Trae resenas reales de /api/reviews para todos los skus de la vertical activa.
 // Si un producto no tiene resenas reales todavia, cae al comentario de
 // demostracion (dejando claro que es contenido de ejemplo) para no dejar el
-// panel vacio -- ver gap documentado en db/schema.md. Tambien pide, para el
+// panel vacio -- ver gap documentado en db/schema.md. También pide, para el
 // sku que recibira la resena (getReviewTargetSku), si el cliente actual ya lo
 // compro -- eso decide si buildReviewFormHtml() muestra el formulario o el
 // mensaje "compra este producto primero" (Fix 60).
@@ -3360,7 +3360,7 @@ function setAuthTab(tab){
 var PRIVACY_CONTENT = {
   es: {
     sections: [
-      { h:'1. Responsable de tus datos', p:'Renuévate es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Proteccion de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
+      { h:'1. Responsable de tus datos', p:'Renuévate es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
       { h:'2. Que datos recabamos', p:'Nombre, correo y/o teléfono, fecha de nacimiento, historial de pedidos, reseñas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y últimos 4 digitos -- nunca el número completo ni el CVV).' },
       { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleaños y tu programa de lealtad, mostrar tus reseñas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
       { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos además los controles tecnicos del estándar ISO 27001 sobre estos datos.' },
@@ -3388,16 +3388,16 @@ var PRIVACY_CONTENT = {
   },
   fr: {
     sections: [
-      { h:'1. Responsable de vos donnees', p:'Renuévate est responsable du traitement de vos donnees personnelles conformement a la loi mexicaine LFPDPPP.' },
-      { h:'2. Donnees que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et donnees masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le número complet ni le CVV).' },
+      { h:'1. Responsable de vos données', p:'Renuévate est responsable du traitement de vos données personnelles conformement a la loi mexicaine LFPDPPP.' },
+      { h:'2. Données que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et données masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le número complet ni le CVV).' },
       { h:'3. A quoi elles servent', p:'Vous identifier a la connexion, traiter et suivre vos commandes, activer les promotions d\'anniversaire et votre programme de fidelite, afficher vos avis publies, et vous envoyer des communications marketing uniquement si vous avez donne votre consentement explicite.' },
-      { h:'4. Fondement legal', p:'Votre consentement expres (case promotions), l\'execution de la relation contractuelle lors d\'une commande, et notre interet legitime a exploiter le site en toute securite. Nous appliquons aussi les controles techniques ISO 27001 a ces donnees.' },
-      { h:'5. Avec qui nous les partageons', p:'Google et/ou Facebook agissent comme fournisseurs d\'identite si vous choisissez de vous connecter avec eux (ils recoivent uniquement la demande d\'authentification, jamais un mot de passe Renuévate puisqu\'il n\'en existe pas). MongoDB Atlas est notre sous-traitant de stockage de base de donnees. Nous ne vendons ni ne louons vos donnees a des tiers a des fins publicitaires.' },
+      { h:'4. Fondement legal', p:'Votre consentement expres (case promotions), l\'execution de la relation contractuelle lors d\'une commande, et notre interet legitime a exploiter le site en toute sécurité. Nous appliquons aussi les controles techniques ISO 27001 a ces données.' },
+      { h:'5. Avec qui nous les partageons', p:'Google et/ou Facebook agissent comme fournisseurs d\'identite si vous choisissez de vous connecter avec eux (ils recoivent uniquement la demande d\'authentification, jamais un mot de passe Renuévate puisqu\'il n\'en existe pas). MongoDB Atlas est notre sous-traitant de stockage de base de données. Nous ne vendons ni ne louons vos données a des tiers a des fins publicitaires.' },
       { h:'6. Duree de conservation', p:'Tant que votre compte est actif.' },
-      { h:'7. Vos droits', p:'Vous pouvez Acceder, Rectifier, Annuler ou vous Opposer au traitement de vos donnees personnelles a tout moment, en ecrivant au contact ci-dessous.' },
-      { h:'8. Securite', p:'Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24).' },
+      { h:'7. Vos droits', p:'Vous pouvez Acceder, Rectifier, Annuler ou vous Opposer au traitement de vos données personnelles a tout moment, en ecrivant au contact ci-dessous.' },
+      { h:'8. Sécurité', p:'Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV (controle PCI-DSS/ISO 27001 A.8.24).' },
       { h:'9. Modifications de cet avis', p:'Nous pouvons mettre a jour cet avis ; la date de la version en vigueur apparait en haut de cette section.' },
-      { h:'10. Contact', p:'Pour exercer vos droits ou poser des questions sur vos donnees, contactez notre equipe support.' },
+      { h:'10. Contact', p:'Pour exercer vos droits ou poser des questions sur vos données, contactez notre equipe support.' },
     ],
   },
 };
@@ -3450,15 +3450,15 @@ var TERMS_CONTENT = {
     { h:'12. Contact', p:'Questions about these terms: message us on WhatsApp, this chat, or adabueo18@gmail.com.' },
   ] },
   fr: { sections: [
-    { h:'1. Acceptation des conditions', p:'En utilisant Renuévate et en passant une commande, vous acceptez ces Conditions Generales et l\'Avis de Confidentialite.' },
+    { h:'1. Acceptation des conditions', p:'En utilisant Renuévate et en passant une commande, vous acceptez ces Conditions Générales et l\'Avis de Confidentialité.' },
     { h:'2. Nature du site', p:'Renuévate est une boutique 100% en ligne.' },
     { h:'3. Prix et disponibilite', p:'Les prix sont affiches en pesos mexicains (MXN) et incluent les taxes applicables sauf indication contraire. Les prix et la disponibilite des produits peuvent changer sans preavis.' },
-    { h:'4. Livraison', p:'Nous livrons partout au Mexique, avec une livraison allant du jour meme jusqu\'a un maximum de 3 jours ouvres, selon votre emplacement. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
+    { h:'4. Livraison', p:'Nous livrons partout au Mexique, avec une livraison allant du jour même jusqu\'a un maximum de 3 jours ouvres, selon votre emplacement. Le número de suivi est envoye par e-mail et WhatsApp des l\'expedition.' },
     { h:'5. Retours', p:'Chaque retour est traite directement avec vous via WhatsApp.' },
-    { h:'6. Comptes et acces', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google ou Facebook.' },
+    { h:'6. Comptes et accès', p:'Aucun compte n\'est requis pour parcourir le catalogue. Pour acheter, vous pouvez vous connecter avec Google ou Facebook.' },
     { h:'7. Paiements', p:'Nous acceptons les cartes de credit et de debit, PayPal, et les paiements via Mercado Pago. Nous ne capturons ni ne stockons jamais votre número de carte complet ni le CVV sur nos serveurs (controle PCI-DSS/ISO 27001).' },
-    { h:'8. Propriete intellectuelle', p:'Le nom Renuévate, le logo, les textes, images et le design du site appartiennent a Renuévate et ne peuvent etre reproduits sans autorisation.' },
-    { h:'9. Limitation de responsabilite', p:'Le site est fourni "tel quel". Nous ne garantissons pas une disponibilite ininterrompue et ne sommes pas responsables des dommages indirects lies a l\'utilisation du site, sauf disposition legale contraire.' },
+    { h:'8. Propriété intellectuelle', p:'Le nom Renuévate, le logo, les textes, images et le design du site appartiennent a Renuévate et ne peuvent etre reproduits sans autorisation.' },
+    { h:'9. Limitation de responsabilité', p:'Le site est fourni "tel quel". Nous ne garantissons pas une disponibilite ininterrompue et ne sommes pas responsables des dommages indirects lies a l\'utilisation du site, sauf disposition legale contraire.' },
     { h:'10. Loi applicable', p:'Ces conditions sont regies par les lois du Mexique. Tout litige sera resolu devant les tribunaux competents du Mexique.' },
     { h:'11. Modifications de ces conditions', p:'Nous pouvons mettre a jour ces conditions ; la date de la version en vigueur apparait en haut de cette section.' },
     { h:'12. Contact', p:'Questions sur ces conditions : ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.' },
@@ -3498,11 +3498,11 @@ var ABOUT_CONTENT = {
     { h:'More than a beauty store', p:'Renuévate was born from a simple vision: to help you renew your wellbeing, strengthen your confidence, and build a better version of yourself through the conscious care of your skin, your health and your personal image. Because when you take care of yourself inside and out, the results show up in every part of your life.' },
   ] },
   fr: { sections: [
-    { h:'Qui nous sommes', p:'Chez Renuévate, nous pensons que prendre soin de votre peau, de votre sante et de votre bien-etre ne devrait pas etre complique. C\'est pourquoi nous avons cree une boutique en ligne specialisee dans les produits de beaute, de soin de la peau, de nutrition et de soin personnel, selectionnes pour leur qualite, leur serieux et leurs <span class="accent">bienfaits reels</span>. Nous ne cherchons pas a avoir des milliers de produits dans un catalogue sans fin : nous preferons proposer des solutions qui apportent une vraie valeur et aident chacun a se sentir et a se voir mieux chaque jour.' },
-    { h:'Notre mission', p:'Vous aider a trouver les produits adaptes a vos objectifs de beaute et de bien-etre, sans confusion ni recommandations generiques. Il existe des centaines d\'options pour le soin du visage, les complements nutritionnels et le soin masculin ; notre objectif est de simplifier cette decision pour que vous puissiez choisir en toute confiance ce dont vous avez vraiment besoin.' },
-    { h:'Comment nous selectionnons nos produits', p:'Chaque produit disponible chez Renuévate fait partie d\'une solution precise : nous evaluons ses ingredients, ses bienfaits, sa qualite et son objectif avant de l\'integrer a notre boutique. Pour simplifier votre experience, nous organisons nos recommandations en trois lignes specialisees — <b>System Luminous Speciality</b>, axe sur le soin de la peau, l\'hydratation, l\'eclat et le rajeunissement cutane ; <b>System Health Speciality</b>, concu pour soutenir la nutrition, le bien-etre global, l\'energie et la performance quotidienne ; et <b>System Spot Speciality</b>, developpe pour repondre aux besoins specifiques du soin masculin — ainsi que des outils de diagnostic et un accompagnement personnalise pour vous aider a identifier le systeme le plus adapte a vos besoins et a votre mode de vie.' },
-    { h:'Notre engagement envers vous', p:'Nous sommes une boutique 100% en ligne engagee pour la transparence, l\'attention personnalisee et la confiance de nos clients. Nous travaillons avec des prix clairs, des informations detaillees sur les ingredients et les bienfaits, et un accompagnement humain des que vous en avez besoin. Chez Renuévate, nous ne croyons pas aux promesses miracles : nous croyons en des produits de qualite, des habitudes constantes et des <span class="accent">resultats qui durent dans le temps</span>.' },
-    { h:'Plus qu\'une boutique de beaute', p:'Renuévate est nee d\'une vision simple : vous aider a renouveler votre bien-etre, renforcer votre confiance et construire une meilleure version de vous-meme grace a un soin conscient de votre peau, de votre sante et de votre image personnelle. Parce que lorsque vous prenez soin de vous, a l\'interieur comme a l\'exterieur, les resultats se refletent dans chaque aspect de votre vie.' },
+    { h:'Qui nous sommes', p:'Chez Renuévate, nous pensons que prendre soin de votre peau, de votre sante et de votre bien-etre ne devrait pas etre complique. C\'est pourquoi nous avons créé une boutique en ligne spécialisée dans les produits de beauté, de soin de la peau, de nutrition et de soin personnel, sélectionnés pour leur qualite, leur serieux et leurs <span class="accent">bienfaits reels</span>. Nous ne cherchons pas a avoir des milliers de produits dans un catalogue sans fin : nous preferons proposer des solutions qui apportent une vraie valeur et aident chacun a se sentir et a se voir mieux chaque jour.' },
+    { h:'Notre mission', p:'Vous aider a trouver les produits adaptes a vos objectifs de beauté et de bien-etre, sans confusion ni recommandations generiques. Il existe des centaines d\'options pour le soin du visage, les complements nutritionnels et le soin masculin ; notre objectif est de simplifier cette decision pour que vous puissiez choisir en toute confiance ce dont vous avez vraiment besoin.' },
+    { h:'Comment nous selectionnons nos produits', p:'Chaque produit disponible chez Renuévate fait partie d\'une solution précise : nous evaluons ses ingrédients, ses bienfaits, sa qualite et son objectif avant de l\'integrer a notre boutique. Pour simplifier votre experience, nous organisons nos recommandations en trois lignes specialisees — <b>System Luminous Speciality</b>, axe sur le soin de la peau, l\'hydratation, l\'éclat et le rajeunissement cutane ; <b>System Health Speciality</b>, conçu pour soutenir la nutrition, le bien-etre global, l\'énergie et la performance quotidienne ; et <b>System Spot Speciality</b>, developpe pour repondre aux besoins specifiques du soin masculin — ainsi que des outils de diagnostic et un accompagnement personnalise pour vous aider a identifier le système le plus adapte a vos besoins et a votre mode de vie.' },
+    { h:'Notre engagement envers vous', p:'Nous sommes une boutique 100% en ligne engagee pour la transparence, l\'attention personnalisee et la confiance de nos clients. Nous travaillons avec des prix clairs, des informations detaillees sur les ingrédients et les bienfaits, et un accompagnement humain des que vous en avez besoin. Chez Renuévate, nous ne croyons pas aux promesses miracles : nous croyons en des produits de qualite, des habitudes constantes et des <span class="accent">résultats qui durent dans le temps</span>.' },
+    { h:'Plus qu\'une boutique de beauté', p:'Renuévate est nee d\'une vision simple : vous aider a renouveler votre bien-etre, renforcer votre confiance et construire une meilleure version de vous-même grace a un soin conscient de votre peau, de votre sante et de votre image personnelle. Parce que lorsque vous prenez soin de vous, a l\'intérieur comme a l\'extérieur, les résultats se refletent dans chaque aspect de votre vie.' },
   ] },
 };
 
@@ -3522,7 +3522,7 @@ function closeAboutModal(){
   document.getElementById('aboutModalOverlay').classList.remove('is-open');
 }
 
-/* ===================== Politica de Cookies (banner funcional + preferencias reales) ===================== */
+/* ===================== Política de Cookies (banner funcional + preferencias reales) ===================== */
 var COOKIE_CONSENT_KEY = 'renuevate_cookie_consent';
 function getCookieConsent(){
   try { return JSON.parse(localStorage.getItem(COOKIE_CONSENT_KEY)); } catch(e){ return null; }
@@ -3620,7 +3620,7 @@ function saveCookiePrefs(){
   closeCookieModal();
 }
 
-/* ===================== Pagina de Preguntas Frecuentes (contenido real del chatbot Julieta) ===================== */
+/* ===================== Página de Preguntas Frecuentes (contenido real del chatbot Julieta) ===================== */
 var FAQ_TOPICS = ['about','products','beautyritual','nutritionadvice','productadvisor','diagnostic','prices','ingredients',
   'shipping','tracking','returns','cancelorder','payment','security','account','store','hours','loyalty',
   'sustainability','discount','warranty','contact'];
@@ -4115,7 +4115,7 @@ function goVertical(v){
   renderVertical(v);
   // El catalogo (#zoom) vive oculto por default -- solo se revela cuando el
   // usuario pide explicitamente ver un sistema (menu Belleza/System Speciality,
-  // footer, busqueda, zoom-tabs o el resultado del diagnostico). Asi la home
+  // footer, busqueda, zoom-tabs o el resultado del diagnostico). Así la home
   // no arrastra la ficha de producto dentro del scroll normal de la página.
   var zoomSection = document.getElementById('zoom');
   zoomSection.classList.remove('zoom-hidden');
@@ -4167,7 +4167,7 @@ function goToHomeSection(id){
 }
 function goToFilosofia(){ goToHomeSection('filosofia'); }
 
-// Pagina de "solo catalogo": reusa la ficha #zoom (mismo grid de productos,
+// Página de "solo catalogo": reusa la ficha #zoom (mismo grid de productos,
 // panel de comentarios y banner de recomendacion) pero oculta los tabs
 // Luminous/Health/Spot, el banner narrativo de "sistema destacado" y el
 // bloque de rutinas -- ver CSS .zoom-section.catalog-mode. Punto de entrada
@@ -4310,7 +4310,7 @@ function bqGoBack(){
 function computeBeautyScores(answers){
   // Motor de puntaje alineado a los 4 productos originales del catalogo Nacar:
   // NACAR-06 Espuma (limpieza), NACAR-07 Gel (antioxidante/hidratacion),
-  // NACAR-08 Dia FPS30 (firmeza/protección diaria), NACAR-09 Protector FPS50+
+  // NACAR-08 Día FPS30 (firmeza/protección diaria), NACAR-09 Protector FPS50+
   // (protección solar dedicada). Sin preguntas de cabello: ese producto no
   // existe en el catalogo actual.
   // Fix 71: NACAR-10 (Suero de Aloe Vera) se agrego al catalogo pero
@@ -4536,7 +4536,7 @@ function closeSearchModal(){
 // de una categoría del menu Belleza (p.ej. "Skin Care", tal cual la ve el
 // usuario en el nav) siempre devolvia "no encontramos resultados", porque el
 // buscador solo conocia nombre/tag de producto y nombre de sistema (bmLabel),
-// nunca las etiquetas de categoría. Tambien: al encontrar un producto, antes
+// nunca las etiquetas de categoría. También: al encontrar un producto, antes
 // solo abria el sistema completo sin filtro (goVertical) -- el usuario nunca
 // veia "su" producto, solo aterrizaba en una lista larga. Ahora abre
 // directo la ficha de detalle (openProductDetail) del producto encontrado.
@@ -4697,7 +4697,7 @@ function updateAccountNameDisplay(){
   }
 }
 
-// Sesion ligera del lado del cliente (localStorage) -- SOLO para que el icono
+// Sesión ligera del lado del cliente (localStorage) -- SOLO para que el icono
 // de cuenta y el nombre no desaparezcan al recargar la página o abrir una
 // pestana nueva. Esto NO es una sesión de servidor firmada (ver gap conocido
 // en db/schema.md, seccion 0 y 9): sigue siendo el mismo MVP donde el navegador
@@ -4746,7 +4746,7 @@ function closeProfileModal(){
 }
 // El backend exige formato E.164 (+52...) y la gran mayoria de clientes va a
 // escribir solo su número local a 10 digitos, sin código de pais -- eso es
-// justo lo que tronaba el registro con "Telefono invalido". En vez de rechazar
+// justo lo que tronaba el registro con "Teléfono invalido". En vez de rechazar
 // a todo mundo que no sepa que es E.164, se asume Mexico (+52) cuando el
 // usuario no puso "+", que es el mercado del sitio (Cancun . Mexico en el
 // topbar). Si el usuario ya escribio su propio código de pais con "+", se
