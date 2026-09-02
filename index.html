@@ -353,7 +353,6 @@ section{padding:92px 0;}
    normal) quita esta clase y restaura la vista completa. */
 .zoom-section.catalog-mode .zoom-tabs,
 .zoom-section.catalog-mode .zoom-banner,
-.zoom-section.catalog-mode .routine-block{display:none;}
 /* Cuando se ve el catalogo o un System Speciality especifico (goVertical /
    openBeautyCatalog), el resto de la home (hero, verticales, filosofia,
    newsletter) se oculta por completo -- ya no es un scroll largo de una sola
@@ -527,17 +526,6 @@ body.viewing-product-page .home-only{display:none;}
 .pm-type-toggle button{flex:1; padding:9px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:12px; border-radius:2px;}
 .pm-type-toggle button.sel{border-color:var(--navy); background:var(--navy); color:#fff;}
 .pm-pci-note{font-size:10.5px; color:var(--grey); margin:10px 0; line-height:1.5; background:var(--cream); padding:10px; border-radius:3px;}
-
-.routine-block{background:linear-gradient(180deg, var(--active-soft) 0%, #fff 100%); border-radius:6px; padding:34px 34px 30px; margin-bottom:20px;}
-.routine-head{text-align:center; max-width:520px; margin:0 auto 24px;}
-.routine-cards{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-.routine-card{background:#fff; border-radius:4px; padding:26px; text-align:center; cursor:pointer; border:2px solid transparent; transition:.2s;}
-.routine-card.sel{border-color:var(--active);}
-.routine-card .rc-num{width:30px; height:30px; border-radius:50%; background:var(--active); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; margin:0 auto 12px; font-family:'Playfair Display',serif;}
-.routine-card h4{font-size:15px; margin-bottom:8px; font-family:'Playfair Display',serif; font-weight:600;}
-.routine-card p{font-size:12.5px; color:var(--grey);}
-.routine-result{display:none; text-align:center; margin-top:28px; font-size:14px;}
-.routine-result.show{display:block;}
 
 .newsletter{background:var(--beige); text-align:center;}
 .newsletter h2 .accent{color:var(--gold); border-color:var(--gold);}
@@ -881,7 +869,6 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .products-grid{grid-template-columns:1fr 1fr; gap:12px;}
   .product-card{flex-direction:column;}
   .product-img{width:100%; flex:0 0 auto; height:172px;}
-  .routine-cards{grid-template-columns:1fr;}
   .zoom-banner{grid-template-columns:1fr;}
   .zoom-stats{grid-template-columns:1fr;}
   .section-head{padding:0 6px;}
@@ -916,14 +903,14 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
    ciclo de opacity:0 de .reveal-stagger -- ya no necesita una regla de excepcion
    aquí. Si el video se vuelve a anidar en .hero-content, revisar este comentario. */
 @keyframes revealLR{from{opacity:0; transform:translateX(-28px);}to{opacity:1; transform:translateX(0);}}
-.product-card, .routine-card{animation:revealLR .65s ease-out both;}
-.product-card:nth-child(1), .routine-card:nth-child(1){animation-delay:.05s;}
-.product-card:nth-child(2), .routine-card:nth-child(2){animation-delay:.14s;}
-.product-card:nth-child(3), .routine-card:nth-child(3){animation-delay:.23s;}
+.product-card{animation:revealLR .65s ease-out both;}
+.product-card:nth-child(1){animation-delay:.05s;}
+.product-card:nth-child(2){animation-delay:.14s;}
+.product-card:nth-child(3){animation-delay:.23s;}
 .product-card:nth-child(4){animation-delay:.32s;}
 @media (prefers-reduced-motion: reduce){
   .reveal, .reveal-stagger > *{opacity:1; transform:none; transition:none;}
-  .product-card, .routine-card{animation:none;}
+  .product-card{animation:none;}
 }
 </style>
 </head>
@@ -1242,16 +1229,6 @@ var AZURA_CONFIG = {
 
     <div class="beauty-rec-banner" id="beautyRecBanner" style="display:none;"></div>
     <div class="products-grid" id="productsGrid"></div>
-
-    <div class="routine-block">
-      <div class="routine-head reveal-stagger">
-        <div class="eyebrow" data-i18n="zoom.routineEyebrow">Que rutina es para ti?</div>
-        <h2 style="font-size:25px;" data-i18n="zoom.routineH2">Encuentra tu combo ideal</h2>
-        <p style="color:var(--grey); margin-top:10px;" data-i18n="zoom.routineP">Selecciona tu nivel de experiencia y te sugerimos la rutina adecuada.</p>
-      </div>
-      <div class="routine-cards" id="routineCards"></div>
-      <div class="routine-result" id="routineResult"></div>
-    </div>
   </div>
 </section>
 
@@ -2136,7 +2113,6 @@ var I18N = {
     "zoom.backHome":"&#8592; Volver a inicio",
     "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
-    "zoom.routineEyebrow":"Que rutina es para ti?", "zoom.routineH2":"Encuentra tu combo ideal", "zoom.routineP":"Selecciona tu nivel de experiencia y te sugerimos la rutina adecuada.",
     "nl.eyebrow":"Unete a Renuévate", "nl.h2":'Recibe <span class="accent">novedades</span> y acceso anticipado a tus sistemas favoritos',
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
@@ -2256,7 +2232,6 @@ var I18N = {
     "zoom.backHome":"&#8592; Back to home",
     "comingSoon.eyebrow":"Content coming soon", "comingSoon.title":"We're polishing this content", "comingSoon.body":"There's nothing wrong with this Renuévate section: we're still refining the full detail of this system so we can show it to you properly. Check back soon.", "comingSoon.cta":"Got it",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"TO SEE RESULTS*", "zoom.stat3Label":"VERIFIED ORIGIN",
-    "zoom.routineEyebrow":"Which routine is right for you?", "zoom.routineH2":"Find your ideal combo", "zoom.routineP":"Select your experience level and we'll suggest the right routine.",
     "nl.eyebrow":"Join Renuévate", "nl.h2":'Get <span class="accent">news</span> and early access to your favorite systems',
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
     "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
@@ -2376,7 +2351,6 @@ var I18N = {
     "zoom.backHome":"&#8592; Retour à l'accueil",
     "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce système pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RÉSULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
-    "zoom.routineEyebrow":"Quelle routine vous correspond ?", "zoom.routineH2":"Trouvez votre combo idéal", "zoom.routineP":"Sélectionnez votre niveau d'experience et nous vous suggérons la routine adaptée.",
     "nl.eyebrow":"Rejoindre Renuévate", "nl.h2":'Recevez des <span class="accent">nouveautes</span> et un accès anticipé a vos systèmes favoris',
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
     "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un accès anticipé a nos systèmes.", "subscribeThanks.cta":"Compris",
@@ -2477,7 +2451,6 @@ var I18N = {
 /* Textos dinamicos (con datos insertados en tiempo real) por idioma */
 var DYN = {
   es:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Ahora mismo son las ' + hh + ':' + mm + ' (hora de tu dispositivo). Te ayudo con algo mas?'; },
-       routineResult:function(name,title){ return 'Recomendacion registrada para <b>' + name + '</b>: <em>' + title + '</em>. En produccion, esto dispara un evento select_routine a GA4 y una propuesta automática via WhatsApp.'; },
        subscribeOk:'Gracias por suscribirte. En produccion esto se conecta a Klaviyo/CRM mas evento GA4 newsletter_signup.',
        configMissing:function(field){ return 'Falta configurar ' + field + ' en AZURA_CONFIG (ver README de azura-site) antes de que este boton funcione.'; },
        registerOk:function(name){ return 'Listo' + (name ? ', ' + name : '') + '. Tu registro quedo guardado en la base de datos de Renuévate.'; },
@@ -2642,7 +2615,6 @@ var DYN = {
          leadError:'No pudimos guardar tu contacto. Intenta de nuevo en unos minutos.'
        } },
   en:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Right now it is ' + hh + ':' + mm + ' (your device time). Anything else I can help with?'; },
-       routineResult:function(name,title){ return 'Recommendation logged for <b>' + name + '</b>: <em>' + title + '</em>. In production, this triggers a select_routine event in GA4 and an automatic WhatsApp proposal.'; },
        subscribeOk:'Thanks for subscribing. In production this connects to Klaviyo/CRM plus a GA4 newsletter_signup event.',
        configMissing:function(field){ return 'Missing ' + field + ' in AZURA_CONFIG (see azura-site README) before this button will work.'; },
        registerOk:function(name){ return 'Done' + (name ? ', ' + name : '') + '. Your registration was saved to Renuévate\'s database.'; },
@@ -2807,7 +2779,6 @@ var DYN = {
          leadError:'We could not save your contact. Try again in a few minutes.'
        } },
   fr:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Il est actuellement ' + hh + 'h' + mm + ' (heure de votre appareil). Autre chose ?'; },
-       routineResult:function(name,title){ return 'Recommandation enregistree pour <b>' + name + '</b> : <em>' + title + '</em>. En production, cela declenche un evenement select_routine dans GA4 et une proposition automatique via WhatsApp.'; },
        subscribeOk:'Merci de votre inscription. En production, cela se connecte a Klaviyo/CRM avec un evenement GA4 newsletter_signup.',
        configMissing:function(field){ return field + ' manquant dans AZURA_CONFIG (voir le README de azura-site) avant que ce bouton fonctionne.'; },
        registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de données Renuévate.'; },
@@ -4432,7 +4403,6 @@ function iconSvg(v){
 
 var currentV = 'nacar';
 var currentLang = 'es';
-var selectedRoutine = null;
 var CURRENT_RENDERED_PRODUCTS = [];
 var pdCurrentSku = null;
 var pdCurrentShadeIdx = 0; // Fix 84: indice del tono seleccionado en pdShadesBlock (no afecta pdMedia)
@@ -4551,33 +4521,12 @@ function renderVertical(v){
   }
   grid.innerHTML = html;
 
-  selectedRoutine = null;
-  var rc = document.getElementById('routineCards');
-  var rhtml = '';
-  for (var m=0;m<d.routines.length;m++){
-    rhtml += '<div class="routine-card" data-i="' + m + '" onclick="selectRoutine(' + m + ')">' +
-      '<div class="rc-num">' + (m+1) + '</div><h4>' + d.routines[m].title + '</h4><p>' + d.routines[m].desc + '</p></div>';
-  }
-  rc.innerHTML = rhtml;
-  document.getElementById('routineResult').classList.remove('show');
-
   if (v === 'nacar' && lastBeautyRecommendation){
     applyBeautyRecommendationUI();
   } else {
     var beautyBanner = document.getElementById('beautyRecBanner');
     if (beautyBanner) beautyBanner.style.display = 'none';
   }
-}
-
-function selectRoutine(i){
-  selectedRoutine = i;
-  var cards = document.querySelectorAll('.routine-card');
-  for (var c=0;c<cards.length;c++){ cards[c].classList.toggle('sel', +cards[c].dataset.i===i); }
-  var vert = V[currentV];
-  var d = vert[currentLang];
-  var res = document.getElementById('routineResult');
-  res.classList.add('show');
-  res.innerHTML = DYN[currentLang].routineResult(vert.name, d.routines[i].title);
 }
 
 function goVertical(v){
@@ -4951,8 +4900,6 @@ function applyBeautyRecommendationUI(){
     grid.innerHTML = '';
     grid.appendChild(frag);
   }
-
-  if (typeof lastBeautyRecommendation.routineIdx === 'number'){ selectRoutine(lastBeautyRecommendation.routineIdx); }
 }
 function toggleNav(){
   var isOpen = document.getElementById('mainNav').classList.toggle('open');
