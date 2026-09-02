@@ -289,17 +289,20 @@ section{padding:92px 0;}
    de resolucion de porcentajes. De paso, "mucho mas grande" por instruccion
    de Carlos: min-height sube de 680px a 960px en desktop (ver también el
    tope para movil mas abajo en @media max-width:760, también subido). */
-.phil-visual{position:relative; background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:960px; overflow:hidden; padding:0; display:flex; align-items:center; justify-content:center;}
-/* Fix 72: Carlos pidio sacar la cita de esta caja -- ahora .phil-visual solo
-   contiene la foto del Suero, a máximo tamano (100% del contenedor, sin el
-   max-width fijo de Fix 71). La cita se movio a .phil-quote-below, debajo de
-   todo el grid (ver mas abajo y el HTML de #filosofia).
-   Fix 87: la foto se quito por instruccion de Carlos -- .phil-visual-img ya
-   no tiene ningun <img> en el HTML que la use, se deja la regla por si se
-   reintroduce una foto aqui mas adelante. En su lugar, .phil-visual ahora
-   centra (display:flex arriba) el nuevo .phil-statement. */
+/* Fix 88: .phil-visual-wrap es el hijo real de .phil-grid (2a columna) --
+   agrupa la caja de la foto (.phil-visual) y el caption de abajo
+   (.phil-statement) para que ambos se muevan juntos como bloque. */
+.phil-visual-wrap{display:flex; flex-direction:column;}
+.phil-visual{position:relative; background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:960px; overflow:hidden; padding:0;}
+/* Fix 72: .phil-visual solo contiene la foto del Suero, a máximo tamano
+   (100% del contenedor, sin el max-width fijo de Fix 71).
+   Fix 87: se quito la foto y se puso texto centrado en su lugar.
+   Fix 88: Carlos pidio revertir -- la foto vuelve (maximizada, position:
+   absolute llenando la caja, mismo patron de Fix 75) y el texto de Fix 87
+   pasa a vivir DEBAJO del contenedor de la imagen como .phil-statement,
+   ya no encima/en vez de ella (ver .phil-statement mas abajo). */
 .phil-visual-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:6px; margin-bottom:0; box-shadow:none; display:block;}
-.phil-statement{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:clamp(22px,2.4vw,30px); line-height:1.55; color:var(--navy); text-align:center; max-width:420px; padding:48px;}
+.phil-statement{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:13px; line-height:1.6; color:var(--navy); text-align:center; max-width:520px; margin:20px auto 0;}
 .phil-statement .accent{color:var(--gold); border-color:var(--gold); font-family:'Bodoni Moda',serif; font-style:normal; font-weight:500; letter-spacing:.6px;}
 /* Fix 72: la cita ya no vive dentro de .phil-visual (que ahora es solo la
    foto) -- vive en su propio bloque, debajo de las 2 columnas del grid
@@ -324,7 +327,9 @@ section{padding:92px 0;}
 .phil-grid > .reveal-stagger{display:flex; flex-direction:column; align-items:flex-start;}
 .phil-showcase{align-self:center; margin-top:28px; margin-left:auto; margin-right:auto; width:230px; max-width:60%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
 .phil-showcase-el{width:100%; height:auto; display:block; aspect-ratio:335/597; object-fit:cover;}
-@media(prefers-reduced-motion:reduce){ .phil-showcase-el{display:none;} }
+/* Fix 88: .phil-showcase-el paso de <video> a <img> (Carlos pidio quitar el
+   mini video Ken Burns) -- la regla prefers-reduced-motion de abajo era para
+   pausar/ocultar un video autoplay, ya no aplica a una foto estatica. */
 @media(max-width:760px){ .phil-showcase{width:190px; max-width:52%;} }
 
 /* .zoom-section reduce su padding-top respecto al "section{padding:92px 0}"
@@ -371,7 +376,7 @@ body.viewing-product-page .home-only{display:none;}
 .catalog-view-all-link a{font-size:12.5px; font-weight:700; letter-spacing:.4px; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--ink); padding-bottom:2px;}
 .product-card{border:1px solid var(--line); border-radius:4px; overflow:hidden; transition:box-shadow .2s; display:flex; flex-direction:row; align-items:stretch;}
 .product-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08);}
-.product-img{width:230px; flex:0 0 230px; display:flex; align-items:center; justify-content:center; background:var(--active-soft); overflow:hidden;}
+.product-img{width:230px; flex:0 0 230px; display:flex; align-items:center; justify-content:center; background:var(--active-soft); overflow:hidden; cursor:pointer;}
 .product-img img{width:100%; height:100%; object-fit:cover; display:block;}
 .product-img svg{width:52px; height:52px; opacity:.7; color:var(--active);}
 .product-body{padding:20px; flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;}
@@ -1117,26 +1122,28 @@ var AZURA_CONFIG = {
       <h2 data-i18n-html="phil.h2">Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.</h2>
       <!-- Fix 56: se quito el bloque de 3 pilares de texto (Transparencia /
            Habitos / Un solo estandar) por instruccion directa de Carlos --
-           en su lugar, un mini video/transicion cinematografica hecho con
-           2 fotos de campana oficiales SEYTU (Seccion A-1 y Seccion A-1-B)
-           via ffmpeg: zoom lento tipo Ken Burns en cada foto + crossfade
-           de 1s entre ambas, loop de ~9s. No se usa reveal-stagger aquí
-           (mismo motivo que .v-card.has-video mas abajo: un video autoplay
-           no debe arrancar en opacity:0, el decodificador se puede quedar
-           suspendido en algunos navegadores). -->
+           en su lugar iba un mini video Ken Burns (2 fotos de campana SEYTU
+           via ffmpeg). Fix 88: Carlos pidio quitar ese mini video y poner
+           en su lugar la foto "main image" (mujer aplicandose el Protector
+           Solar Facial FPS 50+) -- misma caja/tamano (.phil-showcase), solo
+           cambia el contenido de <video> a <img>. -->
       <div class="phil-showcase reveal">
-        <video class="phil-showcase-el" muted loop playsinline preload="none" poster="media/seytu-filosofia-showcase-poster.jpg" aria-hidden="true">
-          <source src="media/seytu-filosofia-showcase.mp4" type="video/mp4">
-        </video>
+        <img class="phil-showcase-el" src="media/seytu-filosofia-main.webp" alt="Aplicación de Protector Solar Facial FPS 50+ SEYTÚ" loading="lazy">
       </div>
     </div>
-    <div class="phil-visual reveal">
-      <!-- Fix 87: por instruccion de Carlos, se quita la foto (antes ocupaba
-           esta caja al 100%, ver Fix 72) y se reemplaza por una declaracion
-           de marca en texto. Se conserva el contenedor .phil-visual (mismo
-           grid-column/responsive que antes) pero ya no aloja una <img>, asi
-           que se agrega .phil-statement para centrar el texto dentro de esa
-           misma caja en vez de una foto. -->
+    <!-- Fix 88: Carlos pidio revertir parcialmente Fix 87 -- la caja de la
+         derecha vuelve a llevar una foto maximizada (.phil-visual, ahora con
+         la foto "Main Suero" = el mismo seytu-filosofia-suero.webp de
+         siempre), pero esta vez con el texto de Fix 87 (.phil-statement)
+         como caption ABAJO del contenedor de la imagen, no reemplazandola.
+         .phil-visual-wrap es el que ocupa la 2a columna del grid; adentro,
+         .phil-visual vuelve a su tratamiento original (foto position:absolute
+         llenando la caja, ver Fix 75) y .phil-statement pasa a ser un
+         caption mas chico debajo, no un bloque centrado ocupando toda la caja. -->
+    <div class="phil-visual-wrap reveal">
+      <div class="phil-visual">
+        <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ" loading="lazy">
+      </div>
       <p class="phil-statement" data-i18n-html="phil.statement">No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidar</span>.</p>
     </div>
     <!-- Fix 72: la cita se saca de .phil-visual y baja de tamano a la mitad
@@ -1723,7 +1730,7 @@ var V = {
           longDesc:"Tu mejor aliado para hidratar, humectar y acondicionar la piel. Brinda mayor protección, un aspecto saludable y ayuda a mejorar la elasticidad. Presentación de 30 g.",
           usage:"Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.",
           ingredients:["Extracto de levadura","Extracto de hoja de olivo","Extracto de arnica","Extractos de frutas silvestres","Aceite de jojoba"],
-          img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
+          img:"media/nacar-07-omniplus-front.webp", thumb:"media/nacar-07-omniplus-thumb.webp", gallery:["media/nacar-07-omniplus-marmol.webp","media/nacar-07-omniplus-mano.webp"],
           related:["NACAR-09"]},
         {sku:"NACAR-08", tag:"Crema de día", name:"Seytú System Time-Specialist", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN", favorito:true,
           longDesc:"Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.",
@@ -1735,7 +1742,7 @@ var V = {
           longDesc:["89% Ingredientes de origen natural","Toque Seco","Para toda la familia","Clínica y dermatológicamente probado","FPS 50+","Amigable con el océano","Respetuoso de la ley hawaiana de protección a los corales"],
           usage:"Recomendación de Uso: Aplicar de manera uniforme sobre la piel seca antes de la exposición solar. Reaplicar cada 3 horas y después de transpirar, nadar o secarte con toalla.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
-          img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
+          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp"],
           related:["NACAR-07"]},
         {sku:"NACAR-10", tag:"Suero facial", name:"Suero Facial de Hidratación Profunda con Aloe Vera", desc:"El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.", price:"$430 MXN", favorito:true,
           longDesc:"Ideal para ayudar a mejorar la apariencia de las finas líneas de expresión causadas por la resequedad. Textura suave y ligera de fácil absorción.",
@@ -1799,7 +1806,7 @@ var V = {
           longDesc:"Your best ally to hydrate, moisturize and condition the skin. Provides greater protection, a healthy look, and helps improve elasticity. 30 g.",
           usage:"Apply a small amount to clean face and/or body with a gentle massage until fully absorbed. Daily use.",
           ingredients:["Yeast extract","Olive leaf extract","Arnica extract","Wild berry extracts","Jojoba oil"],
-          img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
+          img:"media/nacar-07-omniplus-front.webp", thumb:"media/nacar-07-omniplus-thumb.webp", gallery:["media/nacar-07-omniplus-marmol.webp","media/nacar-07-omniplus-mano.webp"],
           related:["NACAR-09"]},
         {sku:"NACAR-08", tag:"Day cream", name:"Seytú System Time-Specialist", desc:"Renews and protects, hydration with SPF 30.", price:"$725 MXN", favorito:true,
           longDesc:"Fights the appearance of the main signs of aging, stimulates collagen and elastin production, and helps improve skin texture and firmness. With antioxidant and hydrating properties, it protects skin against UVA/UVB rays. For best results, use it alongside the rest of your Nacar routine. 50 ml.",
@@ -1811,7 +1818,7 @@ var V = {
           longDesc:["89% naturally-derived ingredients","Dry touch","For the whole family","Clinically and dermatologically tested","SPF 50+","Reef-friendly","Compliant with Hawaii's coral-protection law"],
           usage:"Recommended Use: Apply evenly to dry skin before sun exposure. Reapply every 3 hours and after sweating, swimming or towel-drying.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
-          img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
+          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp"],
           related:["NACAR-07"]},
         {sku:"NACAR-10", tag:"Facial serum", name:"Aloe Vera Deep Moisturizing Facial Serum", desc:"SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", price:"$430 MXN", favorito:true,
           longDesc:"Ideal to help improve the appearance of fine expression lines caused by dryness. Soft, lightweight texture that absorbs easily.",
@@ -1875,7 +1882,7 @@ var V = {
           longDesc:"Votre meilleur allié pour hydrater et conditionner la peau. Offre une meilleure protection, un aspect sain et aide à améliorer l'élasticité. Format 30 g.",
           usage:"Appliquer une petite quantité sur le visage et/ou le corps propre avec un massage doux jusqu'a absorption complète. Usage quotidien.",
           ingredients:["Extrait de levure","Extrait de feuille d'olivier","Extrait d'arnica","Extraits de fruits sauvages","Huile de jojoba"],
-          img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
+          img:"media/nacar-07-omniplus-front.webp", thumb:"media/nacar-07-omniplus-thumb.webp", gallery:["media/nacar-07-omniplus-marmol.webp","media/nacar-07-omniplus-mano.webp"],
           related:["NACAR-09"]},
         {sku:"NACAR-08", tag:"Crème de jour", name:"Seytú System Time-Specialist", desc:"Rénove et protège, hydratation avec FPS 30.", price:"$725 MXN", favorito:true,
           longDesc:"Combat l'apparence des principaux signes de l'âge, stimule la production de collagène et d'elastine et aide a améliorer la texture et la fermeté de la peau. Avec des propriétés antioxydantes et hydratantes, elle protège la peau contre les rayons UVA/UVB. Pour de meilleurs résultats, utilisez-la avec le reste de votre routine Nacar. Format 50 ml.",
@@ -1887,7 +1894,7 @@ var V = {
           longDesc:["89% d'ingrédients d'origine naturelle","Toucher sec","Pour toute la famille","Testée cliniquement et dermatologiquement","FPS 50+","Respectueuse des récifs coralliens","Conforme à la loi hawaïenne de protection des coraux"],
           usage:"Recommandation d'utilisation : Appliquer uniformément sur peau sèche avant l'exposition au soleil. Reappliquer toutes les 3 heures et après la transpiration, la baignade ou le séchage a la serviette.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
-          img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
+          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp"],
           related:["NACAR-07"]},
         {sku:"NACAR-10", tag:"Serum facial", name:"Serum Facial Hydratant Profond a l'Aloe Vera", desc:"Le Serum Facial Hydratant Profond a l'Aloe Vera SEYTU hydrate en profondeur et aide a améliorer la fermeté et l'élasticité de votre peau.", price:"$430 MXN", favorito:true,
           longDesc:"Idéal pour aider a améliorer l'apparence des fines lignes d'expression causées par la secheresse. Texture douce et légère, absorption facile.",
@@ -3843,7 +3850,10 @@ document.addEventListener("DOMContentLoaded", initHeroCarousel);
 // puede quedar con el decodificador suspendido en algunos navegadores --
 // este fix no toca esa parte, solo cuando se llama a .play().
 function initLazyAutoplayVideos(){
-  var vids = document.querySelectorAll('.v-media-el, .phil-showcase-el');
+  // Fix 88: .phil-showcase-el paso de <video> a <img> (Carlos pidio quitar el
+  // mini video Ken Burns de la filosofia) -- se saca del selector porque
+  // v.play()/v.pause() no existen en un <img> y tronarian el forEach.
+  var vids = document.querySelectorAll('.v-media-el');
   if (!vids.length) return;
   if (!('IntersectionObserver' in window)){
     // Fallback sin soporte: reproducir todo de una vez, como antes.
@@ -4381,7 +4391,7 @@ function renderVertical(v){
       : ('<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>' +
          '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\', 1, \'' + defaultShadeName + '\')">' + DYN[currentLang].addToCart() + '</button>');
 
-    html += '<div class="product-card' + (p.dummy ? ' product-card-dummy' : '') + '" data-sku="' + p.sku + '"><div class="product-img">' + imgHtml + '</div>' +
+    html += '<div class="product-card' + (p.dummy ? ' product-card-dummy' : '') + '" data-sku="' + p.sku + '"><div class="product-img" onclick="openProductDetail(\'' + p.sku + '\')">' + imgHtml + '</div>' +
       '<div class="product-body"><div class="p-eyebrow">' + p.tag + '</div>' +
       '<h4>' + p.name + '</h4><p>' + p.desc + '</p>' +
       ratingHtml +
