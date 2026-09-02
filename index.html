@@ -606,11 +606,23 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
    y una linea de feedback debajo para "no encontramos"/"encontramos X". */
 .search-modal{max-width:420px; text-align:center;}
 .search-modal .cs-icon{width:52px; height:52px; border-radius:50%; background:var(--cream); color:var(--gold); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;}
-.search-modal h3{font-size:20px; margin-bottom:18px;}
-.search-form{display:flex; gap:8px;}
-.search-input{flex:1; border:1px solid var(--line); border-radius:2px; padding:11px 12px; font-size:13.5px; font-family:'Manrope',sans-serif; color:var(--ink);}
-.search-input:focus{outline:none; border-color:var(--navy);}
-.search-feedback{margin-top:14px; font-size:12.5px; color:var(--grey); min-height:16px; line-height:1.5;}
+.search-modal h3{font-size:20px; margin-bottom:6px;}
+.search-modal .pm-subtitle{margin-bottom:20px;}
+/* Fix 93 (Carlos: "se ve muy simple muy plano, la palabra buscar aparece dos
+   veces"): antes era un input cuadrado + boton solido de texto "BUSCAR"
+   pegados con un gap, repitiendo el <h3>"Buscar" de arriba -- se sentia
+   plano y redundante. Ahora es una sola barra tipo pildora (fondo crema,
+   borde sutil, anillo dorado al enfocar) con un boton circular de lupa
+   integrado adentro, sin texto -- mismo lenguaje visual que el resto de la
+   marca (dorado de acento, esquinas redondeadas) y sin duplicar la palabra. */
+.search-form{display:flex; align-items:center; gap:0; background:var(--cream); border:1px solid var(--line); border-radius:30px; padding:5px 5px 5px 20px; transition:border-color .2s ease, box-shadow .2s ease;}
+.search-form:focus-within{border-color:var(--gold); box-shadow:0 0 0 3px rgba(198,168,107,.16);}
+.search-input{flex:1; min-width:0; border:none; background:transparent; padding:10px 8px; font-size:14px; font-family:'Manrope',sans-serif; color:var(--ink);}
+.search-input:focus{outline:none;}
+.search-input::placeholder{color:var(--grey);}
+.search-submit-btn{flex-shrink:0; width:40px; height:40px; border-radius:50%; border:none; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s ease;}
+.search-submit-btn:hover{background:var(--gold);}
+.search-feedback{margin-top:16px; font-size:12.5px; color:var(--grey); min-height:16px; line-height:1.5;}
 .beauty-choice-options{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;}
 .beauty-choice-card{border:1px solid var(--line); border-radius:6px; padding:22px 18px; cursor:pointer; text-align:left; transition:box-shadow .2s, border-color .2s; background:#fff;}
 .beauty-choice-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08); border-color:var(--nacar);}
@@ -1441,9 +1453,20 @@ var AZURA_CONFIG = {
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     </div>
     <h3 id="searchModalTitle" data-i18n="search.title">Buscar</h3>
+    <!-- Fix 93 (Carlos: "el formulario se ve muy simple muy plano ... la
+         palabra buscar aparece dos veces"): antes el boton de submit era
+         texto "BUSCAR" repitiendo el <h3>"Buscar" de arriba. Ahora es un
+         boton circular con icono de lupa (sin texto, aria-label sigue
+         diciendo "Buscar" para accesibilidad) integrado a la barra tipo
+         pildora -- mismo patron visual que una barra de busqueda moderna,
+         sin duplicar la palabra en pantalla. Se agrega tambien un subtitulo
+         breve para que el modal no se sienta tan vacio/plano. -->
+    <p class="pm-subtitle" data-i18n="search.subtitle">Encuentra un producto, categoría o sistema completo</p>
     <form class="search-form" onsubmit="return runProductSearch(event);">
       <input type="text" id="searchInput" class="search-input" placeholder="Busca un producto o sistema...">
-      <button type="submit" class="btn btn-dark" style="border:none; cursor:pointer;" data-i18n="search.btn">Buscar</button>
+      <button type="submit" class="search-submit-btn" id="searchSubmitBtn" aria-label="Buscar">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
     </form>
     <p class="search-feedback" id="searchFeedback"></p>
   </div>
@@ -2078,7 +2101,7 @@ var I18N = {
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
     "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
-    "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su ficha...", "search.foundCategory":"Mostrando productos de {name}...", "category.empty":"Proximamente nuevos productos en esta categoría.",
+    "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.subtitle":"Encuentra un producto, categoría o sistema completo", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su ficha...", "search.foundCategory":"Mostrando productos de {name}...", "category.empty":"Proximamente nuevos productos en esta categoría.",
     "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesión para guardar tus productos favoritos y tu historial de pedidos.",
     "cart.title":"Tu carrito", "cart.empty":"Tu carrito esta vacio por ahora.", "cart.cta":"Explorar catálogo",
     "vert.h2":"Lo mejor para ti",
@@ -2198,7 +2221,7 @@ var I18N = {
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
     "hero.cta1":"See more", "hero.cta2":"Our philosophy",
     "hero.visualCaption":"Four wellness systems, one single standard of origin and quality.",
-    "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its page...", "search.foundCategory":"Showing {name} products...", "category.empty":"New products coming soon in this category.",
+    "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.subtitle":"Find a product, category or full system", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its page...", "search.foundCategory":"Showing {name} products...", "category.empty":"New products coming soon in this category.",
     "account.title":"Your Renuévate account", "account.p":"Sign in to save your favorite products and your order history.",
     "cart.title":"Your cart", "cart.empty":"Your cart is empty for now.", "cart.cta":"Explore the catalog",
     "vert.h2":"The best for you",
@@ -2318,7 +2341,7 @@ var I18N = {
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
     "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
     "hero.visualCaption":"Quatre systèmes de bien-etre, un seul standard d'origine et de qualite.",
-    "search.placeholder":"Recherchez un produit ou un système...", "search.btn":"Rechercher", "search.notfound":"Aucun résultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture de sa fiche...", "search.foundCategory":"Affichage des produits de {name}...", "category.empty":"Nouveaux produits bientot disponibles dans cette categorie.",
+    "search.placeholder":"Recherchez un produit ou un système...", "search.btn":"Rechercher", "search.subtitle":"Trouvez un produit, une categorie ou un systeme complet", "search.notfound":"Aucun résultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture de sa fiche...", "search.foundCategory":"Affichage des produits de {name}...", "category.empty":"Nouveaux produits bientot disponibles dans cette categorie.",
     "account.title":"Votre compte Renuévate", "account.p":"Connectez-vous pour enregistrer vos produits favoris et votre historique de commandes.",
     "cart.title":"Votre panier", "cart.empty":"Votre panier est vide pour le moment.", "cart.cta":"Explorer le catalogue",
     "vert.h2":"Le meilleur pour vous",
@@ -5271,6 +5294,8 @@ function applyLanguage(lang){
   if (langSelTop) langSelTop.value = lang;
   var searchInputEl = document.getElementById('searchInput');
   if (searchInputEl) searchInputEl.placeholder = dict['search.placeholder'] || '';
+  var searchSubmitBtnEl = document.getElementById('searchSubmitBtn');
+  if (searchSubmitBtnEl) searchSubmitBtnEl.setAttribute('aria-label', dict['search.btn'] || 'Buscar');
   var pmPhoneEl = document.getElementById('pmPhone');
   if (pmPhoneEl) pmPhoneEl.placeholder = dict['profile.phonePlaceholder'] || '';
   var authTabSignupBtnEl = document.getElementById('authTabSignupBtn');
