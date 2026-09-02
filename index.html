@@ -419,6 +419,9 @@ body.viewing-product-page .home-only{display:none;}
 .cart-items{flex:1; overflow-y:auto; padding:14px 24px;}
 .cart-line{display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--line); align-items:center;}
 .cart-line-body{flex:1;}
+/* Fix 84: "Tono: X" debajo del nombre del producto en el carrito -- solo
+   aparece si la linea trae shade (NACAR-11/12), ver renderCartPanel(). */
+.cart-line-shade{display:block; font-size:12px; color:var(--grey); margin:2px 0 4px;}
 .cart-line-body b{font-size:13.5px; display:block; margin-bottom:3px;}
 .cart-line-body span{font-size:12px; color:var(--grey);}
 .cart-qty{display:flex; align-items:center; gap:8px;}
@@ -1483,7 +1486,7 @@ var AZURA_CONFIG = {
         <p class="pd-disclaimer" id="pdDisclaimerText"></p>
       </div>
       <div class="pd-actions">
-        <button class="add-to-cart-btn" id="pdAddToCartBtn" onclick="addToCart(pdCurrentSku); closeProductDetail();"></button>
+        <button class="add-to-cart-btn" id="pdAddToCartBtn" onclick="addToCart(pdCurrentSku, 1, getPdSelectedShadeName()); closeProductDetail();"></button>
       </div>
     </div>
   </div>
@@ -3146,19 +3149,32 @@ function parsePriceToNumber(priceStr){
 // Misma forma de salida que hydrateCart() en api/cart.js (items/saved_items/
 // subtotal/currency) para que renderCartPanel() no necesite saber si esta
 // pintando un carrito real o uno de invitado.
+// Fix 84: mismo principio que itemMatchFilter() en api/cart.js -- una linea
+// de carrito de invitado se identifica por (sku, shade), no solo sku, para
+// que 2 tonos del mismo producto no se mezclen en una sola cantidad. shade
+// undefined/'' se normaliza a undefined (sin tono), igual que antes de este
+// fix para todo el resto del catalogo.
+function normalizeShadeClient(shade){
+  return (shade && String(shade).trim()) ? String(shade).trim() : undefined;
+}
+function guestItemMatches(item, sku, shade){
+  return item.sku === sku && normalizeShadeClient(item.shade) === shade;
+}
+
 function hydrateGuestCart(){
   var raw = loadGuestCart();
   var items = [], savedItems = [], subtotal = 0;
   raw.items.forEach(function(i){
     var p = guestFindProduct(i.sku);
+    var shade = normalizeShadeClient(i.shade);
     var hydrated;
     if (!p || p.dummy){
-      hydrated = { sku: i.sku, qty: i.qty, unavailable: true };
+      hydrated = { sku: i.sku, qty: i.qty, shade: shade || null, unavailable: true };
     } else {
       var unitPrice = parsePriceToNumber(p.price);
       var lineTotal = unitPrice * i.qty;
       var nameObj = {}; nameObj[currentLang] = p.name;
-      hydrated = { sku: i.sku, qty: i.qty, name: nameObj, unit_price: unitPrice, line_total: lineTotal };
+      hydrated = { sku: i.sku, qty: i.qty, shade: shade || null, name: nameObj, unit_price: unitPrice, line_total: lineTotal };
       if (!i.saved) subtotal += lineTotal;
     }
     if (i.saved) savedItems.push(hydrated); else items.push(hydrated);
@@ -3166,31 +3182,39 @@ function hydrateGuestCart(){
   return { items: items, saved_items: savedItems, subtotal: subtotal, currency: 'MXN' };
 }
 
-function guestAddToCart(sku, qty){
+function guestAddToCart(sku, qty, shade){
   var cart = loadGuestCart();
+  var normShade = normalizeShadeClient(shade);
   var existing = null;
-  for (var i=0;i<cart.items.length;i++){ if (cart.items[i].sku === sku){ existing = cart.items[i]; break; } }
+  for (var i=0;i<cart.items.length;i++){ if (guestItemMatches(cart.items[i], sku, normShade)){ existing = cart.items[i]; break; } }
   if (existing){ existing.qty += (qty || 1); }
-  else { cart.items.push({ sku: sku, qty: qty || 1, saved: false }); }
-  saveGuestCart(cart);
-}
-function guestChangeQty(sku, newQty){
-  var cart = loadGuestCart();
-  if (newQty <= 0){
-    cart.items = cart.items.filter(function(i){ return i.sku !== sku; });
-  } else {
-    for (var i=0;i<cart.items.length;i++){ if (cart.items[i].sku === sku){ cart.items[i].qty = newQty; } }
+  else {
+    var newItem = { sku: sku, qty: qty || 1, saved: false };
+    if (normShade) newItem.shade = normShade;
+    cart.items.push(newItem);
   }
   saveGuestCart(cart);
 }
-function guestRemoveItem(sku){
+function guestChangeQty(sku, newQty, shade){
   var cart = loadGuestCart();
-  cart.items = cart.items.filter(function(i){ return i.sku !== sku; });
+  var normShade = normalizeShadeClient(shade);
+  if (newQty <= 0){
+    cart.items = cart.items.filter(function(i){ return !guestItemMatches(i, sku, normShade); });
+  } else {
+    for (var i=0;i<cart.items.length;i++){ if (guestItemMatches(cart.items[i], sku, normShade)){ cart.items[i].qty = newQty; } }
+  }
   saveGuestCart(cart);
 }
-function guestSetSaved(sku, saved){
+function guestRemoveItem(sku, shade){
   var cart = loadGuestCart();
-  for (var i=0;i<cart.items.length;i++){ if (cart.items[i].sku === sku){ cart.items[i].saved = Boolean(saved); } }
+  var normShade = normalizeShadeClient(shade);
+  cart.items = cart.items.filter(function(i){ return !guestItemMatches(i, sku, normShade); });
+  saveGuestCart(cart);
+}
+function guestSetSaved(sku, saved, shade){
+  var cart = loadGuestCart();
+  var normShade = normalizeShadeClient(shade);
+  for (var i=0;i<cart.items.length;i++){ if (guestItemMatches(cart.items[i], sku, normShade)){ cart.items[i].saved = Boolean(saved); } }
   saveGuestCart(cart);
 }
 
@@ -3213,14 +3237,14 @@ function mergeGuestCartIntoAccount(){
     fetch(AZURA_CONFIG.CART_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: item.sku, qty: item.qty })
+      body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: item.sku, qty: item.qty, shade: item.shade || undefined })
     })
       .then(function(){
         if (item.saved){
           return fetch(AZURA_CONFIG.CART_ENDPOINT, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: item.sku, saved: true })
+            body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: item.sku, saved: true, shade: item.shade || undefined })
           });
         }
       })
@@ -3230,12 +3254,19 @@ function mergeGuestCartIntoAccount(){
   next();
 }
 
-function addToCart(sku){
-  if (!CURRENT_CUSTOMER.id){ guestAddToCart(sku, 1); openCart(); return; }
+// Fix 84: tercer parametro opcional "shade" (tono, ver NACAR-11/12 con
+// shades[]) -- productos sin selector de tonos simplemente no lo mandan
+// (undefined), comportamiento identico al de antes de este fix. Cuando SI
+// viene, el backend (ver itemMatchFilter en api/cart.js) trata (sku, shade)
+// como la linea del carrito, así que elegir 2 tonos distintos del mismo
+// producto crea 2 líneas separadas en vez de sumar cantidades a ciegas.
+function addToCart(sku, qty, shade){
+  var quantity = qty || 1;
+  if (!CURRENT_CUSTOMER.id){ guestAddToCart(sku, quantity, shade); openCart(); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, qty: 1 })
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, qty: quantity, shade: shade || undefined })
   })
   .then(function(r){ return r.json(); })
   .then(function(data){
@@ -3305,20 +3336,24 @@ function startCheckout(){
     });
 }
 
-function changeCartQty(sku, newQty){
-  if (!CURRENT_CUSTOMER.id){ guestChangeQty(sku, newQty); renderCartPanel(hydrateGuestCart()); return; }
+// Fix 84: shade opcional -- identifica la linea exacta cuando el mismo sku
+// tiene mas de un tono en el carrito (ver itemMatchFilter en api/cart.js).
+function changeCartQty(sku, newQty, shade){
+  if (!CURRENT_CUSTOMER.id){ guestChangeQty(sku, newQty, shade); renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, qty: newQty })
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, qty: newQty, shade: shade || undefined })
   })
   .then(function(r){ return r.json(); })
   .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
 }
 
-function removeCartItem(sku){
-  if (!CURRENT_CUSTOMER.id){ guestRemoveItem(sku); renderCartPanel(hydrateGuestCart()); return; }
-  fetch(AZURA_CONFIG.CART_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id) + '&sku=' + encodeURIComponent(sku), { method: 'DELETE' })
+function removeCartItem(sku, shade){
+  if (!CURRENT_CUSTOMER.id){ guestRemoveItem(sku, shade); renderCartPanel(hydrateGuestCart()); return; }
+  var url = AZURA_CONFIG.CART_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id) + '&sku=' + encodeURIComponent(sku);
+  if (shade) url += '&shade=' + encodeURIComponent(shade);
+  fetch(url, { method: 'DELETE' })
     .then(function(r){ return r.json(); })
     .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
 }
@@ -3343,16 +3378,24 @@ function renderCartPanel(cart){
     }
     for (var i=0;i<items.length;i++){
       var it = items[i];
+      // Fix 84: shadeArg es lo que se pasa como 2o/3er argumento a
+      // changeCartQty/saveForLater/removeCartItem para que cada boton actue
+      // sobre ESTA linea exacta (sku+tono), no sobre la primera que matchee
+      // solo por sku -- ver itemMatchFilter() en api/cart.js. shadeLine es
+      // el "Tono: X" que se muestra debajo del nombre, solo si el item trae
+      // tono (el resto del catalogo no tiene shade y no muestra esta linea).
+      var shadeArg = it.shade ? ("'" + it.shade + "'") : "''";
+      var shadeLine = it.shade ? ('<span class="cart-line-shade">' + DYN[currentLang].shadeSelected(it.shade) + '</span>') : '';
       if (it.unavailable){
-        html += '<div class="cart-line"><div class="cart-line-body"><b>' + it.sku + '</b><span>' + DYN[currentLang].productUnavailable() + '</span>' +
-          '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div></div>';
+        html += '<div class="cart-line"><div class="cart-line-body"><b>' + it.sku + '</b>' + shadeLine + '<span>' + DYN[currentLang].productUnavailable() + '</span>' +
+          '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\', ' + shadeArg + ')">' + DYN[currentLang].removeItem() + '</button></div></div>';
         continue;
       }
       var name = it.name ? (it.name[currentLang] || it.name.es) : it.sku;
-      html += '<div class="cart-line"><div class="cart-line-body"><b>' + name + '</b><span>' + formatMXN(it.unit_price) + ' c/u</span>' +
-        '<div class="cart-qty"><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty-1) + ')">-</button><span>' + it.qty + '</span><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty+1) + ')">+</button></div>' +
-        '<div class="cart-line-actions"><button class="cart-line-save" onclick="saveForLater(\'' + it.sku + '\')">' + DYN[currentLang].saveForLater() + '</button>' +
-        '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div>' +
+      html += '<div class="cart-line"><div class="cart-line-body"><b>' + name + '</b>' + shadeLine + '<span>' + formatMXN(it.unit_price) + ' c/u</span>' +
+        '<div class="cart-qty"><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty-1) + ', ' + shadeArg + ')">-</button><span>' + it.qty + '</span><button onclick="changeCartQty(\'' + it.sku + '\', ' + (it.qty+1) + ', ' + shadeArg + ')">+</button></div>' +
+        '<div class="cart-line-actions"><button class="cart-line-save" onclick="saveForLater(\'' + it.sku + '\', ' + shadeArg + ')">' + DYN[currentLang].saveForLater() + '</button>' +
+        '<button class="cart-line-remove" onclick="removeCartItem(\'' + it.sku + '\', ' + shadeArg + ')">' + DYN[currentLang].removeItem() + '</button></div>' +
         '</div><div><b>' + formatMXN(it.line_total) + '</b></div></div>';
     }
 
@@ -3360,15 +3403,17 @@ function renderCartPanel(cart){
       html += '<div class="cart-saved-section"><div class="cart-saved-title">' + DYN[currentLang].savedForLaterTitle() + ' (' + savedItems.length + ')</div>';
       for (var s=0;s<savedItems.length;s++){
         var sv = savedItems[s];
+        var svShadeArg = sv.shade ? ("'" + sv.shade + "'") : "''";
+        var svShadeLine = sv.shade ? ('<span class="cart-line-shade">' + DYN[currentLang].shadeSelected(sv.shade) + '</span>') : '';
         if (sv.unavailable){
-          html += '<div class="cart-line cart-line-saved"><div class="cart-line-body"><b>' + sv.sku + '</b><span>' + DYN[currentLang].productUnavailable() + '</span>' +
-            '<button class="cart-line-remove" onclick="removeCartItem(\'' + sv.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div></div>';
+          html += '<div class="cart-line cart-line-saved"><div class="cart-line-body"><b>' + sv.sku + '</b>' + svShadeLine + '<span>' + DYN[currentLang].productUnavailable() + '</span>' +
+            '<button class="cart-line-remove" onclick="removeCartItem(\'' + sv.sku + '\', ' + svShadeArg + ')">' + DYN[currentLang].removeItem() + '</button></div></div>';
           continue;
         }
         var svName = sv.name ? (sv.name[currentLang] || sv.name.es) : sv.sku;
-        html += '<div class="cart-line cart-line-saved"><div class="cart-line-body"><b>' + svName + '</b><span>' + formatMXN(sv.unit_price) + ' c/u &middot; x' + sv.qty + '</span>' +
-          '<div class="cart-line-actions"><button class="cart-line-save" onclick="moveToCart(\'' + sv.sku + '\')">' + DYN[currentLang].moveToCartLabel() + '</button>' +
-          '<button class="cart-line-remove" onclick="removeCartItem(\'' + sv.sku + '\')">' + DYN[currentLang].removeItem() + '</button></div>' +
+        html += '<div class="cart-line cart-line-saved"><div class="cart-line-body"><b>' + svName + '</b>' + svShadeLine + '<span>' + formatMXN(sv.unit_price) + ' c/u &middot; x' + sv.qty + '</span>' +
+          '<div class="cart-line-actions"><button class="cart-line-save" onclick="moveToCart(\'' + sv.sku + '\', ' + svShadeArg + ')">' + DYN[currentLang].moveToCartLabel() + '</button>' +
+          '<button class="cart-line-remove" onclick="removeCartItem(\'' + sv.sku + '\', ' + svShadeArg + ')">' + DYN[currentLang].removeItem() + '</button></div>' +
           '</div></div>';
       }
       html += '</div>';
@@ -3380,23 +3425,23 @@ function renderCartPanel(cart){
   renderBagUpsell(cart);
 }
 
-function saveForLater(sku){
-  if (!CURRENT_CUSTOMER.id){ guestSetSaved(sku, true); renderCartPanel(hydrateGuestCart()); return; }
+function saveForLater(sku, shade){
+  if (!CURRENT_CUSTOMER.id){ guestSetSaved(sku, true, shade); renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, saved: true })
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, saved: true, shade: shade || undefined })
   })
   .then(function(r){ return r.json(); })
   .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
 }
 
-function moveToCart(sku){
-  if (!CURRENT_CUSTOMER.id){ guestSetSaved(sku, false); renderCartPanel(hydrateGuestCart()); return; }
+function moveToCart(sku, shade){
+  if (!CURRENT_CUSTOMER.id){ guestSetSaved(sku, false, shade); renderCartPanel(hydrateGuestCart()); return; }
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, saved: false })
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, saved: false, shade: shade || undefined })
   })
   .then(function(r){ return r.json(); })
   .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
@@ -4160,6 +4205,17 @@ function selectPdShade(idx){
   renderPdShades(p.shades);
 }
 
+// Fix 84: nombre del tono actualmente seleccionado, para mandarlo junto con
+// el sku a addToCart() -- devuelve undefined si el producto no tiene shades
+// (todo el catalogo salvo NACAR-11/12), que es exactamente lo que addToCart
+// espera para comportarse igual que antes de este fix.
+function getPdSelectedShadeName(){
+  var p = findProductBySku(CURRENT_RENDERED_PRODUCTS, pdCurrentSku);
+  if (!p || !p.shades || !p.shades.length) return undefined;
+  var sh = p.shades[pdCurrentShadeIdx];
+  return sh ? sh.name : undefined;
+}
+
 function iconSvg(v){
   var paths = {
     nacar:'<path d="M12 3c4 3 7 6 7 10a7 7 0 0 1-14 0c0-4 3-7 7-10Z"/>',
@@ -4249,11 +4305,20 @@ function renderVertical(v){
     var priceHtml = p.dummy
       ? '<div class="price product-dummy-price">' + DYN[currentLang].comingSoonBadge() + '</div>'
       : '<div class="price">' + p.price + '</div>';
+    // Fix 84: si el producto trae shades (NACAR-11/12), el "Agregar al
+    // carrito" rapido de la tarjeta (sin abrir el detalle) no debe mandar un
+    // tono en blanco -- se manda el primer tono CON stock por default. El
+    // cliente que quiera otro tono especifico sigue teniendo "Ver detalle"
+    // para elegirlo con el selector tipo carrusel antes de agregar.
+    var defaultShadeName = '';
+    if (p.shades && p.shades.length){
+      for (var sd=0; sd<p.shades.length; sd++){ if (p.shades[sd].available !== false){ defaultShadeName = p.shades[sd].name; break; } }
+    }
     var actionsHtml = p.dummy
       ? ((p.longDesc ? ('<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>') : '') +
          '<button class="add-to-cart-btn" disabled>' + DYN[currentLang].comingSoonBadge() + '</button>')
       : ('<button class="view-detail-link" onclick="openProductDetail(\'' + p.sku + '\')">' + DYN[currentLang].viewDetail() + '</button><br>' +
-         '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\')">' + DYN[currentLang].addToCart() + '</button>');
+         '<button class="add-to-cart-btn" onclick="addToCart(\'' + p.sku + '\', 1, \'' + defaultShadeName + '\')">' + DYN[currentLang].addToCart() + '</button>');
 
     html += '<div class="product-card' + (p.dummy ? ' product-card-dummy' : '') + '" data-sku="' + p.sku + '"><div class="product-img">' + imgHtml + '</div>' +
       '<div class="product-body"><div class="p-eyebrow">' + p.tag + '</div>' +
@@ -4264,11 +4329,12 @@ function renderVertical(v){
       actionsHtml +
       '</div></div>';
   }
-  // Fix 72: "Maquillaje" ahora se navega con categoryFilterSku=[] (sin
-  // productos reales todavia) -- sin este bloque, listToRender quedaba vacio
-  // y el usuario solo veia una caja en blanco, sin explicacion. Se agrega un
-  // estado vacio con mensaje de marca (categoría.empty) antes del link de
-  // "ver catalogo completo".
+  // Fix 72: bloque generico para CUALQUIER categoria que llegue con
+  // categoryFilterSku=[] (hoy ninguna, desde Fix 84 "Maquillaje" ya trae
+  // NACAR-11/12) -- sin esto, listToRender quedaba vacio y el usuario solo
+  // veia una caja en blanco, sin explicacion. Se agrega un estado vacio con
+  // mensaje de marca (categoría.empty) antes del link de "ver catalogo
+  // completo", por si se agrega una categoria nueva sin productos todavia.
   if (categoryFilterSku && listToRender.length === 0){
     html += '<div class="category-empty-state">' + I18N[currentLang]['category.empty'] + '</div>';
   }
@@ -4768,8 +4834,8 @@ function runProductSearch(e){
   }
 
   // Fix 72: categorías reales del menu Belleza (ver openBeautyCategory en el
-  // nav) -- "Maquillaje" hoy va con arreglo vacio a proposito (sin productos
-  // todavia), igual que en el nav.
+  // nav) -- deben coincidir 1:1 con los arreglos del nav de arriba. "Maquillaje"
+  // trae NACAR-11/12 desde Fix 84 (antes iba con arreglo vacio a proposito).
   var matchCategory = null;
   if (!matchProduct){
     var categories = [

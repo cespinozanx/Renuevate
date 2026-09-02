@@ -262,6 +262,10 @@ const VALIDATORS = {
               vertical: { bsonType: ['string', 'null'] },
               unit_price: { bsonType: ['double', 'int'] },
               qty: { bsonType: 'int', minimum: 1 },
+              // Fix 84: tono elegido al momento de comprar (ver mismo campo
+              // en carts.items arriba) -- se copia a la orden para que el
+              // pedido se pueda surtir con el tono correcto.
+              shade: { bsonType: ['string', 'null'] },
             },
           },
         },
@@ -346,6 +350,12 @@ const VALIDATORS = {
               // "Guardar para mas tarde" (ver api/cart.js) -- true excluye el
               // item del subtotal sin borrarlo del carrito.
               saved: { bsonType: ['bool', 'null'] },
+              // Fix 84: tono elegido (ver NACAR-11/12 con shades[] en el
+              // catalogo) -- opcional, ausente/null para el resto del
+              // catalogo (sin selector de tonos). Junto con sku forma el
+              // identificador real de una linea del carrito, ver
+              // itemMatchFilter() en api/cart.js.
+              shade: { bsonType: ['string', 'null'] },
             },
           },
         },

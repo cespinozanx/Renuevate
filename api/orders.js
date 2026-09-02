@@ -67,7 +67,11 @@ module.exports = async (req, res) => {
         return;
       }
       subtotal += unitPrice * qty;
-      cleanItems.push({ sku, name, vertical: raw.vertical || null, unit_price: unitPrice, qty });
+      // Fix 84: shade (tono, ver NACAR-11/12) es opcional -- este endpoint no
+      // se usa hoy desde el frontend (el flujo real de pago es api/checkout.js
+      // -> Mercado Pago -> webhook), pero se mantiene consistente con ese
+      // mismo contrato por si se vuelve a conectar mas adelante.
+      cleanItems.push({ sku, name, vertical: raw.vertical || null, unit_price: unitPrice, qty, shade: raw.shade || null });
     }
 
     const db = await getDb();

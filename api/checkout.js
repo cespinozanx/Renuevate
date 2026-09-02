@@ -106,12 +106,22 @@ async function handleCreatePreference(req, res) {
       if (line.saved) continue;
       const product = bySku.get(line.sku);
       if (!product) continue; // sku inactivo/retirado -- se ignora, igual que en el carrito visible
+      const baseTitle = (product.name_i18n && product.name_i18n.es) || product.sku;
+      // Fix 84: el tono elegido (ver NACAR-11/12 con shades[]) viaja en 2
+      // lugares -- (a) metido en el titulo, para que aparezca en el
+      // checkout/recibo hospedado por Mercado Pago (esa pantalla es de
+      // Mercado Pago, no nuestra, y no tiene un campo separado para
+      // variante/tono); y (b) como campo "shade" independiente en
+      // metadata.items, que es lo que handleWebhook() lee mas abajo para
+      // grabar la orden -- eso es lo que de verdad importa para poder
+      // surtir el pedido con el tono correcto.
       mpItems.push({
         id: product.sku,
-        title: (product.name_i18n && product.name_i18n.es) || product.sku,
+        title: line.shade ? `${baseTitle} - Tono: ${line.shade}` : baseTitle,
         quantity: line.qty,
         unit_price: product.unit_price,
         currency_id: product.currency || 'MXN',
+        shade: line.shade || null,
       });
     }
 
@@ -222,6 +232,10 @@ async function handleWebhook(req, res) {
       vertical: null,
       unit_price: Number(it.unit_price),
       qty: Number(it.quantity),
+      // Fix 84: tono elegido (NACAR-11/12) -- viaja desde
+      // handleCreatePreference() via metadata.items. null cuando el producto
+      // no tiene selector de tonos (todo el resto del catalogo).
+      shade: it.shade || null,
     }));
     const total = cleanItems.reduce((sum, it) => sum + it.unit_price * it.qty, 0);
 
