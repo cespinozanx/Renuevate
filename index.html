@@ -705,6 +705,16 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 }
 .pd-eyebrow{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:6px;}
 .pd-body h3{font-size:24px; margin-bottom:10px;}
+/* Fix 86: #pdLongDesc (la descripcion larga, primer parrafo del detalle de
+   producto) no tenia NINGUNA regla propia -- heredaba el font-size:16px del
+   body{} global, mientras que "Modo de uso" (.pd-section p) e "Ingredientes"
+   (.pd-section ul li) ya usaban 13.5px/1.65. Resultado: el mismo modal se
+   veia con 2 tamaños de letra distintos segun la seccion (senalado por
+   Carlos con 3 numeros sobre una captura). Se iguala aqui a la misma
+   tipografia que el resto del cuerpo del detalle, para las 3 zonas (1
+   descripcion, 2 modo de uso, 3 ingredientes) se vean consistentes en TODOS
+   los productos (este bloque es compartido, no por producto). */
+.pd-body > p#pdLongDesc{font-size:13.5px; line-height:1.65; color:var(--ink);}
 .pd-price{font-size:19px; font-weight:700; color:var(--navy); margin:18px 0 4px;}
 .pd-section{margin-top:18px;}
 .pd-section h5{font-size:12.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:6px;}
@@ -1692,8 +1702,8 @@ var V = {
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
-        {sku:"NACAR-07", tag:"Gel antioxidante", name:"Gel Antioxidante Nacar", desc:"Protege de radicales libres, hidratacion profunda.", price:"$340 MXN", favorito:false,
-          longDesc:"Tu mejor aliado para hidratar, humectar y acondicionar la piel: ayuda a mantenerla protegida frente a los radicales libres y aumenta su nivel de hidratacion. Brinda mayor protección, un aspecto saludable y ayuda a mejorar la elasticidad. Presentacion de 30 g.",
+        {sku:"NACAR-07", tag:"Gel antioxidante", name:"Omniplus Gel Premium", desc:"Omniplus Gel Premium colabora a mantener la piel protegida de los ataques de los radicales libres y aumentar el nivel de hidratación.", price:"$340 MXN", favorito:false,
+          longDesc:"Tu mejor aliado para hidratar, humectar y acondicionar la piel. Brinda mayor protección, un aspecto saludable y ayuda a mejorar la elasticidad. Presentación de 30 g.",
           usage:"Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.",
           ingredients:["Extracto de levadura","Extracto de hoja de olivo","Extracto de arnica","Extractos de frutas silvestres","Aceite de jojoba"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
@@ -1764,8 +1774,8 @@ var V = {
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
-        {sku:"NACAR-07", tag:"Antioxidant gel", name:"Nacar Antioxidant Gel", desc:"Protects from free radicals, deep hydration.", price:"$340 MXN", favorito:false,
-          longDesc:"Your best ally to hydrate, moisturize and condition the skin: helps keep it protected from free radicals and increases its hydration level. Provides greater protection, a healthy look, and helps improve elasticity. 30 g.",
+        {sku:"NACAR-07", tag:"Antioxidant gel", name:"Omniplus Premium Gel", desc:"Omniplus Premium Gel helps keep skin protected from free-radical damage and increases hydration levels.", price:"$340 MXN", favorito:false,
+          longDesc:"Your best ally to hydrate, moisturize and condition the skin. Provides greater protection, a healthy look, and helps improve elasticity. 30 g.",
           usage:"Apply a small amount to clean face and/or body with a gentle massage until fully absorbed. Daily use.",
           ingredients:["Yeast extract","Olive leaf extract","Arnica extract","Wild berry extracts","Jojoba oil"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
@@ -1836,8 +1846,8 @@ var V = {
           ingredients:["Aqua (Water)","Sodium C14-16 Olefin Sulfonate","Sodium Cocoyl Isethionate","Sodium Lauroamphoacetate","Glycerin","Disodium Laureth Sulfosuccinate","Cocamidopropyl Betaine","PEG-8 Caprylic/Capric Glycerides","Polysorbate 20","Aloe Barbadensis Leaf Extract","Alaria Esculenta Extract","Moringa Oleifera Leaf Extract","Ethylhexylglycerin","PEG-12 Dimethicone","Cocamide MIPA","Benzyl Alcohol","Parfum (Fragrance)","Citric Acid","Benzyl Salicylate","Hexyl Cinnamal","Limonene"],
           img:"media/nacar-06-espuma-lifestyle-ventana.webp", thumb:"media/nacar-06-espuma-thumb.webp", gallery:["media/nacar-06-espuma-lifestyle-flatlay.webp","media/nacar-06-espuma-lifestyle-mano.webp"],
           related:["NACAR-08"]},
-        {sku:"NACAR-07", tag:"Gel antioxydant", name:"Gel Antioxydant Nacar", desc:"Protège des radicaux libres, hydratation profonde.", price:"$340 MXN", favorito:false,
-          longDesc:"Votre meilleur allié pour hydrater et conditionner la peau : aide a la protéger des radicaux libres et augmente son niveau d'hydratation. Offre une meilleure protection, un aspect sain et aide a améliorer l'élasticité. Format 30 g.",
+        {sku:"NACAR-07", tag:"Gel antioxydant", name:"Omniplus Gel Premium", desc:"Omniplus Gel Premium aide à garder la peau protégée contre les radicaux libres et à augmenter son niveau d'hydratation.", price:"$340 MXN", favorito:false,
+          longDesc:"Votre meilleur allié pour hydrater et conditionner la peau. Offre une meilleure protection, un aspect sain et aide à améliorer l'élasticité. Format 30 g.",
           usage:"Appliquer une petite quantité sur le visage et/ou le corps propre avec un massage doux jusqu'a absorption complète. Usage quotidien.",
           ingredients:["Extrait de levure","Extrait de feuille d'olivier","Extrait d'arnica","Extraits de fruits sauvages","Huile de jojoba"],
           img:"media/nacar-07-gel-abierto.webp", thumb:"media/nacar-07-gel-thumb.webp", gallery:["media/nacar-07-gel-front.webp","media/nacar-07-gel-textura.webp"],
