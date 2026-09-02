@@ -109,6 +109,48 @@ const PRODUCTS = [
     long_description_es: 'Ideal para ayudar a mejorar la apariencia de las finas líneas de expresión causadas por la resequedad. Textura suave y ligera de fácil absorción.',
     ingredients_es: ['Enriquecido con péptidos precursores del colágeno y ácido hialurónico.'],
     usage_es: 'Aplica 2-3 gotas sobre rostro limpio, por la mañana y por la noche, con un ligero masaje hasta su absorción completa. Puedes usarlo antes de tu crema hidratante.' },
+  // Fix 84: primer producto real de la categoria "Maquillaje" (Carlos,
+  // 2026-09-01) -- antes vacia (ver comentario historico Fix 72 en index.html).
+  // Trae "shades" (9 tonos, uno sin stock: Cocoa) para el selector tipo
+  // carrusel del modal de detalle -- misma foto para todos los tonos, ver
+  // renderPdShades()/selectPdShade() en index.html.
+  { sku: 'NACAR-11', vertical: 'nacar', price: '$535 MXN', related: ['NACAR-08'], favorito: true,
+    name_i18n: { es: 'Maquillaje Líquido UP+ FPS15', en: 'UP+ Liquid Foundation SPF15', fr: 'Fond de Teint Liquide UP+ FPS15' },
+    description_i18n: { es: 'Base de maquillaje con acabado mate, de larga duracion y cobertura construible, que corrige el tono de tu piel mientras la protege con activos anti edad, humectantes y antioxidantes.', en: 'A matte-finish, long-wearing liquid foundation with buildable coverage that corrects your skin tone while protecting it with anti-aging, moisturizing and antioxidant actives.', fr: 'Fond de teint liquide fini mat, longue tenue et couvrance modulable, qui corrige le teint de la peau tout en la protegeant grace a ses actifs anti-age, hydratants et antioxydants.' },
+    image: 'media/nacar-11-maquillaje-front.webp',
+    long_description_es: 'Formula a prueba de agua y sudor, con acabado homogeneo y mate. Su efecto soft focus difumina la apariencia de las finas lineas de expresion. Cobertura construible que se adapta a tu piel a lo largo del dia. Presentacion de 40 g. Disponible en 9 tonos.',
+    ingredients_es: ['Aqua (Water)', 'Zinc Oxide', 'Cyclopentasiloxane', 'Isododecane', 'Trimethylsiloxysilicate', 'Cetearyl Alcohol', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Polymethylsilsesquioxane/Trimethylsiloxysilicate', 'Divinyldimethicone/Dimethicone/Phenylsilsesquioxane Crosspolymer', 'Dimethicone', 'PEG-10 Dimethicone', 'Hydrogenated Rapeseed Oil', 'C24-28 Alkyldimethylsiloxy Trimethylsiloxysilicate', 'Polymethylsilsesquioxane', 'Cetyl PEG/PPG-10/1 Dimethicone', 'Hexyl Laurate', 'PEG/PPG-18/18 Dimethicone', 'Microcrystalline Wax', 'Hydrolyzed Collagen', 'Polyglyceryl-4 Isostearate', 'Tocopheryl Acetate', 'Sodium Polyacrylate', 'Parfum (Fragrance)', 'Disteardimonium Hectorite', 'Caprylyl Glycol', 'Aluminum Hydroxide', 'Polysilicone-11', 'Propylene Carbonate', 'Triethoxycaprylylsilane', 'Butylene Glycol', 'Phenoxyethanol', 'DMDM Hydantoin', 'Xanthan Gum', 'Decylene Glycol', 'Hydrolyzed Wheat Protein', 'Ethylhexylglycerin', 'Hydrolyzed Soy Protein', 'Decyl Glucoside', 'Sodium Hyaluronate', 'Pectin', 'Hexylene Glycol', 'Serine', 'Arginine', 'Proline', 'Glucose', 'Carrageenan', 'Alpha-Isomethyl Ionone', 'Amyl Cinnamal', 'Anise Alcohol', 'Cinnamyl Alcohol', 'Citronellol', 'Geraniol', 'Hexyl Cinnamal', 'Hydroxycitronellal', 'Linalool'],
+    usage_es: 'Aplica sobre el rostro limpio con los dedos, brocha o esponja, extendiendo del centro hacia afuera. Aumenta la cobertura con capas adicionales en las zonas que lo requieran.',
+    disclaimer_es: 'Puede contener/may contain: Titanium Dioxide (CI 77891), Iron Oxides (CI 77491, CI 77492, CI 77499) -- la carga de pigmento varia segun el tono.',
+    shades: [
+      { name: 'Fair', hex: '#E4CAA8', available: true },
+      { name: 'Light Sand', hex: '#D5B695', available: true },
+      { name: 'Soft Honey', hex: '#DAB687', available: true },
+      { name: 'Natural Beige', hex: '#D9AD87', available: true },
+      { name: 'Warm Beige', hex: '#D0AA7B', available: true },
+      { name: 'Creamy Natural', hex: '#BB9876', available: true },
+      { name: 'Sun Beige', hex: '#BB9564', available: true },
+      { name: 'Caramel', hex: '#A67A54', available: true },
+      { name: 'Cocoa', hex: '#62402E', available: false },
+    ] },
+  // Fix 84: segundo producto de "Maquillaje" (Carlos, 2026-09-01). Mismo
+  // patron de shades que NACAR-11, 7 tonos, todos con stock.
+  { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11'], favorito: false,
+    name_i18n: { es: 'Brillo Labial Diamante', en: 'Diamond Lip Gloss', fr: 'Gloss a Levres Diamant' },
+    description_i18n: { es: 'Formula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.', en: 'A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.', fr: 'Une formule qui fond sur les levres, pour une finition brillante inegalee et un effet volumateur.' },
+    image: 'media/nacar-12-brillo-front.webp',
+    long_description_es: 'Acabado brillante y luminoso, con una formula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentacion de 8.5 g. Disponible en 7 tonos.',
+    ingredients_es: ['Hydrogenated Polyisobutene', 'Tridecyl Trimellitate', 'Caprylic/Capric Triglyceride', 'Microcrystalline Wax (Cera Microcristalina)', 'Parfum (Fragrance)', 'Hydrogenated Vegetable Oil', 'Beeswax (Cera Alba)', 'Tocopheryl Acetate', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Hydrogenated Palm Acid', 'Mica', 'Silica', 'Stearyl Stearate', 'Dibutyl Lauroyl Glutamide', 'Calcium Aluminum Borosilicate', 'Bis-Stearyl Dimethicone', 'Phenoxyethanol', 'BHT', 'Cyclamen Aldehyde', 'Iron Oxide (CI 77491)', 'Titanium Dioxide (CI 77891)'],
+    usage_es: 'Utilizalo solo o combinalo con tu labial hidratante o mate favorito.',
+    shades: [
+      { name: 'Diamante', hex: '#E8CFCB', available: true },
+      { name: 'Ópalo', hex: '#C46B85', available: true },
+      { name: 'Ámbar', hex: '#B97050', available: true },
+      { name: 'Topaz', hex: '#BD8148', available: true },
+      { name: 'Ágata', hex: '#B87684', available: true },
+      { name: 'Rubí', hex: '#9E1F2E', available: true },
+      { name: 'Zafiro', hex: '#7A5578', available: true },
+    ] },
 
   // VIGOR
   { sku: 'VIGOR-01', vertical: 'vigor', price: '$699 MXN', rating: { stars: 4.8, count: 521 }, related: ['VIGOR-03'],
@@ -179,6 +221,10 @@ async function main() {
       if (p.ingredients_es !== undefined) setFields.ingredients_es = p.ingredients_es;
       if (p.usage_es !== undefined) setFields.usage_es = p.usage_es;
       if (p.disclaimer_es !== undefined) setFields.disclaimer_es = p.disclaimer_es;
+      // Fix 84: tonos del selector tipo carrusel (NACAR-11/12) -- ver
+      // renderPdShades() en index.html. Solo los productos de Maquillaje
+      // traen este campo; el resto del catalogo no se ve afectado.
+      if (p.shades !== undefined) setFields.shades = p.shades;
       // Fix 74: atributo "Favoritos de Renuevate" (Carlos, 2026-08-31) -- se
       // filtra por este campo en el nuevo link/submenu del sitio. Se checa
       // !== undefined (no solo truthy) porque false es un valor valido que

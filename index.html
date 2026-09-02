@@ -674,6 +674,17 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .pd-thumb{width:56px; height:56px; flex:none; border-radius:4px; overflow:hidden; border:1px solid var(--line); cursor:pointer; opacity:.65; transition:opacity .15s, border-color .15s; background:#fff; padding:0;}
 .pd-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
 .pd-thumb.is-active{opacity:1; border-color:var(--ink);}
+/* Fix 84: selector de tonos tipo carrusel (NACAR-11/12) -- fila de circulos
+   con scroll horizontal en vez de salto de linea, para que 7-9 tonos quepan
+   sin romper el layout del modal. Un circulo activo se marca con anillo +
+   check; uno sin stock (available:false, ver NACAR-11 "Cocoa") se muestra
+   atenuado con una diagonal, igual al patron de los screenshots de Carlos. */
+.pd-shades-row{display:flex; gap:10px; padding-top:4px; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.pd-shade-dot{width:34px; height:34px; border-radius:50%; border:2px solid transparent; box-shadow:0 0 0 1px var(--line) inset; cursor:pointer; padding:0; position:relative; flex:none; transition:border-color .15s, transform .15s;}
+.pd-shade-dot.is-active{border-color:var(--ink); transform:scale(1.1);}
+.pd-shade-dot.is-unavailable{cursor:not-allowed; opacity:.5;}
+.pd-shade-dot.is-unavailable::after{content:''; position:absolute; inset:-2px; border-radius:50%; background:linear-gradient(to top right, transparent 47%, #fff 49%, #fff 51%, transparent 53%);}
+.pd-shade-selected{font-size:13px; color:var(--grey); margin-bottom:6px;}
 .pd-body{flex:1; min-width:0; padding:32px 34px; overflow-y:auto; max-height:88vh;}
 @media(max-width:700px){
   .product-detail-modal{flex-direction:column; max-height:90vh; overflow-y:auto;}
@@ -931,11 +942,11 @@ var AZURA_CONFIG = {
            "Belleza" se queda con lo que no se movio: "Descubre tu rutina",
            los 3 Speciality (Luminous/Health/Spot) y el Diagnostico
            personalizado. Los skus de "Skin Care" ahora son los 5 productos
-           reales (NACAR-06..10, ver Fix 72 en openBeautyCategory de abajo) y
-           "Maquillaje" queda temporalmente vacio ([]) hasta que Carlos cargue
-           productos que de verdad sean de esa categoría -- renderVertical ya
-           muestra un estado vacio con mensaje (categoría.empty) en vez de
-           dejar la caja en blanco. -->
+           reales (NACAR-06..10, ver Fix 72 en openBeautyCategory de abajo).
+           "Maquillaje" estuvo vacio ([]) hasta Fix 84, cuando se cargo
+           NACAR-11 (Maquillaje Liquido UP+ FPS15) -- ver openBeautyCategory
+           de abajo y la categoria.empty en I18N que sigue sirviendo de
+           fallback para cuando una categoria futura quede sin SKUs. -->
       <div class="nav-dropdown" id="navBeautyDropdown">
         <a class="nav-dropdown-trigger" data-v="nacar" onclick="toggleBeautyDropdown(event)"><span data-i18n="nav.nacar">Belleza</span> <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
@@ -953,7 +964,7 @@ var AZURA_CONFIG = {
         </div>
       </div>
       <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skin Care</a>
-      <a onclick="openBeautyCategory([], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
+      <a onclick="openBeautyCategory(['NACAR-11','NACAR-12'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
       <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
       <!-- Fix 69: buscador -- reemplaza al viejo icono de lupa del header
            (quitado en Fix 56). Ahora es un item de nav normal, a la derecha
@@ -1448,6 +1459,16 @@ var AZURA_CONFIG = {
       <div class="pd-eyebrow" id="pdTag"></div>
       <h3 id="pdName"></h3>
       <p id="pdLongDesc"></p>
+      <!-- Fix 84: selector de tonos tipo carrusel -- solo aparece si el producto
+           trae p.shades (ver NACAR-11/12). Clic en un circulo cambia SOLO el
+           estado/label del tono elegido (pdSelectedShade), NUNCA la foto
+           principal (pdMedia) -- instruccion explicita de Carlos: "la misma
+           imagen solo los tonos varian". Ver renderPdShades()/selectPdShade(). -->
+      <div class="pd-section pd-shades-block" id="pdShadesBlock" style="display:none;">
+        <h5 id="pdShadesLabel">Tono</h5>
+        <div class="pd-shade-selected" id="pdShadeSelectedLabel"></div>
+        <div class="pd-shades-row" id="pdShadesRow"></div>
+      </div>
       <div class="pd-section" id="pdUsageBlock" style="display:none;">
         <h5 id="pdUsageLabel">Modo de uso</h5>
         <p id="pdUsageText"></p>
@@ -1691,7 +1712,40 @@ var V = {
           usage:"Aplica 2-3 gotas sobre rostro limpio, por la mañana y por la noche, con un ligero masaje hasta su absorción completa. Puedes usarlo antes de tu crema hidratante.",
           ingredients:["Enriquecido con péptidos precursores del colágeno y ácido hialurónico."],
           img:"media/nacar-10-suero-lifestyle-mano.webp", thumb:"media/nacar-10-suero-thumb.webp", gallery:["media/nacar-10-suero-lifestyle-aloe.webp","media/nacar-10-suero-lifestyle-splash.webp"],
-          related:["NACAR-06","NACAR-08"]}
+          related:["NACAR-06","NACAR-08"]},
+        {sku:"NACAR-11", tag:"Maquillaje líquido", name:"Maquillaje Líquido UP+ FPS15", desc:"Base de maquillaje con acabado mate, de larga duración y cobertura construible, que corrige el tono de tu piel mientras la protege con activos anti edad, humectantes y antioxidantes.", price:"$535 MXN", favorito:true,
+          longDesc:"Fórmula a prueba de agua y sudor, con acabado homogéneo y mate. Su efecto soft focus difumina la apariencia de las finas líneas de expresión. Cobertura construible que se adapta a tu piel a lo largo del día. Presentación de 40 g. Disponible en 9 tonos.",
+          usage:"Aplica sobre el rostro limpio con los dedos, brocha o esponja, extendiendo del centro hacia afuera. Aumenta la cobertura con capas adicionales en las zonas que lo requieran.",
+          ingredients:["Aqua (Water)","Zinc Oxide","Cyclopentasiloxane","Isododecane","Trimethylsiloxysilicate","Cetearyl Alcohol","Simmondsia Chinensis (Jojoba) Seed Oil","Polymethylsilsesquioxane/Trimethylsiloxysilicate","Divinyldimethicone/Dimethicone/Phenylsilsesquioxane Crosspolymer","Dimethicone","PEG-10 Dimethicone","Hydrogenated Rapeseed Oil","C24-28 Alkyldimethylsiloxy Trimethylsiloxysilicate","Polymethylsilsesquioxane","Cetyl PEG/PPG-10/1 Dimethicone","Hexyl Laurate","PEG/PPG-18/18 Dimethicone","Microcrystalline Wax","Hydrolyzed Collagen","Polyglyceryl-4 Isostearate","Tocopheryl Acetate","Sodium Polyacrylate","Parfum (Fragrance)","Disteardimonium Hectorite","Caprylyl Glycol","Aluminum Hydroxide","Polysilicone-11","Propylene Carbonate","Triethoxycaprylylsilane","Butylene Glycol","Phenoxyethanol","DMDM Hydantoin","Xanthan Gum","Decylene Glycol","Hydrolyzed Wheat Protein","Ethylhexylglycerin","Hydrolyzed Soy Protein","Decyl Glucoside","Sodium Hyaluronate","Pectin","Hexylene Glycol","Serine","Arginine","Proline","Glucose","Carrageenan","Alpha-Isomethyl Ionone","Amyl Cinnamal","Anise Alcohol","Cinnamyl Alcohol","Citronellol","Geraniol","Hexyl Cinnamal","Hydroxycitronellal","Linalool"],
+          disclaimer:"Puede contener/may contain: Titanium Dioxide (CI 77891), Iron Oxides (CI 77491, CI 77492, CI 77499) — la carga de pigmento varía según el tono.",
+          img:"media/nacar-11-maquillaje-front.webp", thumb:"media/nacar-11-maquillaje-thumb.webp", gallery:["media/nacar-11-maquillaje-tonos-brazo.webp"],
+          shades:[
+            {name:"Fair", hex:"#E4CAA8", available:true},
+            {name:"Light Sand", hex:"#D5B695", available:true},
+            {name:"Soft Honey", hex:"#DAB687", available:true},
+            {name:"Natural Beige", hex:"#D9AD87", available:true},
+            {name:"Warm Beige", hex:"#D0AA7B", available:true},
+            {name:"Creamy Natural", hex:"#BB9876", available:true},
+            {name:"Sun Beige", hex:"#BB9564", available:true},
+            {name:"Caramel", hex:"#A67A54", available:true},
+            {name:"Cocoa", hex:"#62402E", available:false}
+          ],
+          related:["NACAR-08"]},
+        {sku:"NACAR-12", tag:"Brillo labial", name:"Brillo Labial Diamante", desc:"Fórmula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.", price:"$340 MXN", favorito:false,
+          longDesc:"Acabado brillante y luminoso, con una fórmula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentación de 8.5 g. Disponible en 7 tonos.",
+          usage:"Utilízalo solo o combínalo con tu labial hidratante o mate favorito.",
+          ingredients:["Hydrogenated Polyisobutene","Tridecyl Trimellitate","Caprylic/Capric Triglyceride","Microcrystalline Wax (Cera Microcristalina)","Parfum (Fragrance)","Hydrogenated Vegetable Oil","Beeswax (Cera Alba)","Tocopheryl Acetate","Simmondsia Chinensis (Jojoba) Seed Oil","Hydrogenated Palm Acid","Mica","Silica","Stearyl Stearate","Dibutyl Lauroyl Glutamide","Calcium Aluminum Borosilicate","Bis-Stearyl Dimethicone","Phenoxyethanol","BHT","Cyclamen Aldehyde","Iron Oxide (CI 77491)","Titanium Dioxide (CI 77891)"],
+          img:"media/nacar-12-brillo-front.webp", thumb:"media/nacar-12-brillo-thumb.webp",
+          shades:[
+            {name:"Diamante", hex:"#E8CFCB", available:true},
+            {name:"Ópalo", hex:"#C46B85", available:true},
+            {name:"Ámbar", hex:"#B97050", available:true},
+            {name:"Topaz", hex:"#BD8148", available:true},
+            {name:"Ágata", hex:"#B87684", available:true},
+            {name:"Rubí", hex:"#9E1F2E", available:true},
+            {name:"Zafiro", hex:"#7A5578", available:true}
+          ],
+          related:["NACAR-11"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
@@ -1730,7 +1784,40 @@ var V = {
           usage:"Apply 2-3 drops to clean skin, morning and night, with a gentle massage until fully absorbed. Use before your moisturizer.",
           ingredients:["Enriched with collagen-precursor peptides and hyaluronic acid."],
           img:"media/nacar-10-suero-lifestyle-mano.webp", thumb:"media/nacar-10-suero-thumb.webp", gallery:["media/nacar-10-suero-lifestyle-aloe.webp","media/nacar-10-suero-lifestyle-splash.webp"],
-          related:["NACAR-06","NACAR-08"]}
+          related:["NACAR-06","NACAR-08"]},
+        {sku:"NACAR-11", tag:"Liquid foundation", name:"UP+ Liquid Foundation SPF15", desc:"A matte-finish, long-wearing liquid foundation with buildable coverage that corrects your skin tone while protecting it with anti-aging, moisturizing and antioxidant actives.", price:"$535 MXN", favorito:true,
+          longDesc:"Water- and sweat-proof formula with a smooth, matte finish. Its soft-focus effect blurs the appearance of fine expression lines. Buildable coverage that adapts to your skin throughout the day. 40 g. Available in 9 shades.",
+          usage:"Apply to clean skin with fingers, a brush or a sponge, blending from the center outward. Build coverage with additional layers where needed.",
+          ingredients:["Aqua (Water)","Zinc Oxide","Cyclopentasiloxane","Isododecane","Trimethylsiloxysilicate","Cetearyl Alcohol","Simmondsia Chinensis (Jojoba) Seed Oil","Polymethylsilsesquioxane/Trimethylsiloxysilicate","Divinyldimethicone/Dimethicone/Phenylsilsesquioxane Crosspolymer","Dimethicone","PEG-10 Dimethicone","Hydrogenated Rapeseed Oil","C24-28 Alkyldimethylsiloxy Trimethylsiloxysilicate","Polymethylsilsesquioxane","Cetyl PEG/PPG-10/1 Dimethicone","Hexyl Laurate","PEG/PPG-18/18 Dimethicone","Microcrystalline Wax","Hydrolyzed Collagen","Polyglyceryl-4 Isostearate","Tocopheryl Acetate","Sodium Polyacrylate","Parfum (Fragrance)","Disteardimonium Hectorite","Caprylyl Glycol","Aluminum Hydroxide","Polysilicone-11","Propylene Carbonate","Triethoxycaprylylsilane","Butylene Glycol","Phenoxyethanol","DMDM Hydantoin","Xanthan Gum","Decylene Glycol","Hydrolyzed Wheat Protein","Ethylhexylglycerin","Hydrolyzed Soy Protein","Decyl Glucoside","Sodium Hyaluronate","Pectin","Hexylene Glycol","Serine","Arginine","Proline","Glucose","Carrageenan","Alpha-Isomethyl Ionone","Amyl Cinnamal","Anise Alcohol","Cinnamyl Alcohol","Citronellol","Geraniol","Hexyl Cinnamal","Hydroxycitronellal","Linalool"],
+          disclaimer:"May contain: Titanium Dioxide (CI 77891), Iron Oxides (CI 77491, CI 77492, CI 77499) — pigment load varies by shade.",
+          img:"media/nacar-11-maquillaje-front.webp", thumb:"media/nacar-11-maquillaje-thumb.webp", gallery:["media/nacar-11-maquillaje-tonos-brazo.webp"],
+          shades:[
+            {name:"Fair", hex:"#E4CAA8", available:true},
+            {name:"Light Sand", hex:"#D5B695", available:true},
+            {name:"Soft Honey", hex:"#DAB687", available:true},
+            {name:"Natural Beige", hex:"#D9AD87", available:true},
+            {name:"Warm Beige", hex:"#D0AA7B", available:true},
+            {name:"Creamy Natural", hex:"#BB9876", available:true},
+            {name:"Sun Beige", hex:"#BB9564", available:true},
+            {name:"Caramel", hex:"#A67A54", available:true},
+            {name:"Cocoa", hex:"#62402E", available:false}
+          ],
+          related:["NACAR-08"]},
+        {sku:"NACAR-12", tag:"Lip gloss", name:"Diamond Lip Gloss", desc:"A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.", price:"$340 MXN", favorito:false,
+          longDesc:"Glossy, luminous finish with a lightweight, non-sticky formula. Its plumping effect includes actives that keep your lips soft and hydrated. 8.5 g. Available in 7 shades.",
+          usage:"Use it alone or layer it over your favorite hydrating or matte lipstick.",
+          ingredients:["Hydrogenated Polyisobutene","Tridecyl Trimellitate","Caprylic/Capric Triglyceride","Microcrystalline Wax (Cera Microcristalina)","Parfum (Fragrance)","Hydrogenated Vegetable Oil","Beeswax (Cera Alba)","Tocopheryl Acetate","Simmondsia Chinensis (Jojoba) Seed Oil","Hydrogenated Palm Acid","Mica","Silica","Stearyl Stearate","Dibutyl Lauroyl Glutamide","Calcium Aluminum Borosilicate","Bis-Stearyl Dimethicone","Phenoxyethanol","BHT","Cyclamen Aldehyde","Iron Oxide (CI 77491)","Titanium Dioxide (CI 77891)"],
+          img:"media/nacar-12-brillo-front.webp", thumb:"media/nacar-12-brillo-thumb.webp",
+          shades:[
+            {name:"Diamante", hex:"#E8CFCB", available:true},
+            {name:"Ópalo", hex:"#C46B85", available:true},
+            {name:"Ámbar", hex:"#B97050", available:true},
+            {name:"Topaz", hex:"#BD8148", available:true},
+            {name:"Ágata", hex:"#B87684", available:true},
+            {name:"Rubí", hex:"#9E1F2E", available:true},
+            {name:"Zafiro", hex:"#7A5578", available:true}
+          ],
+          related:["NACAR-11"]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
@@ -1769,7 +1856,40 @@ var V = {
           usage:"Appliquer 2 a 3 gouttes sur peau propre, matin et soir, avec un léger massage jusqu'a absorption complète. A utiliser avant votre crème hydratante.",
           ingredients:["Enrichi en peptides précurseurs du collagène et en acide hyaluronique."],
           img:"media/nacar-10-suero-lifestyle-mano.webp", thumb:"media/nacar-10-suero-thumb.webp", gallery:["media/nacar-10-suero-lifestyle-aloe.webp","media/nacar-10-suero-lifestyle-splash.webp"],
-          related:["NACAR-06","NACAR-08"]}
+          related:["NACAR-06","NACAR-08"]},
+        {sku:"NACAR-11", tag:"Fond de teint liquide", name:"Fond de Teint Liquide UP+ FPS15", desc:"Fond de teint liquide fini mat, longue tenue et couvrance modulable, qui corrige le teint de la peau tout en la protégeant grâce à ses actifs anti-âge, hydratants et antioxydants.", price:"$535 MXN", favorito:true,
+          longDesc:"Formule résistante à l'eau et à la transpiration, fini mat et homogène. Son effet soft focus estompe l'apparence des fines lignes d'expression. Couvrance modulable qui s'adapte à la peau tout au long de la journée. Format 40 g. Disponible en 9 teintes.",
+          usage:"Appliquer sur peau propre avec les doigts, un pinceau ou une éponge, en étalant du centre vers l'extérieur. Superposer pour renforcer la couvrance aux zones qui le nécessitent.",
+          ingredients:["Aqua (Water)","Zinc Oxide","Cyclopentasiloxane","Isododecane","Trimethylsiloxysilicate","Cetearyl Alcohol","Simmondsia Chinensis (Jojoba) Seed Oil","Polymethylsilsesquioxane/Trimethylsiloxysilicate","Divinyldimethicone/Dimethicone/Phenylsilsesquioxane Crosspolymer","Dimethicone","PEG-10 Dimethicone","Hydrogenated Rapeseed Oil","C24-28 Alkyldimethylsiloxy Trimethylsiloxysilicate","Polymethylsilsesquioxane","Cetyl PEG/PPG-10/1 Dimethicone","Hexyl Laurate","PEG/PPG-18/18 Dimethicone","Microcrystalline Wax","Hydrolyzed Collagen","Polyglyceryl-4 Isostearate","Tocopheryl Acetate","Sodium Polyacrylate","Parfum (Fragrance)","Disteardimonium Hectorite","Caprylyl Glycol","Aluminum Hydroxide","Polysilicone-11","Propylene Carbonate","Triethoxycaprylylsilane","Butylene Glycol","Phenoxyethanol","DMDM Hydantoin","Xanthan Gum","Decylene Glycol","Hydrolyzed Wheat Protein","Ethylhexylglycerin","Hydrolyzed Soy Protein","Decyl Glucoside","Sodium Hyaluronate","Pectin","Hexylene Glycol","Serine","Arginine","Proline","Glucose","Carrageenan","Alpha-Isomethyl Ionone","Amyl Cinnamal","Anise Alcohol","Cinnamyl Alcohol","Citronellol","Geraniol","Hexyl Cinnamal","Hydroxycitronellal","Linalool"],
+          disclaimer:"Peut contenir/may contain : Titanium Dioxide (CI 77891), Iron Oxides (CI 77491, CI 77492, CI 77499) — la charge pigmentaire varie selon la teinte.",
+          img:"media/nacar-11-maquillaje-front.webp", thumb:"media/nacar-11-maquillaje-thumb.webp", gallery:["media/nacar-11-maquillaje-tonos-brazo.webp"],
+          shades:[
+            {name:"Fair", hex:"#E4CAA8", available:true},
+            {name:"Light Sand", hex:"#D5B695", available:true},
+            {name:"Soft Honey", hex:"#DAB687", available:true},
+            {name:"Natural Beige", hex:"#D9AD87", available:true},
+            {name:"Warm Beige", hex:"#D0AA7B", available:true},
+            {name:"Creamy Natural", hex:"#BB9876", available:true},
+            {name:"Sun Beige", hex:"#BB9564", available:true},
+            {name:"Caramel", hex:"#A67A54", available:true},
+            {name:"Cocoa", hex:"#62402E", available:false}
+          ],
+          related:["NACAR-08"]},
+        {sku:"NACAR-12", tag:"Gloss à lèvres", name:"Gloss à Lèvres Diamant", desc:"Une formule qui fond sur les lèvres, pour une finition brillante inégalée et un effet volumateur.", price:"$340 MXN", favorito:false,
+          longDesc:"Fini brillant et lumineux, grâce à une formule légère et non collante. Son effet volumateur associe des actifs qui gardent les lèvres douces et hydratées. Format 8,5 g. Disponible en 7 teintes.",
+          usage:"À utiliser seul ou associé à votre rouge à lèvres hydratant ou mat préféré.",
+          ingredients:["Hydrogenated Polyisobutene","Tridecyl Trimellitate","Caprylic/Capric Triglyceride","Microcrystalline Wax (Cera Microcristalina)","Parfum (Fragrance)","Hydrogenated Vegetable Oil","Beeswax (Cera Alba)","Tocopheryl Acetate","Simmondsia Chinensis (Jojoba) Seed Oil","Hydrogenated Palm Acid","Mica","Silica","Stearyl Stearate","Dibutyl Lauroyl Glutamide","Calcium Aluminum Borosilicate","Bis-Stearyl Dimethicone","Phenoxyethanol","BHT","Cyclamen Aldehyde","Iron Oxide (CI 77491)","Titanium Dioxide (CI 77891)"],
+          img:"media/nacar-12-brillo-front.webp", thumb:"media/nacar-12-brillo-thumb.webp",
+          shades:[
+            {name:"Diamante", hex:"#E8CFCB", available:true},
+            {name:"Ópalo", hex:"#C46B85", available:true},
+            {name:"Ámbar", hex:"#B97050", available:true},
+            {name:"Topaz", hex:"#BD8148", available:true},
+            {name:"Ágata", hex:"#B87684", available:true},
+            {name:"Rubí", hex:"#9E1F2E", available:true},
+            {name:"Zafiro", hex:"#7A5578", available:true}
+          ],
+          related:["NACAR-11"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complète", desc:"routine en 5 étapes avec contour et protection."}]
     }
@@ -2250,6 +2370,8 @@ var DYN = {
        usageLabel:function(){ return 'Modo de uso'; },
        ingredientsShowAll:function(n){ return 'Ver los ' + n + ' ingredientes'; },
        ingredientsShowLess:function(){ return 'Ver menos'; },
+       shadesLabel:function(){ return 'Tono'; },
+       shadeSelected:function(name){ return 'Tono: ' + name; },
        addrDefaultBadge:function(){ return 'Predeterminada'; },
        addrSetDefault:function(){ return 'Usar como predeterminada'; },
        addressSaved:function(){ return 'Dirección guardada.'; },
@@ -2414,6 +2536,8 @@ var DYN = {
        usageLabel:function(){ return 'How to use'; },
        ingredientsShowAll:function(n){ return 'See all ' + n + ' ingredients'; },
        ingredientsShowLess:function(){ return 'Show less'; },
+       shadesLabel:function(){ return 'Shade'; },
+       shadeSelected:function(name){ return 'Shade: ' + name; },
        addrDefaultBadge:function(){ return 'Default'; },
        addrSetDefault:function(){ return 'Use as default'; },
        addressSaved:function(){ return 'Address saved.'; },
@@ -2578,6 +2702,8 @@ var DYN = {
        usageLabel:function(){ return 'Mode d\'emploi'; },
        ingredientsShowAll:function(n){ return 'Voir les ' + n + ' ingrédients'; },
        ingredientsShowLess:function(){ return 'Voir moins'; },
+       shadesLabel:function(){ return 'Teinte'; },
+       shadeSelected:function(name){ return 'Teinte : ' + name; },
        addrDefaultBadge:function(){ return 'Par defaut'; },
        addrSetDefault:function(){ return 'Utiliser par defaut'; },
        addressSaved:function(){ return 'Adresse enregistree.'; },
@@ -3928,6 +4054,19 @@ function openProductDetail(sku){
   document.getElementById('pdPrice').textContent = p.price || '';
   document.getElementById('pdLongDesc').textContent = p.longDesc || p.desc || '';
 
+  // Fix 84: selector de tonos -- solo se muestra si el producto trae p.shades.
+  var shadesBlock = document.getElementById('pdShadesBlock');
+  if (p.shades && p.shades.length){
+    document.getElementById('pdShadesLabel').textContent = DYN[currentLang].shadesLabel();
+    var firstAvailable = 0;
+    for (var s0=0; s0<p.shades.length; s0++){ if (p.shades[s0].available !== false){ firstAvailable = s0; break; } }
+    pdCurrentShadeIdx = firstAvailable;
+    renderPdShades(p.shades);
+    shadesBlock.style.display = '';
+  } else {
+    shadesBlock.style.display = 'none';
+  }
+
   // Ingredientes: se muestra solo un preview corto (PD_INGREDIENTS_PREVIEW)
   // con un link "Ver los N ingredientes" para expandir el resto -- listas de
   // 20-30+ ingredientes no deben mostrarse completas de entrada (ver
@@ -3995,6 +4134,32 @@ function setPdMainImage(btn, src){
   for (var i=0;i<thumbs.length;i++){ thumbs[i].classList.toggle('is-active', thumbs[i]===btn); }
 }
 
+// Fix 84: pinta la fila de circulos de tono. Clic en un circulo solo actualiza
+// pdCurrentShadeIdx + el label "Tono: X" -- la foto principal (pdMedia) nunca
+// cambia, por instruccion explicita de Carlos (misma imagen para todos los
+// tonos). Un tono con available:false (ej. "Cocoa" en NACAR-11) se pinta
+// atenuado con diagonal y no es seleccionable (onclick no hace nada).
+function renderPdShades(shades){
+  var row = document.getElementById('pdShadesRow');
+  var html = '';
+  for (var i=0;i<shades.length;i++){
+    var sh = shades[i];
+    var unavailable = sh.available === false;
+    var cls = 'pd-shade-dot' + (i===pdCurrentShadeIdx ? ' is-active' : '') + (unavailable ? ' is-unavailable' : '');
+    html += '<button type="button" class="' + cls + '" style="background:' + sh.hex + ';" title="' + sh.name + '" aria-label="' + sh.name + '"' + (unavailable ? '' : ' onclick="selectPdShade(' + i + ')"') + '></button>';
+  }
+  row.innerHTML = html;
+  var current = shades[pdCurrentShadeIdx];
+  document.getElementById('pdShadeSelectedLabel').textContent = DYN[currentLang].shadeSelected(current ? current.name : '');
+}
+
+function selectPdShade(idx){
+  var p = findProductBySku(CURRENT_RENDERED_PRODUCTS, pdCurrentSku);
+  if (!p || !p.shades || !p.shades[idx]) return;
+  pdCurrentShadeIdx = idx;
+  renderPdShades(p.shades);
+}
+
 function iconSvg(v){
   var paths = {
     nacar:'<path d="M12 3c4 3 7 6 7 10a7 7 0 0 1-14 0c0-4 3-7 7-10Z"/>',
@@ -4009,6 +4174,7 @@ var currentLang = 'es';
 var selectedRoutine = null;
 var CURRENT_RENDERED_PRODUCTS = [];
 var pdCurrentSku = null;
+var pdCurrentShadeIdx = 0; // Fix 84: indice del tono seleccionado en pdShadesBlock (no afecta pdMedia)
 var lastBeautyRecommendation = null; // {order:[sku,...], routineIdx:0-2} -- set por el cuestionario de diagnostico de Belleza
 // Fix 58/61: arreglo de sku(s) a mostrar en productsGrid cuando se entra por
 // una categoría del menu Belleza (ver openBeautyCategory). null = mostrar
@@ -4608,7 +4774,7 @@ function runProductSearch(e){
   if (!matchProduct){
     var categories = [
       { skus:['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], labelKey:'nav.beauty.cleanser' },
-      { skus:[], labelKey:'nav.beauty.treatment' },
+      { skus:['NACAR-11','NACAR-12'], labelKey:'nav.beauty.treatment' },
       { skus:['NACAR-09'], labelKey:'nav.beauty.sunscreen' }
     ];
     for (var c = 0; c < categories.length; c++){

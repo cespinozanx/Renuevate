@@ -5,8 +5,9 @@ REM   1) node db/collections.js   -> crea (si faltan) las colecciones con sus
 REM      validadores e indices: products, carts, product_reviews,
 REM      payment_methods, phone_verifications, etc.
 REM   2) node db/seed-products.js -> inserta/actualiza (upsert, no duplica) el
-REM      catalogo de Renuevate (Nacar: solo los 4 productos reales con foto,
-REM      precio e ingredientes verdaderos; Vigor, Roble + accesorios), y
+REM      catalogo de Renuevate (Nacar: 7 productos reales con foto, precio e
+REM      ingredientes verdaderos -- incluye NACAR-11/12 de Maquillaje, Fix 84;
+REM      Vigor, Roble + accesorios), y
 REM      desactiva (sin borrar) los 4 demos RAIZ-01..04, los 4 productos de
 REM      Suplementos (Optimus, Omniplus, Power Maker, Magnus) que se mudaron
 REM      al sitio nuevo, y NACAR-01..04 (mock del prototipo original, ya
