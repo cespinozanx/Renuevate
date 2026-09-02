@@ -379,8 +379,14 @@ body.viewing-product-page .home-only{display:none;}
 .zoom-stats span{font-size:10.5px; opacity:.75; letter-spacing:.8px; color:var(--grey);}
 
 .products-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:26px; margin-bottom:60px;}
-.catalog-view-all-link{grid-column:1/-1; text-align:center; margin-top:-34px;}
-.catalog-view-all-link a{font-size:12.5px; font-weight:700; letter-spacing:.4px; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--ink); padding-bottom:2px;}
+/* Fix 95 (Carlos, con captura: la liga se veia "mal pegada" justo debajo del
+   boton "Agregar al carrito", sin espacio propio): el margin-top negativo
+   pegaba la liga directo al card de arriba, casi encimada. Se quita el
+   margen negativo (se agrega separacion real hacia abajo) y se sube el
+   tamano de fuente para que se lea como su propio bloque, no como un
+   renglon suelto del card. */
+.catalog-view-all-link{grid-column:1/-1; text-align:center; margin-top:14px; padding-top:20px;}
+.catalog-view-all-link a{font-size:15px; font-weight:700; letter-spacing:.4px; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--ink); padding-bottom:3px;}
 .product-card{border:1px solid var(--line); border-radius:4px; overflow:hidden; transition:box-shadow .2s; display:flex; flex-direction:row; align-items:stretch;}
 .product-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08);}
 .product-img{width:230px; flex:0 0 230px; display:flex; align-items:center; justify-content:center; background:var(--active-soft); overflow:hidden; cursor:pointer;}
@@ -1210,7 +1216,7 @@ var AZURA_CONFIG = {
   <div class="container">
     <a class="zoom-back-link" onclick="goHome()" data-i18n-html="zoom.backHome">&#8592; Volver a inicio</a>
     <div class="section-head reveal-stagger">
-      <div class="eyebrow" id="zoomEyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
+      <div class="eyebrow" id="zoomEyebrow" data-i18n="zoom.eyebrow">Nuestro sistema</div>
       <h2 id="zoomTitle">System Time Specialist</h2>
       <p id="zoomSubtitle"></p>
     </div>
@@ -2124,7 +2130,7 @@ var I18N = {
     "phil.eyebrow":"Nuestra filosofía", "phil.h2":'Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.',
     "phil.quote":'&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;',
     "phil.statement":'No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidar</span>.',
-    "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
+    "zoom.eyebrow":"Nuestro sistema", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
     "catalog.eyebrow":"", "catalog.title":"Catálogo Belleza", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"Ver catálogo completo &#8594;",
     "zoom.backHome":"&#8592; Volver a inicio",
@@ -2244,7 +2250,7 @@ var I18N = {
     "phil.eyebrow":"Our philosophy", "phil.h2":'We think about your wellbeing. We sustain <span class="accent">habits</span>.',
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: <span class=\"accent\">wellness</span> first.&rdquo;",
     "phil.statement":"It's not about how your skin looks, but about what you choose to <span class=\"accent\">care for</span>.",
-    "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
+    "zoom.eyebrow":"Our system", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
     "catalog.eyebrow":"", "catalog.title":"Beauty Catalog", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"View full catalog &#8594;",
     "zoom.backHome":"&#8592; Back to home",
@@ -2364,7 +2370,7 @@ var I18N = {
     "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous pensons a votre bien-etre. Nous soutenons des <span class="accent">habitudes</span>.',
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le <span class=\"accent\">bien-etre</span> d'abord.&rdquo;",
     "phil.statement":"Il ne s'agit pas de l'apparence de votre peau, mais de ce que vous choisissez de <span class=\"accent\">prendre soin</span>.",
-    "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Système phare", "zoom.knowRitual":"Decouvrir le système",
+    "zoom.eyebrow":"Notre système", "zoom.featured":"Système phare", "zoom.knowRitual":"Decouvrir le système",
     "catalog.eyebrow":"", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"Voir le catalogue complet &#8594;",
     "zoom.backHome":"&#8592; Retour à l'accueil",
@@ -4978,6 +4984,68 @@ document.addEventListener('click', function(e){
 function normalizeSearchText(s){
   return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 }
+
+/* Fix 95 (Carlos: "el buscador agregale un intelligence que haga match con
+   los productos que tenemos cargados"): antes runProductSearch() solo hacia
+   indexOf() del query completo contra name/tag/sku -- un typo, una palabra
+   que no fuera literal, o buscar por una palabra suelta del nombre (ej.
+   "limpiadora" en vez de "espuma limpiadora facial") no encontraba nada.
+   Se agrega tolerancia a errores de tecleo (distancia de Levenshtein por
+   palabra) y matching por palabras sueltas contra un indice mas amplio
+   (nombre+tag+sku+descripcion), en vez de exigir el query completo como
+   substring exacto. Todo 100% cliente, sin backend nuevo -- usa el mismo
+   catalogo V[] ya cargado en memoria. */
+function levenshteinDistance(a, b){
+  a = a || ''; b = b || '';
+  var m = a.length, n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  var prev = new Array(n + 1);
+  var curr = new Array(n + 1);
+  for (var j = 0; j <= n; j++) prev[j] = j;
+  for (var i = 1; i <= m; i++){
+    curr[0] = i;
+    for (var jj = 1; jj <= n; jj++){
+      var cost = a.charAt(i - 1) === b.charAt(jj - 1) ? 0 : 1;
+      curr[jj] = Math.min(curr[jj - 1] + 1, prev[jj] + 1, prev[jj - 1] + cost);
+    }
+    var tmp = prev; prev = curr; curr = tmp;
+  }
+  return prev[n];
+}
+// Tolerancia proporcional al largo de la palabra: 1 error si son <=5
+// caracteres, 2 si es mas larga -- perdona typos reales ("esuma" ->
+// "espuma", "protetor" -> "protector") sin generar falsos positivos entre
+// palabras cortas distintas.
+function wordFuzzyMatch(queryWord, targetWord){
+  if (!queryWord || !targetWord) return false;
+  if (targetWord.indexOf(queryWord) !== -1) return true; // substring/prefijo exacto
+  if (queryWord.length < 3) return false;
+  var maxDist = queryWord.length <= 5 ? 1 : 2;
+  if (Math.abs(queryWord.length - targetWord.length) > maxDist + 2) return false;
+  return levenshteinDistance(queryWord, targetWord) <= maxDist;
+}
+// Texto indexable de un producto: nombre + tag + sku + descripcion, para que
+// una busqueda por palabra suelta de la descripcion tambien encuentre el
+// producto (antes solo se comparaba contra name/tag/sku).
+function buildProductSearchBlob(p){
+  return normalizeSearchText([p.name, p.tag, p.sku, p.desc].filter(Boolean).join(' '));
+}
+// Cuenta cuantas palabras del query encontraron match (con tolerancia a
+// typos) en el texto indexable. runProductSearch() exige que TODAS las
+// palabras del query hagan match para aceptar un resultado -- evita que una
+// busqueda de 3 palabras "encuentre" algo con solo 1 palabra en comun.
+function scoreProductMatch(queryWords, blob){
+  var blobWords = blob.split(/\s+/).filter(Boolean);
+  var matched = 0;
+  for (var i = 0; i < queryWords.length; i++){
+    var qw = queryWords[i];
+    for (var j = 0; j < blobWords.length; j++){
+      if (wordFuzzyMatch(qw, blobWords[j])){ matched++; break; }
+    }
+  }
+  return matched;
+}
 function openSearchModal(){
   var feedback = document.getElementById('searchFeedback');
   if (feedback) feedback.textContent = '';
@@ -5011,18 +5079,33 @@ function runProductSearch(e){
   var q = normalizeSearchText(input ? input.value : '');
   if (!q) return false;
   var verticals = ['nacar', 'vigor', 'roble'];
+  var qWords = q.split(/\s+/).filter(Boolean);
 
-  var matchProduct = null, matchVertical = null, matchVerticalLabel = null;
-  for (var i = 0; i < verticals.length && !matchProduct; i++){
+  // Fix 95: en vez de detenerse en el primer match del primer sistema con
+  // resultado (comportamiento anterior), ahora se recorren TODOS los
+  // productos de los 3 sistemas y se elige el de mejor score -- substring
+  // exacto de sku/nombre gana siempre (score 999); si no, se exige que
+  // TODAS las palabras del query hicieran match tolerante a typos contra
+  // nombre+tag+sku+descripcion (ver scoreProductMatch arriba).
+  var matchProduct = null, matchVertical = null, matchVerticalLabel = null, bestProductScore = 0;
+  for (var i = 0; i < verticals.length; i++){
     var v = verticals[i];
     var vd = V[v] && V[v][currentLang];
     var products = (vd && vd.products) || [];
     for (var j = 0; j < products.length; j++){
       var p = products[j];
-      if (normalizeSearchText(p.name).indexOf(q) !== -1 ||
-          normalizeSearchText(p.tag).indexOf(q) !== -1 ||
-          normalizeSearchText(p.sku).indexOf(q) !== -1){
-        matchProduct = p; matchVertical = v; matchVerticalLabel = vd.bmLabel; break;
+      if (p.dummy) continue; // no mandar al cliente a un producto "proximamente"
+      var normSku = normalizeSearchText(p.sku);
+      var normName = normalizeSearchText(p.name);
+      var score;
+      if ((q.length >= 4 && normSku.indexOf(q) !== -1) || normName.indexOf(q) !== -1){
+        score = 999;
+      } else {
+        score = scoreProductMatch(qWords, buildProductSearchBlob(p));
+        if (score < qWords.length) score = 0;
+      }
+      if (score > bestProductScore){
+        matchProduct = p; matchVertical = v; matchVerticalLabel = vd.bmLabel; bestProductScore = score;
       }
     }
   }
@@ -5040,7 +5123,10 @@ function runProductSearch(e){
     ];
     for (var c = 0; c < categories.length; c++){
       var label = dict[categories[c].labelKey];
-      if (label && normalizeSearchText(label).indexOf(q) !== -1){ matchCategory = categories[c]; break; }
+      var normLabel = normalizeSearchText(label);
+      // Fix 95: substring exacto O todas las palabras del query con match
+      // tolerante a typos (ej. "skin cere" -> "Skin Care").
+      if (label && (normLabel.indexOf(q) !== -1 || scoreProductMatch(qWords, normLabel) >= qWords.length)){ matchCategory = categories[c]; break; }
     }
   }
 
@@ -5050,7 +5136,9 @@ function runProductSearch(e){
       var v2 = verticals[k];
       var vd2 = V[v2] && V[v2][currentLang];
       if (!vd2) continue;
-      if (normalizeSearchText(vd2.bmLabel).indexOf(q) !== -1 || normalizeSearchText(vd2.tag).indexOf(q) !== -1){
+      var normBmLabel = normalizeSearchText(vd2.bmLabel);
+      var normTag = normalizeSearchText(vd2.tag);
+      if (normBmLabel.indexOf(q) !== -1 || normTag.indexOf(q) !== -1 || scoreProductMatch(qWords, normBmLabel + ' ' + normTag) >= qWords.length){
         matchVerticalOnly = v2; matchVerticalOnlyLabel = vd2.bmLabel; break;
       }
     }
