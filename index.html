@@ -289,12 +289,18 @@ section{padding:92px 0;}
    de resolucion de porcentajes. De paso, "mucho mas grande" por instruccion
    de Carlos: min-height sube de 680px a 960px en desktop (ver también el
    tope para movil mas abajo en @media max-width:760, también subido). */
-.phil-visual{position:relative; background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:960px; overflow:hidden; padding:0;}
+.phil-visual{position:relative; background:#E8E8E6; border:1px solid var(--line); border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,.06); min-height:960px; overflow:hidden; padding:0; display:flex; align-items:center; justify-content:center;}
 /* Fix 72: Carlos pidio sacar la cita de esta caja -- ahora .phil-visual solo
    contiene la foto del Suero, a máximo tamano (100% del contenedor, sin el
    max-width fijo de Fix 71). La cita se movio a .phil-quote-below, debajo de
-   todo el grid (ver mas abajo y el HTML de #filosofia). */
+   todo el grid (ver mas abajo y el HTML de #filosofia).
+   Fix 87: la foto se quito por instruccion de Carlos -- .phil-visual-img ya
+   no tiene ningun <img> en el HTML que la use, se deja la regla por si se
+   reintroduce una foto aqui mas adelante. En su lugar, .phil-visual ahora
+   centra (display:flex arriba) el nuevo .phil-statement. */
 .phil-visual-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:6px; margin-bottom:0; box-shadow:none; display:block;}
+.phil-statement{font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:clamp(22px,2.4vw,30px); line-height:1.55; color:var(--navy); text-align:center; max-width:420px; padding:48px;}
+.phil-statement .accent{color:var(--gold); border-color:var(--gold); font-family:'Bodoni Moda',serif; font-style:normal; font-weight:500; letter-spacing:.6px;}
 /* Fix 72: la cita ya no vive dentro de .phil-visual (que ahora es solo la
    foto) -- vive en su propio bloque, debajo de las 2 columnas del grid
    (grid-column:1/-1 la hace ocupar todo el ancho para quedar centrada bajo
@@ -715,6 +721,12 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
    descripcion, 2 modo de uso, 3 ingredientes) se vean consistentes en TODOS
    los productos (este bloque es compartido, no por producto). */
 .pd-body > p#pdLongDesc{font-size:13.5px; line-height:1.65; color:var(--ink);}
+/* Fix 87: algunos productos (NACAR-09, NACAR-13) piden "Beneficios" como
+   lista con vinetas en vez de un parrafo corrido -- p.longDesc ahora puede
+   ser un string (comportamiento historico, se pinta en #pdLongDesc) o un
+   arreglo (se pinta en #pdLongDescList, misma tipografia 13.5px/1.65). */
+.pd-body > ul#pdLongDescList{margin:0 0 0 0; padding-left:18px;}
+.pd-body > ul#pdLongDescList li{font-size:13.5px; line-height:1.65; color:var(--ink); margin-bottom:4px;}
 .pd-price{font-size:19px; font-weight:700; color:var(--navy); margin:18px 0 4px;}
 .pd-section{margin-top:18px;}
 .pd-section h5{font-size:12.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--navy); margin-bottom:6px;}
@@ -977,7 +989,7 @@ var AZURA_CONFIG = {
         </div>
       </div>
       <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skin Care</a>
-      <a onclick="openBeautyCategory(['NACAR-11','NACAR-12'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
+      <a onclick="openBeautyCategory(['NACAR-11','NACAR-12','NACAR-13'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
       <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
       <!-- Fix 69: buscador -- reemplaza al viejo icono de lupa del header
            (quitado en Fix 56). Ahora es un item de nav normal, a la derecha
@@ -1119,9 +1131,13 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div class="phil-visual reveal">
-      <!-- Fix 72: esta caja ahora es solo la foto, a 100% del contenedor --
-           sin la cita adentro (ver .phil-quote-below, 3er hijo del grid). -->
-      <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ" loading="lazy">
+      <!-- Fix 87: por instruccion de Carlos, se quita la foto (antes ocupaba
+           esta caja al 100%, ver Fix 72) y se reemplaza por una declaracion
+           de marca en texto. Se conserva el contenedor .phil-visual (mismo
+           grid-column/responsive que antes) pero ya no aloja una <img>, asi
+           que se agrega .phil-statement para centrar el texto dentro de esa
+           misma caja en vez de una foto. -->
+      <p class="phil-statement" data-i18n-html="phil.statement">No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidar</span>.</p>
     </div>
     <!-- Fix 72: la cita se saca de .phil-visual y baja de tamano a la mitad
          (25px -> 12.5px), por instruccion de Carlos. Es 3er hijo directo de
@@ -1145,8 +1161,8 @@ var AZURA_CONFIG = {
     <a class="zoom-back-link" onclick="goHome()" data-i18n-html="zoom.backHome">&#8592; Volver a inicio</a>
     <div class="section-head reveal-stagger">
       <div class="eyebrow" id="zoomEyebrow" data-i18n="zoom.eyebrow">Zoom por vertical</div>
-      <h2 id="zoomTitle">System Luminous Speciality - Belleza para mujer</h2>
-      <p id="zoomSubtitle">Hábitos de belleza con respaldo dermocosmético y textura premium.</p>
+      <h2 id="zoomTitle">System Time Specialist</h2>
+      <p id="zoomSubtitle"></p>
     </div>
     <div class="zoom-tabs reveal-stagger">
       <div class="zoom-tab active" data-v="nacar" onclick="goVertical('nacar')">Luminous</div>
@@ -1472,6 +1488,7 @@ var AZURA_CONFIG = {
       <div class="pd-eyebrow" id="pdTag"></div>
       <h3 id="pdName"></h3>
       <p id="pdLongDesc"></p>
+      <ul id="pdLongDescList" style="display:none;"></ul>
       <!-- Fix 84: selector de tonos tipo carrusel -- solo aparece si el producto
            trae p.shades (ver NACAR-11/12). Clic en un circulo cambia SOLO el
            estado/label del tono elegido (pdSelectedShade), NUNCA la foto
@@ -1690,7 +1707,7 @@ var AZURA_CONFIG = {
 var V = {
   nacar: {
     name:"System Luminous Speciality",
-    es:{ full:"System Luminous Speciality - Belleza para mujer", sub:"Habitos de belleza con respaldo dermocosmetico y textura premium.",
+    es:{ full:"System Time Specialist", sub:"",
       bannerTitle:"System Luminous Speciality: luminosidad",
       bannerText:"Una rutina facial y capilar de tres pasos para una piel con brillo saludable, sin ingredientes agresivos.",
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"Speciality Luminous",
@@ -1714,9 +1731,9 @@ var V = {
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
-        {sku:"NACAR-09", tag:"Protector solar", name:"Escudo Solar FPS 50+ Nacar", desc:"Toque seco, protección FPS 50+ para todos los días.", price:"$390 MXN", favorito:false,
-          longDesc:"Un protector solar facial de toque seco y absorcion inmediata, formulado con 89% de ingredientes de origen natural. Resistente al agua, libre de fragancia y clinica y dermatologicamente probado, ideal para pieles sensibles y para toda la familia. Formulado sin ingredientes daninos para los arrecifes de coral. Presentacion de 40 ml.",
-          usage:"Aplica de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplica cada 3 horas y despues de nadar, transpirar o secarte con la toalla.",
+        {sku:"NACAR-09", tag:"Protector solar", name:"Protector Solar Facial FPS 50+", desc:"Protector solar facial con FPS 50+, ideal para pieles sensibles, toque seco, resistente al agua y libre de fragancia. Completa tu rutina facial y protege tu rostro.", price:"$390 MXN", favorito:false,
+          longDesc:["89% Ingredientes de origen natural","Toque Seco","Para toda la familia","Clínica y dermatológicamente probado","FPS 50+","Amigable con el océano","Respetuoso de la ley hawaiana de protección a los corales"],
+          usage:"Recomendación de Uso: Aplicar de manera uniforme sobre la piel seca antes de la exposición solar. Reaplicar cada 3 horas y después de transpirar, nadar o secarte con toalla.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
           related:["NACAR-07"]},
@@ -1743,7 +1760,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08"]},
+          related:["NACAR-08","NACAR-13"]},
         {sku:"NACAR-12", tag:"Brillo labial", name:"Brillo Labial Diamante", desc:"Fórmula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.", price:"$340 MXN", favorito:false,
           longDesc:"Acabado brillante y luminoso, con una fórmula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentación de 8.5 g. Disponible en 7 tonos.",
           usage:"Utilízalo solo o combínalo con tu labial hidratante o mate favorito.",
@@ -1758,11 +1775,15 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11"]}
+          related:["NACAR-11","NACAR-13"]},
+        {sku:"NACAR-13", tag:"Accesorio de maquillaje", name:"Brocha para Maquillaje Líquido", desc:"Consigue una piel perfecta y sin filtro con nuestra Brocha para Base de Maquillaje, que gracias a sus más de 200 mil cerdas te brindará un acabado aterciopelado e impecable.", price:"$190 MXN", favorito:false,
+          longDesc:["Especialmente diseñada para base de maquillaje","Aplicación de cobertura media a alta","Tipo de Cerda: Sintética."],
+          img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp",
+          related:[]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
-    en:{ full:"System Luminous Speciality - Beauty for Women", sub:"Beauty habits backed by dermo-cosmetic science and premium texture.",
+    en:{ full:"System Time Specialist", sub:"",
       bannerTitle:"The System Luminous Speciality radiance",
       bannerText:"A three-step facial and hair routine for healthy-looking radiance, with no harsh ingredients.",
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"Speciality Luminous",
@@ -1786,9 +1807,9 @@ var V = {
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
-        {sku:"NACAR-09", tag:"Sunscreen", name:"Nacar Solar Shield SPF 50+", desc:"Dry touch, SPF 50+ protection for every day.", price:"$390 MXN", favorito:false,
-          longDesc:"A facial sunscreen with a dry touch and instant absorption, formulated with 89% naturally-derived ingredients. Water-resistant, fragrance-free and clinically and dermatologically tested, ideal for sensitive skin and the whole family. Formulated without ingredients harmful to coral reefs. 40 ml.",
-          usage:"Apply evenly to dry skin before sun exposure. Reapply every 3 hours and after swimming, sweating or towel-drying.",
+        {sku:"NACAR-09", tag:"Sunscreen", name:"Facial Sunscreen SPF 50+", desc:"SPF 50+ facial sunscreen, ideal for sensitive skin: dry touch, water-resistant and fragrance-free. Completes your facial routine and protects your skin.", price:"$390 MXN", favorito:false,
+          longDesc:["89% naturally-derived ingredients","Dry touch","For the whole family","Clinically and dermatologically tested","SPF 50+","Reef-friendly","Compliant with Hawaii's coral-protection law"],
+          usage:"Recommended Use: Apply evenly to dry skin before sun exposure. Reapply every 3 hours and after sweating, swimming or towel-drying.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
           related:["NACAR-07"]},
@@ -1815,7 +1836,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08"]},
+          related:["NACAR-08","NACAR-13"]},
         {sku:"NACAR-12", tag:"Lip gloss", name:"Diamond Lip Gloss", desc:"A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.", price:"$340 MXN", favorito:false,
           longDesc:"Glossy, luminous finish with a lightweight, non-sticky formula. Its plumping effect includes actives that keep your lips soft and hydrated. 8.5 g. Available in 7 shades.",
           usage:"Use it alone or layer it over your favorite hydrating or matte lipstick.",
@@ -1830,11 +1851,15 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11"]}
+          related:["NACAR-11","NACAR-13"]},
+        {sku:"NACAR-13", tag:"Makeup accessory", name:"Liquid Foundation Brush", desc:"Get flawless, filter-free skin with our Foundation Brush, whose 200,000+ bristles deliver a velvety, impeccable finish.", price:"$190 MXN", favorito:false,
+          longDesc:["Specially designed for liquid foundation","Medium-to-high coverage application","Bristle type: Synthetic."],
+          img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp",
+          related:[]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
-    fr:{ full:"System Luminous Speciality - Beauté Féminine", sub:"Habitudes de beauté avec appui dermo-cosmetique et texture premium.",
+    fr:{ full:"System Time Specialist", sub:"",
       bannerTitle:"Le System Luminous Speciality de luminosité",
       bannerText:"Une routine visage et cheveux en trois étapes pour un éclat sain, sans ingrédients agressifs.",
       tag:"Beauté féminine", msg:"Une luminosité qui prend soin d'elle-même.", bmLabel:"Speciality Luminous",
@@ -1858,9 +1883,9 @@ var V = {
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
           img:"media/nacar-08-dia-lifestyle-espejo.webp", thumb:"media/nacar-08-dia-fps30-thumb.webp", gallery:["media/nacar-08-dia-lifestyle-helechos.webp","media/nacar-08-dia-lifestyle-agua.webp"],
           related:["NACAR-06"]},
-        {sku:"NACAR-09", tag:"Protection solaire", name:"Bouclier Solaire FPS 50+ Nacar", desc:"Toucher sec, protection FPS 50+ au quotidien.", price:"$390 MXN", favorito:false,
-          longDesc:"Une protection solaire visage au toucher sec et a absorption immédiate, formulée avec 89% d'ingrédients d'origine naturelle. Résistante a l'eau, sans parfum, testee cliniquement et dermatologiquement, idéale pour les peaux sensibles et toute la famille. Formulée sans ingrédients nocifs pour les recifs coralliens. Format 40 ml.",
-          usage:"Appliquer uniformément sur peau sèche avant l'exposition au soleil. Reappliquer toutes les 3 heures et après la baignade, la transpiration ou le séchage a la serviette.",
+        {sku:"NACAR-09", tag:"Protection solaire", name:"Protection Solaire Visage FPS 50+", desc:"Protection solaire visage FPS 50+, idéale pour les peaux sensibles : toucher sec, résistante à l'eau et sans parfum. Complète votre routine visage et protège votre peau.", price:"$390 MXN", favorito:false,
+          longDesc:["89% d'ingrédients d'origine naturelle","Toucher sec","Pour toute la famille","Testée cliniquement et dermatologiquement","FPS 50+","Respectueuse des récifs coralliens","Conforme à la loi hawaïenne de protection des coraux"],
+          usage:"Recommandation d'utilisation : Appliquer uniformément sur peau sèche avant l'exposition au soleil. Reappliquer toutes les 3 heures et après la transpiration, la baignade ou le séchage a la serviette.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
           img:"media/nacar-09-spf50-front.webp", thumb:"media/nacar-09-spf50-thumb.webp", gallery:["media/nacar-09-spf50-empaque.webp","media/nacar-09-spf50-abierto.webp"],
           related:["NACAR-07"]},
@@ -1887,7 +1912,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08"]},
+          related:["NACAR-08","NACAR-13"]},
         {sku:"NACAR-12", tag:"Gloss à lèvres", name:"Gloss à Lèvres Diamant", desc:"Une formule qui fond sur les lèvres, pour une finition brillante inégalée et un effet volumateur.", price:"$340 MXN", favorito:false,
           longDesc:"Fini brillant et lumineux, grâce à une formule légère et non collante. Son effet volumateur associe des actifs qui gardent les lèvres douces et hydratées. Format 8,5 g. Disponible en 7 teintes.",
           usage:"À utiliser seul ou associé à votre rouge à lèvres hydratant ou mat préféré.",
@@ -1902,7 +1927,11 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11"]}
+          related:["NACAR-11","NACAR-13"]},
+        {sku:"NACAR-13", tag:"Accessoire de maquillage", name:"Pinceau pour Maquillage Liquide", desc:"Obtenez une peau parfaite et sans filtre grâce à notre Pinceau Fond de Teint, dont les plus de 200 000 poils offrent un fini velouté et impeccable.", price:"$190 MXN", favorito:false,
+          longDesc:["Spécialement conçu pour le fond de teint liquide","Application couvrance moyenne à élevée","Type de poils : Synthétique."],
+          img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp",
+          related:[]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complète", desc:"routine en 5 étapes avec contour et protection."}]
     }
@@ -1951,7 +1980,7 @@ var V = {
   },
   roble: {
     name:"System Spot Speciality",
-    es:{ full:"System Spot Speciality - Cuidado para hombre", sub:"Grooming práctico y sin rodeos, pensado para tu rutina diaria.",
+    es:{ full:"System Spot Speciality", sub:"",
       bannerTitle:"System Spot Speciality: cuidado esencial",
       bannerText:"Una rutina de cuidado simple y efectiva, pensada para integrarse en menos de cinco minutos al día.",
       tag:"Cuidado para hombre", msg:"Fuerza que se cuida a si misma.", bmLabel:"Speciality Spot",
@@ -1964,7 +1993,7 @@ var V = {
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza facial diaria."},{title:"Rutina intermedia", desc:"suma cuidado de barba."},{title:"Rutina completa", desc:"protocolo facial + corporal + capilar."}]
     },
-    en:{ full:"System Spot Speciality - Men's Care", sub:"Practical, no-nonsense grooming, built for your daily routine.",
+    en:{ full:"System Spot Speciality", sub:"",
       bannerTitle:"The System Spot Speciality essential care",
       bannerText:"A simple, effective care routine designed to fit into less than five minutes a day.",
       tag:"Men's care", msg:"Strength that takes care of itself.", bmLabel:"Speciality Spot",
@@ -1977,7 +2006,7 @@ var V = {
       ],
       routines:[{title:"Essential routine", desc:"daily facial cleansing."},{title:"Intermediate routine", desc:"adds beard care."},{title:"Complete routine", desc:"facial + body + hair protocol."}]
     },
-    fr:{ full:"System Spot Speciality - Soin pour Homme", sub:"Grooming pratique et sans détour, pensé pour votre routine quotidienne.",
+    fr:{ full:"System Spot Speciality", sub:"",
       bannerTitle:"Le System Spot Speciality de soin essentiel",
       bannerText:"Une routine de soin simple et efficace, conçue pour tenir en moins de cinq minutes par jour.",
       tag:"Soin pour homme", msg:"Une force qui prend soin d'elle-même.", bmLabel:"Speciality Spot",
@@ -2012,9 +2041,10 @@ var I18N = {
     "vert.cta":"Descubrir &#8594;",
     "phil.eyebrow":"Nuestra filosofía", "phil.h2":'Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.',
     "phil.quote":'&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;',
+    "phil.statement":'No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidar</span>.',
     "zoom.eyebrow":"Zoom por vertical", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
     "catalog.eyebrow":"", "catalog.title":"Catálogo Belleza", "catalog.subtitle":"",
-    "catalog.categorySubtitle":"El producto de System Luminous pensado para esta necesidad.", "catalog.viewAll":"Ver catálogo completo &#8594;",
+    "catalog.categorySubtitle":"", "catalog.viewAll":"Ver catálogo completo &#8594;",
     "zoom.backHome":"&#8592; Volver a inicio",
     "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
     "zoom.stat1Label":"SATISFACCION*", "zoom.stat2Label":"PARA VER RESULTADOS*", "zoom.stat3Label":"ORIGEN VERIFICADO",
@@ -2131,9 +2161,10 @@ var I18N = {
     "vert.cta":"Discover &#8594;",
     "phil.eyebrow":"Our philosophy", "phil.h2":'We think about your wellbeing. We sustain <span class="accent">habits</span>.',
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: <span class=\"accent\">wellness</span> first.&rdquo;",
+    "phil.statement":"It's not about how your skin looks, but about what you choose to <span class=\"accent\">care for</span>.",
     "zoom.eyebrow":"Vertical zoom", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
     "catalog.eyebrow":"", "catalog.title":"Beauty Catalog", "catalog.subtitle":"",
-    "catalog.categorySubtitle":"The System Luminous product designed for this need.", "catalog.viewAll":"View full catalog &#8594;",
+    "catalog.categorySubtitle":"", "catalog.viewAll":"View full catalog &#8594;",
     "zoom.backHome":"&#8592; Back to home",
     "comingSoon.eyebrow":"Content coming soon", "comingSoon.title":"We're polishing this content", "comingSoon.body":"There's nothing wrong with this Renuévate section: we're still refining the full detail of this system so we can show it to you properly. Check back soon.", "comingSoon.cta":"Got it",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"TO SEE RESULTS*", "zoom.stat3Label":"VERIFIED ORIGIN",
@@ -2250,9 +2281,10 @@ var I18N = {
     "vert.cta":"Decouvrir &#8594;",
     "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous pensons a votre bien-etre. Nous soutenons des <span class="accent">habitudes</span>.',
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le <span class=\"accent\">bien-etre</span> d'abord.&rdquo;",
+    "phil.statement":"Il ne s'agit pas de l'apparence de votre peau, mais de ce que vous choisissez de <span class=\"accent\">prendre soin</span>.",
     "zoom.eyebrow":"Zoom par marque", "zoom.featured":"Système phare", "zoom.knowRitual":"Decouvrir le système",
     "catalog.eyebrow":"", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"",
-    "catalog.categorySubtitle":"Le produit System Luminous conçu pour ce besoin.", "catalog.viewAll":"Voir le catalogue complet &#8594;",
+    "catalog.categorySubtitle":"", "catalog.viewAll":"Voir le catalogue complet &#8594;",
     "zoom.backHome":"&#8592; Retour à l'accueil",
     "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce système pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
     "zoom.stat1Label":"SATISFACTION*", "zoom.stat2Label":"POUR VOIR DES RÉSULTATS*", "zoom.stat3Label":"ORIGINE VERIFIEE",
@@ -4107,7 +4139,26 @@ function openProductDetail(sku){
   document.getElementById('pdTag').textContent = p.tag || '';
   document.getElementById('pdName').textContent = p.name || '';
   document.getElementById('pdPrice').textContent = p.price || '';
-  document.getElementById('pdLongDesc').textContent = p.longDesc || p.desc || '';
+  // Fix 87: p.longDesc puede ser string (parrafo, comportamiento historico)
+  // o arreglo (lista de Beneficios con vinetas -- ver NACAR-09/NACAR-13).
+  var longDescP = document.getElementById('pdLongDesc');
+  var longDescUl = document.getElementById('pdLongDescList');
+  if (Array.isArray(p.longDesc)){
+    longDescP.style.display = 'none';
+    longDescP.textContent = '';
+    longDescUl.innerHTML = '';
+    for (var ld=0; ld<p.longDesc.length; ld++){
+      var ldLi = document.createElement('li');
+      ldLi.textContent = p.longDesc[ld];
+      longDescUl.appendChild(ldLi);
+    }
+    longDescUl.style.display = '';
+  } else {
+    longDescUl.style.display = 'none';
+    longDescUl.innerHTML = '';
+    longDescP.style.display = '';
+    longDescP.textContent = p.longDesc || p.desc || '';
+  }
 
   // Fix 84: selector de tonos -- solo se muestra si el producto trae p.shades.
   var shadesBlock = document.getElementById('pdShadesBlock');
@@ -4845,12 +4896,13 @@ function runProductSearch(e){
 
   // Fix 72: categorías reales del menu Belleza (ver openBeautyCategory en el
   // nav) -- deben coincidir 1:1 con los arreglos del nav de arriba. "Maquillaje"
-  // trae NACAR-11/12 desde Fix 84 (antes iba con arreglo vacio a proposito).
+  // trae NACAR-11/12 desde Fix 84 (antes iba con arreglo vacio a proposito) y
+  // NACAR-13 (brocha) desde Fix 87.
   var matchCategory = null;
   if (!matchProduct){
     var categories = [
       { skus:['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], labelKey:'nav.beauty.cleanser' },
-      { skus:['NACAR-11','NACAR-12'], labelKey:'nav.beauty.treatment' },
+      { skus:['NACAR-11','NACAR-12','NACAR-13'], labelKey:'nav.beauty.treatment' },
       { skus:['NACAR-09'], labelKey:'nav.beauty.sunscreen' }
     ];
     for (var c = 0; c < categories.length; c++){

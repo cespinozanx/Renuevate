@@ -93,13 +93,17 @@ const PRODUCTS = [
     long_description_es: 'Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.',
     ingredients_es: ['Aqua (Water)', 'Octocrylene', 'Ethylhexyl Methoxycinnamate', 'Butyl Methoxydibenzoylmethane', 'Niacinamide', 'Neopentyl Glycol Diheptanoate', 'Potassium Cetyl Phosphate', 'Cetearyl Alcohol', 'Polymethylsilsesquioxane', 'Glycerin', 'Sodium Acrylates Copolymer', 'Bakuchiol', 'Tocopheryl Acetate', 'Hyaluronic Acid', 'Squalene', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Portulaca Oleracea Extract', 'Lecithin', 'Hydrogenated Lecithin', 'Phenoxyethanol', 'Decylene Glycol', 'Caprylyl Glycol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA'],
     usage_es: 'Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.' },
+  // Fix 87: rename + copy nuevos (Carlos, 2026-09-01) -- name_i18n/description_i18n
+  // ya no mencionan "Nacar" ni "Escudo Solar". long_description_es pasa de
+  // parrafo a arreglo (Beneficios con vinetas) -- ver misma logica en
+  // index.html (p.longDesc puede ser string o arreglo, render en pdLongDescList).
   { sku: 'NACAR-09', vertical: 'nacar', price: '$390 MXN', related: ['NACAR-07'], favorito: false,
-    name_i18n: { es: 'Escudo Solar FPS 50+ Nacar', en: 'Nacar Solar Shield SPF 50+', fr: 'Bouclier Solaire FPS 50+ Nacar' },
-    description_i18n: { es: 'Toque seco, proteccion FPS 50+ para todos los dias.', en: 'Dry touch, SPF 50+ protection for every day.', fr: 'Toucher sec, protection FPS 50+ au quotidien.' },
+    name_i18n: { es: 'Protector Solar Facial FPS 50+', en: 'Facial Sunscreen SPF 50+', fr: 'Protection Solaire Visage FPS 50+' },
+    description_i18n: { es: 'Protector solar facial con FPS 50+, ideal para pieles sensibles, toque seco, resistente al agua y libre de fragancia. Completa tu rutina facial y protege tu rostro.', en: 'SPF 50+ facial sunscreen, ideal for sensitive skin: dry touch, water-resistant and fragrance-free. Completes your facial routine and protects your skin.', fr: "Protection solaire visage FPS 50+, ideale pour les peaux sensibles : toucher sec, resistante a l'eau et sans parfum. Complete votre routine visage et protege votre peau." },
     image: 'media/nacar-09-spf50-front.webp',
-    long_description_es: 'Un protector solar facial de toque seco y absorcion inmediata, formulado con 89% de ingredientes de origen natural. Resistente al agua, libre de fragancia y clinica y dermatologicamente probado, ideal para pieles sensibles y para toda la familia. Formulado sin ingredientes daninos para los arrecifes de coral. Presentacion de 40 ml.',
+    long_description_es: ['89% Ingredientes de origen natural', 'Toque Seco', 'Para toda la familia', 'Clinica y dermatologicamente probado', 'FPS 50+', 'Amigable con el oceano', 'Respetuoso de la ley hawaiana de proteccion a los corales'],
     ingredients_es: ['Aqua (Water)', 'Dicaprylyl Carbonate', 'Hydrogenated Ethylhexyl Olivate', 'Titanium Dioxide', 'Zinc Oxide (Nano)', 'Butyloctyl Salicylate', 'Hydrogenated Farnesene', 'Beeswax', 'Caprylyl Methicone', 'Glycerin', 'Silica', 'Aluminum Starch Octenylsuccinate', 'Polyhydroxystearic Acid', 'Sodium Chloride', 'Polysilicone-11', 'Sodium Stearoyl Lactylate', 'Benzotriazolyl Dodecyl P-Cresol', 'Cetyl PEG/PPG-10/1 Dimethicone', 'Caprylic/Capric Triglyceride', 'Stearic Acid', 'Hydrogenated Olive Oil Unsaponifiables', 'Dimethicone/Vinyl Dimethicone Crosspolymer', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Glyceryl Caprylate', 'Glyceryl Undecylenate', 'Helianthus Annuus (Sunflower) Seed Oil', 'Aluminum Hydroxide', 'Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate', 'Laureth-12', 'Laminaria Ochroleuca Extract', 'Tocopherol', 'Bisabolol', 'Triethoxycaprylylsilane', 'Benzyl Alcohol'],
-    usage_es: 'Aplica de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplica cada 3 horas y despues de nadar, transpirar o secarte con la toalla.' },
+    usage_es: 'Recomendacion de Uso: Aplicar de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplicar cada 3 horas y despues de transpirar, nadar o secarte con toalla.' },
   // Fix 71: 5to producto real de Nacar (Carlos, 2026-08-30). Mismo criterio
   // que 06-09: foto/precio/ingredientes verdaderos. No tiene related reciproco
   // desde 06/08 todavia (solo se agrego related en este sku hacia ellos) --
@@ -117,7 +121,7 @@ const PRODUCTS = [
   // Trae "shades" (9 tonos, uno sin stock: Cocoa) para el selector tipo
   // carrusel del modal de detalle -- misma foto para todos los tonos, ver
   // renderPdShades()/selectPdShade() en index.html.
-  { sku: 'NACAR-11', vertical: 'nacar', price: '$535 MXN', related: ['NACAR-08'], favorito: true,
+  { sku: 'NACAR-11', vertical: 'nacar', price: '$535 MXN', related: ['NACAR-08', 'NACAR-13'], favorito: true,
     name_i18n: { es: 'Maquillaje Líquido UP+ FPS15', en: 'UP+ Liquid Foundation SPF15', fr: 'Fond de Teint Liquide UP+ FPS15' },
     description_i18n: { es: 'Base de maquillaje con acabado mate, de larga duracion y cobertura construible, que corrige el tono de tu piel mientras la protege con activos anti edad, humectantes y antioxidantes.', en: 'A matte-finish, long-wearing liquid foundation with buildable coverage that corrects your skin tone while protecting it with anti-aging, moisturizing and antioxidant actives.', fr: 'Fond de teint liquide fini mat, longue tenue et couvrance modulable, qui corrige le teint de la peau tout en la protegeant grace a ses actifs anti-age, hydratants et antioxydants.' },
     image: 'media/nacar-11-maquillaje-front.webp',
@@ -138,7 +142,7 @@ const PRODUCTS = [
     ] },
   // Fix 84: segundo producto de "Maquillaje" (Carlos, 2026-09-01). Mismo
   // patron de shades que NACAR-11, 7 tonos, todos con stock.
-  { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11'], favorito: false,
+  { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13'], favorito: false,
     name_i18n: { es: 'Brillo Labial Diamante', en: 'Diamond Lip Gloss', fr: 'Gloss a Levres Diamant' },
     description_i18n: { es: 'Formula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.', en: 'A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.', fr: 'Une formule qui fond sur les levres, pour une finition brillante inegalee et un effet volumateur.' },
     image: 'media/nacar-12-brillo-front.webp',
@@ -154,6 +158,17 @@ const PRODUCTS = [
       { name: 'Rubí', hex: '#9E1F2E', available: true },
       { name: 'Zafiro', hex: '#7A5578', available: true },
     ] },
+  // Fix 87: tercer producto de "Maquillaje" (Carlos, 2026-09-01) -- accesorio
+  // (brocha), no formula cosmetica: sin ingredients_es/usage_es/shades a
+  // proposito. Se agrega como el 3er miembro del cross-sell "Maquillaje": se
+  // referencia desde related de NACAR-11/12, pero su propio related queda
+  // vacio (instruccion explicita de Carlos -- "cuando compran solo la brocha
+  // no le pones nada").
+  { sku: 'NACAR-13', vertical: 'nacar', price: '$190 MXN', related: [], favorito: false,
+    name_i18n: { es: 'Brocha para Maquillaje Líquido', en: 'Liquid Foundation Brush', fr: 'Pinceau pour Maquillage Liquide' },
+    description_i18n: { es: 'Consigue una piel perfecta y sin filtro con nuestra Brocha para Base de Maquillaje, que gracias a sus mas de 200 mil cerdas te brindara un acabado aterciopelado e impecable.', en: 'Get flawless, filter-free skin with our Foundation Brush, whose 200,000+ bristles deliver a velvety, impeccable finish.', fr: 'Obtenez une peau parfaite et sans filtre grace a notre Pinceau Fond de Teint, dont les plus de 200 000 poils offrent un fini veloute et impeccable.' },
+    image: 'media/nacar-13-brocha-front.webp',
+    long_description_es: ['Especialmente diseñada para base de maquillaje', 'Aplicación de cobertura media a alta', 'Tipo de Cerda: Sintética.'] },
 
   // VIGOR
   { sku: 'VIGOR-01', vertical: 'vigor', price: '$699 MXN', rating: { stars: 4.8, count: 521 }, related: ['VIGOR-03'],
