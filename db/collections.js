@@ -378,6 +378,13 @@ const VALIDATORS = {
         customer_id: { bsonType: 'objectId' },
         customer_display_name: { bsonType: ['string', 'null'], description: 'nombre + inicial de apellido, minimizacion de PII' },
         stars: { bsonType: 'int', minimum: 1, maximum: 5 },
+        // Fix 94: titulo corto de la resena (ej. "Excelente producto"). No se
+        // agrega a `required` a nivel de base de datos a proposito -- las 10
+        // resenas de siembra de Fix 92 (seed-reviews.js) no lo traen, y
+        // api/reviews.js ya lo exige en la capa de aplicacion para cualquier
+        // resena NUEVA. Subirlo a `required` aqui obligaria a re-sembrar esas
+        // 10 resenas antes de poder correr db/collections.js sin error.
+        title: { bsonType: ['string', 'null'] },
         text: { bsonType: ['string', 'null'] },
         photos: {
           bsonType: ['array', 'null'],

@@ -479,13 +479,27 @@ body.viewing-product-page .home-only{display:none;}
 .review-form{border-top:1px dashed var(--line); margin-top:14px; padding-top:14px;}
 .review-form .rf-stars{display:flex; gap:4px; font-size:22px; cursor:pointer; margin-bottom:10px; color:var(--line);}
 .review-form .rf-stars span.sel{color:var(--gold);}
-.review-form textarea{width:100%; border:1px solid var(--line); border-radius:2px; padding:9px; font-family:inherit; font-size:12.5px; resize:vertical; min-height:60px; margin-bottom:8px;}
-.review-form input[type="file"]{font-size:11px; margin-bottom:8px;}
-.review-photo-preview{display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;}
+/* Fix 94 (Carlos, con captura de referencia de Amazon: "la captura de
+   comentarios debe dejar subir todos [los campos]"): se agregan labels por
+   campo (antes solo habia un input crudo tras otro, sin indicar que era
+   cada uno) y se reemplaza el <input type="file"> crudo por una zona de
+   arrastre/clic (.rf-upload-zone) -- mismo lenguaje visual (crema + dorado
+   al hover) que el resto del sitio. NO se agrega opcion de video: ver nota
+   en api/reviews.js (base64 inline en Mongo no soporta video sin blob
+   storage real). */
+.rf-field-label{display:block; font-size:12px; font-weight:700; color:var(--navy); margin:14px 0 6px;}
+.rf-required-tag{font-weight:400; color:var(--grey); text-transform:none; font-size:11px;}
+.review-form textarea{width:100%; border:1px solid var(--line); border-radius:2px; padding:9px; font-family:inherit; font-size:12.5px; resize:vertical; min-height:60px;}
+.rf-title-input{width:100%; border:1px solid var(--line); border-radius:2px; padding:9px; font-family:inherit; font-size:12.5px;}
+.rf-title-input:focus, .review-form textarea:focus{outline:none; border-color:var(--gold);}
+.rf-upload-zone{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border:1.5px dashed var(--line); border-radius:6px; background:var(--cream); padding:18px 12px; cursor:pointer; color:var(--grey); font-size:11.5px; text-align:center; transition:border-color .2s ease, background .2s ease;}
+.rf-upload-zone:hover{border-color:var(--gold); background:var(--nacar-soft);}
+.review-photo-preview{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
 .review-photo-preview img{width:48px; height:48px; object-fit:cover; border-radius:3px; border:1px solid var(--line);}
-.review-form button{background:var(--navy); color:#fff; border:none; padding:9px 16px; font-size:11px; letter-spacing:.6px; text-transform:uppercase; border-radius:2px; cursor:pointer;}
+.review-form button{background:var(--navy); color:#fff; border:none; padding:9px 16px; font-size:11px; letter-spacing:.6px; text-transform:uppercase; border-radius:2px; cursor:pointer; margin-top:16px;}
 .review-photo-thumb{width:56px; height:56px; object-fit:cover; border-radius:4px; margin-top:6px;}
 .review-login-hint{font-size:11.5px; color:var(--grey); font-style:italic;}
+.review-item-title{font-weight:700; font-size:13px; color:var(--navy); margin:0 0 3px;}
 
 .pm-list{margin-bottom:18px;}
 .pm-row{display:flex; justify-content:space-between; align-items:center; border:1px solid var(--line); border-radius:3px; padding:10px 12px; margin-bottom:8px; font-size:13px;}
@@ -2497,6 +2511,13 @@ var DYN = {
        shareExperience:function(){ return 'Comparte tu experiencia'; },
        reviewPlaceholder:function(){ return 'Cuentanos que te parecio (opcional)'; },
        submitReview:function(){ return 'Publicar resena'; },
+       writeOpinionLabel:function(){ return 'Escribe una opinion'; },
+       shareMediaLabel:function(){ return 'Comparte una foto (opcional)'; },
+       uploadHint:function(){ return 'Toca para subir una foto'; },
+       reviewTitleLabel:function(){ return 'Titula tu opinion'; },
+       requiredLabel:function(){ return 'requerido'; },
+       reviewTitlePlaceholder:function(){ return 'Ej. Excelente calidad'; },
+       reviewTitleRequiredError:function(){ return 'Escribe un titulo breve para tu resena.'; },
        loginToReview:function(){ return 'Inicia sesión para dejar tu resena y compartir fotos de tu experiencia.'; },
        mustPurchaseToReview:function(){ return 'Solo clientes que ya compraron este producto pueden dejar una resena. ¿Ya lo compraste? Escribela desde tu cuenta despues de recibir tu pedido.'; },
        authSigninHeadline:function(){ return 'Inicia sesión para ver tu carrito, tus pedidos y tus promociones.'; },
@@ -2655,6 +2676,13 @@ var DYN = {
        shareExperience:function(){ return 'Share your experience'; },
        reviewPlaceholder:function(){ return 'Tell us what you thought (optional)'; },
        submitReview:function(){ return 'Post review'; },
+       writeOpinionLabel:function(){ return 'Write an opinion'; },
+       shareMediaLabel:function(){ return 'Share a photo (optional)'; },
+       uploadHint:function(){ return 'Tap to upload a photo'; },
+       reviewTitleLabel:function(){ return 'Title your review'; },
+       requiredLabel:function(){ return 'required'; },
+       reviewTitlePlaceholder:function(){ return 'E.g. Excellent quality'; },
+       reviewTitleRequiredError:function(){ return 'Write a short title for your review.'; },
        loginToReview:function(){ return 'Sign in to leave your review and share photos of your experience.'; },
        mustPurchaseToReview:function(){ return 'Only customers who purchased this product can leave a review. Already bought it? Write it from your account once your order arrives.'; },
        authSigninHeadline:function(){ return 'Sign in to see your cart, your orders, and your promotions.'; },
@@ -2813,6 +2841,13 @@ var DYN = {
        shareExperience:function(){ return 'Partagez votre experience'; },
        reviewPlaceholder:function(){ return 'Dites-nous ce que vous en avez pensé (facultatif)'; },
        submitReview:function(){ return 'Publier l\'avis'; },
+       writeOpinionLabel:function(){ return 'Ecrivez un avis'; },
+       shareMediaLabel:function(){ return 'Partagez une photo (facultatif)'; },
+       uploadHint:function(){ return 'Touchez pour ajouter une photo'; },
+       reviewTitleLabel:function(){ return 'Donnez un titre a votre avis'; },
+       requiredLabel:function(){ return 'requis'; },
+       reviewTitlePlaceholder:function(){ return 'Ex. Excellente qualite'; },
+       reviewTitleRequiredError:function(){ return 'Ecrivez un titre court pour votre avis.'; },
        loginToReview:function(){ return 'Connectez-vous pour laisser votre avis et partager des photos de votre experience.'; },
        mustPurchaseToReview:function(){ return 'Seuls les clients ayant achete ce produit peuvent laisser un avis. Vous l\'avez déjà achete ? Ecrivez-le depuis votre compte après reception de votre commande.'; },
        authSigninHeadline:function(){ return 'Connectez-vous pour voir votre panier, vos commandes et vos promotions.'; },
@@ -3024,6 +3059,7 @@ function loadReviewsForProduct(sku){
         for (var j=0;j<reviews.length;j++){
           var rv = reviews[j];
           html += '<div class="comment-item"><div class="c-head"><span>' + rv.customer_display_name + '</span><span class="c-stars">' + starsHtml(rv.stars) + '</span></div>';
+          if (rv.title) html += '<p class="review-item-title">' + rv.title + '</p>';
           if (rv.text) html += '<p>' + rv.text + '</p>';
           if (rv.photos && rv.photos.length){
             for (var k=0;k<rv.photos.length;k++){ html += '<img class="review-photo-thumb" src="' + rv.photos[k].data_url + '" loading="lazy">'; }
@@ -3081,10 +3117,24 @@ function buildReviewFormHtml(sku, purchased){
   } else if (!purchased){
     bodyHtml = '<p class="review-login-hint">' + DYN[currentLang].mustPurchaseToReview() + '</p>';
   } else {
+    // Fix 94 (Carlos, con captura de referencia de Amazon: "la captura de
+    // comentarios debe dejar subir todos [los campos]"): orden estrellas ->
+    // opinion -> foto -> titulo (requerido) -> enviar, igual que la
+    // referencia. El titulo se valida en JS en submitReview() porque este
+    // formulario NO es un <form>/type="submit" real -- el atributo HTML5
+    // "required" no dispara nada aqui, hay que validarlo a mano.
     bodyHtml = '<div class="rf-stars" id="rfStars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>' +
+      '<label class="rf-field-label" for="rfText">' + DYN[currentLang].writeOpinionLabel() + '</label>' +
       '<textarea id="rfText" maxlength="500" placeholder="' + DYN[currentLang].reviewPlaceholder() + '"></textarea>' +
-      '<input type="file" id="rfPhotos" accept="image/*" multiple onchange="handleReviewPhotos(event)">' +
+      '<label class="rf-field-label">' + DYN[currentLang].shareMediaLabel() + '</label>' +
+      '<label class="rf-upload-zone" for="rfPhotos">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 15l-5-5-9 9"/></svg>' +
+        '<span>' + DYN[currentLang].uploadHint() + '</span>' +
+      '</label>' +
+      '<input type="file" id="rfPhotos" accept="image/*" multiple onchange="handleReviewPhotos(event)" style="display:none;">' +
       '<div class="review-photo-preview" id="rfPhotoPreview"></div>' +
+      '<label class="rf-field-label" for="rfTitle">' + DYN[currentLang].reviewTitleLabel() + ' <span class="rf-required-tag">(' + DYN[currentLang].requiredLabel() + ')</span></label>' +
+      '<input type="text" id="rfTitle" class="rf-title-input" maxlength="80" placeholder="' + DYN[currentLang].reviewTitlePlaceholder() + '">' +
       '<button type="button" onclick="submitReview(\'' + sku + '\')">' + DYN[currentLang].submitReview() + '</button>' +
       '<div class="pm-error" id="rfError"></div>';
   }
@@ -3128,10 +3178,23 @@ function submitReview(sku){
   // lugar que no se haya actualizado.
   if (!sku){ sku = pdCurrentSku; }
   var text = document.getElementById('rfText').value.trim();
+  // Fix 94: titulo requerido -- el formulario no es un <form> real (el boton
+  // es type="button"), asi que el atributo "required" del input no basta;
+  // se valida aqui a mano, igual que el resto de las validaciones de este
+  // archivo, antes de mandar el POST (que tambien lo vuelve a validar
+  // server-side en api/reviews.js, misma disciplina defense-in-depth).
+  var titleEl = document.getElementById('rfTitle');
+  var title = titleEl.value.trim();
+  if (!title){
+    errEl.textContent = DYN[currentLang].reviewTitleRequiredError();
+    errEl.className = 'pm-error is-visible';
+    titleEl.focus();
+    return;
+  }
   fetch(AZURA_CONFIG.REVIEWS_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, stars: reviewStarsSelected, text: text, photos: reviewPhotoQueue })
+    body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, stars: reviewStarsSelected, title: title, text: text, photos: reviewPhotoQueue })
   })
   .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
   .then(function(res){

@@ -57,22 +57,22 @@ const SEED_TAG = 'renuevate-demo-v1';
 
 const REVIEWS = [
   // NACAR-06 -- Espuma Limpiadora Facial (3 resenas)
-  { sku: 'NACAR-06', name: 'Renata M.', stars: 5, text: 'Llego rápido y bien empacado. La espuma no reseca, la uso a diario.', photo: 'media/nacar-06-espuma-lifestyle-mano.webp' },
-  { sku: 'NACAR-06', name: 'Paola S.', stars: 5, text: 'Me encanto la textura, no deja la piel grasosa.' },
-  { sku: 'NACAR-06', name: 'Lucia P.', stars: 4, text: 'Buena espuma, rinde bastante. Solo me gustaria que el dispensador durara un poco mas.' },
+  { sku: 'NACAR-06', name: 'Renata M.', stars: 5, title: 'Llega rápido y no reseca', text: 'Llego rápido y bien empacado. La espuma no reseca, la uso a diario.', photo: 'media/nacar-06-espuma-lifestyle-mano.webp' },
+  { sku: 'NACAR-06', name: 'Paola S.', stars: 5, title: 'Textura increíble', text: 'Me encanto la textura, no deja la piel grasosa.' },
+  { sku: 'NACAR-06', name: 'Lucia P.', stars: 4, title: 'Rinde bastante', text: 'Buena espuma, rinde bastante. Solo me gustaria que el dispensador durara un poco mas.' },
 
   // NACAR-07 -- Omniplus Gel Premium (2 resenas)
-  { sku: 'NACAR-07', name: 'Diego H.', stars: 4, text: 'Buen producto, aunque el envío se tardo un poco mas de lo que decia.' },
-  { sku: 'NACAR-07', name: 'Sofia R.', stars: 5, text: 'El gel se siente ligero y refresca al instante, ya es parte de mi rutina de las mananas.' },
+  { sku: 'NACAR-07', name: 'Diego H.', stars: 4, title: 'Buen producto', text: 'Buen producto, aunque el envío se tardo un poco mas de lo que decia.' },
+  { sku: 'NACAR-07', name: 'Sofia R.', stars: 5, title: 'Ligero y refrescante', text: 'El gel se siente ligero y refresca al instante, ya es parte de mi rutina de las mananas.' },
 
   // NACAR-08 -- Crema de Dia FPS 30 (3 resenas)
-  { sku: 'NACAR-08', name: 'Andrea Q.', stars: 4, text: 'Cumple, aunque el precio esta un poco alto para lo que rinde.' },
-  { sku: 'NACAR-08', name: 'Miguel T.', stars: 5, text: 'Se la regale a mi esposa y le encanto, ya la volvio a pedir.' },
-  { sku: 'NACAR-08', name: 'Karla M.', stars: 5, text: 'Hidrata bien sin sentirse pesada bajo el maquillaje, buena opcion para uso diario.' },
+  { sku: 'NACAR-08', name: 'Andrea Q.', stars: 4, title: 'Cumple lo que promete', text: 'Cumple, aunque el precio esta un poco alto para lo que rinde.' },
+  { sku: 'NACAR-08', name: 'Miguel T.', stars: 5, title: 'Se la regale a mi esposa y le encanto', text: 'Se la regale a mi esposa y le encanto, ya la volvio a pedir.' },
+  { sku: 'NACAR-08', name: 'Karla M.', stars: 5, title: 'Perfecta para uso diario', text: 'Hidrata bien sin sentirse pesada bajo el maquillaje, buena opcion para uso diario.' },
 
   // NACAR-09 -- Protector Solar Facial FPS 50+ (2 resenas)
-  { sku: 'NACAR-09', name: 'Fernanda L.', stars: 5, text: 'El protector solar no deja la cara blanca, eso ya es ganancia.', photo: 'media/nacar-09-spf50-abierto.webp' },
-  { sku: 'NACAR-09', name: 'Roberto G.', stars: 4, text: 'Buen protector, no irrita los ojos. Le doy 4 estrellas porque tarda un poco en absorber.' },
+  { sku: 'NACAR-09', name: 'Fernanda L.', stars: 5, title: 'No deja la cara blanca', text: 'El protector solar no deja la cara blanca, eso ya es ganancia.', photo: 'media/nacar-09-spf50-abierto.webp' },
+  { sku: 'NACAR-09', name: 'Roberto G.', stars: 4, title: 'Buena proteccion', text: 'Buen protector, no irrita los ojos. Le doy 4 estrellas porque tarda un poco en absorber.' },
 ];
 
 // Misma logica que recomputeRating() en api/reviews.js -- se duplica aqui
@@ -102,6 +102,7 @@ async function main() {
       customer_id: new ObjectId(),
       customer_display_name: r.name,
       stars: r.stars,
+      title: r.title || null,
       text: r.text,
       photos: r.photo ? [{ data_url: r.photo, uploaded_at: new Date(now) }] : [],
       status: 'published',

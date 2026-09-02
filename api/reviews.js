@@ -13,13 +13,24 @@
 // GET  /api/reviews?sku=NACAR-01[&customerId=...]  -> resenas publicadas de ese
 //      sku; si se manda customerId tambien regresa purchased:true/false (ver
 //      hasPurchased()).
-// POST /api/reviews { customerId, sku, stars, text, displayName, photos:[dataUrl,...] }
+// POST /api/reviews { customerId, sku, stars, title, text, displayName, photos:[dataUrl,...] }
 //
 // Fix 60 (instruccion Carlos: "una vez que compraron se les de la opcion de
 // agregar un comentario"): antes cualquier customerId con sesion podia dejar
 // resena de cualquier sku sin haberlo comprado. Ahora POST exige una orden
 // confirmada (coleccion `orders`, mismo contrato que api/orders.js) del
 // cliente que incluya ese sku -- "resena de compra verificada".
+//
+// Fix 94 (Carlos, con captura de referencia de Amazon: "la captura de
+// comentarios debe dejar subir todos [los campos], ejemplo"): se agrega
+// "title" (titulo corto de la resena, requerido -- igual que el "Titula tu
+// opinion (requerido)" de la referencia). NO se agrego subir video: la
+// arquitectura actual guarda fotos como base64 inline en el propio documento
+// de Mongo (ver MAX_PHOTO_BYTES abajo, gap ya documentado) -- eso es viable
+// para 1-3 fotos chicas, pero un video ahi adentro rompe el limite de 16MB
+// por documento de MongoDB y degradaria el performance de lectura de TODAS
+// las resenas. Subir video requeriria blob storage real (Vercel Blob/S3)
+// primero -- se deja fuera de este fix a proposito, no es un olvido.
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
@@ -28,6 +39,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
 
 const MAX_TEXT_LENGTH = 500;
+const MAX_TITLE_LENGTH = 80;
 const MAX_PHOTOS = 3;
 const MAX_PHOTO_BYTES = 800 * 1024; // ~800KB por foto, en base64. Ver gap: migrar a blob storage real.
 
@@ -92,7 +104,7 @@ module.exports = async (req, res) => {
 
     if (req.method === 'POST') {
       const body = req.body || {};
-      const { customerId, sku, stars, text, displayName, photos } = body;
+      const { customerId, sku, stars, title, text, displayName, photos } = body;
 
       if (!customerId || !ObjectId.isValid(customerId)) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
       if (!sku || typeof sku !== 'string') { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
@@ -117,6 +129,13 @@ module.exports = async (req, res) => {
         res.status(400).json({ error: 'stars debe ser un entero entre 1 y 5.' });
         return;
       }
+
+      // Fix 94: titulo requerido, igual que "Titula tu opinion (requerido)"
+      // en la referencia de Carlos -- se valida server-side (no solo con el
+      // atributo required del input) porque este gate del frontend es solo
+      // UX, misma disciplina que el resto del archivo.
+      const cleanTitle = typeof title === 'string' ? title.trim().slice(0, MAX_TITLE_LENGTH) : '';
+      if (!cleanTitle) { res.status(400).json({ error: 'Escribe un titulo breve para tu resena.' }); return; }
 
       const cleanText = typeof text === 'string' ? text.trim().slice(0, MAX_TEXT_LENGTH) : null;
 
@@ -151,6 +170,7 @@ module.exports = async (req, res) => {
         customer_id: new ObjectId(customerId),
         customer_display_name: safeDisplayName,
         stars: starsNum,
+        title: cleanTitle,
         text: cleanText,
         photos: cleanPhotos,
         status: 'published', // ver nota de gap arriba: sin moderacion humana todavia
@@ -162,7 +182,7 @@ module.exports = async (req, res) => {
 
       res.status(201).json({
         ok: true,
-        review: { id: insertResult.insertedId, sku, stars: starsNum, text: cleanText, customer_display_name: safeDisplayName, photos: cleanPhotos.length, created_at: now },
+        review: { id: insertResult.insertedId, sku, stars: starsNum, title: cleanTitle, text: cleanText, customer_display_name: safeDisplayName, photos: cleanPhotos.length, created_at: now },
         product_rating: rating,
       });
       return;
