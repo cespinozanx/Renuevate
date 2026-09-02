@@ -200,19 +200,21 @@ body.nav-lock{overflow:hidden;}
    el mismo punto vertical que cada object-position de arriba, para que el
    zoom no se desalinee del encuadre ya elegido por slide. */
 @media(max-width:760px){
-  /* Fix 79: Carlos pidio explicitamente el doble de acercamiento ("se vean
-     como al doble de cerca... aunque no quepan completos, eso quiero") --
-     el deploy de Fix 78 (1.5) ya mostraba recorte real al probarlo en modo
-     movil, pero para el sitio publicado no genera cache de CSS por
-     separado (todo va inline en este mismo HTML), así que si en el
-     teléfono seguia viendose "normal" lo mas probable es cache del
-     navegador/CDN del deploy anterior a Fix 78, no que el fix no aplique.
-     Aun así se sube de 1.5 a 2.0 -- doble de acercamiento real, tal como
-     lo pidio, sin importar que la cara ya no quepa completa en cuadro. */
-  .hero-slide{transform:scale(2);}
+  /* Fix 79 (2.0 para las 3) + Fix 83 (zoom diferenciado por contenido real
+     de cada foto, no parejo): los slides 1 y 2 (hero-carousel-1-labial.webp,
+     hero-carousel-2-crema.webp) son primeros planos de ROSTRO -- ahi Carlos
+     pidio otro 50% de acercamiento sobre el 2.0 ya aplicado (2.0 x 1.5 = 3.0).
+     El slide 3 (hero-carousel-3-flatlay.webp) NO tiene rostro -- es un
+     flatlay de 5 productos completos sobre una mesa; el mismo scale(2) que
+     los rostros lo dejaba practicamente ilegible (recortaba la mitad de los
+     productos). Ahi Carlos pidio reducir un 50% desde 2.0, es decir volver a
+     scale(1) -- sin zoom extra, se ve la composicion completa (el recorte
+     que quede es solo el que ya mete object-fit:cover al encajar la foto
+     apaisada dentro del marco vertical del hero en movil). */
+  .hero-slide{transform:scale(3);}
   .hero-slide:nth-of-type(1){transform-origin:center 30%;}
   .hero-slide:nth-of-type(2){transform-origin:center 35%;}
-  .hero-slide:nth-of-type(3){transform-origin:center 55%;}
+  .hero-slide:nth-of-type(3){transform-origin:center 55%; transform:scale(1);}
 }
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
