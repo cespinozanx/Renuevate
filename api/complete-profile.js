@@ -13,15 +13,22 @@
 // Cumplimiento Enterprise, Bloque A, control de acceso) para que nadie pueda mandar un
 // customerId ajeno. Documentado tambien en README.md.
 //
-// Este archivo TAMBIEN atiende un segundo caso, sin relacion con lo anterior:
+// Este archivo TAMBIEN atiende otros dos casos, sin relacion con lo anterior,
+// ambos van a la coleccion separada `leads` (nunca a `customers`) para poder
+// distinguir siempre quien se registro de verdad (customers) de quien solo
+// dejo su contacto suelto (leads). Viven en este mismo archivo -- y no en uno
+// nuevo cada uno -- porque el plan Hobby de Vercel limita a 12 Serverless
+// Functions por deployment y ya estamos en el limite (ver commit "Fix 27",
+// api/checkout.js):
+//
 // POST /api/complete-profile { source:'beauty_quiz', email, phone, quiz_answers }
 // Contacto OPCIONAL que un visitante SIN cuenta deja al final del cuestionario de
-// diagnostico de Belleza (index.html -> submitBeautyQuizLead()). Vive en este mismo
-// archivo -- y no en uno nuevo -- porque el plan Hobby de Vercel limita a 12
-// Serverless Functions por deployment y ya estamos en el limite (ver commit
-// "Fix 27", api/checkout.js). Se guarda en una coleccion separada `leads` (nunca
-// en `customers`) para poder distinguir siempre quien se registro de verdad
-// (customers) de quien solo dejo su contacto en el diagnostico (leads).
+// diagnostico de Belleza (index.html -> submitBeautyQuizLead()).
+//
+// POST /api/complete-profile { source:'newsletter', email }
+// Fix 100: correo del formulario de boletin del home (index.html ->
+// subscribeForm()). Antes este formulario solo mostraba el modal de "gracias"
+// sin guardar el correo en ningun lado -- se detecto en auditoria y se cerro.
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
@@ -74,6 +81,7 @@ module.exports = async (req, res) => {
   // customerId. Se resuelve aparte del flujo normal de abajo (que SIEMPRE exige
   // un customerId valido de un customer ya existente).
   if (body.source === 'beauty_quiz') { return handleBeautyQuizLead(req, res, body); }
+  if (body.source === 'newsletter') { return handleNewsletterLead(req, res, body); }
 
   try {
     const { customerId, phone, birth_date, marketing_consent } = body;
@@ -207,5 +215,42 @@ async function handleBeautyQuizLead(req, res, body) {
   } catch (err) {
     console.error('complete-profile.js (beauty_quiz lead) error:', err);
     res.status(500).json({ error: 'No pudimos guardar tu contacto en este momento. Intenta de nuevo en unos minutos.' });
+  }
+}
+
+// Fix 100: correo del formulario de boletin del home (index.html ->
+// subscribeForm()). Antes solo abria el modal de "gracias" sin mandar el
+// correo a ningun lado -- se detecto en auditoria (Carlos: "podemos tener el
+// correo para cuando se suscribe al boletin") y se cerro aqui. Va a `leads`
+// con lead_source:'newsletter', igual que el lead del cuestionario de
+// Belleza -- nunca se mezcla con `customers`.
+async function handleNewsletterLead(req, res, body) {
+  try {
+    const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
+
+    if (!email || !EMAIL_RE.test(email)) {
+      res.status(400).json({ error: 'Correo invalido.' });
+      return;
+    }
+
+    const db = await getDb();
+    const now = new Date();
+
+    // Idempotente por email: si la misma persona se suscribe otra vez (ej.
+    // reintenta tras un error de red), se actualiza el mismo lead en vez de
+    // acumular duplicados.
+    await db.collection('leads').updateOne(
+      { email },
+      {
+        $set: { email, phone: null, lead_source: 'newsletter', quiz_answers: null, updated_at: now },
+        $setOnInsert: { created_at: now },
+      },
+      { upsert: true }
+    );
+
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error('complete-profile.js (newsletter lead) error:', err);
+    res.status(500).json({ error: 'No pudimos guardar tu correo en este momento. Intenta de nuevo en unos minutos.' });
   }
 }

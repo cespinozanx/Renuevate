@@ -492,9 +492,10 @@ const VALIDATORS = {
   },
 
   // Contactos opcionales de visitantes SIN cuenta (ej. cuestionario de diagnostico
-  // de Belleza, api/complete-profile.js -> handleBeautyQuizLead). A proposito
-  // separado de `customers` -- nunca se mezclan -- para poder distinguir siempre
-  // quien se registro de verdad de quien solo dejo su contacto en un formulario.
+  // de Belleza y formulario de boletin del home, ambos en api/complete-profile.js
+  // -> handleBeautyQuizLead / handleNewsletterLead). A proposito separado de
+  // `customers` -- nunca se mezclan -- para poder distinguir siempre quien se
+  // registro de verdad de quien solo dejo su contacto en un formulario.
   leads: {
     $jsonSchema: {
       bsonType: 'object',
@@ -503,7 +504,8 @@ const VALIDATORS = {
       properties: {
         email: { bsonType: ['string', 'null'] },
         phone: { bsonType: ['string', 'null'] },
-        lead_source: { enum: ['beauty_quiz'] },
+        // Fix 100: se agrego 'newsletter' (antes solo 'beauty_quiz').
+        lead_source: { enum: ['beauty_quiz', 'newsletter'] },
         quiz_answers: { bsonType: ['object', 'null'] },
         created_at: { bsonType: 'date' },
         updated_at: { bsonType: 'date' },

@@ -527,6 +527,7 @@ body.viewing-product-page .home-only{display:none;}
 .newsletter h2 .accent{color:var(--gold); border-color:var(--gold);}
 .nl-form{display:flex; max-width:460px; margin:28px auto 12px; gap:10px;}
 .nl-form input{flex:1; padding:14px 16px; border:1px solid var(--line); border-radius:2px; font-size:14px; font-family:'Manrope',sans-serif;}
+.nl-error{color:#B3261E; font-size:12px; margin-top:-4px; margin-bottom:8px; display:none;}
 .social-signup{display:flex; justify-content:center; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap;}
 #googleBtnContainer{line-height:0; display:flex; justify-content:center;}
 .social-signup button, .auth-social button{display:flex; align-items:center; justify-content:center; gap:10px; padding:11px 18px; border:1px solid var(--line); background:#fff; border-radius:3px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:'Manrope',sans-serif;}
@@ -1236,6 +1237,7 @@ var AZURA_CONFIG = {
       <input type="email" id="nlEmail" placeholder="tu@correo.com" required>
       <button class="btn btn-dark" type="submit" data-i18n="nl.submit">Suscribirme</button>
     </form>
+    <p class="nl-error" id="nlError"></p>
     <p class="nl-account-hint" data-i18n="nl.accountHint">¿Ya tienes cuenta o quieres crear una? Usa el icono de perfil arriba a la derecha.</p>
   </div>
 </section>
@@ -2384,7 +2386,7 @@ var I18N = {
 /* Textos dinamicos (con datos insertados en tiempo real) por idioma */
 var DYN = {
   es:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Ahora mismo son las ' + hh + ':' + mm + ' (hora de tu dispositivo). Te ayudo con algo mas?'; },
-       subscribeOk:'Gracias por suscribirte. En produccion esto se conecta a Klaviyo/CRM mas evento GA4 newsletter_signup.',
+       subscribeError:'No pudimos guardar tu correo. Intenta de nuevo en unos minutos.',
        configMissing:function(field){ return 'Falta configurar ' + field + ' en AZURA_CONFIG (ver README de azura-site) antes de que este boton funcione.'; },
        registerOk:function(name){ return 'Listo' + (name ? ', ' + name : '') + '. Tu registro quedo guardado en la base de datos de Renuévate.'; },
        registerFail:function(){ return 'No pudimos completar tu inicio de sesión en este momento. Intenta de nuevo en unos minutos.'; },
@@ -2547,7 +2549,7 @@ var DYN = {
          leadError:'No pudimos guardar tu contacto. Intenta de nuevo en unos minutos.'
        } },
   en:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Right now it is ' + hh + ':' + mm + ' (your device time). Anything else I can help with?'; },
-       subscribeOk:'Thanks for subscribing. In production this connects to Klaviyo/CRM plus a GA4 newsletter_signup event.',
+       subscribeError:'We could not save your email. Please try again in a few minutes.',
        configMissing:function(field){ return 'Missing ' + field + ' in AZURA_CONFIG (see azura-site README) before this button will work.'; },
        registerOk:function(name){ return 'Done' + (name ? ', ' + name : '') + '. Your registration was saved to Renuévate\'s database.'; },
        registerFail:function(){ return 'We could not complete your sign-in right now. Please try again in a few minutes.'; },
@@ -2710,7 +2712,7 @@ var DYN = {
          leadError:'We could not save your contact. Try again in a few minutes.'
        } },
   fr:{ timeNow:function(){ var d=new Date(); var hh=String(d.getHours()).padStart(2,'0'); var mm=String(d.getMinutes()).padStart(2,'0'); return 'Il est actuellement ' + hh + 'h' + mm + ' (heure de votre appareil). Autre chose ?'; },
-       subscribeOk:'Merci de votre inscription. En production, cela se connecte a Klaviyo/CRM avec un evenement GA4 newsletter_signup.',
+       subscribeError:'Nous n\'avons pas pu enregistrer votre e-mail. Veuillez reessayer dans quelques minutes.',
        configMissing:function(field){ return field + ' manquant dans AZURA_CONFIG (voir le README de azura-site) avant que ce bouton fonctionne.'; },
        registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de données Renuévate.'; },
        registerFail:function(){ return 'Nous n\'avons pas pu terminer votre connexion pour le moment. Veuillez reessayer dans quelques minutes.'; },
@@ -4988,7 +4990,47 @@ function runProductSearch(e){
 
 function subscribeForm(e){
   e.preventDefault();
-  openSubscribeThanks();
+  // Fix 100: antes este handler solo abria el modal de "gracias" sin mandar
+  // el correo a ningun lado -- ahora si lo persiste (coleccion `leads`,
+  // lead_source:'newsletter', ver api/complete-profile.js). Se reusa ese
+  // mismo endpoint (no uno nuevo) por el limite de 12 Serverless Functions
+  // del plan Hobby de Vercel, igual que el lead del cuestionario de Belleza.
+  var dyn = DYN[currentLang];
+  var emailEl = document.getElementById('nlEmail');
+  var errEl = document.getElementById('nlError');
+  var email = emailEl ? emailEl.value.trim() : '';
+  if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    if (errEl) { errEl.textContent = dyn.subscribeError; errEl.style.display = 'block'; }
+    return false;
+  }
+
+  var btn = e.target.querySelector('button[type="submit"]');
+  if (btn) btn.disabled = true;
+
+  fetch('/api/complete-profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ source: 'newsletter', email: email }),
+  })
+    .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
+    .then(function(res){
+      if (btn) btn.disabled = false;
+      if (res.ok){
+        if (typeof window.gtag === 'function'){ window.gtag('event', 'newsletter_signup'); }
+        if (emailEl) emailEl.value = '';
+        openSubscribeThanks();
+      } else if (errEl) {
+        errEl.textContent = (res.data && res.data.error) || dyn.subscribeError;
+        errEl.style.display = 'block';
+      }
+    })
+    .catch(function(){
+      if (btn) btn.disabled = false;
+      if (errEl) { errEl.textContent = dyn.subscribeError; errEl.style.display = 'block'; }
+    });
+
   return false;
 }
 function openSubscribeThanks(){
