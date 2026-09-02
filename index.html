@@ -818,10 +818,6 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .chat-typing .dot:nth-child(2){animation-delay:.15s;}
 .chat-typing .dot:nth-child(3){animation-delay:.3s;}
 @keyframes chatDot{0%,80%,100%{opacity:.3; transform:translateY(0);}40%{opacity:1; transform:translateY(-3px);}}
-.chat-menu{display:flex; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
-.chat-menu button{flex:1; font-size:10px; letter-spacing:.3px; padding:8px 4px; border:none; border-right:1px solid var(--line); background:#fff; cursor:pointer; color:var(--grey); font-family:'Manrope',sans-serif;}
-.chat-menu button:last-child{border-right:none;}
-.chat-menu button:hover{background:var(--cream); color:var(--navy);}
 .chat-pcard{border:1px solid var(--line); border-radius:6px; padding:10px; display:flex; gap:10px; align-items:center; margin-top:8px; background:#fff;}
 .chat-pcard:first-child{margin-top:0;}
 .chat-pcard .cp-icon{width:34px; height:34px; flex:none; border-radius:5px; background:var(--cream); display:flex; align-items:center; justify-content:center;}
@@ -1714,18 +1710,17 @@ var AZURA_CONFIG = {
   <div class="chat-head">
     <div>
       <b>Julieta</b>
-      <span id="chatSubtitle">En linea . tu asistente de bienestar Renuévate</span>
+      <span id="chatSubtitle">En linea . tu asesora de Renuévate</span>
     </div>
     <div class="chat-close" onclick="toggleChat()">&times;</div>
   </div>
   <div class="chat-body" id="chatBody"></div>
   <div class="chat-quick" id="chatQuick"></div>
-  <div class="chat-menu" id="chatMenu">
-    <button onclick="menuCategorias()" data-i18n="chat.menu.categories">Categorías</button>
-    <button onclick="menuOfertas()" data-i18n="chat.menu.offers">Ofertas</button>
-    <button onclick="menuCarrito()" data-i18n="chat.menu.cart">Mi carrito</button>
-    <button onclick="menuAsesor()" data-i18n="chat.menu.advisor">Asesor</button>
-  </div>
+  <!-- Fix 102: se quito la barra fija de Categorias/Ofertas/Mi carrito/Asesor
+       (siempre visible antes) por instruccion de Carlos -- esas 4 acciones
+       ahora son on-demand: se disparan si el visitante las pide escribiendo
+       (ver CHAT_KEYWORDS.categories/offers/mycart/human), no por un menu
+       permanente ocupando espacio en cada vista del chat. -->
   <div class="chat-input-row">
     <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter'){sendChat();}">
     <button onclick="sendChat()" id="chatSendBtn">Enviar</button>
@@ -2088,15 +2083,14 @@ var I18N = {
     "about.eyebrow":"Sobre Renuévate", "about.heroTitle":"Belleza y bienestar, con criterio.",
     "footer.hLegal":"Legal", "footer.privacy":"Aviso de privacidad", "footer.terms":"Términos y condiciones", "footer.cookies":"Política de cookies",
     "footer.copyright":"&copy; 2026 Renuévate. Todos los derechos reservados.", "footer.prototypeNote":"Diseñado en México, para tu bienestar.",
-    "chat.subtitle":"En linea . tu asesora de bienestar Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
-    "chat.menu.categories":"Categorías", "chat.menu.offers":"Ofertas", "chat.menu.cart":"Mi carrito", "chat.menu.advisor":"Asesor",
+    "chat.subtitle":"En linea . tu asesora de Renuévate", "chat.placeholder":"Escribe tu pregunta...", "chat.send":"Enviar",
     "profile.title":"Completa tu perfil", "profile.subtitle":"Con esto activamos tus promociones de cumpleaños y tu programa de lealtad.",
     "profile.phoneLabel":"Teléfono (con código de pais)", "profile.phoneHint":"Si eres de Mexico, puedes escribir solo tu número a 10 digitos. Otros paises: formato internacional, ej. +1 para EE.UU.",
     "profile.birthLabel":"Fecha de nacimiento",
     "profile.consentEmailLabel":"Acepto recibir promociones por correo (requerido para cumpleaños y lealtad)",
     "profile.consentSmsLabel":"También por SMS", "profile.consentWhatsappLabel":"También por WhatsApp",
     "profile.submitLabel":"Guardar perfil", "profile.skipLabel":"Ahora no", "profile.phonePlaceholder":"+525512345678",
-    "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de bienestar Renuévate. ¿En que te ayudo hoy?",
+    "chat.greeting":"Hola! Soy Julieta 🌿, tu asesora de Renuévate. ¿En que te ayudo hoy?",
     "chat.q.identity":"Quien eres", "chat.a.identity":"Soy Julieta, tu asesora de belleza y bienestar de Renuévate. ¿En que te ayudo?",
     "chat.a.greeting":"Hola! ¿En que te ayudo?",
     "chat.a.capability":"Te ayudo con envíos, pagos, devoluciones, elegir tu sistema o hablar con un asesor.",
@@ -2203,15 +2197,14 @@ var I18N = {
     "about.eyebrow":"About Renuévate", "about.heroTitle":"Beauty and wellness, with judgment.",
     "footer.hLegal":"Legal", "footer.privacy":"Privacy notice", "footer.terms":"Terms & conditions", "footer.cookies":"Cookie policy",
     "footer.copyright":"&copy; 2026 Renuévate. All rights reserved.", "footer.prototypeNote":"Designed in Mexico, for your wellbeing.",
-    "chat.subtitle":"Online . your Renuévate wellness advisor", "chat.placeholder":"Type your question...", "chat.send":"Send",
-    "chat.menu.categories":"Categories", "chat.menu.offers":"Offers", "chat.menu.cart":"My cart", "chat.menu.advisor":"Advisor",
+    "chat.subtitle":"Online . your Renuévate advisor", "chat.placeholder":"Type your question...", "chat.send":"Send",
     "profile.title":"Complete your profile", "profile.subtitle":"This activates your birthday promotions and loyalty program.",
     "profile.phoneLabel":"Phone (with country code)", "profile.phoneHint":"International E.164 format, e.g. +1 for the US.",
     "profile.birthLabel":"Date of birth",
     "profile.consentEmailLabel":"I agree to receive email promotions (required for birthday and loyalty perks)",
     "profile.consentSmsLabel":"Also by SMS", "profile.consentWhatsappLabel":"Also by WhatsApp",
     "profile.submitLabel":"Save profile", "profile.skipLabel":"Not now", "profile.phonePlaceholder":"+15551234567",
-    "chat.greeting":"Hi! I'm Julieta 🌿, your Renuévate wellness advisor. How can I help you today?",
+    "chat.greeting":"Hi! I'm Julieta 🌿, your Renuévate advisor. How can I help you today?",
     "chat.q.identity":"Who are you", "chat.a.identity":"I'm Julieta, your Renuévate beauty and wellness advisor. How can I help?",
     "chat.a.greeting":"Hi! How can I help?",
     "chat.a.capability":"I can help with shipping, payment, returns, choosing your system, or a human advisor.",
@@ -2318,15 +2311,14 @@ var I18N = {
     "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beauté et bien-etre, avec discernement.",
     "footer.hLegal":"Mentions legales", "footer.privacy":"Politique de confidentialité", "footer.terms":"Conditions générales", "footer.cookies":"Politique de cookies",
     "footer.copyright":"&copy; 2026 Renuévate. Tous droits reserves.", "footer.prototypeNote":"Conçu au Mexique, pour votre bien-etre.",
-    "chat.subtitle":"En ligne . votre conseillère bien-etre Renuévate", "chat.placeholder":"Ecrivez votre question...", "chat.send":"Envoyer",
-    "chat.menu.categories":"Categories", "chat.menu.offers":"Offres", "chat.menu.cart":"Mon panier", "chat.menu.advisor":"Conseiller",
+    "chat.subtitle":"En ligne . votre conseillère Renuévate", "chat.placeholder":"Ecrivez votre question...", "chat.send":"Envoyer",
     "profile.title":"Completez votre profil", "profile.subtitle":"Cela active vos promotions d'anniversaire et votre programme de fidelite.",
     "profile.phoneLabel":"Telephone (avec indicatif pays)", "profile.phoneHint":"Format international E.164, ex. +33 pour la France.",
     "profile.birthLabel":"Date de naissance",
     "profile.consentEmailLabel":"J'accepte de recevoir des promotions par courriel (requis pour anniversaire et fidelite)",
     "profile.consentSmsLabel":"Aussi par SMS", "profile.consentWhatsappLabel":"Aussi par WhatsApp",
     "profile.submitLabel":"Enregistrer le profil", "profile.skipLabel":"Pas maintenant", "profile.phonePlaceholder":"+33612345678",
-    "chat.greeting":"Bonjour ! Je suis Julieta 🌿, votre conseillère bien-etre Renuévate. Comment puis-je vous aider ?",
+    "chat.greeting":"Bonjour ! Je suis Julieta 🌿, votre conseillère Renuévate. Comment puis-je vous aider ?",
     "chat.q.identity":"Qui es-tu", "chat.a.identity":"Je suis Julieta, votre conseillère beauté et bien-etre de Renuévate. Comment puis-je vous aider ?",
     "chat.a.greeting":"Bonjour ! Comment puis-je vous aider ?",
     "chat.a.capability":"Je peux vous aider avec la livraison, le paiement, les retours, choisir votre système, ou un conseiller humain.",
@@ -2479,8 +2471,7 @@ var DYN = {
          goalOptions:function(){ return [
            { label:'Cuidado de la piel', action:function(){ chooseGoal('skin'); } },
            { label:'Cuidado del cabello', action:function(){ chooseGoal('hair'); } },
-           { label:'Maquíllaje', action:function(){ chooseGoal('makeup'); } },
-           { label:'Bienestar integral', action:function(){ chooseGoal('wellness'); } }
+           { label:'Maquíllaje', action:function(){ chooseGoal('makeup'); } }
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'Para tu piel, que priorizas?' : 'Para afinar, que buscas mas?'; },
          refineOptions:function(goal){
@@ -2642,8 +2633,7 @@ var DYN = {
          goalOptions:function(){ return [
            { label:'Skin care', action:function(){ chooseGoal('skin'); } },
            { label:'Hair care', action:function(){ chooseGoal('hair'); } },
-           { label:'Makeup', action:function(){ chooseGoal('makeup'); } },
-           { label:'Overall wellness', action:function(){ chooseGoal('wellness'); } }
+           { label:'Makeup', action:function(){ chooseGoal('makeup'); } }
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'For your skin, what matters most?' : "Let's narrow it down, what are you after?"; },
          refineOptions:function(goal){
@@ -2805,8 +2795,7 @@ var DYN = {
          goalOptions:function(){ return [
            { label:'Soin de la peau', action:function(){ chooseGoal('skin'); } },
            { label:'Soin des cheveux', action:function(){ chooseGoal('hair'); } },
-           { label:'Maquillage', action:function(){ chooseGoal('makeup'); } },
-           { label:'Bien-etre global', action:function(){ chooseGoal('wellness'); } }
+           { label:'Maquillage', action:function(){ chooseGoal('makeup'); } }
          ]; },
          refineQuestion:function(goal){ return goal === 'skin' ? 'Pour votre peau, quelle est votre priorite ?' : 'Pour affiner, que recherchez-vous ?'; },
          refineOptions:function(goal){
@@ -5579,7 +5568,14 @@ var CHAT_KEYWORDS = {
   contact:['contacto','contact','correo','email','teléfono','phone'],
   sustainability:['sostenibilidad','sustainability','durabilite','reciclable','reciclado','recycled','ambiente','environnement'],
   human:['humano','human','humain','asesor','advisor','conseiller','agente','persona'],
-  store:['tienda fisica','tienda en','punto de venta','sucursal','tienen tienda','physical store','store location','have a store','magasin physique','boutique physique','avez vous un magasin']
+  store:['tienda fisica','tienda en','punto de venta','sucursal','tienen tienda','physical store','store location','have a store','magasin physique','boutique physique','avez vous un magasin'],
+  /* Fix 102: antes estas 3 solo se alcanzaban con la barra fija Categorias/
+     Ofertas/Mi carrito (siempre visible). Ahora son on-demand -- se
+     disparan si el visitante las pide escribiendo, sin ocupar espacio
+     permanente en el chat. */
+  categories:['categorias','categoria','ver categorias','ver catalogo completo','que categorias','categories','category','see categories','view catalog','catégories','catégorie','voir les categories'],
+  offers:['ver ofertas','tienen ofertas','hay ofertas','promociones actuales','descuentos actuales','current offers','current promotions','any offers','see offers','voir les offres','offres actuelles'],
+  mycart:['mi carrito','ver carrito','ver mi carrito','abrir carrito','my cart','view cart','see my cart','open cart','mon panier','voir mon panier']
 };
 var CHAT_QUICK_TOPICS = ['identity','shipping','payment','returns','verticals','diagnostic','human'];
 var CHAT_QUICK_KEYMAP = {identity:'chat.q.identity', shipping:'chat.q.shipping', verticals:'chat.q.verticals', diagnostic:'chat.q.diagnostic', human:'chat.q.human', payment:'chat.q.payment', returns:'chat.q.returns'};
@@ -5759,8 +5755,13 @@ function menuCarrito(){
       '<button class="chat-wa-btn" style="background:var(--navy)" onclick="toggleChat(); openAuthModal(\'signin\');">' + loginLabel + '</button>', 'bot');
   }
 }
-function menuAsesor(){
-  answerTopic('human');
+// Fix 102: vacia el bloque de opciones/submenus del chat. Se llama cada vez
+// que esas opciones dejan de aplicar (el usuario escribio otra cosa, o el
+// bot ya contesto algo distinto) -- las listas de opciones son on-demand,
+// no deben quedarse pegadas en pantalla.
+function clearChatQuick(){
+  var box = document.getElementById('chatQuick');
+  if (box) box.innerHTML = '';
 }
 function renderChatQuickButtons(){
   var dict = I18N[currentLang];
@@ -5793,6 +5794,10 @@ function chooseDynamicOption(idx){
   if (!opt) return;
   addChatMsg(opt.label, 'user');
   JULIETA.pendingOptions = null;
+  // Fix 102: se quita la lista de opciones apenas se elige una -- si no, se
+  // queda visible (ya inactiva) los ~300ms hasta que la accion la reemplace,
+  // y algunas acciones no la reemplazan en absoluto.
+  clearChatQuick();
   setTimeout(opt.action, 300);
 }
 function addChatMsg(text, who){
@@ -5811,6 +5816,12 @@ function askTopic(topic){
 function answerTopic(topic){
   var dict = I18N[currentLang];
   if (topic === 'time'){ addChatMsg(DYN[currentLang].timeNow(), 'bot'); return; }
+  // Fix 102: categories/offers/mycart tienen efecto real (navegar, mostrar
+  // carrito) en vez de solo texto de FAQ -- se resuelven con las mismas
+  // funciones que antes vivian solo en la barra fija de menu.
+  if (topic === 'categories'){ menuCategorias(); return; }
+  if (topic === 'offers'){ menuOfertas(); return; }
+  if (topic === 'mycart'){ menuCarrito(); return; }
   var key = CHAT_ANSWER_KEYMAP[topic] || 'chat.a.fallback';
   addChatMsg(dict[key] || dict['chat.a.fallback'], 'bot');
   if (topic === 'human'){
@@ -6022,6 +6033,16 @@ function sendChat(){
       setTimeout(opt.action, 350);
       return;
     }
+    // Fix 102: el usuario escribio texto libre en vez de elegir una de las
+    // opciones pendientes (ej. escribio una pregunta nueva mientras seguian
+    // paradas "Ver catalogo / Hablar con un asesor / Elegir otra prioridad").
+    // Antes esto se ignoraba en silencio y las opciones viejas se quedaban
+    // pegadas en pantalla debajo de la respuesta nueva, sin relacion con lo
+    // que se acababa de contestar -- justo el bug que reporto Carlos. Se
+    // limpian aqui para que el chat solo muestre opciones cuando de verdad
+    // aplican a lo ultimo que se dijo.
+    JULIETA.pendingOptions = null;
+    clearChatQuick();
   }
 
   if (textHasAny(text, MEDICAL_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerMedicalGuard(); }, 500); return; }
