@@ -210,11 +210,18 @@ body.nav-lock{overflow:hidden;}
      productos). Ahi Carlos pidio reducir un 50% desde 2.0, es decir volver a
      scale(1) -- sin zoom extra, se ve la composicion completa (el recorte
      que quede es solo el que ya mete object-fit:cover al encajar la foto
-     apaisada dentro del marco vertical del hero en movil). */
+     apaisada dentro del marco vertical del hero en movil).
+     Fix 89: Carlos pidio reducir SOLO el slide 3 "ligeramente" en iOS/Android
+     para que se vean mejor los productos (los otros 2 quedan igual, no se
+     tocan). scale(1) ya era "sin zoom", asi que bajar de 1 a 0.9 encoge la
+     imagen un 10% desde su centro -- el marco (.hero-media-frame) tiene
+     fondo crema (#F8F7F3, el mismo crema de marca) detras, asi que el
+     margen que se revela alrededor se ve como un encuadre intencional, no
+     como un hueco roto. */
   .hero-slide{transform:scale(3);}
   .hero-slide:nth-of-type(1){transform-origin:center 30%;}
   .hero-slide:nth-of-type(2){transform-origin:center 35%;}
-  .hero-slide:nth-of-type(3){transform-origin:center 55%; transform:scale(1);}
+  .hero-slide:nth-of-type(3){transform-origin:center 55%; transform:scale(0.9);}
 }
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
@@ -3387,15 +3394,28 @@ function startCheckout(){
 
 // Fix 84: shade opcional -- identifica la linea exacta cuando el mismo sku
 // tiene mas de un tono en el carrito (ver itemMatchFilter en api/cart.js).
+// Fix 89: CART_QTY_BUSY evita condicion de carrera por clicks rapidos en los
+// botones +/-. Antes, 3 clicks seguidos disparaban 3 PUT en paralelo y la
+// respuesta que llegara ULTIMA por red (no necesariamente la del click mas
+// reciente) era la que pintaba el carrito -- podia mostrar una cantidad
+// vieja/incorrecta tras varios clicks rapidos. Se ignora un nuevo click sobre
+// la MISMA linea (sku+tono) mientras la llamada anterior sigue en vuelo;
+// otras lineas del carrito no se bloquean entre si.
+var CART_QTY_BUSY = {};
 function changeCartQty(sku, newQty, shade){
   if (!CURRENT_CUSTOMER.id){ guestChangeQty(sku, newQty, shade); renderCartPanel(hydrateGuestCart()); return; }
+  var busyKey = sku + '|' + (shade || '');
+  if (CART_QTY_BUSY[busyKey]) return;
+  CART_QTY_BUSY[busyKey] = true;
   fetch(AZURA_CONFIG.CART_ENDPOINT, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ customerId: CURRENT_CUSTOMER.id, sku: sku, qty: newQty, shade: shade || undefined })
   })
   .then(function(r){ return r.json(); })
-  .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); });
+  .then(function(data){ if (data && data.ok) renderCartPanel(data.cart); })
+  .catch(function(err){ console.error('changeCartQty: error de red', err); })
+  .finally(function(){ delete CART_QTY_BUSY[busyKey]; });
 }
 
 function removeCartItem(sku, shade){

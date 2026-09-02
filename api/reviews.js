@@ -22,6 +22,7 @@
 // cliente que incluya ese sku -- "resena de compra verificada".
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -59,8 +60,7 @@ async function recomputeRating(db, sku) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  applyCors(req, res, 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }

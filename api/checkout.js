@@ -34,6 +34,7 @@
 //   SITE_URL                   ej. https://renuevatehoy.vercel.app (para back_urls y el webhook)
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 const { recordPurchaseForLoyalty } = require('../lib/promotionsEngine');
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -55,8 +56,7 @@ function siteUrl() {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  applyCors(req, res, 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }

@@ -17,6 +17,7 @@
 //   FACEBOOK_APP_SECRET  - App Secret de Meta for Developers (NUNCA en el frontend)
 
 const { MongoClient } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 const { OAuth2Client } = require('google-auth-library');
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -86,8 +87,7 @@ async function verifyFacebook(accessToken) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  applyCors(req, res, 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {

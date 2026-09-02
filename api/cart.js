@@ -27,9 +27,13 @@
 // gap en db/schema.md (sesion/cookie firmada pendiente antes de trafico real).
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
+// Fix 89: tope superior de cantidad por linea de carrito (ver comentario en
+// el POST mas abajo) -- antes no existia, qty solo se validaba >= 1/0.
+const MAX_CART_QTY = 20;
 
 let cachedClient = null;
 async function getDb() {
@@ -122,8 +126,7 @@ async function hydrateCart(db, cartDoc) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  applyCors(req, res, 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
@@ -147,8 +150,18 @@ module.exports = async (req, res) => {
       const quantity = Number(qty) || 1;
       const shade = normalizeShade(rawShade);
       if (!custId) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
-      if (!sku || typeof sku !== 'string') { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
-      if (!Number.isInteger(quantity) || quantity < 1) { res.status(400).json({ error: 'qty debe ser un entero >= 1.' }); return; }
+      if (!sku || typeof sku !== 'string' || sku.length > 40) { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
+      // Fix 89: antes no habia tope superior -- qty=999999999 pasaba la
+      // validacion igual que qty=1 (Number.isInteger + >=1 no acota arriba).
+      // No es una perdida de dinero real (hydrateCart siempre recalcula
+      // contra el precio real de products, nunca contra lo que mande el
+      // navegador), pero si es un vector de abuso: alguien podria inflar una
+      // sola linea del carrito a un numero absurdo (llamadas repetidas al
+      // checkout/Mercado Pago con qty gigantes, carritos ilegibles en el
+      // panel, filas de Mongo infladas). MAX_CART_QTY=20 es generoso para
+      // compra real (nadie compra 20 protectores solares en una sola linea)
+      // y cierra el abuso sin arriesgar tocar un caso de uso legitimo.
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_CART_QTY) { res.status(400).json({ error: `qty debe ser un entero entre 1 y ${MAX_CART_QTY}.` }); return; }
 
       const product = await db.collection('products').findOne({ sku, status: 'active' });
       if (!product) { res.status(404).json({ error: `El producto ${sku} no existe o no esta disponible.` }); return; }
@@ -196,7 +209,7 @@ module.exports = async (req, res) => {
       const custId = parseCustomerId(customerId);
       const shade = normalizeShade(rawShade);
       if (!custId) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
-      if (!sku || typeof sku !== 'string') { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
+      if (!sku || typeof sku !== 'string' || sku.length > 40) { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
       const filter = itemMatchFilter(sku, shade);
 
       // Caso "Guardar para mas tarde" / "Mover al carrito": solo cambia la
@@ -224,7 +237,7 @@ module.exports = async (req, res) => {
       }
 
       const quantity = Number(qty);
-      if (!Number.isInteger(quantity) || quantity < 0) { res.status(400).json({ error: 'qty debe ser un entero >= 0.' }); return; }
+      if (!Number.isInteger(quantity) || quantity < 0 || quantity > MAX_CART_QTY) { res.status(400).json({ error: `qty debe ser un entero entre 0 y ${MAX_CART_QTY}.` }); return; }
 
       if (quantity === 0) {
         await db.collection('carts').updateOne(

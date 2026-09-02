@@ -10,6 +10,7 @@
 // DELETE /api/addresses?customerId=...&id=...
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -66,8 +67,7 @@ function validateAddressFields(body, { partial } = { partial: false }) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  applyCors(req, res, 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }

@@ -24,6 +24,7 @@
 // (customers) de quien solo dejo su contacto en el diagnostico (leads).
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB_RAW = process.env.MONGODB_DB || 'azura';
@@ -61,8 +62,7 @@ function monthDay(date) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  applyCors(req, res, 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }

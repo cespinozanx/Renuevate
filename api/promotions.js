@@ -19,6 +19,7 @@
 //   POST /api/promotions   { action: "activate" | "pause" | "archive", id }
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -122,8 +123,7 @@ async function transitionStatus(db, id, targetStatus, adminUser) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  applyCors(req, res, 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key');
 
   if (req.method === 'OPTIONS') {

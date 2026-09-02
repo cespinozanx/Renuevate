@@ -10,6 +10,7 @@
 // POST /api/loyalty-rules { action: "activate" | "pause", id }
 
 const { MongoClient, ObjectId } = require('mongodb');
+const { applyCors } = require('../lib/cors');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -38,8 +39,7 @@ function requireAdmin(req, res) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  applyCors(req, res, 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
