@@ -396,24 +396,23 @@ body.viewing-product-page .home-only{display:none;}
 .product-body .price{font-size:14.5px; font-weight:700; font-family:'Manrope',sans-serif;}
 .product-related{font-size:10.5px; color:var(--grey); margin-top:8px; padding-top:8px; border-top:1px dashed var(--line);}
 .product-related b{color:var(--ink);}
-.products-footnote{text-align:center; margin:-36px 0 60px;}
-.products-footnote button{background:none; border:none; color:var(--grey); font-size:12.5px; text-decoration:underline; cursor:pointer; letter-spacing:.3px;}
-.products-footnote button:hover{color:var(--navy);}
-.comments-panel{display:none; max-width:720px; margin:18px auto 0; text-align:left; background:#F8F7F3; border:1px solid var(--line); border-radius:6px; padding:22px 26px;}
-.comments-panel.open{display:block;}
+/* Fix 90 (Carlos: "los comentarios deben estar en la ficha del producto"):
+   antes existia un panel de comentarios A NIVEL CATALOGO (.products-footnote
+   + .comments-panel), compartido por varios skus a la vez y relleno con
+   comentarios ficticios (.comment-more/.comment-readmore-link/
+   .comments-disclaimer) cuando un producto no tenia resenas reales -- eso es
+   lo que se veia "superficial y sin relacion a nada". Esas reglas se
+   eliminan; .comment-item se conserva porque el HTML de cada resena real
+   (ver loadReviewsForProduct() en el JS) sigue usando esa clase, ahora
+   pintado DENTRO de la ficha (.pd-reviews-block, mas abajo). */
 .comment-item{padding:12px 0; border-bottom:1px solid var(--line);}
 .comment-item:last-child{border-bottom:none;}
 .comment-item .c-head{display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:4px;}
 .comment-item .c-stars{color:var(--gold); font-size:12px;}
 .comment-item p{font-size:13px; color:var(--grey); margin:0;}
-.comments-disclaimer{font-size:10.5px; color:var(--grey); opacity:.75; margin-top:10px; font-style:italic;}
-/* Fix 76: "Ver mas" por comentario -- .comment-more arranca oculto (display:none)
-   y toggleDemoCommentMore() le agrega/quita .open. */
-.comment-more{display:none; margin-top:6px;}
-.comment-more.open{display:block;}
-.comment-more p{margin:0 0 6px;}
-.comment-readmore-link{display:inline-block; margin-top:6px; font-size:11.5px; font-weight:700; letter-spacing:.3px; color:var(--ink); cursor:pointer; border-bottom:1px solid var(--gold);}
-.comment-readmore-link:hover{color:var(--gold);}
+.pd-rating-summary{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--grey); margin-bottom:10px;}
+.pd-rating-summary .stars{color:var(--gold); font-size:14px;}
+.pd-reviews-list{max-height:340px; overflow-y:auto; margin-bottom:4px;}
 
 /* ===================== Carrito, cuenta/pagos y resenas reales (conectado a BD) ===================== */
 .account-icon-btn, .cart-icon-btn{position:relative; background:none; border:none; cursor:pointer; color:var(--ink); padding:4px; display:flex; align-items:center;}
@@ -1200,10 +1199,6 @@ var AZURA_CONFIG = {
 
     <div class="beauty-rec-banner" id="beautyRecBanner" style="display:none;"></div>
     <div class="products-grid" id="productsGrid"></div>
-    <div class="products-footnote">
-      <button id="commentsToggleBtn" onclick="toggleComments()">Ver comentarios</button>
-      <div class="comments-panel" id="commentsPanel"></div>
-    </div>
 
     <div class="routine-block">
       <div class="routine-head reveal-stagger">
@@ -1528,6 +1523,22 @@ var AZURA_CONFIG = {
       </div>
       <div class="pd-actions">
         <button class="add-to-cart-btn" id="pdAddToCartBtn" onclick="addToCart(pdCurrentSku, 1, getPdSelectedShadeName()); closeProductDetail();"></button>
+      </div>
+      <!-- Fix 90 (Carlos: "los comentarios deben estar en la ficha del
+           producto, de esa forma pertenecen al producto"): las resenas ahora
+           viven aqui, dentro de la ficha, filtradas por pdCurrentSku (ver
+           loadReviewsForProduct() en el JS) -- nunca mezcladas con otros
+           skus ni rellenadas con comentarios de ejemplo cuando no hay
+           resenas reales todavia (antes caia a .demoComments(), contenido
+           ficticio). La tabla que vincula cada comentario a SU producto ya
+           existia en el backend (product_reviews.sku -> products.sku, ver
+           api/reviews.js) -- lo que estaba mal era donde y como se pintaba
+           en el frontend. -->
+      <div class="pd-section pd-reviews-block" id="pdReviewsBlock">
+        <h5 id="pdReviewsLabel"></h5>
+        <div class="pd-rating-summary" id="pdRatingSummary"></div>
+        <div class="pd-reviews-list" id="pdReviewsList"></div>
+        <div id="pdReviewFormContainer"></div>
       </div>
     </div>
   </div>
@@ -2409,19 +2420,9 @@ var DYN = {
        registerOk:function(name){ return 'Listo' + (name ? ', ' + name : '') + '. Tu registro quedo guardado en la base de datos de Renuévate.'; },
        registerFail:function(){ return 'No pudimos completar tu inicio de sesión en este momento. Intenta de nuevo en unos minutos.'; },
        boughtTogether:function(){ return 'Los clientes que compraron esto también llevaron:'; },
-       viewComments:function(){ return 'Ver comentarios'; },
-       hideComments:function(){ return 'Ocultar comentarios'; },
-       commentsDisclaimer:function(){ return 'Comentarios de ejemplo con fines de demostracion del prototipo.'; },
-       demoComments:function(){ return [
-         {name:'Renata M.', stars:5, text:'Llego rápido y bien empacado. La espuma no reseca, la uso a diario.', more:'Ya voy en el segundo frasco, no me ha batallado la piel desde que la uso.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
-         {name:'Diego H.', stars:4, text:'Buen producto, aunque el envío se tardo un poco mas de lo que decia.', more:'El resultado si se nota, solo esperaba que llegara en los 4 días que dice la página.'},
-         {name:'Paola S.', stars:5, text:'Me encanto la textura, no deja la piel grasosa.', more:'La compre por recomendacion de una amiga y ahora yo también la recomiendo.'},
-         {name:'Fernanda L.', stars:5, text:'El protector solar no deja la cara blanca, eso ya es ganancia.', more:'Lo uso todos los días antes de salir, huele rico y no irrita los ojos.', photo:'media/nacar-09-spf50-abierto.webp'},
-         {name:'Andrea Q.', stars:4, text:'Cumple, aunque el precio esta un poco alto para lo que rinde.', more:'Aun así voy a seguir comprando porque no me ha generado ninguna reaccion.'},
-         {name:'Miguel T.', stars:5, text:'Se la regale a mi esposa y le encanto, ya la volvio a pedir.', more:'Buen empaque, llego a tiempo y el producto se ve de calidad.'}
-       ]; },
-       reviewReadMore:function(){ return 'Ver mas'; },
-       reviewReadLess:function(){ return 'Ver menos'; },
+       reviewsLabel:function(){ return 'Reseñas de clientes'; },
+       reviewCount:function(n){ return n===1 ? '1 reseña' : n + ' reseñas'; },
+       noReviewsYet:function(){ return 'Sé el primero en compartir tu experiencia con este producto.'; },
        addToCart:function(){ return 'Agregar al carrito'; },
        viewDetail:function(){ return 'Ver detalle'; },
        comingSoonBadge:function(){ return 'Proximamente'; },
@@ -2575,19 +2576,9 @@ var DYN = {
        registerOk:function(name){ return 'Done' + (name ? ', ' + name : '') + '. Your registration was saved to Renuévate\'s database.'; },
        registerFail:function(){ return 'We could not complete your sign-in right now. Please try again in a few minutes.'; },
        boughtTogether:function(){ return 'Customers who bought this also purchased:'; },
-       viewComments:function(){ return 'View comments'; },
-       hideComments:function(){ return 'Hide comments'; },
-       commentsDisclaimer:function(){ return 'Sample comments for prototype demonstration purposes.'; },
-       demoComments:function(){ return [
-         {name:'Renata M.', stars:5, text:"Arrived fast and well packed. The foam doesn't dry out my skin, I use it daily.", more:"On my second bottle already, my skin has been much calmer since I started.", photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
-         {name:'Diego H.', stars:4, text:'Good product, though shipping took a bit longer than stated.', more:'You can tell it works, just wish it had arrived within the 4 days the site says.'},
-         {name:'Paola S.', stars:5, text:"Loved the texture, doesn't leave skin greasy.", more:"Bought it on a friend's recommendation and now I recommend it too."},
-         {name:'Fernanda L.', stars:5, text:'The sunscreen leaves no white cast, that alone is a win.', more:"I use it every day before heading out, smells nice and doesn't sting my eyes.", photo:'media/nacar-09-spf50-abierto.webp'},
-         {name:'Andrea Q.', stars:4, text:"Does the job, though it's a bit pricey for how much you get.", more:"Still buying it again since it hasn't caused any reaction on my skin."},
-         {name:'Miguel T.', stars:5, text:'Got it for my wife and she loved it, already asked for another one.', more:'Good packaging, arrived on time and the product feels well made.'}
-       ]; },
-       reviewReadMore:function(){ return 'Read more'; },
-       reviewReadLess:function(){ return 'Show less'; },
+       reviewsLabel:function(){ return 'Customer reviews'; },
+       reviewCount:function(n){ return n===1 ? '1 review' : n + ' reviews'; },
+       noReviewsYet:function(){ return 'Be the first to share your experience with this product.'; },
        addToCart:function(){ return 'Add to cart'; },
        viewDetail:function(){ return 'View detail'; },
        comingSoonBadge:function(){ return 'Coming soon'; },
@@ -2741,19 +2732,9 @@ var DYN = {
        registerOk:function(name){ return 'C\'est fait' + (name ? ', ' + name : '') + '. Votre inscription a ete enregistree dans la base de données Renuévate.'; },
        registerFail:function(){ return 'Nous n\'avons pas pu terminer votre connexion pour le moment. Veuillez reessayer dans quelques minutes.'; },
        boughtTogether:function(){ return 'Les clients ayant achete cet article ont également achete:'; },
-       viewComments:function(){ return 'Voir les commentaires'; },
-       hideComments:function(){ return 'Masquer les commentaires'; },
-       commentsDisclaimer:function(){ return 'Commentaires d\'exemple a des fins de demonstration du prototype.'; },
-       demoComments:function(){ return [
-         {name:'Renata M.', stars:5, text:"Arrivee rapidement et bien emballee. La mousse n'assèche pas la peau, je l'utilise tous les jours.", more:'Déjà mon deuxieme flacon, ma peau est beaucoup plus calme depuis.', photo:'media/nacar-06-espuma-lifestyle-mano.webp'},
-         {name:'Diego H.', stars:4, text:'Bon produit, même si la livraison a pris un peu plus de temps que prevu.', more:'Le résultat se voit, j\'aurais juste aime qu\'il arrive dans les 4 jours annonces.'},
-         {name:'Paola S.', stars:5, text:'J\'ai adore la texture, elle ne laisse pas la peau grasse.', more:'Achete sur recommandation d\'une amie, et maintenant je le recommande aussi.'},
-         {name:'Fernanda L.', stars:5, text:'La protection solaire ne laisse pas de trace blanche, c\'est déjà un plus.', more:'Je l\'utilise tous les jours avant de sortir, elle sent bon et ne pique pas les yeux.', photo:'media/nacar-09-spf50-abierto.webp'},
-         {name:'Andrea Q.', stars:4, text:'Fait le travail, même si le prix est un peu eleve pour la quantité.', more:'Je continue quand même a en racheter, aucune reaction sur ma peau.'},
-         {name:'Miguel T.', stars:5, text:'Je l\'ai offert a ma femme, elle a adore et en a déjà recommande.', more:'Bon emballage, livraison a temps et le produit semble de bonne qualite.'}
-       ]; },
-       reviewReadMore:function(){ return 'Voir plus'; },
-       reviewReadLess:function(){ return 'Voir moins'; },
+       reviewsLabel:function(){ return 'Avis clients'; },
+       reviewCount:function(n){ return n===1 ? '1 avis' : n + ' avis'; },
+       noReviewsYet:function(){ return 'Soyez le premier a partager votre experience avec ce produit.'; },
        addToCart:function(){ return 'Ajouter au panier'; },
        viewDetail:function(){ return 'Voir le detail'; },
        comingSoonBadge:function(){ return 'Bientot disponible'; },
@@ -2925,113 +2906,74 @@ function formatMXN(amount){
 var reviewPhotoQueue = [];
 var reviewStarsSelected = 5;
 
-function toggleComments(){
-  var panel = document.getElementById('commentsPanel');
-  var btn = document.getElementById('commentsToggleBtn');
-  var isOpen = panel.classList.toggle('open');
-  if (isOpen){
-    loadReviewsForCurrentVertical();
-    btn.textContent = DYN[currentLang].hideComments();
-  } else {
-    btn.textContent = DYN[currentLang].viewComments();
-  }
-}
-// Fix 76: expande/colapsa el texto extendido (y foto, si trae) de un
-// comentario de ejemplo. moreId identifica el bloque .comment-more oculto
-// que corresponde a ese comentario especifico.
-function toggleDemoCommentMore(link, moreId){
-  var more = document.getElementById(moreId);
-  if (!more) return;
-  var isOpen = more.classList.toggle('open');
-  link.textContent = isOpen ? DYN[currentLang].reviewReadLess() : DYN[currentLang].reviewReadMore();
-}
-
-// Fix 60/61: el panel de comentarios es por vertical (un solo formulario para
-// todos los skus visibles), pero la resena real se asocia a UN sku. Antes
-// siempre era products[0] (el primero de la vertical), incluso si el
-// visitante llego por una categoría especifica del menu Belleza (Fix 58,
-// categoryFilterSku). Ahora, si hay un categoryFilterSku activo, la resena se
-// asocia al primer producto de ese arreglo que exista en la vertical actual
-// -- mas correcto para el flujo "compra verificada" (ver hasPurchased() en
-// api/reviews.js). Nota: en categorías con 2 productos (ej. "Tratamiento")
-// esto sigue siendo un formulario único para ambos -- redisenar a un
-// formulario por producto queda fuera de este alcance.
-function getReviewTargetSku(products){
-  if (categoryFilterSku){
-    for (var i=0;i<products.length;i++){ if (categoryFilterSku.indexOf(products[i].sku) !== -1) return products[i].sku; }
-  }
-  return products[0].sku;
-}
-
-// Trae resenas reales de /api/reviews para todos los skus de la vertical activa.
-// Si un producto no tiene resenas reales todavia, cae al comentario de
-// demostracion (dejando claro que es contenido de ejemplo) para no dejar el
-// panel vacio -- ver gap documentado en db/schema.md. También pide, para el
-// sku que recibira la resena (getReviewTargetSku), si el cliente actual ya lo
-// compro -- eso decide si buildReviewFormHtml() muestra el formulario o el
-// mensaje "compra este producto primero" (Fix 60).
-function loadReviewsForCurrentVertical(){
-  var panel = document.getElementById('commentsPanel');
-  panel.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].loadingReviews() + '</p>';
-  var products = V[currentV][currentLang].products;
-  var targetSku = getReviewTargetSku(products);
+// Fix 90 (Carlos: "los comentarios deben estar en la ficha del producto, de
+// esa forma pertenecen al producto ... debemos tener una tabla que vincule
+// comentarios a producto y que el usuario pueda grabar sus comentarios
+// despues de una compra"). Esa tabla ya existia en el backend desde Fix
+// 60/87 (coleccion product_reviews con campo sku, indice idx_sku_status_created
+// en db/collections.js, POST /api/reviews que exige una orden confirmada con
+// ese sku antes de aceptar la resena -- ver hasPurchased() en api/reviews.js).
+// Lo que estaba mal era la capa de PRESENTACION: antes habia un solo panel de
+// comentarios A NIVEL VERTICAL/CATEGORIA (ver Fix 60/61 -- getReviewTargetSku
+// adivinaba a cual sku pertenecia el formulario cuando habia varios productos
+// visibles) y, si un producto no tenia resenas reales, se rellenaba con
+// comentarios de EJEMPLO ficticios (demoComments) para que el panel no se
+// viera vacio -- exactamente el efecto de "se ven superficiales y sin
+// relacion a nada" que reporto Carlos: comentarios que no pertenecian a
+// ningun producto real ni a ninguna compra real.
+// Ahora loadReviewsForProduct(sku) se llama desde openProductDetail() con el
+// sku EXACTO de la ficha que se esta viendo -- nunca se mezclan resenas de
+// otro producto, y si no hay ninguna real se muestra un estado vacio honesto
+// (noReviewsYet) en vez de inventar contenido.
+function loadReviewsForProduct(sku){
+  var listEl = document.getElementById('pdReviewsList');
+  var summaryEl = document.getElementById('pdRatingSummary');
+  var formEl = document.getElementById('pdReviewFormContainer');
+  document.getElementById('pdReviewsLabel').textContent = DYN[currentLang].reviewsLabel();
+  listEl.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].loadingReviews() + '</p>';
+  summaryEl.innerHTML = '';
+  formEl.innerHTML = '';
   var custQS = CURRENT_CUSTOMER.id ? ('&customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id)) : '';
-  var fetches = products.map(function(p){
-    return fetch(AZURA_CONFIG.REVIEWS_ENDPOINT + '?sku=' + encodeURIComponent(p.sku) + custQS)
-      .then(function(r){ return r.ok ? r.json() : { reviews: [], purchased: false }; })
-      .then(function(data){ return { sku: p.sku, name: p.name, reviews: (data && data.reviews) || [], purchased: !!(data && data.purchased) }; })
-      .catch(function(){ return { sku: p.sku, name: p.name, reviews: [], purchased: false }; });
-  });
-  Promise.all(fetches).then(function(results){
-    var html = '';
-    var anyReal = false;
-    var targetPurchased = false;
-    for (var i=0;i<results.length;i++){
-      var r = results[i];
-      if (r.sku === targetSku) targetPurchased = r.purchased;
-      if (r.reviews.length){
-        anyReal = true;
-        for (var j=0;j<r.reviews.length;j++){
-          var rv = r.reviews[j];
-          html += '<div class="comment-item"><div class="c-head"><span>' + rv.customer_display_name + ' &middot; ' + r.name + '</span><span class="c-stars">' + starsHtml(rv.stars) + '</span></div>';
+  fetch(AZURA_CONFIG.REVIEWS_ENDPOINT + '?sku=' + encodeURIComponent(sku) + custQS)
+    .then(function(r){ return r.ok ? r.json() : { reviews: [], purchased: false }; })
+    .then(function(data){
+      // Ignora respuestas obsoletas si el visitante cambio de producto antes
+      // de que este fetch regresara (clicks rapidos entre fichas).
+      if (pdCurrentSku !== sku) return;
+      var reviews = (data && data.reviews) || [];
+      var purchased = !!(data && data.purchased);
+
+      if (reviews.length){
+        var avg = reviews.reduce(function(sum, r){ return sum + r.stars; }, 0) / reviews.length;
+        summaryEl.innerHTML = '<span class="stars">' + starsHtml(avg) + '</span><span>' + avg.toFixed(1) + ' &middot; ' + DYN[currentLang].reviewCount(reviews.length) + '</span>';
+        var html = '';
+        for (var j=0;j<reviews.length;j++){
+          var rv = reviews[j];
+          html += '<div class="comment-item"><div class="c-head"><span>' + rv.customer_display_name + '</span><span class="c-stars">' + starsHtml(rv.stars) + '</span></div>';
           if (rv.text) html += '<p>' + rv.text + '</p>';
           if (rv.photos && rv.photos.length){
             for (var k=0;k<rv.photos.length;k++){ html += '<img class="review-photo-thumb" src="' + rv.photos[k].data_url + '" loading="lazy">'; }
           }
           html += '</div>';
         }
+        listEl.innerHTML = html;
+      } else {
+        summaryEl.innerHTML = '';
+        listEl.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].noReviewsYet() + '</p>';
       }
-    }
-    if (!anyReal){
-      // Fix 76: los comentarios de ejemplo ahora traen texto extendido (more)
-      // y, en algunos, una foto de ejemplo (photo) -- se muestran ocultos
-      // detras de un link "Ver mas/Ver menos" (toggleDemoCommentMore) en vez
-      // de mostrar todo de un jalon, para que se sienta como una resena real
-      // con espacio a expandir. Las fotos usadas son fotografia real de
-      // producto que ya vive en el sitio (no fotos de personas reales) --
-      // el disclaimer de abajo ya deja claro que estos comentarios son de
-      // ejemplo, así que no se presentan como testimonios verificados.
-      var demo = DYN[currentLang].demoComments();
-      var readMoreLabel = DYN[currentLang].reviewReadMore();
-      for (var d=0;d<demo.length;d++){
-        var dc = demo[d];
-        var moreId = 'demoCommentMore' + d;
-        var moreInner = (dc.more ? ('<p>' + dc.more + '</p>') : '') + (dc.photo ? ('<img class="review-photo-thumb" src="' + dc.photo + '" alt="' + dc.name + '" loading="lazy">') : '');
-        html += '<div class="comment-item"><div class="c-head"><span>' + dc.name + '</span><span class="c-stars">' + starsHtml(dc.stars) + '</span></div>' +
-          '<p>' + dc.text + '</p>' +
-          (moreInner ? ('<div class="comment-more" id="' + moreId + '">' + moreInner + '</div><a class="comment-readmore-link" onclick="toggleDemoCommentMore(this,\'' + moreId + '\')">' + readMoreLabel + '</a>') : '') +
-          '</div>';
+
+      formEl.innerHTML = buildReviewFormHtml(sku, purchased);
+      var starEls = formEl.querySelectorAll('.rf-stars span');
+      for (var s=0;s<starEls.length;s++){
+        starEls[s].onclick = (function(val){ return function(){ setReviewStars(val); }; })(s+1);
       }
-      html += '<div class="comments-disclaimer">' + DYN[currentLang].commentsDisclaimer() + '</div>';
-    }
-    html += buildReviewFormHtml(targetSku, targetPurchased);
-    panel.innerHTML = html;
-    var starEls = panel.querySelectorAll('.rf-stars span');
-    for (var s=0;s<starEls.length;s++){
-      starEls[s].onclick = (function(val){ return function(){ setReviewStars(val); }; })(s+1);
-    }
-    setReviewStars(5);
-  });
+      setReviewStars(5);
+    })
+    .catch(function(){
+      if (pdCurrentSku !== sku) return;
+      listEl.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].noReviewsYet() + '</p>';
+      formEl.innerHTML = buildReviewFormHtml(sku, false);
+    });
 }
 
 // Fix 60: 3 estados posibles -- (1) sin sesión: invita a iniciar sesión,
@@ -3087,10 +3029,12 @@ function submitReview(sku){
   var errEl = document.getElementById('rfError');
   errEl.className = 'pm-error';
   if (!CURRENT_CUSTOMER.id){ return; }
-  // Fix 60: sku ahora viene del boton (ver buildReviewFormHtml/getReviewTargetSku)
-  // en vez de asumir siempre products[0] -- fallback solo por si se invoca sin
-  // argumento desde algun lugar que no se haya actualizado.
-  if (!sku){ sku = V[currentV][currentLang].products[0].sku; }
+  // Fix 90: sku ahora siempre viene del boton, atado a pdCurrentSku (la ficha
+  // abierta) -- ya no hay heuristico de "adivinar a cual producto pertenece"
+  // (getReviewTargetSku se elimino junto con el panel de comentarios por
+  // vertical). Fallback solo por si se invoca sin argumento desde algun
+  // lugar que no se haya actualizado.
+  if (!sku){ sku = pdCurrentSku; }
   var text = document.getElementById('rfText').value.trim();
   fetch(AZURA_CONFIG.REVIEWS_ENDPOINT, {
     method: 'POST',
@@ -3101,7 +3045,7 @@ function submitReview(sku){
   .then(function(res){
     if (res.ok){
       reviewPhotoQueue = [];
-      loadReviewsForCurrentVertical();
+      loadReviewsForProduct(sku);
     } else {
       errEl.textContent = (res.data && res.data.error) || 'Error';
       errEl.className = 'pm-error is-visible';
@@ -4256,6 +4200,12 @@ function openProductDetail(sku){
     pdBtn.textContent = DYN[currentLang].addToCart();
     pdBtn.disabled = false;
   }
+
+  // Fix 90: resenas de ESTE producto, cargadas dentro de la ficha (ver
+  // loadReviewsForProduct() -- ya no existe un panel de comentarios aparte
+  // por vertical/categoria).
+  loadReviewsForProduct(sku);
+
   document.getElementById('productDetailOverlay').classList.add('is-open');
 }
 
@@ -4436,8 +4386,6 @@ function renderVertical(v){
     html += '<div class="catalog-view-all-link"><a onclick="openBeautyCatalog()">' + I18N[currentLang]['catalog.viewAll'] + '</a></div>';
   }
   grid.innerHTML = html;
-  document.getElementById('commentsPanel').classList.remove('open');
-  document.getElementById('commentsToggleBtn').textContent = DYN[currentLang].viewComments();
 
   selectedRoutine = null;
   var rc = document.getElementById('routineCards');
