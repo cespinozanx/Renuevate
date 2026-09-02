@@ -410,9 +410,20 @@ body.viewing-product-page .home-only{display:none;}
 .comment-item .c-head{display:flex; justify-content:space-between; font-size:12.5px; font-weight:700; color:var(--navy); margin-bottom:4px;}
 .comment-item .c-stars{color:var(--gold); font-size:12px;}
 .comment-item p{font-size:13px; color:var(--grey); margin:0;}
-.pd-rating-summary{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--grey); margin-bottom:10px;}
+.pd-rating-summary{display:flex; flex-direction:column; gap:7px; font-size:12.5px; color:var(--grey); margin-bottom:14px;}
 .pd-rating-summary .stars{color:var(--gold); font-size:14px;}
+.pd-rating-avg-line{display:flex; align-items:center; gap:8px;}
+/* Fix 91: desglose 5-estrellas estilo Amazon (barra + %), calculado del
+   lado del cliente sobre las resenas reales que ya trae loadReviewsForProduct()
+   -- no requiere cambios en api/reviews.js. */
+.pd-rating-row{display:flex; align-items:center; gap:8px; font-size:11px;}
+.pd-rating-row-label{width:24px; flex-shrink:0; color:var(--grey);}
+.pd-rating-bar{flex:1; height:7px; background:var(--beige); border-radius:4px; overflow:hidden;}
+.pd-rating-bar-fill{height:100%; background:var(--gold);}
+.pd-rating-row-pct{width:32px; flex-shrink:0; text-align:right; color:var(--grey);}
 .pd-reviews-list{max-height:340px; overflow-y:auto; margin-bottom:4px;}
+.pd-write-review-btn{display:inline-block; margin:6px 0 4px; padding:9px 18px; font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:700; border:1px solid var(--ink); background:transparent; color:var(--ink); border-radius:2px; cursor:pointer; transition:all .2s ease;}
+.pd-write-review-btn:hover{background:var(--ink); color:#fff;}
 
 /* ===================== Carrito, cuenta/pagos y resenas reales (conectado a BD) ===================== */
 .account-icon-btn, .cart-icon-btn{position:relative; background:none; border:none; cursor:pointer; color:var(--ink); padding:4px; display:flex; align-items:center;}
@@ -1538,7 +1549,16 @@ var AZURA_CONFIG = {
         <h5 id="pdReviewsLabel"></h5>
         <div class="pd-rating-summary" id="pdRatingSummary"></div>
         <div class="pd-reviews-list" id="pdReviewsList"></div>
-        <div id="pdReviewFormContainer"></div>
+        <!-- Fix 91 (Carlos, con captura de referencia de Amazon): boton
+             visible "Escribir mi opinion" -- el formulario (buildReviewFormHtml,
+             ya scopeado al sku de la ficha abierta desde Fix 90) estaba ahi
+             pero se pintaba siempre abierto e inline, facil de pasar por alto.
+             Ahora arranca oculto detras de este boton, igual que en la
+             referencia. Clic revela el formulario, que sigue mostrando el
+             estado correcto (inicia sesion / compra primero / formulario
+             real) segun toggleReviewForm() + buildReviewFormHtml(). -->
+        <button type="button" class="pd-write-review-btn" id="pdWriteReviewBtn" onclick="toggleReviewForm()"></button>
+        <div id="pdReviewFormContainer" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -2423,6 +2443,8 @@ var DYN = {
        reviewsLabel:function(){ return 'Reseñas de clientes'; },
        reviewCount:function(n){ return n===1 ? '1 reseña' : n + ' reseñas'; },
        noReviewsYet:function(){ return 'Sé el primero en compartir tu experiencia con este producto.'; },
+       writeReviewBtn:function(){ return 'Escribir mi opinión'; },
+       cancelReviewBtn:function(){ return 'Cancelar'; },
        addToCart:function(){ return 'Agregar al carrito'; },
        viewDetail:function(){ return 'Ver detalle'; },
        comingSoonBadge:function(){ return 'Proximamente'; },
@@ -2579,6 +2601,8 @@ var DYN = {
        reviewsLabel:function(){ return 'Customer reviews'; },
        reviewCount:function(n){ return n===1 ? '1 review' : n + ' reviews'; },
        noReviewsYet:function(){ return 'Be the first to share your experience with this product.'; },
+       writeReviewBtn:function(){ return 'Write my review'; },
+       cancelReviewBtn:function(){ return 'Cancel'; },
        addToCart:function(){ return 'Add to cart'; },
        viewDetail:function(){ return 'View detail'; },
        comingSoonBadge:function(){ return 'Coming soon'; },
@@ -2735,6 +2759,8 @@ var DYN = {
        reviewsLabel:function(){ return 'Avis clients'; },
        reviewCount:function(n){ return n===1 ? '1 avis' : n + ' avis'; },
        noReviewsYet:function(){ return 'Soyez le premier a partager votre experience avec ce produit.'; },
+       writeReviewBtn:function(){ return 'Ecrire mon avis'; },
+       cancelReviewBtn:function(){ return 'Annuler'; },
        addToCart:function(){ return 'Ajouter au panier'; },
        viewDetail:function(){ return 'Voir le detail'; },
        comingSoonBadge:function(){ return 'Bientot disponible'; },
@@ -2925,14 +2951,38 @@ var reviewStarsSelected = 5;
 // sku EXACTO de la ficha que se esta viendo -- nunca se mezclan resenas de
 // otro producto, y si no hay ninguna real se muestra un estado vacio honesto
 // (noReviewsYet) en vez de inventar contenido.
+// Fix 91: barras de desglose 5-estrellas estilo Amazon, calculadas del lado
+// del cliente sobre el arreglo de resenas reales que ya regresa /api/reviews
+// (no requiere cambios en el backend).
+function buildRatingBreakdownHtml(reviews){
+  var counts = [0,0,0,0,0]; // indice 0 = 1 estrella ... indice 4 = 5 estrellas
+  for (var i=0;i<reviews.length;i++){ counts[reviews[i].stars-1]++; }
+  var total = reviews.length;
+  var html = '';
+  for (var st=5; st>=1; st--){
+    var c = counts[st-1];
+    var pct = total ? Math.round((c/total)*100) : 0;
+    html += '<div class="pd-rating-row"><span class="pd-rating-row-label">' + st + '&#9733;</span>' +
+      '<div class="pd-rating-bar"><div class="pd-rating-bar-fill" style="width:' + pct + '%;"></div></div>' +
+      '<span class="pd-rating-row-pct">' + pct + '%</span></div>';
+  }
+  return html;
+}
+
 function loadReviewsForProduct(sku){
   var listEl = document.getElementById('pdReviewsList');
   var summaryEl = document.getElementById('pdRatingSummary');
   var formEl = document.getElementById('pdReviewFormContainer');
+  var writeBtn = document.getElementById('pdWriteReviewBtn');
   document.getElementById('pdReviewsLabel').textContent = DYN[currentLang].reviewsLabel();
   listEl.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].loadingReviews() + '</p>';
   summaryEl.innerHTML = '';
   formEl.innerHTML = '';
+  // Fix 91: el formulario arranca oculto detras del boton "Escribir mi
+  // opinion" cada vez que se abre/cambia de ficha (antes se pintaba siempre
+  // visible, ver comentario en el HTML).
+  formEl.style.display = 'none';
+  writeBtn.textContent = DYN[currentLang].writeReviewBtn();
   var custQS = CURRENT_CUSTOMER.id ? ('&customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id)) : '';
   fetch(AZURA_CONFIG.REVIEWS_ENDPOINT + '?sku=' + encodeURIComponent(sku) + custQS)
     .then(function(r){ return r.ok ? r.json() : { reviews: [], purchased: false }; })
@@ -2945,7 +2995,8 @@ function loadReviewsForProduct(sku){
 
       if (reviews.length){
         var avg = reviews.reduce(function(sum, r){ return sum + r.stars; }, 0) / reviews.length;
-        summaryEl.innerHTML = '<span class="stars">' + starsHtml(avg) + '</span><span>' + avg.toFixed(1) + ' &middot; ' + DYN[currentLang].reviewCount(reviews.length) + '</span>';
+        summaryEl.innerHTML = '<div class="pd-rating-avg-line"><span class="stars">' + starsHtml(avg) + '</span><span>' + avg.toFixed(1) + ' &middot; ' + DYN[currentLang].reviewCount(reviews.length) + '</span></div>' +
+          buildRatingBreakdownHtml(reviews);
         var html = '';
         for (var j=0;j<reviews.length;j++){
           var rv = reviews[j];
@@ -2974,6 +3025,24 @@ function loadReviewsForProduct(sku){
       listEl.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].noReviewsYet() + '</p>';
       formEl.innerHTML = buildReviewFormHtml(sku, false);
     });
+}
+
+// Fix 91: revela/oculta el formulario de resena detras del boton "Escribir
+// mi opinion" (referencia de Carlos: patron de Amazon). El formulario ya
+// viene armado por loadReviewsForProduct()/buildReviewFormHtml() con el
+// estado correcto (inicia sesion / compra primero / formulario real) para el
+// sku de la ficha abierta -- este toggle solo controla visibilidad.
+function toggleReviewForm(){
+  var formEl = document.getElementById('pdReviewFormContainer');
+  var btn = document.getElementById('pdWriteReviewBtn');
+  var isOpen = formEl.style.display !== 'none';
+  if (isOpen){
+    formEl.style.display = 'none';
+    btn.textContent = DYN[currentLang].writeReviewBtn();
+  } else {
+    formEl.style.display = '';
+    btn.textContent = DYN[currentLang].cancelReviewBtn();
+  }
 }
 
 // Fix 60: 3 estados posibles -- (1) sin sesión: invita a iniciar sesión,
