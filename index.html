@@ -522,10 +522,6 @@ body.viewing-product-page .home-only{display:none;}
 .cart-shipto-value{font-size:13px; color:var(--ink); line-height:1.4; margin-bottom:6px;}
 .cart-shipto-change{background:none; border:none; padding:0; font-size:11.5px; color:var(--navy); text-decoration:underline; cursor:pointer;}
 .account-logout-link{background:none; border:none; padding:0; font-size:11.5px; color:#B23A3A; text-decoration:underline; cursor:pointer; white-space:nowrap; flex-shrink:0;}
-.pm-type-toggle{display:flex; gap:8px; margin-bottom:14px;}
-.pm-type-toggle button{flex:1; padding:9px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:12px; border-radius:2px;}
-.pm-type-toggle button.sel{border-color:var(--navy); background:var(--navy); color:#fff;}
-.pm-pci-note{font-size:10.5px; color:var(--grey); margin:10px 0; line-height:1.5; background:var(--cream); padding:10px; border-radius:3px;}
 
 .newsletter{background:var(--beige); text-align:center;}
 .newsletter h2 .accent{color:var(--gold); border-color:var(--gold);}
@@ -924,7 +920,6 @@ var AZURA_CONFIG = {
   REGISTER_ENDPOINT: "/api/register",
   CART_ENDPOINT: "/api/cart",
   REVIEWS_ENDPOINT: "/api/reviews",
-  PAYMENT_METHODS_ENDPOINT: "/api/payment-methods",
   ADDRESSES_ENDPOINT: "/api/addresses",
   CHECKOUT_ENDPOINT: "/api/checkout",
   WHATSAPP_NUMBER: "529983299195",
@@ -1602,19 +1597,19 @@ var AZURA_CONFIG = {
       <button type="button" class="cart-shipto-change" onclick="onAccountIconClick()" data-i18n="cart.shipToChange">Cambiar / agregar dirección</button>
     </div>
     <div class="cart-subtotal"><span data-i18n="cart.subtotal">Subtotal</span><span id="cartSubtotalValue">$0 MXN</span></div>
-    <button class="btn btn-dark" id="cartCheckoutBtn" style="width:100%; justify-content:center;" onclick="startCheckout()" data-i18n="cart.checkout">Proceder al pago</button>
+    <button class="btn btn-dark" id="cartCheckoutBtn" style="width:100%; justify-content:center; display:none;" onclick="startCheckout()" data-i18n="cart.checkout">Proceder al pago</button>
     <div class="cart-checkout-error" id="cartCheckoutError" style="display:none; color:#B3261E; font-size:12px; text-align:center; margin-top:8px;"></div>
-    <div class="cart-checkout-note" data-i18n="cart.checkoutNote">Pago seguro con Mercado Pago. Nunca almacenamos el número de tu tarjeta.</div>
+    <div class="cart-checkout-note" id="cartCheckoutNote" style="display:none;" data-i18n="cart.checkoutNote">Pago seguro con Mercado Pago. Nunca almacenamos el número de tu tarjeta.</div>
   </div>
 </div>
 
-<div class="profile-modal-overlay" id="accountModalOverlay">
+<div class="profile-modal-overlay" id="accountModalOverlay" onclick="if(event.target===this) closeAccountModal();">
   <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="accTitle">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
-      <h3 id="accTitle" data-i18n="account.title">Mi cuenta y metodos de pago</h3>
+      <h3 id="accTitle" data-i18n="account.title">Mi cuenta</h3>
       <button type="button" class="account-logout-link" onclick="logout()" data-i18n="account.logoutLabel">Cerrar sesión</button>
     </div>
-    <p class="pm-subtitle" id="accSubtitle" data-i18n="account.subtitle">Inicia sesión para administrar tus direcciones de envío y tus metodos de pago guardados.</p>
+    <p class="pm-subtitle" id="accSubtitle" data-i18n="account.subtitle">Inicia sesión para administrar tus direcciones de envío.</p>
 
     <h3 style="font-size:17px; margin-bottom:4px;" data-i18n="account.addressesTitle">Direcciones de envío</h3>
     <p class="pm-subtitle" data-i18n="account.addressesSubtitle">Guarda una o varias direcciones para tus pedidos.</p>
@@ -1678,60 +1673,10 @@ var AZURA_CONFIG = {
         </label>
         <div class="pm-actions">
           <button type="submit" class="btn btn-dark" style="flex:1;" data-i18n="account.addrSaveLabel">Guardar dirección</button>
+          <button type="button" class="btn btn-outline" onclick="closeAccountModal()" data-i18n="account.closeLabel">Cerrar</button>
         </div>
         <div class="pm-error" id="addrError"></div>
         <div class="pm-success" id="addrSuccess"></div>
-      </form>
-    </div>
-
-    <hr style="border:none; border-top:1px solid var(--line); margin:28px 0 20px;">
-    <h3 style="font-size:17px; margin-bottom:4px;" data-i18n="account.paymentTitle">Métodos de pago</h3>
-    <p class="pm-subtitle" data-i18n="account.paymentSubtitle">Guarda tu forma de pago preferida para agilizar tu compra.</p>
-    <div id="pmListContainer" class="pm-list"></div>
-    <div id="pmFormContainer">
-      <div class="pm-type-toggle">
-        <button type="button" id="pmTypeCardBtn" class="sel" onclick="setPaymentType('card')" data-i18n="account.card">Tarjeta</button>
-        <button type="button" id="pmTypePaypalBtn" onclick="setPaymentType('paypal')" data-i18n="account.paypal">PayPal</button>
-      </div>
-      <form id="paymentForm" onsubmit="submitPaymentMethod(event)">
-        <div id="pmCardFields">
-          <div class="pm-field">
-            <label data-i18n="account.brandLabel">Marca</label>
-            <select id="pmBrand" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
-              <option value="visa">Visa</option>
-              <option value="mastercard">Mastercard</option>
-              <option value="amex">Amex</option>
-              <option value="other">Otra</option>
-            </select>
-          </div>
-          <div class="pm-field">
-            <label data-i18n="account.last4Label">Últimos 4 digitos</label>
-            <input type="text" id="pmLast4" maxlength="4" pattern="[0-9]{4}" placeholder="1234" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
-          </div>
-          <div style="display:flex; gap:10px;">
-            <div class="pm-field" style="flex:1;">
-              <label data-i18n="account.expMonthLabel">Mes exp.</label>
-              <input type="number" id="pmExpMonth" min="1" max="12" placeholder="MM" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
-            </div>
-            <div class="pm-field" style="flex:1;">
-              <label data-i18n="account.expYearLabel">Año exp.</label>
-              <input type="number" id="pmExpYear" min="2024" placeholder="YYYY" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
-            </div>
-          </div>
-        </div>
-        <div id="pmPaypalFields" style="display:none;">
-          <div class="pm-field">
-            <label data-i18n="account.paypalEmailLabel">Correo de PayPal</label>
-            <input type="email" id="pmPaypalEmail" placeholder="tu@correo.com" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:2px;">
-          </div>
-        </div>
-        <div class="pm-pci-note" data-i18n="account.pciNote">Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los últimos 4 digitos para identificar tu metodo de pago.</div>
-        <div class="pm-actions">
-          <button type="submit" class="btn btn-dark" style="flex:1;" data-i18n="account.saveLabel">Guardar metodo de pago</button>
-          <button type="button" class="btn btn-outline" onclick="closeAccountModal()" data-i18n="account.closeLabel">Cerrar</button>
-        </div>
-        <div class="pm-error" id="pmPayError"></div>
-        <div class="pm-success" id="pmPaySuccess"></div>
       </form>
     </div>
   </div>
@@ -2169,12 +2114,8 @@ var I18N = {
     "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
     "cart.checkoutNote":"Pago seguro con Mercado Pago. Nunca almacenamos el número de tu tarjeta.",
     "cart.shipToLabel":"Enviar a", "cart.shipToChange":"Cambiar / agregar dirección",
-    "account.title":"Mi cuenta y metodos de pago", "account.subtitle":"Inicia sesión para administrar tus direcciones de envío y tus metodos de pago guardados.",
-    "account.paymentTitle":"Métodos de pago", "account.paymentSubtitle":"Guarda tu forma de pago preferida para agilizar tu compra.",
-    "account.card":"Tarjeta", "account.paypal":"PayPal", "account.brandLabel":"Marca", "account.last4Label":"Últimos 4 digitos",
-    "account.expMonthLabel":"Mes exp.", "account.expYearLabel":"Año exp.", "account.paypalEmailLabel":"Correo de PayPal",
-    "account.pciNote":"Por seguridad (PCI-DSS/ISO 27001), este sitio nunca captura ni guarda el número de tarjeta completo ni el CVV. Solo se guardan los últimos 4 digitos para identificar tu metodo de pago.",
-    "account.saveLabel":"Guardar metodo de pago", "account.closeLabel":"Cerrar",
+    "account.title":"Mi cuenta", "account.subtitle":"Inicia sesión para administrar tus direcciones de envío.",
+    "account.closeLabel":"Cerrar",
     "account.addressesTitle":"Direcciones de envío", "account.addressesSubtitle":"Guarda una o varias direcciones para tus pedidos.",
     "account.addrLabelLabel":"Etiqueta", "account.addrLabelHome":"Casa", "account.addrLabelOffice":"Oficina", "account.addrLabelOther":"Otro",
     "account.addrRecipientLabel":"Nombre de quien recibe", "account.addrPhoneLabel":"Teléfono de contacto",
@@ -2288,12 +2229,8 @@ var I18N = {
     "cart.title":"Your cart", "cart.subtotal":"Subtotal", "cart.checkout":"Proceed to checkout",
     "cart.checkoutNote":"Secure payment with Mercado Pago. We never store your card number.",
     "cart.shipToLabel":"Ship to", "cart.shipToChange":"Change / add address",
-    "account.title":"My account & payment methods", "account.subtitle":"Sign in to manage your shipping addresses and your saved payment methods.",
-    "account.paymentTitle":"Payment methods", "account.paymentSubtitle":"Save your preferred payment method to speed up checkout.",
-    "account.card":"Card", "account.paypal":"PayPal", "account.brandLabel":"Brand", "account.last4Label":"Last 4 digits",
-    "account.expMonthLabel":"Exp. month", "account.expYearLabel":"Exp. year", "account.paypalEmailLabel":"PayPal email",
-    "account.pciNote":"For security (PCI-DSS/ISO 27001), this site never captures or stores the full card number or CVV. Only the last 4 digits are stored to identify your payment method.",
-    "account.saveLabel":"Save payment method", "account.closeLabel":"Close",
+    "account.title":"My account", "account.subtitle":"Sign in to manage your shipping addresses.",
+    "account.closeLabel":"Close",
     "account.addressesTitle":"Shipping addresses", "account.addressesSubtitle":"Save one or more addresses for your orders.",
     "account.addrLabelLabel":"Label", "account.addrLabelHome":"Home", "account.addrLabelOffice":"Office", "account.addrLabelOther":"Other",
     "account.addrRecipientLabel":"Recipient name", "account.addrPhoneLabel":"Contact phone",
@@ -2407,12 +2344,8 @@ var I18N = {
     "cart.title":"Votre panier", "cart.subtotal":"Sous-total", "cart.checkout":"Passer au paiement",
     "cart.checkoutNote":"Paiement sécurisé avec Mercado Pago. Nous ne stockons jamais le número de votre carte.",
     "cart.shipToLabel":"Expedier a", "cart.shipToChange":"Changer / ajouter une adresse",
-    "account.title":"Mon compte et moyens de paiement", "account.subtitle":"Connectez-vous pour gerer vos adresses de livraison et vos moyens de paiement enregistres.",
-    "account.paymentTitle":"Moyens de paiement", "account.paymentSubtitle":"Enregistrez votre moyen de paiement prefere pour accelerer votre achat.",
-    "account.card":"Carte", "account.paypal":"PayPal", "account.brandLabel":"Marque", "account.last4Label":"4 derniers chiffres",
-    "account.expMonthLabel":"Mois exp.", "account.expYearLabel":"Année exp.", "account.paypalEmailLabel":"Email PayPal",
-    "account.pciNote":"Par sécurité (PCI-DSS/ISO 27001), ce site ne capture ni ne stocke jamais le número de carte complet ni le CVV. Seuls les 4 derniers chiffres sont conserves pour identifier votre moyen de paiement.",
-    "account.saveLabel":"Enregistrer le moyen de paiement", "account.closeLabel":"Fermer",
+    "account.title":"Mon compte", "account.subtitle":"Connectez-vous pour gerer vos adresses de livraison.",
+    "account.closeLabel":"Fermer",
     "account.addressesTitle":"Adresses de livraison", "account.addressesSubtitle":"Enregistrez une ou plusieurs adresses pour vos commandes.",
     "account.addrLabelLabel":"Etiquette", "account.addrLabelHome":"Domicile", "account.addrLabelOffice":"Bureau", "account.addrLabelOther":"Autre",
     "account.addrRecipientLabel":"Nom du destinataire", "account.addrPhoneLabel":"Telephone de contact",
@@ -2484,8 +2417,7 @@ var DYN = {
        checkoutError:function(){ return 'No pudimos iniciar el pago. Intenta de nuevo.'; },
        bagUpsellTitle:function(){ return 'Guarda tus productos en una bolsa Renuévate'; },
        bagAddLabel:function(){ return '+ Agregar'; },
-       loginRequired:function(){ return 'Inicia sesión con Google o Facebook para agregar productos al carrito, guardar tu metodo de pago o dejar una resena.'; },
-       paymentSaved:function(){ return 'Metodo de pago guardado.'; },
+       loginRequired:function(){ return 'Inicia sesión con Google o Facebook para agregar productos al carrito, guardar tu dirección de envío o dejar una resena.'; },
        loadingReviews:function(){ return 'Cargando reseñas...'; },
        shareExperience:function(){ return 'Comparte tu experiencia'; },
        reviewPlaceholder:function(){ return 'Cuentanos que te parecio (opcional)'; },
@@ -2648,8 +2580,7 @@ var DYN = {
        checkoutError:function(){ return "We couldn't start the payment. Please try again."; },
        bagUpsellTitle:function(){ return 'Store your products in a Renuévate bag'; },
        bagAddLabel:function(){ return '+ Add'; },
-       loginRequired:function(){ return 'Sign in with Google or Facebook to add products to your cart, save a payment method, or leave a review.'; },
-       paymentSaved:function(){ return 'Payment method saved.'; },
+       loginRequired:function(){ return 'Sign in with Google or Facebook to add products to your cart, save a shipping address, or leave a review.'; },
        loadingReviews:function(){ return 'Loading reviews...'; },
        shareExperience:function(){ return 'Share your experience'; },
        reviewPlaceholder:function(){ return 'Tell us what you thought (optional)'; },
@@ -2812,8 +2743,7 @@ var DYN = {
        checkoutError:function(){ return "Nous n'avons pas pu demarrer le paiement. Reessayez."; },
        bagUpsellTitle:function(){ return 'Rangez vos produits dans un sac Renuévate'; },
        bagAddLabel:function(){ return '+ Ajouter'; },
-       loginRequired:function(){ return 'Connectez-vous avec Google ou Facebook pour ajouter des produits au panier, enregistrer un moyen de paiement ou laisser un avis.'; },
-       paymentSaved:function(){ return 'Moyen de paiement enregistre.'; },
+       loginRequired:function(){ return 'Connectez-vous avec Google ou Facebook pour ajouter des produits au panier, enregistrer une adresse de livraison ou laisser un avis.'; },
        loadingReviews:function(){ return 'Chargement des avis...'; },
        shareExperience:function(){ return 'Partagez votre experience'; },
        reviewPlaceholder:function(){ return 'Dites-nous ce que vous en avez pensé (facultatif)'; },
@@ -3567,6 +3497,17 @@ function renderCartPanel(cart){
     itemsEl.innerHTML = html;
   }
   subtotalEl.textContent = formatMXN(cart.subtotal || 0);
+  // Fix 99 (Carlos: "en el carrito si no tengo productos no deberia tener
+  // el boton proceder al pago"): antes el boton y la nota de pago seguro
+  // se mostraban siempre, aunque el carrito estuviera vacio (subtotal $0).
+  // Ahora solo se muestran si hay al menos 1 producto comprable en el
+  // carrito -- items guardados para despues (saved_items) no cuentan, ya
+  // que no forman parte del pedido a pagar.
+  var hasPayableItems = items.length > 0;
+  var checkoutBtnEl = document.getElementById('cartCheckoutBtn');
+  var checkoutNoteEl = document.getElementById('cartCheckoutNote');
+  if (checkoutBtnEl) checkoutBtnEl.style.display = hasPayableItems ? '' : 'none';
+  if (checkoutNoteEl) checkoutNoteEl.style.display = hasPayableItems ? '' : 'none';
   renderBagUpsell(cart);
 }
 
@@ -3608,21 +3549,18 @@ function closeCart(){
   document.body.classList.remove('nav-lock');
 }
 
-/* ===================== Mi cuenta / metodos de pago (conectado a /api/payment-methods) ===================== */
-var currentPaymentType = 'card';
-
-function setPaymentType(type){
-  currentPaymentType = type;
-  document.getElementById('pmTypeCardBtn').classList.toggle('sel', type === 'card');
-  document.getElementById('pmTypePaypalBtn').classList.toggle('sel', type === 'paypal');
-  document.getElementById('pmCardFields').style.display = type === 'card' ? 'block' : 'none';
-  document.getElementById('pmPaypalFields').style.display = type === 'paypal' ? 'block' : 'none';
-}
-
+/* ===================== Mi cuenta / direcciones de envio ===================== */
+// Fix 99 (Carlos: "quita la seccion de guardar su TC, no quiero lios por
+// ahora, solo le acepatare la TC cuando ya pague y mediante una pasarela"):
+// se elimino la seccion "Metodos de pago" (guardar tarjeta/PayPal
+// anticipadamente) del modal de cuenta -- ver api/payment-methods.js, que
+// ahora rechaza toda peticion explicitamente en vez de quedar huerfano y
+// alcanzable sin frontend que lo use. La unica captura de tarjeta real del
+// sitio sigue siendo Mercado Pago al momento del pago (ver startCheckout()),
+// que es quien tokeniza -- este servidor nunca vuelve a tocar el numero.
 function openAccountModal(){
   if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
   document.getElementById('accountModalOverlay').classList.add('is-open');
-  loadPaymentMethods();
   loadAddresses();
 }
 function closeAccountModal(){
@@ -3679,7 +3617,7 @@ var PRIVACY_CONTENT = {
   es: {
     sections: [
       { h:'1. Responsable de tus datos', p:'Renuévate es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) de Mexico.' },
-      { h:'2. Que datos recabamos', p:'Nombre, correo y/o teléfono, fecha de nacimiento, historial de pedidos, reseñas y fotos que compartas voluntariamente, y datos enmascarados de tu metodo de pago (marca y últimos 4 digitos -- nunca el número completo ni el CVV).' },
+      { h:'2. Que datos recabamos', p:'Nombre, correo y/o teléfono, fecha de nacimiento, direcciones de envío, historial de pedidos, reseñas y fotos que compartas voluntariamente. No capturamos ni guardamos datos de tu tarjeta en ningun momento antes del pago: la tarjeta se procesa unicamente a traves de Mercado Pago al momento de pagar.' },
       { h:'3. Para que los usamos', p:'Identificarte al iniciar sesión, procesar y dar seguimiento a tus pedidos, activar promociones de cumpleaños y tu programa de lealtad, mostrar tus reseñas publicadas, y enviarte comunicaciones de marketing unicamente si diste tu consentimiento explicito.' },
       { h:'4. Fundamento legal', p:'Tu consentimiento expreso (checkbox de promociones), la ejecucion de la relacion contractual al hacer un pedido, y nuestro interes legitimo en operar el sitio de forma segura. Aplicamos además los controles tecnicos del estándar ISO 27001 sobre estos datos.' },
       { h:'5. Con quien los compartimos', p:'Google y/o Facebook actuan como proveedores de identidad si eliges iniciar sesión con ellos (solo reciben la solicitud de autenticacion, nunca tu contraseña de Renuévate porque no existe una). MongoDB Atlas es nuestro encargado de almacenamiento de base de datos. No vendemos ni rentamos tus datos a terceros con fines publicitarios.' },
@@ -3693,7 +3631,7 @@ var PRIVACY_CONTENT = {
   en: {
     sections: [
       { h:'1. Who is responsible for your data', p:'Renuévate is responsible for processing your personal data under Mexico\'s Federal Law on Protection of Personal Data Held by Private Parties (LFPDPPP).' },
-      { h:'2. What data we collect', p:'Name, email and/or phone, date of birth, order history, reviews and photos you choose to share, and masked payment method data (brand and last 4 digits only -- never the full card number or CVV).' },
+      { h:'2. What data we collect', p:'Name, email and/or phone, date of birth, shipping addresses, order history, and reviews and photos you choose to share. We never capture or store any card data before payment: your card is processed only through Mercado Pago at the moment of payment.' },
       { h:'3. What we use it for', p:'To identify you when you sign in, process and track your orders, activate birthday promotions and your loyalty program, display your published reviews, and send marketing communications only if you gave explicit consent.' },
       { h:'4. Legal basis', p:'Your express consent (marketing checkbox), performance of the contractual relationship when you place an order, and our legitimate interest in operating the site securely. We also apply ISO 27001 technical controls to this data.' },
       { h:'5. Who we share it with', p:'Google and/or Facebook act as identity providers if you choose to sign in with them (they only receive the authentication request, never an Renuévate password because none exists). MongoDB Atlas is our database storage processor. We do not sell or rent your data to third parties for advertising.' },
@@ -3707,7 +3645,7 @@ var PRIVACY_CONTENT = {
   fr: {
     sections: [
       { h:'1. Responsable de vos données', p:'Renuévate est responsable du traitement de vos données personnelles conformement a la loi mexicaine LFPDPPP.' },
-      { h:'2. Données que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, historique des commandes, avis et photos partages volontairement, et données masquees du moyen de paiement (marque et 4 derniers chiffres uniquement -- jamais le número complet ni le CVV).' },
+      { h:'2. Données que nous recueillons', p:'Nom, email et/ou telephone, date de naissance, adresses de livraison, historique des commandes, et avis et photos partages volontairement. Nous ne capturons ni ne stockons aucune donnee de carte avant le paiement : votre carte est traitee uniquement via Mercado Pago au moment du paiement.' },
       { h:'3. A quoi elles servent', p:'Vous identifier a la connexion, traiter et suivre vos commandes, activer les promotions d\'anniversaire et votre programme de fidelite, afficher vos avis publies, et vous envoyer des communications marketing uniquement si vous avez donne votre consentement explicite.' },
       { h:'4. Fondement legal', p:'Votre consentement expres (case promotions), l\'execution de la relation contractuelle lors d\'une commande, et notre interet legitime a exploiter le site en toute sécurité. Nous appliquons aussi les controles techniques ISO 27001 a ces données.' },
       { h:'5. Avec qui nous les partageons', p:'Google et/ou Facebook agissent comme fournisseurs d\'identite si vous choisissez de vous connecter avec eux (ils recoivent uniquement la demande d\'authentification, jamais un mot de passe Renuévate puisqu\'il n\'en existe pas). MongoDB Atlas est notre sous-traitant de stockage de base de données. Nous ne vendons ni ne louons vos données a des tiers a des fins publicitaires.' },
@@ -4008,68 +3946,6 @@ function openComingSoon(){
 }
 function closeComingSoon(){
   document.getElementById('comingSoonOverlay').classList.remove('is-open');
-}
-
-function loadPaymentMethods(){
-  var container = document.getElementById('pmListContainer');
-  fetch(AZURA_CONFIG.PAYMENT_METHODS_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id))
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      var methods = (data && data.payment_methods) || [];
-      if (!methods.length){ container.innerHTML = ''; return; }
-      var html = '';
-      for (var i=0;i<methods.length;i++){
-        var m = methods[i];
-        var label = m.type === 'card' ? (m.brand + ' •••• ' + m.last4 + ' (' + m.exp_month + '/' + m.exp_year + ')') : ('PayPal: ' + m.paypal_email);
-        html += '<div class="pm-row"><span>' + label + (m.is_default ? ' &#9733;' : '') + '</span><button onclick="deletePaymentMethod(\'' + m._id + '\')">' + DYN[currentLang].removeItem() + '</button></div>';
-      }
-      container.innerHTML = html;
-    });
-}
-
-function deletePaymentMethod(id){
-  fetch(AZURA_CONFIG.PAYMENT_METHODS_ENDPOINT + '?customerId=' + encodeURIComponent(CURRENT_CUSTOMER.id) + '&id=' + encodeURIComponent(id), { method: 'DELETE' })
-    .then(function(r){ return r.json(); })
-    .then(function(){ loadPaymentMethods(); });
-}
-
-function submitPaymentMethod(evt){
-  evt.preventDefault();
-  var errEl = document.getElementById('pmPayError');
-  var okEl = document.getElementById('pmPaySuccess');
-  errEl.className = 'pm-error'; okEl.className = 'pm-success';
-
-  var payload = { customerId: CURRENT_CUSTOMER.id, type: currentPaymentType };
-  if (currentPaymentType === 'card'){
-    payload.brand = document.getElementById('pmBrand').value;
-    payload.last4 = document.getElementById('pmLast4').value.trim();
-    payload.exp_month = Number(document.getElementById('pmExpMonth').value);
-    payload.exp_year = Number(document.getElementById('pmExpYear').value);
-  } else {
-    payload.paypal_email = document.getElementById('pmPaypalEmail').value.trim();
-  }
-
-  fetch(AZURA_CONFIG.PAYMENT_METHODS_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); })
-  .then(function(res){
-    if (res.ok){
-      okEl.textContent = DYN[currentLang].paymentSaved();
-      okEl.className = 'pm-success is-visible';
-      document.getElementById('paymentForm').reset();
-      loadPaymentMethods();
-    } else {
-      errEl.textContent = (res.data && res.data.error) || 'Error';
-      errEl.className = 'pm-error is-visible';
-    }
-  })
-  .catch(function(err){
-    errEl.textContent = err.message;
-    errEl.className = 'pm-error is-visible';
-  });
 }
 
 /* ===================== Direcciones de envío (conectado a /api/addresses) ===================== */

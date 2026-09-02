@@ -1,22 +1,41 @@
 // api/payment-methods.js
 // Metodos de pago del cliente (coleccion `payment_methods`, ver db/collections.js).
 //
-// CONTROL CRITICO (PCI-DSS / ISO 27001 A.8.24): este endpoint NUNCA acepta ni
-// guarda el numero de tarjeta completo (PAN) ni el CVV. Si el payload trae
-// cualquier campo que se parezca a eso, se rechaza explicitamente con 422 --
-// no se procesa "por si las dudas". Lo unico que se guarda es lo necesario
-// para MOSTRAR el metodo en el checkout (marca, ultimos 4 digitos, vigencia)
-// o, para PayPal, el correo asociado. `provider_token` es un placeholder para
-// cuando se integre un procesador certificado PCI real (Stripe, PayPal
-// Checkout, Conekta) -- ese token es lo unico que representaria la tarjeta de
-// verdad, y lo emitiria el procesador, nunca este servidor.
+// Fix 99 (Carlos: "quita la seccion de guardar su TC, no quiero lios por
+// ahora, solo le aceptare la TC cuando ya pague y mediante una pasarela"):
+// este endpoint queda DESHABILITADO a proposito. El frontend (index.html) ya
+// no tiene ningun formulario ni llamada que lo use -- se elimino la seccion
+// "Metodos de pago" del modal de cuenta. Se deja este archivo vivo (en vez de
+// borrarlo) para no perder el trabajo de diseno/validacion si mas adelante se
+// integra un procesador certificado PCI real (Stripe, PayPal Checkout,
+// Conekta) y se decide reactivar el guardado de metodo de pago -- en ese
+// escenario, la logica original (guardada abajo comentada, con su control de
+// FORBIDDEN_FIELDS) sirve como punto de partida.
 //
-// GET    /api/payment-methods?customerId=...              -> lista (enmascarada)
-// POST   /api/payment-methods { customerId, type, brand?, last4?, exp_month?, exp_year?, paypal_email?, is_default? }
-// DELETE /api/payment-methods?customerId=...&id=...
+// Mientras tanto, cualquier llamada directa a este endpoint (nadie desde el
+// sitio lo hace, pero un tercero podria intentarlo contra la URL cruda)
+// responde 410 Gone sin tocar la base de datos -- ni lee ni escribe
+// `payment_methods`. La unica captura de tarjeta real del sitio es Mercado
+// Pago al momento del pago (ver api/checkout.js), que es quien tokeniza.
+
+const { applyCors } = require('../lib/cors');
+
+module.exports = async (req, res) => {
+  applyCors(req, res, 'GET, POST, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') { res.status(204).end(); return; }
+
+  res.status(410).json({
+    error:
+      'Este endpoint esta deshabilitado. Renuevate no guarda metodos de pago por adelantado -- ' +
+      'la tarjeta se procesa unicamente a traves de Mercado Pago al momento de pagar.',
+  });
+};
+
+/* ---- Logica original (deshabilitada, referencia para reactivacion futura) ----
 
 const { MongoClient, ObjectId } = require('mongodb');
-const { applyCors } = require('../lib/cors');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -39,12 +58,7 @@ async function getDb() {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-module.exports = async (req, res) => {
-  applyCors(req, res, 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') { res.status(204).end(); return; }
-
+async function originalHandler(req, res) {
   try {
     const db = await getDb();
 
@@ -127,4 +141,6 @@ module.exports = async (req, res) => {
     console.error('payment-methods.js error:', err);
     res.status(500).json({ error: err.message || 'Error interno del servidor.' });
   }
-};
+}
+
+---- fin de la logica original ---- */
