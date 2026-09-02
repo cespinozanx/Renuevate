@@ -80,6 +80,13 @@ img,svg{display:block;}
 .promo-banner{background:var(--navy); color:#fff; text-align:center; font-size:11.5px; letter-spacing:.5px; padding:9px 14px; display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;}
 .promo-banner .promo-cta{background:var(--gold); color:var(--navy); border:0; border-radius:3px; padding:5px 16px; font-size:10.5px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; cursor:pointer; font-family:'Manrope',sans-serif;}
 .promo-banner .promo-cta:hover{opacity:.88;}
+/* Fix 101: link "Ver codigo" del banner de campanas estacionales -- a
+   proposito discreto (subrayado, sin fondo) para que la invitacion a comprar
+   (.promo-cta) siga siendo el llamado principal; el codigo es on-demand,
+   solo aparece si el visitante hace click. */
+.promo-banner .promo-code-link{background:none; border:0; padding:0; color:#fff; text-decoration:underline; font-size:10.5px; letter-spacing:.4px; cursor:pointer; font-family:'Manrope',sans-serif; opacity:.85;}
+.promo-banner .promo-code-link:hover{opacity:1;}
+.promo-banner .promo-code-link:disabled{cursor:default; text-decoration:none; opacity:1; font-weight:700;}
 .topbar{background:var(--cream); color:var(--grey); font-size:11.5px; letter-spacing:.8px; border-bottom:1px solid var(--line);}
 .topbar .container{display:flex; justify-content:space-between; align-items:center; height:34px;}
 .topbar-links{display:flex; gap:18px;}
@@ -332,12 +339,17 @@ section{padding:92px 0;}
    aseguramiento) porque un margin:auto por si solo no estaba centrando el
    video en pantalla real -- reportado por Carlos ("la veo a la izquierda"). */
 .phil-grid > .reveal-stagger{display:flex; flex-direction:column; align-items:flex-start;}
-.phil-showcase{align-self:center; margin-top:28px; margin-left:auto; margin-right:auto; width:230px; max-width:60%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
+/* Fix 101: Carlos pidio crecer al doble la imagen debajo de "Pensamos en tu
+   bienestar. Cultivamos habitos." (230px -> 460px). max-width tambien sube
+   (60% -> 90%) porque con el ancho viejo (60% de la columna del grid) el
+   limite de porcentaje habria cortado el crecimiento antes de llegar al
+   doble en pantallas medianas. */
+.phil-showcase{align-self:center; margin-top:28px; margin-left:auto; margin-right:auto; width:460px; max-width:90%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
 .phil-showcase-el{width:100%; height:auto; display:block; aspect-ratio:335/597; object-fit:cover;}
 /* Fix 88: .phil-showcase-el paso de <video> a <img> (Carlos pidio quitar el
    mini video Ken Burns) -- la regla prefers-reduced-motion de abajo era para
    pausar/ocultar un video autoplay, ya no aplica a una foto estatica. */
-@media(max-width:760px){ .phil-showcase{width:190px; max-width:52%;} }
+@media(max-width:760px){ .phil-showcase{width:380px; max-width:90%;} }
 
 /* .zoom-section reduce su padding-top respecto al "section{padding:92px 0}"
    generico: al ser una página aislada (ver comentario de abajo), esos 92px
@@ -971,9 +983,15 @@ var AZURA_CONFIG = {
      accidental, así que el boton abre el catalogo propio del sitio en su
      lugar. Se flagea esto en la respuesta de este Fix para que Carlos
      confirme el destino real que quiere. -->
-<div class="promo-banner">
-  <span data-i18n="promo.shipping">Envío GRATIS en compras mínimas de $1,800 MXN</span>
-  <button class="promo-cta" onclick="openBeautyCatalog()" data-i18n="promo.cta">Comprar ahora</button>
+<!-- Fix 101: el mismo banner ahora es dinamico -- si hay una campana
+     estacional activa hoy (ver SEASONAL_CAMPAIGNS), renderSeasonalBanner()
+     le pisa el texto/CTA a este banner de envio gratis; si no hay ninguna
+     activa, se queda tal cual (default). El boton de codigo (#promoCodeBtn)
+     solo se muestra cuando hay campana activa con codigo, y arranca oculto. -->
+<div class="promo-banner" id="promoBanner">
+  <span id="promoBannerText" data-i18n="promo.shipping">Envío GRATIS en compras mínimas de $1,800 MXN</span>
+  <button class="promo-cta" id="promoBannerCta" onclick="openBeautyCatalog()" data-i18n="promo.cta">Comprar ahora</button>
+  <button class="promo-code-link" id="promoCodeBtn" style="display:none;" onclick="revealPromoCode()"></button>
 </div>
 
 <div class="topbar">
@@ -2875,6 +2893,190 @@ var DYN = {
          leadError:"Nous n'avons pas pu enregistrer votre contact. Reessayez dans quelques minutes."
        } }
 };
+
+/* ===================== Fix 101: calendario de campanas estacionales =====================
+   Carlos: "necesitamos una tabla de promociones para que no lo olvide y que la
+   prellenes... precios patrios, navidad, dia de reyes, dia de las madres, dia
+   del amor y la amistad, ano nuevo, semana santa... configurables, con un
+   rango de fechas para mostrarse... un banner ligero... opcion de dar un
+   codigo de descuento pero solo on demand, mas de invitarlo a comprar".
+
+   Cada entrada de SEASONAL_CAMPAIGNS es 100% configurable editando este
+   array (texto, dias de antelacion, codigo) -- vive en index.html y no en
+   Mongo a proposito, mismo criterio que TERMS_CONTENT/PRIVACY_CONTENT: es
+   contenido editorial que Carlos edita el mismo, no un dato operativo que
+   necesite un panel de administracion.
+
+   OJO -- IMPORTANTE, flagueado tambien en la respuesta de este Fix: esto es
+   SOLO el banner y el texto del codigo. El codigo que se revela con "Ver
+   codigo" NO aplica ningun descuento real en el carrito/checkout todavia --
+   para eso ya existe el motor de promociones real (api/promotions.js +
+   coleccion `promotions`, Fix 63) y hay que dar de alta ahi el mismo codigo
+   aparte si se quiere que efectivamente descuente. Son dos sistemas
+   separados a proposito: este es el anuncio/invitacion, ese otro es el que
+   mueve dinero.
+
+   Cada campana define:
+   - month/day: fecha fija anual (ej. 25 de diciembre) -- para la mayoria.
+   - type:'easter' + daysBeforeEaster/daysAfterEaster: para Semana Santa, que
+     se mueve cada año. Se calcula la fecha real de Pascua con el algoritmo
+     de Gauss (computeEasterSunday), asi nunca hay que actualizarla a mano.
+   - showDaysBefore: cuantos dias antes de la fecha empieza a aparecer.
+   - hideDaysAfter: cuantos dias despues de la fecha se sigue mostrando
+     (0 = se apaga el mismo dia).
+   - texts: banner + cta + code por idioma (ES/EN/FR).
+   - discountCode: el codigo que se revela al hacer click en "Ver codigo".
+     null si esta campana es solo de invitacion, sin codigo. */
+function computeEasterSunday(year){
+  // Algoritmo de Gauss/Meeus para Pascua (calendario gregoriano) -- valido
+  // para cualquier año, sin tabla ni dependencia externa.
+  var a = year % 19;
+  var b = Math.floor(year / 100);
+  var c = year % 100;
+  var d = Math.floor(b / 4);
+  var e = b % 4;
+  var f = Math.floor((b + 8) / 25);
+  var g = Math.floor((b - f + 1) / 3);
+  var h = (19 * a + b - d - g + 15) % 30;
+  var i = Math.floor(c / 4);
+  var k = c % 4;
+  var l = (32 + 2 * e + 2 * i - h - k) % 7;
+  var m = Math.floor((a + 11 * h + 22 * l) / 451);
+  var month = Math.floor((h + l - 7 * m + 114) / 31);
+  var day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+var SEASONAL_CAMPAIGNS = [
+  { id:'anonuevo', active:true, month:1, day:1, showDaysBefore:7, hideDaysAfter:1,
+    discountCode:'ANONUEVO',
+    texts:{
+      es:{ banner:'Empieza el año cuidando tu piel. Precios de Año Nuevo.', cta:'Comprar ahora', code:'Ver código' },
+      en:{ banner:'Start the year taking care of your skin. New Year prices.', cta:'Shop now', code:'View code' },
+      fr:{ banner:"Commencez l'année en prenant soin de votre peau. Prix du Nouvel An.", cta:'Acheter maintenant', code:'Voir le code' }
+    } },
+  { id:'reyes', active:true, month:1, day:6, showDaysBefore:10, hideDaysAfter:0,
+    discountCode:'REYES',
+    texts:{
+      es:{ banner:'Día de Reyes: date un regalo también a ti.', cta:'Comprar ahora', code:'Ver código' },
+      en:{ banner:"Three Kings' Day: treat yourself too.", cta:'Shop now', code:'View code' },
+      fr:{ banner:'Jour des Rois : offrez-vous aussi un cadeau.', cta:'Acheter maintenant', code:'Voir le code' }
+    } },
+  { id:'amistad', active:true, month:2, day:14, showDaysBefore:14, hideDaysAfter:0,
+    discountCode:'AMISTAD',
+    texts:{
+      es:{ banner:'Día del Amor y la Amistad: quiérete primero a ti.', cta:'Comprar ahora', code:'Ver código' },
+      en:{ banner:"Valentine's Day: love yourself first.", cta:'Shop now', code:'View code' },
+      fr:{ banner:'Saint-Valentin : aimez-vous vous-même en premier.', cta:'Acheter maintenant', code:'Voir le code' }
+    } },
+  // Semana Santa: fecha movible -- se calcula sola cada año contra el Domingo
+  // de Pascua (computeEasterSunday), no hay que tocar esta entrada a mano.
+  { id:'semanasanta', active:true, type:'easter', daysBeforeEaster:21, daysAfterEaster:0,
+    discountCode:'PLAYA',
+    texts:{
+      es:{ banner:'Semana Santa: protégete en la playa.', cta:'Comprar ahora', code:'Ver código' },
+      en:{ banner:'Holy Week: protect yourself at the beach.', cta:'Shop now', code:'View code' },
+      fr:{ banner:'Semaine sainte : protégez-vous a la plage.', cta:'Acheter maintenant', code:'Voir le code' }
+    } },
+  { id:'madres', active:true, month:5, day:10, showDaysBefore:14, hideDaysAfter:0,
+    discountCode:'MAMA',
+    texts:{
+      es:{ banner:'Día de las Madres: un regalo que sí se usa.', cta:'Comprar ahora', code:'Ver código' },
+      en:{ banner:"Mother's Day: a gift she'll actually use.", cta:'Shop now', code:'View code' },
+      fr:{ banner:'Fête des Mères : un cadeau vraiment utile.', cta:'Acheter maintenant', code:'Voir le code' }
+    } },
+  { id:'patrias', active:true, month:9, day:16, showDaysBefore:14, hideDaysAfter:1,
+    discountCode:'PATRIAS',
+    texts:{
+      es:{ banner:'Precios patrios: celebra México con Renuévate.', cta:'Comprar ahora', code:'Ver código' },
+      en:{ banner:"Mexican Independence prices: celebrate with Renuévate.", cta:'Shop now', code:'View code' },
+      fr:{ banner:"Prix de l'Indépendance mexicaine avec Renuévate.", cta:'Acheter maintenant', code:'Voir le code' }
+    } },
+  { id:'navidad', active:true, month:12, day:25, showDaysBefore:21, hideDaysAfter:1,
+    discountCode:'NAVIDAD',
+    texts:{
+      es:{ banner:'Precios navideños: ya casi es Navidad.', cta:'Comprar ahora', code:'Ver código' },
+      en:{ banner:"Christmas prices: it's almost here.", cta:'Shop now', code:'View code' },
+      fr:{ banner:'Prix de Noël : ça approche.', cta:'Acheter maintenant', code:'Voir le code' }
+    } }
+];
+
+// Ventana de fechas de una campana para un año dado -- soporta fecha fija
+// (month/day) y fecha relativa a Pascua (type:'easter').
+function getSeasonalCampaignWindow(campaign, year){
+  var eventDate;
+  if (campaign.type === 'easter'){
+    eventDate = computeEasterSunday(year);
+    var start = new Date(eventDate); start.setDate(start.getDate() - (campaign.daysBeforeEaster || 14));
+    var end = new Date(eventDate); end.setDate(end.getDate() + (campaign.daysAfterEaster || 0));
+    end.setHours(23, 59, 59, 999);
+    return { start: start, end: end };
+  }
+  eventDate = new Date(year, campaign.month - 1, campaign.day);
+  var s = new Date(eventDate); s.setDate(s.getDate() - (campaign.showDaysBefore || 14));
+  var e = new Date(eventDate); e.setDate(e.getDate() + (campaign.hideDaysAfter || 0));
+  e.setHours(23, 59, 59, 999);
+  return { start: s, end: e };
+}
+
+// Revisa las campanas en orden de la lista y regresa la primera que este
+// activa hoy (año actual, anterior y siguiente -- cubre el caso de Año Nuevo,
+// cuya ventana de "dias antes" empieza en diciembre del año anterior).
+function getActiveSeasonalCampaign(){
+  var now = new Date();
+  var years = [now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1];
+  for (var i = 0; i < SEASONAL_CAMPAIGNS.length; i++){
+    var c = SEASONAL_CAMPAIGNS[i];
+    if (!c.active) continue;
+    for (var y = 0; y < years.length; y++){
+      var w = getSeasonalCampaignWindow(c, years[y]);
+      if (now >= w.start && now <= w.end) return c;
+    }
+  }
+  return null;
+}
+
+var ACTIVE_SEASONAL_CAMPAIGN = null;
+
+// Pisa el banner de envio gratis (default) con el mensaje de la campana
+// activa, si hay alguna hoy. Se llama en applyLanguage() -- asi corre en el
+// arranque del sitio y de nuevo cada vez que el visitante cambia de idioma.
+function renderSeasonalBanner(){
+  ACTIVE_SEASONAL_CAMPAIGN = getActiveSeasonalCampaign();
+  var textEl = document.getElementById('promoBannerText');
+  var ctaEl = document.getElementById('promoBannerCta');
+  var codeBtn = document.getElementById('promoCodeBtn');
+  if (!textEl || !ctaEl || !codeBtn) return;
+
+  if (!ACTIVE_SEASONAL_CAMPAIGN){
+    // Sin campana activa: se deja el banner default (envio gratis, ya
+    // aplicado por applyLanguage via data-i18n) y se oculta el link de codigo.
+    codeBtn.style.display = 'none';
+    codeBtn.disabled = false;
+    return;
+  }
+
+  var t = ACTIVE_SEASONAL_CAMPAIGN.texts[currentLang] || ACTIVE_SEASONAL_CAMPAIGN.texts.es;
+  textEl.textContent = t.banner;
+  ctaEl.textContent = t.cta;
+
+  if (ACTIVE_SEASONAL_CAMPAIGN.discountCode){
+    codeBtn.textContent = t.code;
+    codeBtn.disabled = false;
+    codeBtn.style.display = '';
+  } else {
+    codeBtn.style.display = 'none';
+  }
+}
+
+// Revela el codigo on-demand -- a proposito no se muestra solo (Carlos: "es
+// mas de invitarlo a comprar"), solo aparece si el visitante hace click.
+function revealPromoCode(){
+  var codeBtn = document.getElementById('promoCodeBtn');
+  if (!codeBtn || !ACTIVE_SEASONAL_CAMPAIGN || !ACTIVE_SEASONAL_CAMPAIGN.discountCode) return;
+  codeBtn.textContent = ACTIVE_SEASONAL_CAMPAIGN.discountCode;
+  codeBtn.disabled = true;
+}
 
 /* ===================== Rating, compra conjunta y comentarios (datos de demostracion) ===================== */
 function starsHtml(stars){
@@ -5344,6 +5546,7 @@ function applyLanguage(lang){
 
   renderVertical(currentV);
   if (catalogModeActive) applyCatalogPageLabels();
+  renderSeasonalBanner();
 }
 
 /* ===================== Chatbot (FAQ por palabra clave, 100% cliente) ===================== */
