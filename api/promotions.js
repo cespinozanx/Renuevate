@@ -20,6 +20,7 @@
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { checkRateLimit } = require('../lib/rateLimit');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -131,10 +132,12 @@ module.exports = async (req, res) => {
     return;
   }
 
-  if (!requireAdmin(req, res)) return;
-
   try {
     const db = await getDb();
+    // Fix 109: se aplica ANTES de requireAdmin -- ver rationale en
+    // api/loyalty-rules.js.
+    if (!(await checkRateLimit(req, res, db, { scope: 'promotions', limit: 20, windowSec: 60 }))) return;
+    if (!requireAdmin(req, res)) return;
 
     if (req.method === 'GET') {
       const filter = {};

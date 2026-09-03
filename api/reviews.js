@@ -34,6 +34,8 @@
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { getSessionCustomerId } = require('../lib/session');
+const { checkRateLimit } = require('../lib/rateLimit');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -79,9 +81,15 @@ module.exports = async (req, res) => {
 
   try {
     const db = await getDb();
+    // Fix 109: GET es de alto trafico legitimo (se dispara cada vez que se
+    // abre una ficha de producto); POST (publicar resena) es mucho mas raro
+    // -- limite mas estricto ahi. El bucket ya separa por metodo (ver
+    // lib/rateLimit.js), asi que un abuso de POST no consume la cuota de GET.
+    const rlLimit = req.method === 'GET' ? 60 : 10;
+    if (!(await checkRateLimit(req, res, db, { scope: 'reviews', limit: rlLimit, windowSec: 60 }))) return;
 
     if (req.method === 'GET') {
-      const { sku, customerId } = req.query || {};
+      const { sku } = req.query || {};
       if (!sku) { res.status(400).json({ error: 'Falta sku.' }); return; }
       const reviews = await db
         .collection('product_reviews')
@@ -90,13 +98,20 @@ module.exports = async (req, res) => {
         .limit(20)
         .project({ customer_id: 0 })
         .toArray();
-      // Fix 60: si viene customerId (cliente con sesion iniciada), informamos
-      // tambien si ya compro este sku -- el frontend usa esto para decidir si
-      // mostrar el formulario "escribe tu resena" o el mensaje de "compra
-      // este producto primero" (ver hasPurchased() mas abajo, reusada en POST).
+      // Fix 60 (original) + Fix 109 (endurecido): si hay sesion iniciada,
+      // informamos tambien si ya compro este sku -- el frontend usa esto
+      // para decidir si mostrar el formulario "escribe tu resena" o el
+      // mensaje de "compra este producto primero" (ver hasPurchased() mas
+      // abajo, reusada en POST). Antes esto se calculaba con un customerId
+      // que mandaba el query string (info-leak menor: cualquiera podia
+      // consultar si UN customerId cualquiera habia comprado X producto);
+      // ahora sale exclusivamente de la cookie de sesion. Este GET sigue
+      // siendo publico (no exige sesion) -- sin sesion simplemente regresa
+      // purchased:false, igual que antes cuando no se mandaba customerId.
       let purchased = false;
-      if (customerId && ObjectId.isValid(customerId)) {
-        purchased = await hasPurchased(db, customerId, String(sku));
+      const sessionCid = getSessionCustomerId(req);
+      if (sessionCid && ObjectId.isValid(sessionCid)) {
+        purchased = await hasPurchased(db, sessionCid, String(sku));
       }
       res.status(200).json({ ok: true, reviews, purchased });
       return;
@@ -104,9 +119,14 @@ module.exports = async (req, res) => {
 
     if (req.method === 'POST') {
       const body = req.body || {};
-      const { customerId, sku, stars, title, text, displayName, photos } = body;
+      const { sku, stars, title, text, displayName, photos } = body;
 
-      if (!customerId || !ObjectId.isValid(customerId)) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
+      const sessionCid = getSessionCustomerId(req);
+      if (!sessionCid || !ObjectId.isValid(sessionCid)) {
+        res.status(401).json({ error: 'Tu sesion expiro o no has iniciado sesion. Inicia sesion de nuevo.', code: 'SESSION_REQUIRED' });
+        return;
+      }
+      const customerId = sessionCid;
       if (!sku || typeof sku !== 'string') { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
 
       // Fix 60 (instruccion Carlos: "una vez que compraron se les de la opcion

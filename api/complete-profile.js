@@ -32,6 +32,8 @@
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { getSessionCustomerId } = require('../lib/session');
+const { checkRateLimit } = require('../lib/rateLimit');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB_RAW = process.env.MONGODB_DB || 'azura';
@@ -84,12 +86,22 @@ module.exports = async (req, res) => {
   if (body.source === 'newsletter') { return handleNewsletterLead(req, res, body); }
 
   try {
-    const { customerId, phone, birth_date, marketing_consent } = body;
+    const db = await getDb();
+    if (!(await checkRateLimit(req, res, db, { scope: 'complete-profile', limit: 10, windowSec: 60 }))) return;
 
-    if (!customerId || !ObjectId.isValid(customerId)) {
-      res.status(400).json({ error: 'customerId invalido o faltante.' });
+    const { phone, birth_date, marketing_consent } = body;
+
+    // Fix 109: este flujo (completar perfil de una cuenta ya logueada) ahora
+    // exige sesion de servidor -- antes confiaba en el customerId que
+    // mandaba el navegador, igual que el resto del backend pre-Fix-109. Los
+    // dos sub-flujos anonimos (beauty_quiz, newsletter) de abajo siguen
+    // sin sesion a proposito, son leads sueltos, no cuentas.
+    const sessionCid = getSessionCustomerId(req);
+    if (!sessionCid || !ObjectId.isValid(sessionCid)) {
+      res.status(401).json({ error: 'Tu sesion expiro o no has iniciado sesion. Inicia sesion de nuevo.', code: 'SESSION_REQUIRED' });
       return;
     }
+    const customerId = sessionCid;
     if (!phone || !E164_RE.test(phone)) {
       res.status(400).json({ error: 'Telefono invalido. Usa formato E.164, ej. +525512345678.' });
       return;
@@ -118,7 +130,6 @@ module.exports = async (req, res) => {
     // profile_complete y la elegibilidad real de promos nunca queden desincronizados.
     const profileComplete = Boolean(phone && parsedBirthDate && consentDoc.email === true);
 
-    const db = await getDb();
     const customers = db.collection('customers');
 
     const result = await customers.findOneAndUpdate(
@@ -172,6 +183,11 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // el frontend ni siquiera muestra este formulario (ver index.html, CURRENT_CUSTOMER.id).
 async function handleBeautyQuizLead(req, res, body) {
   try {
+    const db = await getDb();
+    // Fix 109: flujo anonimo, alcanzable sin cuenta -- limite mas holgado
+    // que el flujo principal pero igual presente, para frenar spam masivo.
+    if (!(await checkRateLimit(req, res, db, { scope: 'complete-profile-lead', limit: 20, windowSec: 60 }))) return;
+
     const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
     const phone = typeof body.phone === 'string' ? body.phone.trim() : '';
 
@@ -188,7 +204,6 @@ async function handleBeautyQuizLead(req, res, body) {
       return;
     }
 
-    const db = await getDb();
     const now = new Date();
 
     // Idempotente por email+telefono: si la misma persona vuelve a dejar su
@@ -226,6 +241,10 @@ async function handleBeautyQuizLead(req, res, body) {
 // Belleza -- nunca se mezcla con `customers`.
 async function handleNewsletterLead(req, res, body) {
   try {
+    const db = await getDb();
+    // Fix 109: ver rationale en handleBeautyQuizLead.
+    if (!(await checkRateLimit(req, res, db, { scope: 'complete-profile-lead', limit: 20, windowSec: 60 }))) return;
+
     const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
 
     if (!email || !EMAIL_RE.test(email)) {
@@ -233,7 +252,6 @@ async function handleNewsletterLead(req, res, body) {
       return;
     }
 
-    const db = await getDb();
     const now = new Date();
 
     // Idempotente por email: si la misma persona se suscribe otra vez (ej.

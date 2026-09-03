@@ -11,6 +11,8 @@
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { getSessionCustomerId } = require('../lib/session');
+const { checkRateLimit } = require('../lib/rateLimit');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -23,6 +25,19 @@ async function getDb() {
   await client.connect();
   cachedClient = client;
   return client.db(MONGODB_DB);
+}
+
+// Fix 109: unico punto de entrada de identidad para este archivo -- ver
+// misma logica en api/cart.js. El customerId que el cliente siga mandando en
+// body/query se ignora para efectos de autorizacion; la identidad real sale
+// de la cookie de sesion firmada (lib/session.js).
+function requireSessionCustomer(req, res) {
+  const raw = getSessionCustomerId(req);
+  if (!raw || !ObjectId.isValid(raw)) {
+    res.status(401).json({ error: 'Tu sesion expiro o no has iniciado sesion. Inicia sesion de nuevo.', code: 'SESSION_REQUIRED' });
+    return null;
+  }
+  return new ObjectId(raw);
 }
 
 const ZIP_RE = /^[0-9]{5}$/;
@@ -74,12 +89,14 @@ module.exports = async (req, res) => {
 
   try {
     const db = await getDb();
+    // Fix 109: ver rationale en api/cart.js.
+    if (!(await checkRateLimit(req, res, db, { scope: 'addresses', limit: 30, windowSec: 60 }))) return;
 
     if (req.method === 'GET') {
-      const custId = (req.query || {}).customerId;
-      if (!custId || !ObjectId.isValid(custId)) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
+      const custId = requireSessionCustomer(req, res);
+      if (!custId) return;
       const list = await db.collection('addresses')
-        .find({ customer_id: new ObjectId(custId) })
+        .find({ customer_id: custId })
         .sort({ is_default: -1, created_at: 1 })
         .toArray();
       res.status(200).json({ ok: true, addresses: list });
@@ -88,13 +105,12 @@ module.exports = async (req, res) => {
 
     if (req.method === 'POST') {
       const body = req.body || {};
-      const { customerId } = body;
-      if (!customerId || !ObjectId.isValid(customerId)) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
+      const customerObjId = requireSessionCustomer(req, res);
+      if (!customerObjId) return;
 
       const { errors, fields } = validateAddressFields(body, { partial: false });
       if (errors.length) { res.status(400).json({ error: errors.join(' ') }); return; }
 
-      const customerObjId = new ObjectId(customerId);
       const existingCount = await db.collection('addresses').countDocuments({ customer_id: customerObjId });
 
       const doc = {
@@ -129,14 +145,14 @@ module.exports = async (req, res) => {
 
     if (req.method === 'PUT') {
       const body = req.body || {};
-      const { customerId, id } = body;
-      if (!customerId || !ObjectId.isValid(customerId)) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
+      const { id } = body;
+      const customerObjId = requireSessionCustomer(req, res);
+      if (!customerObjId) return;
       if (!id || !ObjectId.isValid(id)) { res.status(400).json({ error: 'id invalido o faltante.' }); return; }
 
       const { errors, fields } = validateAddressFields(body, { partial: true });
       if (errors.length) { res.status(400).json({ error: errors.join(' ') }); return; }
 
-      const customerObjId = new ObjectId(customerId);
       const addressObjId = new ObjectId(id);
 
       if (fields.is_default) {
@@ -154,10 +170,10 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'DELETE') {
-      const { customerId, id } = req.query || {};
-      if (!customerId || !ObjectId.isValid(customerId)) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
+      const { id } = req.query || {};
+      const customerObjId = requireSessionCustomer(req, res);
+      if (!customerObjId) return;
       if (!id || !ObjectId.isValid(id)) { res.status(400).json({ error: 'id invalido o faltante.' }); return; }
-      const customerObjId = new ObjectId(customerId);
       const addressObjId = new ObjectId(id);
 
       const deleted = await db.collection('addresses').findOneAndDelete(

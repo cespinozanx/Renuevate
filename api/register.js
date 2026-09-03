@@ -18,6 +18,8 @@
 
 const { MongoClient } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { setSessionCookie, clearSessionCookie } = require('../lib/session');
+const { checkRateLimit } = require('../lib/rateLimit');
 const { OAuth2Client } = require('google-auth-library');
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -87,19 +89,45 @@ async function verifyFacebook(accessToken) {
 }
 
 module.exports = async (req, res) => {
-  applyCors(req, res, 'POST, OPTIONS');
+  // Fix 109: se agrega DELETE -- es el nuevo endpoint de logout real de
+  // servidor (ver mas abajo). Antes logout() en index.html solo borraba
+  // localStorage, sin avisarle nunca al servidor; ahora la sesion vive en
+  // una cookie HttpOnly que JS no puede borrar por su cuenta, asi que hace
+  // falta un roundtrip al servidor para limpiarla de verdad.
+  applyCors(req, res, 'POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     res.status(204).end();
     return;
   }
+
+  if (req.method === 'DELETE') {
+    // Logout real: no hace falta verificar que la sesion sea valida para
+    // limpiarla -- si ya esta vencida o no existe, igual se responde ok
+    // (logout es idempotente por diseno, igual que antes con localStorage).
+    // Fix 109: a proposito SIN rate limit aqui -- no toca Mongo (clearSessionCookie
+    // solo pone un header), asi que abrir una conexion a la base solo para
+    // contar llamadas de logout costaria mas de lo que protege.
+    clearSessionCookie(res);
+    res.status(200).json({ ok: true });
+    return;
+  }
+
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
   try {
+    // Fix 109: se abre la conexion a Mongo primero (getDb() es barato, ya
+    // esta cacheada tras la primera vez) para poder aplicar el limite de
+    // tasa ANTES de gastar una llamada real a la API de Google/Facebook
+    // (verifyGoogle/verifyFacebook, mas abajo) -- eso es lo que realmente
+    // cuesta en este endpoint, no la escritura a Mongo en si.
+    const db = await getDb();
+    if (!(await checkRateLimit(req, res, db, { scope: 'register', limit: 10, windowSec: 60 }))) return;
+
     const body = req.body || {};
     const { provider, credential } = body;
 
@@ -132,7 +160,6 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const db = await getDb();
     const customers = db.collection('customers');
     const now = new Date();
     const email = profile.email.toLowerCase();
@@ -176,6 +203,13 @@ module.exports = async (req, res) => {
     );
 
     const customer = result.value;
+
+    // Fix 109: aqui nace la sesion de servidor -- a partir de este momento,
+    // toda llamada a un endpoint protegido (cart/addresses/orders/checkout/
+    // reviews/complete-profile) se autentica con esta cookie firmada, no con
+    // el customerId que el frontend siga mandando en el body/query (que el
+    // servidor ahora ignora para efectos de autorizacion).
+    setSessionCookie(res, customer._id);
 
     res.status(200).json({
       ok: true,

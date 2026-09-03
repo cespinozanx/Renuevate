@@ -14,12 +14,13 @@
 //
 // POST /api/orders { customerId, items: [{sku, name, vertical, unit_price, qty}], currency }
 //
-// Seguridad (MVP, no produccion): igual que api/complete-profile.js, no hay sesion
-// de servidor -- se confia en el customerId que envia el navegador. Antes de manejar
-// dinero real, esto debe ir detras de una sesion/cookie firmada.
+// Fix 109: ya no se confia en el customerId que manda el navegador -- se usa
+// la cookie de sesion firmada (lib/session.js), igual que cart.js/addresses.js.
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { getSessionCustomerId } = require('../lib/session');
+const { checkRateLimit } = require('../lib/rateLimit');
 const { recordPurchaseForLoyalty } = require('../lib/promotionsEngine');
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -43,11 +44,17 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
 
   try {
-    const body = req.body || {};
-    const { customerId, items, currency } = body;
+    const db = await getDb();
+    // Fix 109: endpoint no usado hoy por el frontend real (ver comentario de
+    // archivo) pero sigue siendo alcanzable -- limite estricto.
+    if (!(await checkRateLimit(req, res, db, { scope: 'orders', limit: 10, windowSec: 60 }))) return;
 
-    if (!customerId || !ObjectId.isValid(customerId)) {
-      res.status(400).json({ error: 'customerId invalido o faltante.' });
+    const body = req.body || {};
+    const { items, currency } = body;
+
+    const sessionCid = getSessionCustomerId(req);
+    if (!sessionCid || !ObjectId.isValid(sessionCid)) {
+      res.status(401).json({ error: 'Tu sesion expiro o no has iniciado sesion. Inicia sesion de nuevo.', code: 'SESSION_REQUIRED' });
       return;
     }
     if (!Array.isArray(items) || items.length === 0) {
@@ -74,9 +81,8 @@ module.exports = async (req, res) => {
       cleanItems.push({ sku, name, vertical: raw.vertical || null, unit_price: unitPrice, qty, shade: raw.shade || null });
     }
 
-    const db = await getDb();
     const now = new Date();
-    const custId = new ObjectId(customerId);
+    const custId = new ObjectId(sessionCid);
 
     const order = {
       customer_id: custId,

@@ -512,6 +512,23 @@ const VALIDATORS = {
       },
     },
   },
+
+  // Fix 109: contadores del rate limiter (ver lib/rateLimit.js) -- un
+  // documento por (bucket, window_start), bucket = "<endpoint>:<metodo>:<ip>".
+  // El indice TTL en expires_at hace que Mongo purgue solos los contadores
+  // vencidos -- esta coleccion nunca deberia crecer sin limite.
+  rate_limits: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['bucket', 'window_start', 'count', 'expires_at'],
+      properties: {
+        bucket: { bsonType: 'string' },
+        window_start: { bsonType: 'date' },
+        count: { bsonType: 'int', minimum: 1 },
+        expires_at: { bsonType: 'date' },
+      },
+    },
+  },
 };
 
 // Crea el indice si no existe. Si ya existe un indice con el mismo nombre pero
@@ -596,6 +613,13 @@ async function setupCollections(db) {
 
   await ensureIndex(db.collection('phone_verifications'), { phone: 1, created_at: -1 }, { name: 'idx_phone_created' });
   await ensureIndex(db.collection('phone_verifications'), { expires_at: 1 }, { expireAfterSeconds: 0, name: 'ttl_expires_at' });
+
+  // Fix 109: rate limiter (ver lib/rateLimit.js). uniq_bucket_window evita
+  // condiciones de carrera entre peticiones simultaneas del mismo bucket
+  // (2 llamadas que lleguen al mismo tiempo deben incrementar el MISMO
+  // documento, no crear 2 documentos duplicados para la misma ventana).
+  await ensureIndex(db.collection('rate_limits'), { bucket: 1, window_start: 1 }, { unique: true, name: 'uniq_bucket_window' });
+  await ensureIndex(db.collection('rate_limits'), { expires_at: 1 }, { expireAfterSeconds: 0, name: 'ttl_expires_at' });
 
   console.log('[collections] indices listos.');
 }

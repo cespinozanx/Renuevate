@@ -11,6 +11,7 @@
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { checkRateLimit } = require('../lib/rateLimit');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -43,10 +44,13 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
-  if (!requireAdmin(req, res)) return;
 
   try {
     const db = await getDb();
+    // Fix 109: se aplica ANTES de requireAdmin -- asi tambien frena intentos
+    // repetidos de adivinar ADMIN_API_KEY, no solo el uso legitimo posterior.
+    if (!(await checkRateLimit(req, res, db, { scope: 'loyalty-rules', limit: 20, windowSec: 60 }))) return;
+    if (!requireAdmin(req, res)) return;
     const col = db.collection('loyalty_rules');
 
     if (req.method === 'GET') {

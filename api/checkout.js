@@ -35,6 +35,8 @@
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { getSessionCustomerId } = require('../lib/session');
+const { checkRateLimit } = require('../lib/rateLimit');
 const { recordPurchaseForLoyalty } = require('../lib/promotionsEngine');
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -79,14 +81,25 @@ async function handleCreatePreference(req, res) {
       return;
     }
 
-    const { customerId } = req.body || {};
-    if (!customerId || !ObjectId.isValid(customerId)) {
-      res.status(400).json({ error: 'customerId invalido o faltante.' });
+    // Fix 109: la identidad para cobrar viene de la cookie de sesion firmada,
+    // no del customerId que mande el body -- este es el endpoint que mas
+    // importa cerrar bien (crea el cargo real en Mercado Pago), ya que su
+    // metadata.customer_id es lo que despues usa handleWebhook() de abajo
+    // para grabar la orden.
+    const sessionCid = getSessionCustomerId(req);
+    if (!sessionCid || !ObjectId.isValid(sessionCid)) {
+      res.status(401).json({ error: 'Tu sesion expiro o no has iniciado sesion. Inicia sesion de nuevo.', code: 'SESSION_REQUIRED' });
       return;
     }
-    const custId = new ObjectId(customerId);
+    const custId = new ObjectId(sessionCid);
 
     const db = await getDb();
+    // Fix 109: limite estricto -- este endpoint llama a la API real de
+    // Mercado Pago (costo/riesgo de fraude mas alto que el resto). Se aplica
+    // SOLO aqui, no en el webhook (handleWebhook, mas abajo), que es
+    // trafico server-to-server legitimo de Mercado Pago y no debe frenarse
+    // por IP igual que un cliente final.
+    if (!(await checkRateLimit(req, res, db, { scope: 'checkout', limit: 10, windowSec: 60 }))) return;
     const cartDoc = await db.collection('carts').findOne({ customer_id: custId, status: 'active' });
     if (!cartDoc || !cartDoc.items || !cartDoc.items.length) {
       res.status(400).json({ error: 'El carrito esta vacio.' });

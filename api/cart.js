@@ -22,12 +22,17 @@
 // linea pasa a ser el PAR (sku, shade), no solo sku. Ver itemMatchFilter()
 // abajo, que centraliza esa logica en vez de repetirla en cada metodo.
 //
-// Seguridad (MVP, igual que el resto del backend): no hay sesion de servidor
-// todavia -- se confia en el customerId que manda el navegador. Ver nota de
-// gap en db/schema.md (sesion/cookie firmada pendiente antes de trafico real).
+// Fix 109 (antes): no habia sesion de servidor -- se confiaba en el
+// customerId que mandaba el navegador via querystring/body. Ahora la
+// identidad se toma SIEMPRE de la cookie de sesion firmada (ver
+// lib/session.js); el customerId que el cliente siga mandando en el body o
+// la URL se ignora por completo para efectos de autorizacion. Si no hay
+// sesion valida, se responde 401 en vez de proceder.
 
 const { MongoClient, ObjectId } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { getSessionCustomerId } = require('../lib/session');
+const { checkRateLimit } = require('../lib/rateLimit');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -48,6 +53,18 @@ async function getDb() {
 function parseCustomerId(raw) {
   if (!raw || !ObjectId.isValid(raw)) return null;
   return new ObjectId(raw);
+}
+
+// Fix 109: unico punto de entrada de identidad para este archivo. Si no hay
+// cookie de sesion valida, responde 401 ahi mismo y regresa null -- el
+// caller solo necesita hacer "if (!custId) return;".
+function requireSessionCustomer(req, res) {
+  const custId = parseCustomerId(getSessionCustomerId(req));
+  if (!custId) {
+    res.status(401).json({ error: 'Tu sesion expiro o no has iniciado sesion. Inicia sesion de nuevo.', code: 'SESSION_REQUIRED' });
+    return null;
+  }
+  return custId;
 }
 
 // Normaliza shade a string-o-undefined (nunca '', null, u otro falsy) para
@@ -133,11 +150,15 @@ module.exports = async (req, res) => {
 
   try {
     const db = await getDb();
+    // Fix 109: 60/min por IP+metodo alcanza para uso normal (los botones
+    // +/- del carrito ya llevan su propio debounce en el frontend, Fix 89)
+    // y frena un abuso automatizado sin estorbar a un cliente real.
+    if (!(await checkRateLimit(req, res, db, { scope: 'cart', limit: 60, windowSec: 60 }))) return;
     const now = new Date();
 
     if (req.method === 'GET') {
-      const custId = parseCustomerId((req.query || {}).customerId);
-      if (!custId) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
+      const custId = requireSessionCustomer(req, res);
+      if (!custId) return;
       const cartDoc = await db.collection('carts').findOne({ customer_id: custId, status: 'active' });
       const hydrated = await hydrateCart(db, cartDoc);
       res.status(200).json({ ok: true, cart: hydrated });
@@ -145,11 +166,11 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      const { customerId, sku, qty, shade: rawShade } = req.body || {};
-      const custId = parseCustomerId(customerId);
+      const { sku, qty, shade: rawShade } = req.body || {};
+      const custId = requireSessionCustomer(req, res);
+      if (!custId) return;
       const quantity = Number(qty) || 1;
       const shade = normalizeShade(rawShade);
-      if (!custId) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
       if (!sku || typeof sku !== 'string' || sku.length > 40) { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
       // Fix 89: antes no habia tope superior -- qty=999999999 pasaba la
       // validacion igual que qty=1 (Number.isInteger + >=1 no acota arriba).
@@ -205,10 +226,10 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'PUT') {
-      const { customerId, sku, qty, saved, shade: rawShade } = req.body || {};
-      const custId = parseCustomerId(customerId);
+      const { sku, qty, saved, shade: rawShade } = req.body || {};
+      const custId = requireSessionCustomer(req, res);
+      if (!custId) return;
       const shade = normalizeShade(rawShade);
-      if (!custId) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
       if (!sku || typeof sku !== 'string' || sku.length > 40) { res.status(400).json({ error: 'sku invalido o faltante.' }); return; }
       const filter = itemMatchFilter(sku, shade);
 
@@ -282,9 +303,9 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'DELETE') {
-      const { customerId, sku, shade: rawShade } = req.query || {};
-      const custId = parseCustomerId(customerId);
-      if (!custId) { res.status(400).json({ error: 'customerId invalido o faltante.' }); return; }
+      const { sku, shade: rawShade } = req.query || {};
+      const custId = requireSessionCustomer(req, res);
+      if (!custId) return;
 
       if (sku) {
         const shade = normalizeShade(rawShade);

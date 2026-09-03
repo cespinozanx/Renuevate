@@ -11,6 +11,7 @@
 
 const { MongoClient } = require('mongodb');
 const { applyCors } = require('../lib/cors');
+const { checkRateLimit } = require('../lib/rateLimit');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
@@ -34,6 +35,9 @@ module.exports = async (req, res) => {
 
   try {
     const db = await getDb();
+    // Fix 109: catalogo publico, se espera alto trafico legitimo (cada carga
+    // de pagina lo consulta) -- limite generoso, solo para frenar scripts.
+    if (!(await checkRateLimit(req, res, db, { scope: 'products', limit: 120, windowSec: 60 }))) return;
     const { vertical, sku } = req.query || {};
     const filter = { status: 'active' };
     if (vertical) filter.vertical = String(vertical);

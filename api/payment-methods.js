@@ -17,6 +17,16 @@
 // responde 410 Gone sin tocar la base de datos -- ni lee ni escribe
 // `payment_methods`. La unica captura de tarjeta real del sitio es Mercado
 // Pago al momento del pago (ver api/checkout.js), que es quien tokeniza.
+//
+// Fix 109 (rate limiting en los 11 endpoints de api/): este archivo se deja
+// A PROPOSITO sin el checkRateLimit que se agrego al resto (ver
+// lib/rateLimit.js) -- ese limitador necesita una conexion a Mongo para
+// contar peticiones, y abrir una conexion real a la base solo para contar
+// llamadas a un endpoint que YA responde 410 sin tocar la base costaria mas
+// (en latencia y en el propio consumo de Atlas que se busca proteger) de lo
+// que evitaria. El costo de abuso aqui ya es casi cero: Vercel factura por
+// invocacion de funcion, no por query a Mongo, y ese piso de proteccion es
+// responsabilidad de la plataforma, no de este archivo.
 
 const { applyCors } = require('../lib/cors');
 
