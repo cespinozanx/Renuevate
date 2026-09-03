@@ -71,6 +71,8 @@ img,svg{display:block;}
 .btn{display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:2px; font-size:12.5px; letter-spacing:1.8px; text-transform:uppercase; font-weight:700; cursor:pointer; border:1px solid transparent; transition:all .2s ease;}
 .btn-dark{background:var(--grey); color:#fff;}
 .btn-dark:hover{background:#3F3F3F;}
+.btn-dark:disabled{background:var(--line); color:var(--grey); cursor:not-allowed;}
+.btn-dark:disabled:hover{background:var(--line);}
 .btn-outline{background:transparent; border-color:var(--ink); color:var(--ink);}
 .btn-outline:hover{background:var(--grey); border-color:var(--grey); color:#fff;}
 .btn-vertical{background:var(--active); color:#fff;}
@@ -252,6 +254,10 @@ section{padding:92px 0;}
 .section-head{text-align:center; max-width:660px; margin:0 auto 52px;}
 .section-head h2{font-size:clamp(28px,3.8vw,44px); margin-top:14px;}
 .section-head h2 .accent{color:var(--gold); border-color:var(--gold);}
+/* Fix 104: mismo font-family que .logo (Bodoni Moda/Playfair Display) para
+   que la frase entre comillas de #verticales se sienta parte de la marca,
+   sin copiar mayusculas/tracking del logo (aqui es una frase, no un wordmark). */
+.vert-h2-quote{font-family:'Bodoni Moda','Playfair Display',Georgia,serif; font-weight:500;}
 .section-head p{color:var(--grey); margin-top:16px; font-size:16px;}
 
 .brand-map{text-align:center; margin:8px 0 50px;}
@@ -339,17 +345,10 @@ section{padding:92px 0;}
    aseguramiento) porque un margin:auto por si solo no estaba centrando el
    video en pantalla real -- reportado por Carlos ("la veo a la izquierda"). */
 .phil-grid > .reveal-stagger{display:flex; flex-direction:column; align-items:flex-start;}
-/* Fix 101: Carlos pidio crecer al doble la imagen debajo de "Pensamos en tu
-   bienestar. Cultivamos habitos." (230px -> 460px). max-width tambien sube
-   (60% -> 90%) porque con el ancho viejo (60% de la columna del grid) el
-   limite de porcentaje habria cortado el crecimiento antes de llegar al
-   doble en pantallas medianas. */
-.phil-showcase{align-self:center; margin-top:28px; margin-left:auto; margin-right:auto; width:460px; max-width:90%; border-radius:8px; overflow:hidden; box-shadow:0 16px 34px rgba(0,0,0,.16);}
-.phil-showcase-el{width:100%; height:auto; display:block; aspect-ratio:335/597; object-fit:cover;}
-/* Fix 88: .phil-showcase-el paso de <video> a <img> (Carlos pidio quitar el
-   mini video Ken Burns) -- la regla prefers-reduced-motion de abajo era para
-   pausar/ocultar un video autoplay, ya no aplica a una foto estatica. */
-@media(max-width:760px){ .phil-showcase{width:380px; max-width:90%;} }
+/* Fix 104: se quito el bloque HTML .phil-showcase (imagen + <h2> de esta
+   columna, ver seccion #filosofia) -- las reglas .phil-showcase/.phil-showcase-el
+   quedaron sin ningun elemento que las use y se retiran aqui para no dejar
+   CSS muerto. La columna izquierda de .phil-grid ahora solo tiene el eyebrow. */
 
 /* .zoom-section reduce su padding-top respecto al "section{padding:92px 0}"
    generico: al ser una página aislada (ver comentario de abajo), esos 92px
@@ -533,6 +532,10 @@ body.viewing-product-page .home-only{display:none;}
 .cart-shipto-label{font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:10.5px; color:var(--grey); margin-bottom:4px;}
 .cart-shipto-value{font-size:13px; color:var(--ink); line-height:1.4; margin-bottom:6px;}
 .cart-shipto-change{background:none; border:none; padding:0; font-size:11.5px; color:var(--navy); text-decoration:underline; cursor:pointer;}
+/* Fix 104 (Carlos: "para que el boton proceder al pago este habilitado debe
+   primero tener una direccion de envio, es mandatorio, pidelo") -- ver
+   updateCheckoutGating() en el JS. */
+.cart-address-warning{color:#B3261E; font-size:12px; text-align:center; margin-bottom:8px; line-height:1.4;}
 .account-logout-link{background:none; border:none; padding:0; font-size:11.5px; color:#B23A3A; text-decoration:underline; cursor:pointer; white-space:nowrap; flex-shrink:0;}
 
 .newsletter{background:var(--beige); text-align:center;}
@@ -640,6 +643,9 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .search-submit-btn{flex-shrink:0; width:40px; height:40px; border-radius:50%; border:none; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s ease;}
 .search-submit-btn:hover{background:var(--gold);}
 .search-feedback{margin-top:16px; font-size:12.5px; color:var(--grey); min-height:16px; line-height:1.5;}
+.search-quicklinks{display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;}
+.search-quicklinks button{flex:1; min-width:140px; background:none; border:1px solid var(--line); border-radius:30px; padding:10px 16px; font-size:12px; color:var(--ink); cursor:pointer; transition:border-color .15s;}
+.search-quicklinks button:hover{border-color:var(--navy); color:var(--navy);}
 .beauty-choice-options{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;}
 .beauty-choice-card{border:1px solid var(--line); border-radius:6px; padding:22px 18px; cursor:pointer; text-align:left; transition:box-shadow .2s, border-color .2s; background:#fff;}
 .beauty-choice-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08); border-color:var(--nacar);}
@@ -1026,7 +1032,11 @@ var AZURA_CONFIG = {
       <div class="nav-dropdown" id="navBeautyDropdown">
         <a class="nav-dropdown-trigger" data-v="nacar" onclick="toggleBeautyDropdown(event)"><span data-i18n="nav.nacar">Belleza</span> <span class="caret">&#9660;</span></a>
         <div class="nav-dropdown-menu">
-          <a onclick="openBeautyCategory(['NACAR-09'], 'nav.beauty.sunscreen'); closeNav();" data-i18n="nav.beauty.sunscreen">Descubre tu rutina</a>
+          <!-- Fix 104 (Carlos: "en el menu principal quita el menu Descubre
+               tu rutina"): se quita el link de nav -- la i18n key
+               nav.beauty.sunscreen NO se borra porque sigue en uso como
+               labelKey de categoria (ver openBeautyCategory/openProductDetail
+               desde busqueda y openFavoritesCategory, linea ~5141). -->
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
           <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.system.luminous">Speciality Luminous</a>
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">Speciality Health</a>
@@ -1039,7 +1049,7 @@ var AZURA_CONFIG = {
           <a onclick="openFavoritesCategory(); closeNav();" data-i18n="nav.beauty.favorites">Favoritos de Renuévate</a>
         </div>
       </div>
-      <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skin Care</a>
+      <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skincare</a>
       <a onclick="openBeautyCategory(['NACAR-11','NACAR-12','NACAR-13'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
       <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
       <!-- Fix 69: buscador -- reemplaza al viejo icono de lupa del header
@@ -1108,11 +1118,19 @@ var AZURA_CONFIG = {
 <section id="verticales" class="home-only">
   <div class="container">
     <div class="section-head reveal-stagger">
-      <h2 data-i18n="vert.h2">Lo mejor para ti</h2>
-      <p data-i18n="vert.p">Cada ingrediente resuelve una necesidad específica, compartiendo la misma esencia y convicción.</p>
+      <!-- Fix 104 (Carlos: quitar el parrafo de abajo, poner el h2 entre
+           comillas dobles literales y con una fuente similar a la del
+           logotipo Renuevate -- ver .vert-h2-quote, mismo font-family que
+           .logo (Bodoni Moda/Playfair Display), solo homologado a esta
+           seccion, sin mayusculas ni tracking del logo). -->
+      <h2 class="vert-h2-quote" data-i18n="vert.h2">"Lo mejor para ti"</h2>
     </div>
     <div class="brand-map reveal">
-      <div class="bm-holding">RENUÉVATE</div>
+      <!-- Fix 104 (Carlos, imagen con tache): antes decia "RENUEVATE" -- se
+           cambia a "SYSTEMS" para no repetir el nombre de marca (ya esta en
+           el logo del header) y en su lugar anclar el concepto de "sistemas"
+           que titula esta seccion (System Luminous/Health/Spot abajo). -->
+      <div class="bm-holding">SYSTEMS</div>
       <div class="bm-line"></div>
       <div class="bm-verticals">
         <span class="bm-nacar" id="bmNacar">Luminous &middot; Speciality</span>
@@ -1164,18 +1182,19 @@ var AZURA_CONFIG = {
 <section class="philosophy home-only" id="filosofia">
   <div class="container phil-grid">
     <div class="reveal-stagger">
+      <!-- Fix 104 (Carlos: "quita esto Pensamos en tu bienestar. Cultivamos
+           habitos" + "quita la imagen que tienes inmediatamente abajo"):
+           se quitan el <h2> phil.h2 (dead key removido, ver I18N ES/EN/FR) y
+           el bloque .phil-showcase completo. La foto que vivia ahi
+           (media/seytu-filosofia-main.webp, la aplicacion del Protector
+           Solar Facial FPS 50+) NO se borra del sitio -- se reutiliza como
+           imagen de galeria en la ficha de detalle de NACAR-09 (ver
+           V.nacar.<lang>.products, gallery, mismo Fix). Columna izquierda
+           de .phil-grid queda solo con el eyebrow, centrado verticalmente
+           junto a la foto grande de la derecha (.phil-grid usa
+           align-items:center) -- si Carlos prefiere que esta columna no
+           quede tan vacia, avisar para agregar contenido nuevo aqui. -->
       <div class="eyebrow" data-i18n="phil.eyebrow">Nuestra filosofía</div>
-      <h2 data-i18n-html="phil.h2">Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.</h2>
-      <!-- Fix 56: se quito el bloque de 3 pilares de texto (Transparencia /
-           Habitos / Un solo estandar) por instruccion directa de Carlos --
-           en su lugar iba un mini video Ken Burns (2 fotos de campana SEYTU
-           via ffmpeg). Fix 88: Carlos pidio quitar ese mini video y poner
-           en su lugar la foto "main image" (mujer aplicandose el Protector
-           Solar Facial FPS 50+) -- misma caja/tamano (.phil-showcase), solo
-           cambia el contenido de <video> a <img>. -->
-      <div class="phil-showcase reveal">
-        <img class="phil-showcase-el" src="media/seytu-filosofia-main.webp" alt="Aplicación de Protector Solar Facial FPS 50+ SEYTÚ" loading="lazy">
-      </div>
     </div>
     <!-- Fix 88: Carlos pidio revertir parcialmente Fix 87 -- la caja de la
          derecha vuelve a llevar una foto maximizada (.phil-visual, ahora con
@@ -1190,7 +1209,7 @@ var AZURA_CONFIG = {
       <div class="phil-visual">
         <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ" loading="lazy">
       </div>
-      <p class="phil-statement" data-i18n-html="phil.statement">No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidar</span>.</p>
+      <p class="phil-statement" data-i18n-html="phil.statement">No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidarla</span>.</p>
     </div>
     <!-- Fix 72: la cita se saca de .phil-visual y baja de tamano a la mitad
          (25px -> 12.5px), por instruccion de Carlos. Es 3er hijo directo de
@@ -1477,6 +1496,15 @@ var AZURA_CONFIG = {
       </button>
     </form>
     <p class="search-feedback" id="searchFeedback"></p>
+    <!-- Fix 104 (Carlos: "al abrir Ver mas agrega...la opcion de ver todo
+         el catalogo" + "debe darnos la opcion de Diagnostico personalizado"):
+         2 accesos directos debajo del buscador -- no requieren escribir nada,
+         van directo a openBeautyCatalog()/openBeautyQuiz() (mismos flujos
+         que ya existen desde el modal beautyChoiceOverlay). -->
+    <div class="search-quicklinks">
+      <button type="button" onclick="closeSearchModal(); openBeautyCatalog();" data-i18n="search.viewAllCatalog">Ver todo el catálogo</button>
+      <button type="button" onclick="closeSearchModal(); openBeautyQuiz();" data-i18n="search.personalDiagnosis">Diagnóstico personalizado</button>
+    </div>
   </div>
 </div>
 
@@ -1499,7 +1527,7 @@ var AZURA_CONFIG = {
     <div class="cs-icon">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c4 3 7 6 7 10a7 7 0 0 1-14 0c0-4 3-7 7-10Z"/></svg>
     </div>
-    <span class="eyebrow" id="beautyChoiceEyebrow">Speciality Luminous</span>
+    <span class="eyebrow" id="beautyChoiceEyebrow"></span>
     <h3 id="beautyChoiceTitle">&iquest;Como quieres descubrir tu belleza?</h3>
     <p class="pm-subtitle" id="beautyChoiceSubtitle">Elige explorar el catalogo completo o responde 4 preguntas rápidas para una preseleccion hecha para ti.</p>
     <div class="beauty-choice-options">
@@ -1613,6 +1641,7 @@ var AZURA_CONFIG = {
       <button type="button" class="cart-shipto-change" onclick="onAccountIconClick()" data-i18n="cart.shipToChange">Cambiar / agregar dirección</button>
     </div>
     <div class="cart-subtotal"><span data-i18n="cart.subtotal">Subtotal</span><span id="cartSubtotalValue">$0 MXN</span></div>
+    <div class="cart-address-warning" id="cartAddressWarning" style="display:none;" data-i18n="cart.addressRequired">Agrega una dirección de envío para continuar con tu pedido.</div>
     <button class="btn btn-dark" id="cartCheckoutBtn" style="width:100%; justify-content:center; display:none;" onclick="startCheckout()" data-i18n="cart.checkout">Proceder al pago</button>
     <div class="cart-checkout-error" id="cartCheckoutError" style="display:none; color:#B3261E; font-size:12px; text-align:center; margin-top:8px;"></div>
     <div class="cart-checkout-note" id="cartCheckoutNote" style="display:none;" data-i18n="cart.checkoutNote">Pago seguro con Mercado Pago. Nunca almacenamos el número de tu tarjeta.</div>
@@ -1735,7 +1764,7 @@ var V = {
     es:{ full:"System Time Specialist", sub:"",
       bannerTitle:"System Luminous Speciality: luminosidad",
       bannerText:"Una rutina facial y capilar de tres pasos para una piel con brillo saludable, sin ingredientes agresivos.",
-      tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"Speciality Luminous",
+      tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"System Time Specialist",
       stats:["94%","14 días","+87%"],
       products:[
         {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Limpiadora Facial", desc:"Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.", price:"$370 MXN", favorito:true,
@@ -1760,7 +1789,7 @@ var V = {
           longDesc:["89% Ingredientes de origen natural","Toque Seco","Para toda la familia","Clínica y dermatológicamente probado","FPS 50+","Amigable con el océano","Respetuoso de la ley hawaiana de protección a los corales"],
           usage:"Recomendación de Uso: Aplicar de manera uniforme sobre la piel seca antes de la exposición solar. Reaplicar cada 3 horas y después de transpirar, nadar o secarte con toalla.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
-          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp"],
+          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp","media/seytu-filosofia-main.webp"],
           related:["NACAR-07"]},
         {sku:"NACAR-10", tag:"Suero facial", name:"Suero Facial de Hidratación Profunda con Aloe Vera", desc:"El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.", price:"$430 MXN", favorito:true,
           longDesc:"Ideal para ayudar a mejorar la apariencia de las finas líneas de expresión causadas por la resequedad. Textura suave y ligera de fácil absorción.",
@@ -1811,7 +1840,7 @@ var V = {
     en:{ full:"System Time Specialist", sub:"",
       bannerTitle:"The System Luminous Speciality radiance",
       bannerText:"A three-step facial and hair routine for healthy-looking radiance, with no harsh ingredients.",
-      tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"Speciality Luminous",
+      tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"System Time Specialist",
       stats:["94%","14 days","+87%"],
       products:[
         {sku:"NACAR-06", tag:"Facial cleanser", name:"Facial Cleansing Foam", desc:"With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.", price:"$370 MXN", favorito:true,
@@ -1836,7 +1865,7 @@ var V = {
           longDesc:["89% naturally-derived ingredients","Dry touch","For the whole family","Clinically and dermatologically tested","SPF 50+","Reef-friendly","Compliant with Hawaii's coral-protection law"],
           usage:"Recommended Use: Apply evenly to dry skin before sun exposure. Reapply every 3 hours and after sweating, swimming or towel-drying.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
-          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp"],
+          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp","media/seytu-filosofia-main.webp"],
           related:["NACAR-07"]},
         {sku:"NACAR-10", tag:"Facial serum", name:"Aloe Vera Deep Moisturizing Facial Serum", desc:"SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", price:"$430 MXN", favorito:true,
           longDesc:"Ideal to help improve the appearance of fine expression lines caused by dryness. Soft, lightweight texture that absorbs easily.",
@@ -1887,7 +1916,7 @@ var V = {
     fr:{ full:"System Time Specialist", sub:"",
       bannerTitle:"Le System Luminous Speciality de luminosité",
       bannerText:"Une routine visage et cheveux en trois étapes pour un éclat sain, sans ingrédients agressifs.",
-      tag:"Beauté féminine", msg:"Une luminosité qui prend soin d'elle-même.", bmLabel:"Speciality Luminous",
+      tag:"Beauté féminine", msg:"Une luminosité qui prend soin d'elle-même.", bmLabel:"System Time Specialist",
       stats:["94%","14 jours","+87%"],
       products:[
         {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Nettoyante Faciale", desc:"Avec certains ingrédients naturels, la formule de la mousse nettoyante faciale SEYTU est idéale pour un nettoyage en profondeur.", price:"$370 MXN", favorito:true,
@@ -1912,7 +1941,7 @@ var V = {
           longDesc:["89% d'ingrédients d'origine naturelle","Toucher sec","Pour toute la famille","Testée cliniquement et dermatologiquement","FPS 50+","Respectueuse des récifs coralliens","Conforme à la loi hawaïenne de protection des coraux"],
           usage:"Recommandation d'utilisation : Appliquer uniformément sur peau sèche avant l'exposition au soleil. Reappliquer toutes les 3 heures et après la transpiration, la baignade ou le séchage a la serviette.",
           ingredients:["Aqua (Water)","Dicaprylyl Carbonate","Hydrogenated Ethylhexyl Olivate","Titanium Dioxide","Zinc Oxide (Nano)","Butyloctyl Salicylate","Hydrogenated Farnesene","Beeswax","Caprylyl Methicone","Glycerin","Silica","Aluminum Starch Octenylsuccinate","Polyhydroxystearic Acid","Sodium Chloride","Polysilicone-11","Sodium Stearoyl Lactylate","Benzotriazolyl Dodecyl P-Cresol","Cetyl PEG/PPG-10/1 Dimethicone","Caprylic/Capric Triglyceride","Stearic Acid","Hydrogenated Olive Oil Unsaponifiables","Dimethicone/Vinyl Dimethicone Crosspolymer","Simmondsia Chinensis (Jojoba) Seed Oil","Glyceryl Caprylate","Glyceryl Undecylenate","Helianthus Annuus (Sunflower) Seed Oil","Aluminum Hydroxide","Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate","Laureth-12","Laminaria Ochroleuca Extract","Tocopherol","Bisabolol","Triethoxycaprylylsilane","Benzyl Alcohol"],
-          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp"],
+          img:"media/nacar-09-protector-front.webp", thumb:"media/nacar-09-protector-thumb.webp", gallery:["media/nacar-09-protector-piedra.webp","media/nacar-09-protector-mano.webp","media/seytu-filosofia-main.webp"],
           related:["NACAR-07"]},
         {sku:"NACAR-10", tag:"Serum facial", name:"Serum Facial Hydratant Profond a l'Aloe Vera", desc:"Le Serum Facial Hydratant Profond a l'Aloe Vera SEYTU hydrate en profondeur et aide a améliorer la fermeté et l'élasticité de votre peau.", price:"$430 MXN", favorito:true,
           longDesc:"Idéal pour aider a améliorer l'apparence des fines lignes d'expression causées par la secheresse. Texture douce et légère, absorption facile.",
@@ -2053,22 +2082,22 @@ var I18N = {
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
     "top.shipping":"Envío calculado en checkout . Entrega en 4 días hábiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
+    "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
     "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
     "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.subtitle":"Encuentra un producto, categoría o sistema completo", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su ficha...", "search.foundCategory":"Mostrando productos de {name}...", "category.empty":"Proximamente nuevos productos en esta categoría.",
+    "search.viewAllCatalog":"Ver todo el catálogo", "search.personalDiagnosis":"Diagnóstico personalizado",
     "account.title":"Tu cuenta Renuévate", "account.p":"Inicia sesión para guardar tus productos favoritos y tu historial de pedidos.",
     "cart.title":"Tu carrito", "cart.empty":"Tu carrito esta vacio por ahora.", "cart.cta":"Explorar catálogo",
-    "vert.h2":"Lo mejor para ti",
-    "vert.p":"Cada ingrediente resuelve una necesidad específica, compartiendo la misma esencia y convicción.",
+    "vert.h2":"“Lo mejor para ti”",
     "vert.cta":"Descubrir &#8594;",
-    "phil.eyebrow":"Nuestra filosofía", "phil.h2":'Pensamos en tu bienestar. Cultivamos <span class="accent">hábitos</span>.',
+    "phil.eyebrow":"Nuestra filosofía",
     "phil.quote":'&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;',
-    "phil.statement":'No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidar</span>.',
+    "phil.statement":'No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidarla</span>.',
     "zoom.eyebrow":"Nuestro sistema", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
-    "catalog.eyebrow":"", "catalog.title":"Catálogo Belleza", "catalog.subtitle":"",
+    "catalog.eyebrow":"", "catalog.title":"Catálogo", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"Ver catálogo completo &#8594;",
     "zoom.backHome":"&#8592; Volver a inicio",
     "comingSoon.eyebrow":"Contenido en preparación", "comingSoon.title":"Estamos afinando este contenido", "comingSoon.body":"Esta sección de Renuévate no tiene ningún error: seguimos puliendo el detalle completo de este sistema para mostrártelo como se merece. Vuelve pronto.", "comingSoon.cta":"Entendido",
@@ -2127,6 +2156,7 @@ var I18N = {
     "chat.a.fallback":"No tengo esa respuesta. Prueba con envíos, pagos, devoluciones, o habla con un asesor.",
     "cart.title":"Tu carrito", "cart.subtotal":"Subtotal", "cart.checkout":"Proceder al pago",
     "cart.checkoutNote":"Pago seguro con Mercado Pago. Nunca almacenamos el número de tu tarjeta.",
+    "cart.addressRequired":"Agrega una dirección de envío para continuar con tu pedido.",
     "cart.shipToLabel":"Enviar a", "cart.shipToChange":"Cambiar / agregar dirección",
     "account.title":"Mi cuenta", "account.subtitle":"Inicia sesión para administrar tus direcciones de envío.",
     "account.closeLabel":"Cerrar",
@@ -2167,22 +2197,22 @@ var I18N = {
     "promo.shipping":"FREE shipping on orders over $1,800 MXN", "promo.cta":"Shop now",
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy", "nav.search":"See more",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
+    "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
     "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
     "hero.cta1":"See more", "hero.cta2":"Our philosophy",
     "hero.visualCaption":"Four wellness systems, one single standard of origin and quality.",
     "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.subtitle":"Find a product, category or full system", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its page...", "search.foundCategory":"Showing {name} products...", "category.empty":"New products coming soon in this category.",
+    "search.viewAllCatalog":"View full catalog", "search.personalDiagnosis":"Personalized diagnosis",
     "account.title":"Your Renuévate account", "account.p":"Sign in to save your favorite products and your order history.",
     "cart.title":"Your cart", "cart.empty":"Your cart is empty for now.", "cart.cta":"Explore the catalog",
-    "vert.h2":"The best for you",
-    "vert.p":"Each ingredient solves a specific need, sharing the same essence and conviction: taking care of yourself is an investment in you.",
+    "vert.h2":"“The best for you”",
     "vert.cta":"Discover &#8594;",
-    "phil.eyebrow":"Our philosophy", "phil.h2":'We think about your wellbeing. We sustain <span class="accent">habits</span>.',
+    "phil.eyebrow":"Our philosophy",
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: <span class=\"accent\">wellness</span> first.&rdquo;",
     "phil.statement":"It's not about how your skin looks, but about what you choose to <span class=\"accent\">care for</span>.",
     "zoom.eyebrow":"Our system", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
-    "catalog.eyebrow":"", "catalog.title":"Beauty Catalog", "catalog.subtitle":"",
+    "catalog.eyebrow":"", "catalog.title":"Catalog", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"View full catalog &#8594;",
     "zoom.backHome":"&#8592; Back to home",
     "comingSoon.eyebrow":"Content coming soon", "comingSoon.title":"We're polishing this content", "comingSoon.body":"There's nothing wrong with this Renuévate section: we're still refining the full detail of this system so we can show it to you properly. Check back soon.", "comingSoon.cta":"Got it",
@@ -2241,6 +2271,7 @@ var I18N = {
     "chat.a.fallback":"I don't have that answer. Try shipping, payment, returns, or talk to an advisor.",
     "cart.title":"Your cart", "cart.subtotal":"Subtotal", "cart.checkout":"Proceed to checkout",
     "cart.checkoutNote":"Secure payment with Mercado Pago. We never store your card number.",
+    "cart.addressRequired":"Add a shipping address to continue with your order.",
     "cart.shipToLabel":"Ship to", "cart.shipToChange":"Change / add address",
     "account.title":"My account", "account.subtitle":"Sign in to manage your shipping addresses.",
     "account.closeLabel":"Close",
@@ -2281,22 +2312,22 @@ var I18N = {
     "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre réel, a chaque étape de votre vie",
     "nav.nacar":"Beauté", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
-    "nav.beauty.cleanser":"Skin Care", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
+    "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
     "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
     "hero.visualCaption":"Quatre systèmes de bien-etre, un seul standard d'origine et de qualite.",
     "search.placeholder":"Recherchez un produit ou un système...", "search.btn":"Rechercher", "search.subtitle":"Trouvez un produit, une categorie ou un systeme complet", "search.notfound":"Aucun résultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture de sa fiche...", "search.foundCategory":"Affichage des produits de {name}...", "category.empty":"Nouveaux produits bientot disponibles dans cette categorie.",
+    "search.viewAllCatalog":"Voir tout le catalogue", "search.personalDiagnosis":"Diagnostic personnalise",
     "account.title":"Votre compte Renuévate", "account.p":"Connectez-vous pour enregistrer vos produits favoris et votre historique de commandes.",
     "cart.title":"Votre panier", "cart.empty":"Votre panier est vide pour le moment.", "cart.cta":"Explorer le catalogue",
-    "vert.h2":"Le meilleur pour vous",
-    "vert.p":"Chaque ingredient repond a un besoin précis, partageant la même essence et la même conviction : prendre soin de soi, c'est investir en soi.",
+    "vert.h2":"“Le meilleur pour vous”",
     "vert.cta":"Decouvrir &#8594;",
-    "phil.eyebrow":"Notre philosophie", "phil.h2":'Nous pensons a votre bien-etre. Nous soutenons des <span class="accent">habitudes</span>.',
+    "phil.eyebrow":"Notre philosophie",
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le <span class=\"accent\">bien-etre</span> d'abord.&rdquo;",
     "phil.statement":"Il ne s'agit pas de l'apparence de votre peau, mais de ce que vous choisissez de <span class=\"accent\">prendre soin</span>.",
     "zoom.eyebrow":"Notre système", "zoom.featured":"Système phare", "zoom.knowRitual":"Decouvrir le système",
-    "catalog.eyebrow":"", "catalog.title":"Catalogue Beauté", "catalog.subtitle":"",
+    "catalog.eyebrow":"", "catalog.title":"Catalogue", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"Voir le catalogue complet &#8594;",
     "zoom.backHome":"&#8592; Retour à l'accueil",
     "comingSoon.eyebrow":"Contenu en preparation", "comingSoon.title":"Nous peaufinons ce contenu", "comingSoon.body":"Cette section de Renuévate ne comporte aucune erreur : nous continuons a peaufiner le detail complet de ce système pour vous le presenter comme il se doit. Revenez bientot.", "comingSoon.cta":"Compris",
@@ -2355,6 +2386,7 @@ var I18N = {
     "chat.a.fallback":"Je n'ai pas cette réponse. Essayez livraison, paiement, retours, ou un conseiller.",
     "cart.title":"Votre panier", "cart.subtotal":"Sous-total", "cart.checkout":"Passer au paiement",
     "cart.checkoutNote":"Paiement sécurisé avec Mercado Pago. Nous ne stockons jamais le número de votre carte.",
+    "cart.addressRequired":"Ajoutez une adresse de livraison pour continuer votre commande.",
     "cart.shipToLabel":"Expedier a", "cart.shipToChange":"Changer / ajouter une adresse",
     "account.title":"Mon compte", "account.subtitle":"Connectez-vous pour gerer vos adresses de livraison.",
     "account.closeLabel":"Fermer",
@@ -2427,6 +2459,7 @@ var DYN = {
        removeItem:function(){ return 'Quitar'; },
        checkoutRedirecting:function(){ return 'Redirigiendo a pago seguro...'; },
        checkoutError:function(){ return 'No pudimos iniciar el pago. Intenta de nuevo.'; },
+       checkoutAddressRequired:function(){ return 'Agrega una dirección de envío para continuar.'; },
        bagUpsellTitle:function(){ return 'Guarda tus productos en una bolsa Renuévate'; },
        bagAddLabel:function(){ return '+ Agregar'; },
        loginRequired:function(){ return 'Inicia sesión con Google o Facebook para agregar productos al carrito, guardar tu dirección de envío o dejar una resena.'; },
@@ -2509,7 +2542,10 @@ var DYN = {
        },
        beautyQuiz:{
          choice:{
-           eyebrow:'Speciality Luminous',
+           // Fix 104 (Carlos: "quita Speciality Luminous del menu de
+           // Diagnostico personalizado"): eyebrow vacio a proposito, ver
+           // beautyChoiceEyebrow en openBeautyChoice().
+           eyebrow:'',
            title:'¿Como quieres descubrir tu belleza?',
            subtitle:'Elige explorar el catalogo completo o responde 4 preguntas rápidas para una preseleccion hecha para ti.',
            catalogTitle:'Ver catalogo completo',
@@ -2589,6 +2625,7 @@ var DYN = {
        removeItem:function(){ return 'Remove'; },
        checkoutRedirecting:function(){ return 'Redirecting to secure payment...'; },
        checkoutError:function(){ return "We couldn't start the payment. Please try again."; },
+       checkoutAddressRequired:function(){ return 'Add a shipping address to continue.'; },
        bagUpsellTitle:function(){ return 'Store your products in a Renuévate bag'; },
        bagAddLabel:function(){ return '+ Add'; },
        loginRequired:function(){ return 'Sign in with Google or Facebook to add products to your cart, save a shipping address, or leave a review.'; },
@@ -2671,7 +2708,10 @@ var DYN = {
        },
        beautyQuiz:{
          choice:{
-           eyebrow:'Speciality Luminous',
+           // Fix 104 (Carlos: "quita Speciality Luminous del menu de
+           // Diagnostico personalizado"): eyebrow vacio a proposito, ver
+           // beautyChoiceEyebrow en openBeautyChoice().
+           eyebrow:'',
            title:'How do you want to discover your beauty routine?',
            subtitle:'Browse the full catalog, or answer 4 quick questions and get a picked-for-you preselection.',
            catalogTitle:'View full catalog',
@@ -2751,6 +2791,7 @@ var DYN = {
        removeItem:function(){ return 'Retirer'; },
        checkoutRedirecting:function(){ return 'Redirection vers le paiement sécurisé...'; },
        checkoutError:function(){ return "Nous n'avons pas pu demarrer le paiement. Reessayez."; },
+       checkoutAddressRequired:function(){ return 'Ajoutez une adresse de livraison pour continuer.'; },
        bagUpsellTitle:function(){ return 'Rangez vos produits dans un sac Renuévate'; },
        bagAddLabel:function(){ return '+ Ajouter'; },
        loginRequired:function(){ return 'Connectez-vous avec Google ou Facebook pour ajouter des produits au panier, enregistrer une adresse de livraison ou laisser un avis.'; },
@@ -2833,7 +2874,10 @@ var DYN = {
        },
        beautyQuiz:{
          choice:{
-           eyebrow:'Speciality Luminous',
+           // Fix 104 (Carlos: "quita Speciality Luminous del menu de
+           // Diagnostico personalizado"): eyebrow vacio a proposito, ver
+           // beautyChoiceEyebrow en openBeautyChoice().
+           eyebrow:'',
            title:'Comment souhaitez-vous decouvrir votre beauté?',
            subtitle:'Explorez le catalogue complet, ou repondez a 4 questions rapides pour une présélection faite pour vous.',
            catalogTitle:'Voir le catalogue complet',
@@ -3555,8 +3599,16 @@ function refreshCart(){
 // preparacion" que ya usa el resto del sitio, en vez de fallar en silencio.
 function startCheckout(){
   if (!CURRENT_CUSTOMER.id){ requireLogin(); return; }
-  var btn = document.getElementById('cartCheckoutBtn');
   var errEl = document.getElementById('cartCheckoutError');
+  // Fix 104: guarda defensiva -- el boton ya llega disabled desde
+  // updateCheckoutGating() si falta direccion, pero se valida aqui tambien
+  // por si algo dispara startCheckout() sin pasar por ese boton.
+  if (!CART_HAS_ADDRESS){
+    errEl.textContent = DYN[currentLang].checkoutAddressRequired ? DYN[currentLang].checkoutAddressRequired() : 'Agrega una dirección de envío para continuar.';
+    errEl.style.display = 'block';
+    return;
+  }
+  var btn = document.getElementById('cartCheckoutBtn');
   errEl.style.display = 'none';
   btn.disabled = true;
   var originalLabel = btn.textContent;
@@ -3600,6 +3652,37 @@ function startCheckout(){
 // vieja/incorrecta tras varios clicks rapidos. Se ignora un nuevo click sobre
 // la MISMA linea (sku+tono) mientras la llamada anterior sigue en vuelo;
 // otras lineas del carrito no se bloquean entre si.
+// Fix 104: gating de "Proceder al pago" contra 2 condiciones independientes
+// (carrito con items pagables + al menos 1 direccion guardada) que se
+// resuelven en momentos distintos del ciclo de vida (renderCartPanel llega
+// por fetch del carrito, updateCartShipTo llega por fetch de /api/addresses)
+// -- ver updateCheckoutGating(), llamada desde ambos lugares.
+var LAST_CART_HAS_PAYABLE_ITEMS = false;
+var CART_HAS_ADDRESS = false;
+function updateCheckoutGating(){
+  var checkoutBtnEl = document.getElementById('cartCheckoutBtn');
+  var checkoutNoteEl = document.getElementById('cartCheckoutNote');
+  var addrWarnEl = document.getElementById('cartAddressWarning');
+  if (!checkoutBtnEl) return;
+  if (!LAST_CART_HAS_PAYABLE_ITEMS){
+    checkoutBtnEl.style.display = 'none';
+    checkoutBtnEl.disabled = false;
+    if (checkoutNoteEl) checkoutNoteEl.style.display = 'none';
+    if (addrWarnEl) addrWarnEl.style.display = 'none';
+    return;
+  }
+  // Solo se exige direccion si ya hay sesion iniciada -- un invitado sin
+  // cuenta ve el boton normal y, al dar clic, startCheckout() lo manda
+  // primero a requireLogin() (comportamiento previo, sin cambios). Pedirle
+  // una direccion ANTES de que inicie sesion no tendria donde guardarse.
+  var mustHaveAddress = Boolean(CURRENT_CUSTOMER.id);
+  var blockedByAddress = mustHaveAddress && !CART_HAS_ADDRESS;
+  checkoutBtnEl.style.display = '';
+  checkoutBtnEl.disabled = blockedByAddress;
+  if (checkoutNoteEl) checkoutNoteEl.style.display = blockedByAddress ? 'none' : '';
+  if (addrWarnEl) addrWarnEl.style.display = blockedByAddress ? 'block' : 'none';
+}
+
 var CART_QTY_BUSY = {};
 function changeCartQty(sku, newQty, shade){
   if (!CURRENT_CUSTOMER.id){ guestChangeQty(sku, newQty, shade); renderCartPanel(hydrateGuestCart()); return; }
@@ -3696,11 +3779,8 @@ function renderCartPanel(cart){
   // Ahora solo se muestran si hay al menos 1 producto comprable en el
   // carrito -- items guardados para despues (saved_items) no cuentan, ya
   // que no forman parte del pedido a pagar.
-  var hasPayableItems = items.length > 0;
-  var checkoutBtnEl = document.getElementById('cartCheckoutBtn');
-  var checkoutNoteEl = document.getElementById('cartCheckoutNote');
-  if (checkoutBtnEl) checkoutBtnEl.style.display = hasPayableItems ? '' : 'none';
-  if (checkoutNoteEl) checkoutNoteEl.style.display = hasPayableItems ? '' : 'none';
+  LAST_CART_HAS_PAYABLE_ITEMS = items.length > 0;
+  updateCheckoutGating();
   renderBagUpsell(cart);
 }
 
@@ -4173,15 +4253,19 @@ function updateCartShipTo(list){
   var wrap = document.getElementById('cartShipTo');
   var el = document.getElementById('cartShipToValue');
   if (!wrap || !el) return;
-  if (!CURRENT_CUSTOMER.id){ wrap.style.display = 'none'; return; }
+  if (!CURRENT_CUSTOMER.id){ wrap.style.display = 'none'; CART_HAS_ADDRESS = false; updateCheckoutGating(); return; }
   wrap.style.display = 'block';
   if (!list || !list.length){
     el.textContent = DYN[currentLang].shipToNone();
+    CART_HAS_ADDRESS = false;
+    updateCheckoutGating();
     return;
   }
   var def = list[0];
   for (var i=0;i<list.length;i++){ if (list[i].is_default){ def = list[i]; break; } }
   el.textContent = (def.label ? (def.label + ' — ') : '') + formatAddressSummary(def);
+  CART_HAS_ADDRESS = true;
+  updateCheckoutGating();
 }
 
 function loadAddresses(){
