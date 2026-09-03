@@ -2584,7 +2584,8 @@ var DYN = {
          medicalGuard:function(){ return 'Gracias por contarme. Por tu seguridad, en temas de embarazo, lactancia, alergias o medicamentos no hago recomendaciones — te conecto con un asesor humano; te sugiero también consultar a tu profesional de salud.'; },
          complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu número de pedido por WhatsApp.'; },
          certUnknown:function(){ return 'Para darte información 100% correcta sobre esa certificacion, te conecto con un asesor humano que te la valida directamente.'; },
-         frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; }
+         frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; },
+         locationGuard:function(){ return 'Gracias por decirme dónde vives. Por ahora solo hacemos envíos dentro de México (entrega en 4 días hábiles); si estás fuera del país no podríamos enviarte todavía. Si quieres, te conecto con un asesor humano para ver opciones.'; }
        },
        beautyQuiz:{
          choice:{
@@ -2751,7 +2752,8 @@ var DYN = {
          medicalGuard:function(){ return "Thanks for sharing. For your safety, I don't make recommendations around pregnancy, breastfeeding, allergies or medication — connecting you with a human advisor; also worth checking with your healthcare professional."; },
          complaintGuard:function(){ return "I'm sorry for the inconvenience. Connecting you now with a human advisor as a priority — please share your order number on WhatsApp."; },
          certUnknown:function(){ return "To give you fully accurate information on that certification, I'll connect you with a human advisor who can verify it directly."; },
-         frustrationGuard:function(){ return "I'm really sorry about the bad experience. Connecting you right away with a human advisor as a priority."; }
+         frustrationGuard:function(){ return "I'm really sorry about the bad experience. Connecting you right away with a human advisor as a priority."; },
+         locationGuard:function(){ return "Thanks for letting me know where you're based. Right now we only ship within Mexico (delivery in 4 business days); if you're outside the country we can't ship to you yet. I can connect you with a human advisor if you'd like to check options."; }
        },
        beautyQuiz:{
          choice:{
@@ -2918,7 +2920,8 @@ var DYN = {
          medicalGuard:function(){ return "Merci de me le dire. Pour votre sécurité, je ne fais pas de recommandation en cas de grossesse, allaitement, allergies ou medicaments — je vous mets en relation avec un conseiller humain ; pensez aussi a consulter votre professionnel de sante."; },
          complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre número de commande sur WhatsApp."; },
          certUnknown:function(){ return "Pour vous donner une information totalement exacte sur cette certification, je vous mets en relation avec un conseiller humain qui la verifiera directement."; },
-         frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; }
+         frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; },
+         locationGuard:function(){ return "Merci de me dire ou vous habitez. Pour le moment, nous livrons uniquement au Mexique (livraison en 4 jours ouvres) ; si vous etes hors du pays, nous ne pouvons pas encore vous livrer. Je peux vous mettre en relation avec un conseiller humain si vous voulez voir les options."; }
        },
        beautyQuiz:{
          choice:{
@@ -5767,6 +5770,16 @@ var CHAT_ANSWER_KEYMAP = {greeting:'chat.a.greeting', identity:'chat.a.identity'
 var MEDICAL_TRIGGERS = ['embarazo','embarazada','lactancia','lactando','alergia','alergico','alergica','medicamento','medicacion','receta médica','diabetes','presion alta','enfermedad','tratamiento médico','pregnant','pregnancy','breastfeeding','allergic','allergy','medication','prescription','enceinte','allaitement','allergique','medicament','grossesse'];
 var COMPLAINT_TRIGGERS = ['queja','reclamo','no llego','no ha llegado','pedido dañado','pedido danado','cobro duplicado','cobro doble','mal servicio','problema con mi pedido','no funciona','defectuoso','complaint','order problem','didn\'t arrive','damaged','double charge','plainte','probleme avec ma commande','n\'est pas arrive','endommage'];
 var CERT_TRIGGERS = ['vegano','vegana','vegan','sin gluten','gluten free','cruelty free','crueltyfree','sin crueldad','organico certificado','certificacion organica','organic certified','certification bio','vegetalien'];
+/* Fix 110 (Carlos, ejemplo real: escribio "vivo en londres" y el bot cayo en
+   el fallback generico): frases donde el visitante dice DONDE vive/esta, sin
+   usar ninguna palabra de "envio"/"shipping" -- por eso CHAT_KEYWORDS.shipping
+   no las agarraba. El dato SI es relevante: hoy solo se hacen envios dentro de
+   Mexico (ver chat.a.shipping), asi que un visitante que dice vivir fuera esta
+   preguntando implicitamente "me pueden enviar?" y merece esa respuesta
+   especifica, no el fallback neutro. No hace falta listar paises/ciudades --
+   basta con detectar el patron "vivo en"/"i live in"/etc., sea cual sea el
+   lugar que sigue.*/
+var LOCATION_TRIGGERS = ['vivo en','resido en','radico en','i live in','i\'m from','i am from','i\'m based in','i am based in','currently living in','j\'habite','je vis a','je vis à','je suis basé','je suis base','envian a','envían a','hacen envios a','hacen envíos a','hacen envio a','hacen envío a','ship to','deliver to','do you ship internationally','international shipping','livrez vous a','livrez-vous à','livraison internationale'];
 
 /* ===================== Capa 2: normalizacion + fuzzy matching ===================== */
 /* Motor determinista de texto libre (ver QA_Chatbot_Julieta_CasaAzura.md /
@@ -6158,6 +6171,13 @@ function answerFrustrationGuard(){
   addChatMsg(j.frustrationGuard(), 'bot');
   addChatMsg(waButtonHtml(j.talkHumanLabel()), 'bot');
 }
+/* Fix 110: ver LOCATION_TRIGGERS mas arriba -- responde directo con el
+   alcance real de envios (solo Mexico) en vez del fallback generico. */
+function answerLocationGuard(){
+  var j = DYN[currentLang].julieta;
+  addChatMsg(j.locationGuard(), 'bot');
+  addChatMsg(waButtonHtml(j.talkHumanLabel()), 'bot');
+}
 
 /* ===================== Recomendador de perfil (edad + genero) ===================== */
 var RECOMMEND_TRIGGERS = ['que producto','qué producto','which product','what should i use','what should i take','recomiend','recommand','recomand','conseil','me sirve','sirve para mi','mi ritual','dime que','dime qué','dis moi','tell me what'];
@@ -6244,6 +6264,7 @@ function sendChat(){
   if (textHasAny(text, MEDICAL_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerMedicalGuard(); }, 500); return; }
   if (textHasAny(text, COMPLAINT_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerComplaintGuard(); }, 500); return; }
   if (textHasAny(text, CERT_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerCertUnknown(); }, 500); return; }
+  if (textHasAny(text, LOCATION_TRIGGERS)){ showTyping(); setTimeout(function(){ hideTyping(); answerLocationGuard(); }, 500); return; }
   if (detectFrustration(text)){ showTyping(); setTimeout(function(){ hideTyping(); answerFrustrationGuard(); }, 500); return; }
 
   var normForCompare = normalizeText(text);
