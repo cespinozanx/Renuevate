@@ -143,7 +143,7 @@ const PRODUCTS = [
   // Fix 84: segundo producto de "Maquillaje" (Carlos, 2026-09-01). Mismo
   // patron de shades que NACAR-11, 7 tonos, todos con stock.
   { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13'], favorito: false,
-    name_i18n: { es: 'Brillo Labial Diamante', en: 'Diamond Lip Gloss', fr: 'Gloss a Levres Diamant' },
+    name_i18n: { es: 'Brillo Labial', en: 'Lip Gloss', fr: 'Gloss à Lèvres' },
     description_i18n: { es: 'Formula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.', en: 'A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.', fr: 'Une formule qui fond sur les levres, pour une finition brillante inegalee et un effet volumateur.' },
     image: 'media/nacar-12-brillo-front.webp',
     long_description_es: 'Acabado brillante y luminoso, con una formula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentacion de 8.5 g. Disponible en 7 tonos.',
