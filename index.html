@@ -94,7 +94,19 @@ img,svg{display:block;}
 .topbar-links{display:flex; gap:18px;}
 .topbar-links span{opacity:.9;}
 
-header.site{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--line); transition:box-shadow .2s;}
+/* Fix 108 (auditoria): header.site tenia z-index:50 y establece su propio
+   stacking context (position:sticky + z-index). El menu movil (nav.main,
+   z-index:70) y su overlay (nav-overlay, z-index:69) viven DENTRO de este
+   header -- por eso su z-index alto solo gana dentro del contexto del
+   header, nunca contra elementos fuera de el. Resultado verificado en vivo
+   (elementFromPoint): con el menu movil abierto, los botones flotantes de
+   WhatsApp/chat (z-index:60, hijos directos de <body>) se seguian pintando
+   ENCIMA del menu, porque el contexto completo del header (50) pierde
+   contra ellos (60). Subir el header a 65 lo pone por encima de wa-float/
+   chat-float(60) y chat-panel(61) sin nunca competir con los overlays
+   reales de la app (profile-modal 200, cart 210/211, cookie-banner 220),
+   que deben seguir ganandole siempre al header. */
+header.site{position:sticky; top:0; z-index:65; background:#fff; border-bottom:1px solid var(--line); transition:box-shadow .2s;}
 header.site.scrolled{box-shadow:0 2px 14px rgba(0,0,0,.06);}
 .nav-row{display:flex; align-items:center; justify-content:space-between; height:80px;}
 .logo-wrap{display:flex; flex-direction:column;}
@@ -867,8 +879,21 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 }
 @media(max-width:760px){
   .topbar-links span:nth-child(2), .topbar-links span:nth-child(3){display:none;}
+  /* Fix 108 (auditoria): .topbar .container tenia height:34px fijo; en
+     mobile, con solo top.shipping visible, el texto (mas largo que el
+     ancho disponible junto a "MXN $") se envolvia a 2 lineas pero la caja
+     no crecia -- se veia recortado/desalineado. auto+min-height deja que
+     crezca sin romper el layout desktop (que sigue usando 34px fijo). */
+  .topbar .container{height:auto; min-height:34px; padding:6px 0; flex-wrap:wrap; row-gap:2px;}
   .nav-row{position:relative;}
-  .logo{flex:1; text-align:center; font-size:27px;}
+  /* Fix 108 (auditoria): "RENUÉVATE" en Bodoni Moda a 27px no cabe en el
+     ancho disponible del header movil (hamburguesa + icono cuenta/carrito +
+     selector de idioma ya ocupan la mayor parte de 375px) y se envolvia a
+     2 lineas ("RENUÉ" / "VATE") -- bug de marca visible en el primer
+     elemento que ve cualquier visitante movil. white-space:nowrap +
+     font-size/letter-spacing mas chicos lo mantiene en una sola linea sin
+     tocar el logo de desktop/footer. */
+  .logo{flex:1; text-align:center; font-size:21px; white-space:nowrap; letter-spacing:.03em;}
   .footer-logo-row .logo{flex:none; text-align:left;}
   nav.main{position:fixed; top:0; right:-100%; width:78%; max-width:320px; height:100vh; z-index:70; background:#fff; flex-direction:column; padding:100px 30px; gap:26px; transition:right .3s ease; box-shadow:-8px 0 24px rgba(0,0,0,.15);}
   nav.main.open{right:0;}
@@ -921,6 +946,14 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .product-card:nth-child(4){animation-delay:.32s;}
 @media (prefers-reduced-motion: reduce){
   .reveal, .reveal-stagger > *{opacity:1; transform:none; transition:none;}
+  /* Fix 108 (auditoria): .wa-float trae animation:pulse infinite (nunca
+     para) y no estaba cubierto por ninguna regla de reduced-motion -- unico
+     elemento del sitio en ese caso (el resto de animaciones infinitas,
+     .chat-typing .dot y el loader de Facebook, son transitorias/solo
+     visibles unos segundos). Un pulso que jamas se detiene en la esquina
+     inferior derecha es exactamente el tipo de movimiento que WCAG 2.3.3
+     pide poder desactivar. */
+  .wa-float{animation:none;}
   .product-card{animation:none;}
 }
 </style>
