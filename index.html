@@ -1020,9 +1020,99 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .wa-float{animation:none;}
   .product-card{animation:none;}
 }
+/* Fix 116: splash de bienvenida en primera carga (una sola vez por pestaña,
+   ver sessionStorage en initSplashIntro()). z-index:99999 a proposito -- por
+   encima de todo el sitio (el elemento mas alto existente antes de esto era
+   .wa-float en 60, ver comentario arriba). */
+.splash-intro{position:fixed; inset:0; z-index:99999; background:#0c0c0c; display:flex; align-items:center; justify-content:center; overflow:hidden; opacity:1; visibility:visible; transition:opacity .9s ease, visibility .9s ease;}
+.splash-intro.is-hidden{opacity:0; visibility:hidden; pointer-events:none;}
+.splash-video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+.splash-scrim{position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0) 65%, rgba(0,0,0,.55) 100%);}
+.splash-brand{position:relative; z-index:1; color:#fff; text-align:center; opacity:0; transform:translateY(10px); animation:splashBrandIn 1.1s ease .35s forwards;}
+.splash-brand .splash-logo{font-family:'Cormorant Garamond', Georgia, serif; font-size:42px; letter-spacing:6px; font-weight:600;}
+.splash-brand .splash-tag{margin-top:10px; font-size:13px; letter-spacing:3px; text-transform:uppercase; opacity:.85;}
+@keyframes splashBrandIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+.splash-skip{position:absolute; z-index:2; right:22px; bottom:28px; padding:10px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.55); background:rgba(0,0,0,.25); color:#fff; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; backdrop-filter:blur(2px);}
+.splash-skip:hover{background:rgba(255,255,255,.15);}
+@media (max-width:640px){
+  .splash-brand .splash-logo{font-size:30px; letter-spacing:4px;}
+  .splash-skip{right:16px; bottom:22px; padding:9px 16px;}
+}
+@media (prefers-reduced-motion: reduce){
+  .splash-brand{animation:none; opacity:1; transform:none;}
+}
 </style>
 </head>
 <body>
+<!-- Fix 116: splash de bienvenida (Carlos, 2026-09-04) -- solo en la primera
+     carga de cada pestaña (ver sessionStorage en initSplashIntro() mas abajo).
+     Va como primer hijo de <body> para pintar antes que el resto del sitio. -->
+<div class="splash-intro" id="splashIntro" aria-hidden="true">
+  <video class="splash-video" id="splashVideo" autoplay muted playsinline preload="auto">
+    <source src="media/intro-splash.mp4" type="video/mp4">
+  </video>
+  <div class="splash-scrim"></div>
+  <div class="splash-brand">
+    <div class="splash-logo">RENUÉVATE</div>
+    <div class="splash-tag" id="splashTag">Un momento para ti</div>
+  </div>
+  <button type="button" class="splash-skip" id="splashSkipBtn">Saltar</button>
+</div>
+<script>
+/* Fix 116: splash de bienvenida -- una sola vez por pestaña/sesion de
+   navegador (sessionStorage, no localStorage: queremos que se repita en una
+   sesion nueva, no que desaparezca para siempre en ese navegador). Se cierra
+   sola cuando el video termina (13s) o cuando el usuario le da "Saltar"; si el
+   video no puede cargar/reproducirse (ver 'error'/promise rejection de
+   .play()), se cierra de inmediato para no bloquear el sitio con una pantalla
+   negra. prefers-reduced-motion tambien la salta directo. */
+(function initSplashIntro(){
+  var el = document.getElementById('splashIntro');
+  if (!el) return;
+  var alreadyShown = false;
+  try { alreadyShown = sessionStorage.getItem('renuevate_splash_shown') === '1'; } catch(e) {}
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (alreadyShown || reducedMotion) {
+    el.remove();
+    return;
+  }
+  try { sessionStorage.setItem('renuevate_splash_shown', '1'); } catch(e) {}
+
+  var tagByLang = { es:'Un momento para ti', en:'A moment for you', fr:'Un moment pour vous' };
+  var skipByLang = { es:'Saltar', en:'Skip', fr:'Passer' };
+  var lang = (typeof currentLang !== 'undefined' && tagByLang[currentLang]) ? currentLang : 'es';
+  var tagEl = document.getElementById('splashTag');
+  var skipBtn = document.getElementById('splashSkipBtn');
+  if (tagEl) tagEl.textContent = tagByLang[lang];
+  if (skipBtn) skipBtn.textContent = skipByLang[lang];
+
+  document.body.style.overflow = 'hidden';
+  var dismissed = false;
+  function dismissSplash(){
+    if (dismissed) return;
+    dismissed = true;
+    document.body.style.overflow = '';
+    el.classList.add('is-hidden');
+    el.setAttribute('aria-hidden', 'true');
+    setTimeout(function(){ if (el && el.parentNode) el.remove(); }, 950);
+  }
+
+  var video = document.getElementById('splashVideo');
+  if (video) {
+    video.addEventListener('ended', dismissSplash);
+    video.addEventListener('error', dismissSplash);
+    var playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(dismissSplash);
+  } else {
+    dismissSplash();
+  }
+  if (skipBtn) skipBtn.addEventListener('click', dismissSplash);
+  // Red de seguridad: si por lo que sea el video nunca dispara 'ended' (loop
+  // de metadata raro, tab en segundo plano, etc.) no dejamos al usuario
+  // atrapado mas de 15s en la pantalla de bienvenida.
+  setTimeout(dismissSplash, 15000);
+})();
+</script>
 <script>
 /* Configuracion de integraciones reales -- reemplaza estos valores por los tuyos.
    Ver README.md en azura-site/ para como obtenerlos (Google Cloud, Meta for Developers). */
@@ -1147,7 +1237,7 @@ var AZURA_CONFIG = {
         </div>
       </div>
       <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skincare</a>
-      <a onclick="openBeautyCategory(['NACAR-11','NACAR-12','NACAR-13'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
+      <a onclick="openBeautyCategory(['NACAR-11','NACAR-12','NACAR-13','NACAR-14'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
       <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
       <!-- Fix 69: buscador -- reemplaza al viejo icono de lupa del header
            (quitado en Fix 56). Ahora es un item de nav normal, a la derecha
@@ -1912,7 +2002,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08","NACAR-13"]},
+          related:["NACAR-08","NACAR-13","NACAR-14"]},
         {sku:"NACAR-12", tag:"Brillo labial", name:"Brillo Labial", desc:"Fórmula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.", price:"$340 MXN", favorito:false,
           longDesc:"Acabado brillante y luminoso, con una fórmula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentación de 8.5 g. Disponible en 7 tonos.",
           usage:"Utilízalo solo o combínalo con tu labial hidratante o mate favorito.",
@@ -1927,11 +2017,29 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11","NACAR-13"]},
+          related:["NACAR-11","NACAR-13","NACAR-14"]},
         {sku:"NACAR-13", tag:"Accesorio de maquillaje", name:"Brocha para Maquillaje Líquido", desc:"Consigue una piel perfecta y sin filtro con nuestra Brocha para Base de Maquillaje, que gracias a sus más de 200 mil cerdas te brindará un acabado aterciopelado e impecable.", price:"$190 MXN", favorito:false,
           longDesc:["Especialmente diseñada para base de maquillaje","Aplicación de cobertura media a alta","Tipo de Cerda: Sintética."],
           img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp", gallery:["media/nacar-13-brocha-closeup-bucket.webp","media/nacar-13-brocha-closeup-mano.webp"],
-          related:[]}
+          related:["NACAR-14"]},
+        {sku:"NACAR-14", tag:"Labial hidratante", name:"Labial Hidratante FPS 15", desc:"Labiales Hidratantes FPS15, con una gama de tonos imprescindibles que harán deslumbrar tus labios en cualquier ocasión. Su fórmula es la combinación perfecta entre textura ultra cremosa y colores intensos de larga duración.", price:"$240 MXN", favorito:false,
+          longDesc:["Alta pigmentación","Larga duración","Efecto satinado","Fórmula que acondiciona y humecta los labios","Adicionados con FPS 15 que protege tus labios contra los daños ambientales y los rayos UV."],
+          usage:"Aplica directamente sobre los labios limpios, desde el centro hacia las comisuras. Reaplica después de comer, beber o de una exposición solar prolongada.",
+          ingredients:["Ricinus Communis (Castor) Seed Oil","Euphorbia Cerifera Cera","Benzophenone-3","Ethylhexyl Methoxycinnamate","Isopropyl Myristate","Aroma (Flavor)","Paraffin","Copernicia Cerifera (Carnauba) Cera","Hydrogenated Microcrystalline Wax","Microcrystalline Wax","Hydrogenated Vegetable Oil","Cera Alba","Tocopheryl Acetate","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol","BHT","Butyrospermum Parkii (Shea) Butter","Canola Oil","Vitis Vinifera (Grape) Seed Oil","Titanium Dioxide (CI 77891)","Mica (CI 77019)","Red 6 Lake (CI 15850)","Yellow 6 Lake (CI 15980)","Red 7 Lake (CI 15850)","Iron Oxides (CI 77491)"],
+          img:"media/nacar-14-labial-front.webp", thumb:"media/nacar-14-labial-thumb.webp", gallery:["media/nacar-14-labial-gama-tonos.webp","media/nacar-14-labial-lifestyle-piedra.webp","media/nacar-14-labial-lifestyle-arroyo.webp"],
+          shades:[
+            {name:"Escarlata", hex:"#C5283A", available:true},
+            {name:"Orquídea", hex:"#D8678F", available:true},
+            {name:"Frambuesa", hex:"#C65B6D", available:true},
+            {name:"Arena", hex:"#C1867C", available:true},
+            {name:"Rosa Palo", hex:"#D1888E", available:true},
+            {name:"Coral", hex:"#D76258", available:true},
+            {name:"Damasco", hex:"#E0857B", available:true},
+            {name:"Cereza", hex:"#D24352", available:true},
+            {name:"Fucsia", hex:"#C01D4B", available:true},
+            {name:"Ciruela", hex:"#4C1A32", available:true}
+          ],
+          related:["NACAR-11","NACAR-12","NACAR-13"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
@@ -1988,7 +2096,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08","NACAR-13"]},
+          related:["NACAR-08","NACAR-13","NACAR-14"]},
         {sku:"NACAR-12", tag:"Lip gloss", name:"Lip Gloss", desc:"A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.", price:"$340 MXN", favorito:false,
           longDesc:"Glossy, luminous finish with a lightweight, non-sticky formula. Its plumping effect includes actives that keep your lips soft and hydrated. 8.5 g. Available in 7 shades.",
           usage:"Use it alone or layer it over your favorite hydrating or matte lipstick.",
@@ -2003,11 +2111,29 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11","NACAR-13"]},
+          related:["NACAR-11","NACAR-13","NACAR-14"]},
         {sku:"NACAR-13", tag:"Makeup accessory", name:"Liquid Foundation Brush", desc:"Get flawless, filter-free skin with our Foundation Brush, whose 200,000+ bristles deliver a velvety, impeccable finish.", price:"$190 MXN", favorito:false,
           longDesc:["Specially designed for liquid foundation","Medium-to-high coverage application","Bristle type: Synthetic."],
           img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp", gallery:["media/nacar-13-brocha-closeup-bucket.webp","media/nacar-13-brocha-closeup-mano.webp"],
-          related:[]}
+          related:["NACAR-14"]},
+        {sku:"NACAR-14", tag:"Moisturizing lipstick", name:"Moisturizing Lipstick SPF 15", desc:"Moisturizing Lipsticks SPF15, with an essential range of shades that will make your lips dazzle on any occasion. Its formula is the perfect combination of an ultra-creamy texture and long-lasting, intense color.", price:"$240 MXN", favorito:false,
+          longDesc:["High pigmentation","Long-lasting wear","Satin finish","Formula that conditions and moisturizes lips","Enriched with SPF 15 to protect your lips from environmental damage and UV rays."],
+          usage:"Apply directly to clean lips, from the center outward to the corners. Reapply after eating, drinking or prolonged sun exposure.",
+          ingredients:["Ricinus Communis (Castor) Seed Oil","Euphorbia Cerifera Cera","Benzophenone-3","Ethylhexyl Methoxycinnamate","Isopropyl Myristate","Aroma (Flavor)","Paraffin","Copernicia Cerifera (Carnauba) Cera","Hydrogenated Microcrystalline Wax","Microcrystalline Wax","Hydrogenated Vegetable Oil","Cera Alba","Tocopheryl Acetate","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol","BHT","Butyrospermum Parkii (Shea) Butter","Canola Oil","Vitis Vinifera (Grape) Seed Oil","Titanium Dioxide (CI 77891)","Mica (CI 77019)","Red 6 Lake (CI 15850)","Yellow 6 Lake (CI 15980)","Red 7 Lake (CI 15850)","Iron Oxides (CI 77491)"],
+          img:"media/nacar-14-labial-front.webp", thumb:"media/nacar-14-labial-thumb.webp", gallery:["media/nacar-14-labial-gama-tonos.webp","media/nacar-14-labial-lifestyle-piedra.webp","media/nacar-14-labial-lifestyle-arroyo.webp"],
+          shades:[
+            {name:"Escarlata", hex:"#C5283A", available:true},
+            {name:"Orquídea", hex:"#D8678F", available:true},
+            {name:"Frambuesa", hex:"#C65B6D", available:true},
+            {name:"Arena", hex:"#C1867C", available:true},
+            {name:"Rosa Palo", hex:"#D1888E", available:true},
+            {name:"Coral", hex:"#D76258", available:true},
+            {name:"Damasco", hex:"#E0857B", available:true},
+            {name:"Cereza", hex:"#D24352", available:true},
+            {name:"Fucsia", hex:"#C01D4B", available:true},
+            {name:"Ciruela", hex:"#4C1A32", available:true}
+          ],
+          related:["NACAR-11","NACAR-12","NACAR-13"]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
@@ -2064,7 +2190,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08","NACAR-13"]},
+          related:["NACAR-08","NACAR-13","NACAR-14"]},
         {sku:"NACAR-12", tag:"Gloss à lèvres", name:"Gloss à Lèvres", desc:"Une formule qui fond sur les lèvres, pour une finition brillante inégalée et un effet volumateur.", price:"$340 MXN", favorito:false,
           longDesc:"Fini brillant et lumineux, grâce à une formule légère et non collante. Son effet volumateur associe des actifs qui gardent les lèvres douces et hydratées. Format 8,5 g. Disponible en 7 teintes.",
           usage:"À utiliser seul ou associé à votre rouge à lèvres hydratant ou mat préféré.",
@@ -2079,11 +2205,29 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11","NACAR-13"]},
+          related:["NACAR-11","NACAR-13","NACAR-14"]},
         {sku:"NACAR-13", tag:"Accessoire de maquillage", name:"Pinceau pour Maquillage Liquide", desc:"Obtenez une peau parfaite et sans filtre grâce à notre Pinceau Fond de Teint, dont les plus de 200 000 poils offrent un fini velouté et impeccable.", price:"$190 MXN", favorito:false,
           longDesc:["Spécialement conçu pour le fond de teint liquide","Application couvrance moyenne à élevée","Type de poils : Synthétique."],
           img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp", gallery:["media/nacar-13-brocha-closeup-bucket.webp","media/nacar-13-brocha-closeup-mano.webp"],
-          related:[]}
+          related:["NACAR-14"]},
+        {sku:"NACAR-14", tag:"Rouge à lèvres hydratant", name:"Rouge à Lèvres Hydratant FPS 15", desc:"Rouges à Lèvres Hydratants FPS15, avec une gamme de teintes incontournables qui feront briller vos lèvres en toute occasion. Sa formule est la combinaison parfaite entre une texture ultra-crémeuse et des couleurs intenses longue tenue.", price:"$240 MXN", favorito:false,
+          longDesc:["Haute pigmentation","Longue tenue","Fini satiné","Formule qui conditionne et hydrate les lèvres","Enrichi en FPS 15 qui protège vos lèvres des dommages environnementaux et des rayons UV."],
+          usage:"Appliquer directement sur des lèvres propres, du centre vers les commissures. Réappliquer après avoir mangé, bu ou après une exposition prolongée au soleil.",
+          ingredients:["Ricinus Communis (Castor) Seed Oil","Euphorbia Cerifera Cera","Benzophenone-3","Ethylhexyl Methoxycinnamate","Isopropyl Myristate","Aroma (Flavor)","Paraffin","Copernicia Cerifera (Carnauba) Cera","Hydrogenated Microcrystalline Wax","Microcrystalline Wax","Hydrogenated Vegetable Oil","Cera Alba","Tocopheryl Acetate","Hydrogenated Palm Acid","Stearyl Stearate","Phenoxyethanol","BHT","Butyrospermum Parkii (Shea) Butter","Canola Oil","Vitis Vinifera (Grape) Seed Oil","Titanium Dioxide (CI 77891)","Mica (CI 77019)","Red 6 Lake (CI 15850)","Yellow 6 Lake (CI 15980)","Red 7 Lake (CI 15850)","Iron Oxides (CI 77491)"],
+          img:"media/nacar-14-labial-front.webp", thumb:"media/nacar-14-labial-thumb.webp", gallery:["media/nacar-14-labial-gama-tonos.webp","media/nacar-14-labial-lifestyle-piedra.webp","media/nacar-14-labial-lifestyle-arroyo.webp"],
+          shades:[
+            {name:"Escarlata", hex:"#C5283A", available:true},
+            {name:"Orquídea", hex:"#D8678F", available:true},
+            {name:"Frambuesa", hex:"#C65B6D", available:true},
+            {name:"Arena", hex:"#C1867C", available:true},
+            {name:"Rosa Palo", hex:"#D1888E", available:true},
+            {name:"Coral", hex:"#D76258", available:true},
+            {name:"Damasco", hex:"#E0857B", available:true},
+            {name:"Cereza", hex:"#D24352", available:true},
+            {name:"Fucsia", hex:"#C01D4B", available:true},
+            {name:"Ciruela", hex:"#4C1A32", available:true}
+          ],
+          related:["NACAR-11","NACAR-12","NACAR-13"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complète", desc:"routine en 5 étapes avec contour et protection."}]
     }
@@ -5419,7 +5563,7 @@ function runProductSearch(e){
   if (!matchProduct){
     var categories = [
       { skus:['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], labelKey:'nav.beauty.cleanser' },
-      { skus:['NACAR-11','NACAR-12','NACAR-13'], labelKey:'nav.beauty.treatment' },
+      { skus:['NACAR-11','NACAR-12','NACAR-13','NACAR-14'], labelKey:'nav.beauty.treatment' },
       { skus:['NACAR-09'], labelKey:'nav.beauty.sunscreen' }
     ];
     for (var c = 0; c < categories.length; c++){

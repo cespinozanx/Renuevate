@@ -121,7 +121,7 @@ const PRODUCTS = [
   // Trae "shades" (9 tonos, uno sin stock: Cocoa) para el selector tipo
   // carrusel del modal de detalle -- misma foto para todos los tonos, ver
   // renderPdShades()/selectPdShade() en index.html.
-  { sku: 'NACAR-11', vertical: 'nacar', price: '$535 MXN', related: ['NACAR-08', 'NACAR-13'], favorito: true,
+  { sku: 'NACAR-11', vertical: 'nacar', price: '$535 MXN', related: ['NACAR-08', 'NACAR-13', 'NACAR-14'], favorito: true,
     name_i18n: { es: 'Maquillaje Líquido UP+ FPS15', en: 'UP+ Liquid Foundation SPF15', fr: 'Fond de Teint Liquide UP+ FPS15' },
     description_i18n: { es: 'Base de maquillaje con acabado mate, de larga duracion y cobertura construible, que corrige el tono de tu piel mientras la protege con activos anti edad, humectantes y antioxidantes.', en: 'A matte-finish, long-wearing liquid foundation with buildable coverage that corrects your skin tone while protecting it with anti-aging, moisturizing and antioxidant actives.', fr: 'Fond de teint liquide fini mat, longue tenue et couvrance modulable, qui corrige le teint de la peau tout en la protegeant grace a ses actifs anti-age, hydratants et antioxydants.' },
     image: 'media/nacar-11-maquillaje-front.webp',
@@ -142,7 +142,7 @@ const PRODUCTS = [
     ] },
   // Fix 84: segundo producto de "Maquillaje" (Carlos, 2026-09-01). Mismo
   // patron de shades que NACAR-11, 7 tonos, todos con stock.
-  { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13'], favorito: false,
+  { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13', 'NACAR-14'], favorito: false,
     name_i18n: { es: 'Brillo Labial', en: 'Lip Gloss', fr: 'Gloss à Lèvres' },
     description_i18n: { es: 'Formula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.', en: 'A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.', fr: 'Une formule qui fond sur les levres, pour une finition brillante inegalee et un effet volumateur.' },
     image: 'media/nacar-12-brillo-front.webp',
@@ -164,11 +164,32 @@ const PRODUCTS = [
   // referencia desde related de NACAR-11/12, pero su propio related queda
   // vacio (instruccion explicita de Carlos -- "cuando compran solo la brocha
   // no le pones nada").
-  { sku: 'NACAR-13', vertical: 'nacar', price: '$190 MXN', related: [], favorito: false,
+  { sku: 'NACAR-13', vertical: 'nacar', price: '$190 MXN', related: ['NACAR-14'], favorito: false,
     name_i18n: { es: 'Brocha para Maquillaje Líquido', en: 'Liquid Foundation Brush', fr: 'Pinceau pour Maquillage Liquide' },
     description_i18n: { es: 'Consigue una piel perfecta y sin filtro con nuestra Brocha para Base de Maquillaje, que gracias a sus mas de 200 mil cerdas te brindara un acabado aterciopelado e impecable.', en: 'Get flawless, filter-free skin with our Foundation Brush, whose 200,000+ bristles deliver a velvety, impeccable finish.', fr: 'Obtenez une peau parfaite et sans filtre grace a notre Pinceau Fond de Teint, dont les plus de 200 000 poils offrent un fini veloute et impeccable.' },
     image: 'media/nacar-13-brocha-front.webp',
     long_description_es: ['Especialmente diseñada para base de maquillaje', 'Aplicación de cobertura media a alta', 'Tipo de Cerda: Sintética.'] },
+  // Fix 116: cuarto producto de "Maquillaje" (Carlos, 2026-09-04) -- primer
+  // labial de la categoria, con 10 tonos (mismo patron shades que NACAR-11/12).
+  { sku: 'NACAR-14', vertical: 'nacar', price: '$240 MXN', related: ['NACAR-11', 'NACAR-12', 'NACAR-13'], favorito: false,
+    name_i18n: { es: 'Labial Hidratante FPS 15', en: 'Moisturizing Lipstick SPF 15', fr: 'Rouge à Lèvres Hydratant FPS 15' },
+    description_i18n: { es: 'Labiales Hidratantes FPS15, con una gama de tonos imprescindibles que haran deslumbrar tus labios en cualquier ocasion. Su formula es la combinacion perfecta entre textura ultra cremosa y colores intensos de larga duracion.', en: 'Moisturizing Lipsticks SPF15, with an essential range of shades that will make your lips dazzle on any occasion. Its formula is the perfect combination of an ultra-creamy texture and long-lasting, intense color.', fr: 'Rouges a Levres Hydratants FPS15, avec une gamme de teintes incontournables qui feront briller vos levres en toute occasion. Sa formule est la combinaison parfaite entre une texture ultra-cremeuse et des couleurs intenses longue tenue.' },
+    image: 'media/nacar-14-labial-front.webp',
+    long_description_es: ['Alta pigmentación', 'Larga duración', 'Efecto satinado', 'Fórmula que acondiciona y humecta los labios', 'Adicionados con FPS 15 que protege tus labios contra los daños ambientales y los rayos UV.'],
+    ingredients_es: ['Ricinus Communis (Castor) Seed Oil', 'Euphorbia Cerifera Cera', 'Benzophenone-3', 'Ethylhexyl Methoxycinnamate', 'Isopropyl Myristate', 'Aroma (Flavor)', 'Paraffin', 'Copernicia Cerifera (Carnauba) Cera', 'Hydrogenated Microcrystalline Wax', 'Microcrystalline Wax', 'Hydrogenated Vegetable Oil', 'Cera Alba', 'Tocopheryl Acetate', 'Hydrogenated Palm Acid', 'Stearyl Stearate', 'Phenoxyethanol', 'BHT', 'Butyrospermum Parkii (Shea) Butter', 'Canola Oil', 'Vitis Vinifera (Grape) Seed Oil', 'Titanium Dioxide (CI 77891)', 'Mica (CI 77019)', 'Red 6 Lake (CI 15850)', 'Yellow 6 Lake (CI 15980)', 'Red 7 Lake (CI 15850)', 'Iron Oxides (CI 77491)'],
+    usage_es: 'Aplica directamente sobre los labios limpios, desde el centro hacia las comisuras. Reaplica despues de comer, beber o de una exposicion solar prolongada.',
+    shades: [
+      { name: 'Escarlata', hex: '#C5283A', available: true },
+      { name: 'Orquídea', hex: '#D8678F', available: true },
+      { name: 'Frambuesa', hex: '#C65B6D', available: true },
+      { name: 'Arena', hex: '#C1867C', available: true },
+      { name: 'Rosa Palo', hex: '#D1888E', available: true },
+      { name: 'Coral', hex: '#D76258', available: true },
+      { name: 'Damasco', hex: '#E0857B', available: true },
+      { name: 'Cereza', hex: '#D24352', available: true },
+      { name: 'Fucsia', hex: '#C01D4B', available: true },
+      { name: 'Ciruela', hex: '#4C1A32', available: true },
+    ] },
 
   // VIGOR
   { sku: 'VIGOR-01', vertical: 'vigor', price: '$699 MXN', rating: { stars: 4.8, count: 521 }, related: ['VIGOR-03'],
