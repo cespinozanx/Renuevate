@@ -250,11 +250,13 @@ body.nav-lock{overflow:hidden;}
      imagen un 10% desde su centro -- el marco (.hero-media-frame) tiene
      fondo crema (#F8F7F3, el mismo crema de marca) detras, asi que el
      margen que se revela alrededor se ve como un encuadre intencional, no
-     como un hueco roto. */
+     como un hueco roto.
+     Fix 118: 0.9 seguia sintiendose grande para Carlos -- bajado otro 20%,
+     a 0.72, mismo criterio (el margen crema alrededor se ve intencional). */
   .hero-slide{transform:scale(3);}
   .hero-slide:nth-of-type(1){transform-origin:center 30%;}
   .hero-slide:nth-of-type(2){transform-origin:center 35%;}
-  .hero-slide:nth-of-type(3){transform-origin:center 55%; transform:scale(0.9);}
+  .hero-slide:nth-of-type(3){transform-origin:center 55%; transform:scale(0.72);}
 }
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
@@ -1064,7 +1066,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
      Va como primer hijo de <body> para pintar antes que el resto del sitio. -->
 <div class="splash-intro" id="splashIntro" aria-hidden="true">
   <div class="splash-panel">
-    <video class="splash-video" id="splashVideo" autoplay muted playsinline preload="auto">
+    <video class="splash-video" id="splashVideo" autoplay muted playsinline webkit-playsinline preload="auto">
       <source src="media/intro-splash.mp4" type="video/mp4">
     </video>
     <div class="splash-scrim"></div>
@@ -1118,10 +1120,35 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 
   var video = document.getElementById('splashVideo');
   if (video) {
+    // Fix 118 (Carlos: "el video en iOS y Android no abre, solo en web"):
+    // el elemento video ya traia autoplay+muted+playsinline (deberia bastar segun
+    // la politica de autoplay de iOS/Android desde hace anios), pero varios
+    // navegadores/webviews moviles (Low Power Mode de iOS, el webview interno
+    // de WhatsApp/Instagram cuando se abre el sitio desde un link compartido,
+    // Data Saver de Android) igual bloquean el autoplay incluso muteado.
+    // Reforzamos con .muted/.defaultMuted por JS (mas confiable que solo el
+    // atributo HTML en esos webviews) y, si aun asi el navegador rechaza el
+    // play(), YA NO cerramos el splash de inmediato: se sentia como "no abre
+    // nada" porque el rechazo puede llegar antes de que termine ni la
+    // animacion del logo. En su lugar dejamos el panel (fondo + "RENUÉVATE" +
+    // "Un momento para ti") visible su tiempo minimo de 1.4s -- sin video,
+    // pero como una pantalla de bienvenida intencional, no como un glitch.
+    // Tambien mandamos un evento GA4 (splash_video_blocked) para poder medir
+    // en Analytics que tan seguido pasa esto en produccion, en vez de
+    // adivinar.
+    try { video.muted = true; video.defaultMuted = true; } catch(e) {}
     video.addEventListener('ended', dismissSplash);
-    video.addEventListener('error', dismissSplash);
+    var minDwellDone = false;
+    var videoFailed = false;
+    setTimeout(function(){ minDwellDone = true; if (videoFailed) dismissSplash(); }, 1400);
+    function handleVideoFailure(){
+      videoFailed = true;
+      try { if (typeof gtag === 'function') gtag('event', 'splash_video_blocked'); } catch(e) {}
+      if (minDwellDone) dismissSplash();
+    }
+    video.addEventListener('error', handleVideoFailure);
     var playPromise = video.play();
-    if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(dismissSplash);
+    if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(handleVideoFailure);
   } else {
     dismissSplash();
   }
