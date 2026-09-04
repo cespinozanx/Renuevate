@@ -1020,12 +1020,19 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .wa-float{animation:none;}
   .product-card{animation:none;}
 }
-/* Fix 116: splash de bienvenida en primera carga (una sola vez por pestaña,
-   ver sessionStorage en initSplashIntro()). z-index:99999 a proposito -- por
-   encima de todo el sitio (el elemento mas alto existente antes de esto era
-   .wa-float en 60, ver comentario arriba). */
-.splash-intro{position:fixed; inset:0; z-index:99999; background:#0c0c0c; display:flex; align-items:center; justify-content:center; overflow:hidden; opacity:1; visibility:visible; transition:opacity .9s ease, visibility .9s ease;}
+/* Fix 116/117: splash de bienvenida en primera carga (una sola vez por
+   pestaña, ver sessionStorage en initSplashIntro()). z-index:99999 a
+   proposito -- por encima de todo el sitio (el elemento mas alto existente
+   antes de esto era .wa-float en 60, ver comentario arriba).
+   Fix 117 (Carlos, 2026-09-04 -- feedback UX/B2C): en mobile se queda
+   full-bleed (es el patron esperado tipo app/reel, no se siente como gate).
+   En desktop (>=901px) pasa a un panel grande centrado con el sitio visible
+   y atenuado alrededor -- reduce la sensacion de "pantalla negra bloqueando
+   todo" y da mas confianza de que hay un sitio real detras (ver media query
+   abajo, .splash-panel). */
+.splash-intro{position:fixed; inset:0; z-index:99999; background:#0c0c0c; display:flex; align-items:center; justify-content:center; overflow:hidden; opacity:1; visibility:visible; transition:opacity .9s ease, visibility .9s ease, background .3s ease;}
 .splash-intro.is-hidden{opacity:0; visibility:hidden; pointer-events:none;}
+.splash-panel{position:relative; width:100%; height:100%; overflow:hidden;}
 .splash-video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
 .splash-scrim{position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0) 65%, rgba(0,0,0,.55) 100%);}
 .splash-brand{position:relative; z-index:1; color:#fff; text-align:center; opacity:0; transform:translateY(10px); animation:splashBrandIn 1.1s ease .35s forwards;}
@@ -1038,6 +1045,14 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .splash-brand .splash-logo{font-size:30px; letter-spacing:4px;}
   .splash-skip{right:16px; bottom:22px; padding:9px 16px;}
 }
+/* Fix 117: variante "panel" en desktop -- el fondo de .splash-intro deja de
+   ser solido para que el sitio (ya pintado detras, nunca bloqueado) se vea
+   atenuado alrededor del panel. El video queda contenido, con esquinas
+   redondeadas y sombra, en vez de cubrir todo el viewport. */
+@media (min-width:901px){
+  .splash-intro{background:rgba(6,6,8,.6); backdrop-filter:blur(3px);}
+  .splash-panel{width:min(640px, 84vw); height:min(85vh, 820px); border-radius:22px; box-shadow:0 40px 90px rgba(0,0,0,.55); }
+}
 @media (prefers-reduced-motion: reduce){
   .splash-brand{animation:none; opacity:1; transform:none;}
 }
@@ -1048,24 +1063,28 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
      carga de cada pestaña (ver sessionStorage en initSplashIntro() mas abajo).
      Va como primer hijo de <body> para pintar antes que el resto del sitio. -->
 <div class="splash-intro" id="splashIntro" aria-hidden="true">
-  <video class="splash-video" id="splashVideo" autoplay muted playsinline preload="auto">
-    <source src="media/intro-splash.mp4" type="video/mp4">
-  </video>
-  <div class="splash-scrim"></div>
-  <div class="splash-brand">
-    <div class="splash-logo">RENUÉVATE</div>
-    <div class="splash-tag" id="splashTag">Un momento para ti</div>
+  <div class="splash-panel">
+    <video class="splash-video" id="splashVideo" autoplay muted playsinline preload="auto">
+      <source src="media/intro-splash.mp4" type="video/mp4">
+    </video>
+    <div class="splash-scrim"></div>
+    <div class="splash-brand">
+      <div class="splash-logo">RENUÉVATE</div>
+      <div class="splash-tag" id="splashTag">Un momento para ti</div>
+    </div>
   </div>
   <button type="button" class="splash-skip" id="splashSkipBtn">Saltar</button>
 </div>
 <script>
-/* Fix 116: splash de bienvenida -- una sola vez por pestaña/sesion de
+/* Fix 116/117: splash de bienvenida -- una sola vez por pestaña/sesion de
    navegador (sessionStorage, no localStorage: queremos que se repita en una
    sesion nueva, no que desaparezca para siempre en ese navegador). Se cierra
-   sola cuando el video termina (13s) o cuando el usuario le da "Saltar"; si el
-   video no puede cargar/reproducirse (ver 'error'/promise rejection de
-   .play()), se cierra de inmediato para no bloquear el sitio con una pantalla
-   negra. prefers-reduced-motion tambien la salta directo. */
+   sola cuando el usuario le da "Saltar", cuando el video termina, o al llegar
+   al tope de 6s (Fix 117, Carlos 2026-09-04: el video dura 13s pero se corta
+   a 6s para no sentirse como un bloqueo largo -- ver feedback UX/B2C sobre el
+   splash). Si el video no puede cargar/reproducirse (ver 'error'/promise
+   rejection de .play()), se cierra de inmediato para no bloquear el sitio con
+   una pantalla negra. prefers-reduced-motion tambien la salta directo. */
 (function initSplashIntro(){
   var el = document.getElementById('splashIntro');
   if (!el) return;
@@ -1107,10 +1126,11 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
     dismissSplash();
   }
   if (skipBtn) skipBtn.addEventListener('click', dismissSplash);
-  // Red de seguridad: si por lo que sea el video nunca dispara 'ended' (loop
-  // de metadata raro, tab en segundo plano, etc.) no dejamos al usuario
-  // atrapado mas de 15s en la pantalla de bienvenida.
-  setTimeout(dismissSplash, 15000);
+  // Fix 117: tope duro de 6s (el video de fondo dura 13s, pero se corta aqui
+  // a proposito -- feedback de Carlos: no queremos que el splash se sienta
+  // largo/bloqueante). Tambien cubre el caso de que 'ended' nunca dispare
+  // (loop de metadata raro, tab en segundo plano, etc.).
+  setTimeout(dismissSplash, 6000);
 })();
 </script>
 <script>
@@ -1237,7 +1257,7 @@ var AZURA_CONFIG = {
         </div>
       </div>
       <a onclick="openBeautyCategory(['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], 'nav.beauty.cleanser'); closeNav();" data-i18n="nav.beauty.cleanser">Skincare</a>
-      <a onclick="openBeautyCategory(['NACAR-11','NACAR-12','NACAR-13','NACAR-14'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
+      <a onclick="openBeautyCategory(['NACAR-11','NACAR-12','NACAR-13','NACAR-14','NACAR-15'], 'nav.beauty.treatment'); closeNav();" data-i18n="nav.beauty.treatment">Maquillaje</a>
       <a onclick="goToFilosofia();" data-i18n="nav.filosofia">Nuestra filosofia</a>
       <!-- Fix 69: buscador -- reemplaza al viejo icono de lupa del header
            (quitado en Fix 56). Ahora es un item de nav normal, a la derecha
@@ -2002,7 +2022,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08","NACAR-13","NACAR-14"]},
+          related:["NACAR-08","NACAR-13","NACAR-14","NACAR-15"]},
         {sku:"NACAR-12", tag:"Brillo labial", name:"Brillo Labial", desc:"Fórmula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.", price:"$340 MXN", favorito:false,
           longDesc:"Acabado brillante y luminoso, con una fórmula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentación de 8.5 g. Disponible en 7 tonos.",
           usage:"Utilízalo solo o combínalo con tu labial hidratante o mate favorito.",
@@ -2017,11 +2037,11 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11","NACAR-13","NACAR-14"]},
+          related:["NACAR-11","NACAR-13","NACAR-14","NACAR-15"]},
         {sku:"NACAR-13", tag:"Accesorio de maquillaje", name:"Brocha para Maquillaje Líquido", desc:"Consigue una piel perfecta y sin filtro con nuestra Brocha para Base de Maquillaje, que gracias a sus más de 200 mil cerdas te brindará un acabado aterciopelado e impecable.", price:"$190 MXN", favorito:false,
           longDesc:["Especialmente diseñada para base de maquillaje","Aplicación de cobertura media a alta","Tipo de Cerda: Sintética."],
           img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp", gallery:["media/nacar-13-brocha-closeup-bucket.webp","media/nacar-13-brocha-closeup-mano.webp"],
-          related:["NACAR-14"]},
+          related:["NACAR-14","NACAR-15"]},
         {sku:"NACAR-14", tag:"Labial hidratante", name:"Labial Hidratante FPS 15", desc:"Labiales Hidratantes FPS15, con una gama de tonos imprescindibles que harán deslumbrar tus labios en cualquier ocasión. Su fórmula es la combinación perfecta entre textura ultra cremosa y colores intensos de larga duración.", price:"$240 MXN", favorito:false,
           longDesc:["Alta pigmentación","Larga duración","Efecto satinado","Fórmula que acondiciona y humecta los labios","Adicionados con FPS 15 que protege tus labios contra los daños ambientales y los rayos UV."],
           usage:"Aplica directamente sobre los labios limpios, desde el centro hacia las comisuras. Reaplica después de comer, beber o de una exposición solar prolongada.",
@@ -2039,7 +2059,19 @@ var V = {
             {name:"Fucsia", hex:"#C01D4B", available:true},
             {name:"Ciruela", hex:"#4C1A32", available:true}
           ],
-          related:["NACAR-11","NACAR-12","NACAR-13"]}
+          related:["NACAR-11","NACAR-12","NACAR-13","NACAR-15"]},
+        {sku:"NACAR-15", tag:"Polvo iluminador", name:"Polvo Iluminador Desert Sunset", desc:"Polvo iluminador de larga duración, que proporciona un brillo radiante y aterciopelado.", price:"$240 MXN", favorito:false,
+          longDesc:["Polvo ligero","Textura aterciopelada","Acabado uniforme","Larga duración"],
+          usage:"Aplica con brocha sobre pómulos, puente de la nariz y arco de cupido con movimientos suaves. Úsalo solo o sobre tu base de maquillaje favorita.",
+          ingredients:["Talc","Zea Mays (Corn) Starch","Dimethicone","Octyldodecyl Stearoyl Stearate","Zinc Stearate","Pentaerythrityl Tetraisostearate","Caprylyl Glycol","Isononyl Isononanoate","Phenoxyethanol","Hexylene Glycol"],
+          disclaimer:"Puede contener/may contain: Tin Oxide, Mica, CI 77891, CI 77491, CI 77492, CI 77499 — la carga de pigmento varía según el tono.",
+          img:"media/nacar-15-polvo-front.webp", thumb:"media/nacar-15-polvo-thumb.webp", gallery:["media/nacar-15-polvo-lifestyle-marmol.webp","media/nacar-15-polvo-lifestyle-tocador.webp"],
+          shades:[
+            {name:"Desert Sunset", hex:"#AA755C", available:true},
+            {name:"Desert Rose", hex:"#BC897A", available:true},
+            {name:"Desert Sand", hex:"#CAA699", available:true}
+          ],
+          related:["NACAR-11","NACAR-12","NACAR-13","NACAR-14"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
@@ -2096,7 +2128,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08","NACAR-13","NACAR-14"]},
+          related:["NACAR-08","NACAR-13","NACAR-14","NACAR-15"]},
         {sku:"NACAR-12", tag:"Lip gloss", name:"Lip Gloss", desc:"A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.", price:"$340 MXN", favorito:false,
           longDesc:"Glossy, luminous finish with a lightweight, non-sticky formula. Its plumping effect includes actives that keep your lips soft and hydrated. 8.5 g. Available in 7 shades.",
           usage:"Use it alone or layer it over your favorite hydrating or matte lipstick.",
@@ -2111,11 +2143,11 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11","NACAR-13","NACAR-14"]},
+          related:["NACAR-11","NACAR-13","NACAR-14","NACAR-15"]},
         {sku:"NACAR-13", tag:"Makeup accessory", name:"Liquid Foundation Brush", desc:"Get flawless, filter-free skin with our Foundation Brush, whose 200,000+ bristles deliver a velvety, impeccable finish.", price:"$190 MXN", favorito:false,
           longDesc:["Specially designed for liquid foundation","Medium-to-high coverage application","Bristle type: Synthetic."],
           img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp", gallery:["media/nacar-13-brocha-closeup-bucket.webp","media/nacar-13-brocha-closeup-mano.webp"],
-          related:["NACAR-14"]},
+          related:["NACAR-14","NACAR-15"]},
         {sku:"NACAR-14", tag:"Moisturizing lipstick", name:"Moisturizing Lipstick SPF 15", desc:"Moisturizing Lipsticks SPF15, with an essential range of shades that will make your lips dazzle on any occasion. Its formula is the perfect combination of an ultra-creamy texture and long-lasting, intense color.", price:"$240 MXN", favorito:false,
           longDesc:["High pigmentation","Long-lasting wear","Satin finish","Formula that conditions and moisturizes lips","Enriched with SPF 15 to protect your lips from environmental damage and UV rays."],
           usage:"Apply directly to clean lips, from the center outward to the corners. Reapply after eating, drinking or prolonged sun exposure.",
@@ -2133,7 +2165,19 @@ var V = {
             {name:"Fucsia", hex:"#C01D4B", available:true},
             {name:"Ciruela", hex:"#4C1A32", available:true}
           ],
-          related:["NACAR-11","NACAR-12","NACAR-13"]}
+          related:["NACAR-11","NACAR-12","NACAR-13","NACAR-15"]},
+        {sku:"NACAR-15", tag:"Illuminating powder", name:"Desert Sunset Illuminating Powder", desc:"Long-lasting illuminating powder that delivers a radiant, velvety glow.", price:"$240 MXN", favorito:false,
+          longDesc:["Lightweight powder","Velvety texture","Even finish","Long-lasting wear"],
+          usage:"Apply with a brush to the cheekbones, bridge of the nose and cupid's bow with soft strokes. Use alone or over your favorite foundation.",
+          ingredients:["Talc","Zea Mays (Corn) Starch","Dimethicone","Octyldodecyl Stearoyl Stearate","Zinc Stearate","Pentaerythrityl Tetraisostearate","Caprylyl Glycol","Isononyl Isononanoate","Phenoxyethanol","Hexylene Glycol"],
+          disclaimer:"May contain: Tin Oxide, Mica, CI 77891, CI 77491, CI 77492, CI 77499 — pigment load varies by shade.",
+          img:"media/nacar-15-polvo-front.webp", thumb:"media/nacar-15-polvo-thumb.webp", gallery:["media/nacar-15-polvo-lifestyle-marmol.webp","media/nacar-15-polvo-lifestyle-tocador.webp"],
+          shades:[
+            {name:"Desert Sunset", hex:"#AA755C", available:true},
+            {name:"Desert Rose", hex:"#BC897A", available:true},
+            {name:"Desert Sand", hex:"#CAA699", available:true}
+          ],
+          related:["NACAR-11","NACAR-12","NACAR-13","NACAR-14"]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
@@ -2190,7 +2234,7 @@ var V = {
             {name:"Caramel", hex:"#A67A54", available:true},
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
-          related:["NACAR-08","NACAR-13","NACAR-14"]},
+          related:["NACAR-08","NACAR-13","NACAR-14","NACAR-15"]},
         {sku:"NACAR-12", tag:"Gloss à lèvres", name:"Gloss à Lèvres", desc:"Une formule qui fond sur les lèvres, pour une finition brillante inégalée et un effet volumateur.", price:"$340 MXN", favorito:false,
           longDesc:"Fini brillant et lumineux, grâce à une formule légère et non collante. Son effet volumateur associe des actifs qui gardent les lèvres douces et hydratées. Format 8,5 g. Disponible en 7 teintes.",
           usage:"À utiliser seul ou associé à votre rouge à lèvres hydratant ou mat préféré.",
@@ -2205,11 +2249,11 @@ var V = {
             {name:"Rubí", hex:"#9E1F2E", available:true},
             {name:"Zafiro", hex:"#7A5578", available:true}
           ],
-          related:["NACAR-11","NACAR-13","NACAR-14"]},
+          related:["NACAR-11","NACAR-13","NACAR-14","NACAR-15"]},
         {sku:"NACAR-13", tag:"Accessoire de maquillage", name:"Pinceau pour Maquillage Liquide", desc:"Obtenez une peau parfaite et sans filtre grâce à notre Pinceau Fond de Teint, dont les plus de 200 000 poils offrent un fini velouté et impeccable.", price:"$190 MXN", favorito:false,
           longDesc:["Spécialement conçu pour le fond de teint liquide","Application couvrance moyenne à élevée","Type de poils : Synthétique."],
           img:"media/nacar-13-brocha-front.webp", thumb:"media/nacar-13-brocha-thumb.webp", gallery:["media/nacar-13-brocha-closeup-bucket.webp","media/nacar-13-brocha-closeup-mano.webp"],
-          related:["NACAR-14"]},
+          related:["NACAR-14","NACAR-15"]},
         {sku:"NACAR-14", tag:"Rouge à lèvres hydratant", name:"Rouge à Lèvres Hydratant FPS 15", desc:"Rouges à Lèvres Hydratants FPS15, avec une gamme de teintes incontournables qui feront briller vos lèvres en toute occasion. Sa formule est la combinaison parfaite entre une texture ultra-crémeuse et des couleurs intenses longue tenue.", price:"$240 MXN", favorito:false,
           longDesc:["Haute pigmentation","Longue tenue","Fini satiné","Formule qui conditionne et hydrate les lèvres","Enrichi en FPS 15 qui protège vos lèvres des dommages environnementaux et des rayons UV."],
           usage:"Appliquer directement sur des lèvres propres, du centre vers les commissures. Réappliquer après avoir mangé, bu ou après une exposition prolongée au soleil.",
@@ -2227,7 +2271,19 @@ var V = {
             {name:"Fucsia", hex:"#C01D4B", available:true},
             {name:"Ciruela", hex:"#4C1A32", available:true}
           ],
-          related:["NACAR-11","NACAR-12","NACAR-13"]}
+          related:["NACAR-11","NACAR-12","NACAR-13","NACAR-15"]},
+        {sku:"NACAR-15", tag:"Poudre illuminatrice", name:"Poudre Illuminatrice Desert Sunset", desc:"Poudre illuminatrice longue tenue, qui offre un éclat radieux et velouté.", price:"$240 MXN", favorito:false,
+          longDesc:["Poudre légère","Texture veloutée","Fini uniforme","Longue tenue"],
+          usage:"Appliquer au pinceau sur les pommettes, l'arête du nez et l'arc de cupidon avec des gestes légers. À utiliser seul ou par-dessus votre fond de teint préféré.",
+          ingredients:["Talc","Zea Mays (Corn) Starch","Dimethicone","Octyldodecyl Stearoyl Stearate","Zinc Stearate","Pentaerythrityl Tetraisostearate","Caprylyl Glycol","Isononyl Isononanoate","Phenoxyethanol","Hexylene Glycol"],
+          disclaimer:"Peut contenir/may contain : Tin Oxide, Mica, CI 77891, CI 77491, CI 77492, CI 77499 — la charge pigmentaire varie selon la teinte.",
+          img:"media/nacar-15-polvo-front.webp", thumb:"media/nacar-15-polvo-thumb.webp", gallery:["media/nacar-15-polvo-lifestyle-marmol.webp","media/nacar-15-polvo-lifestyle-tocador.webp"],
+          shades:[
+            {name:"Desert Sunset", hex:"#AA755C", available:true},
+            {name:"Desert Rose", hex:"#BC897A", available:true},
+            {name:"Desert Sand", hex:"#CAA699", available:true}
+          ],
+          related:["NACAR-11","NACAR-12","NACAR-13","NACAR-14"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complète", desc:"routine en 5 étapes avec contour et protection."}]
     }
@@ -5563,7 +5619,7 @@ function runProductSearch(e){
   if (!matchProduct){
     var categories = [
       { skus:['NACAR-06','NACAR-07','NACAR-08','NACAR-09','NACAR-10'], labelKey:'nav.beauty.cleanser' },
-      { skus:['NACAR-11','NACAR-12','NACAR-13','NACAR-14'], labelKey:'nav.beauty.treatment' },
+      { skus:['NACAR-11','NACAR-12','NACAR-13','NACAR-14','NACAR-15'], labelKey:'nav.beauty.treatment' },
       { skus:['NACAR-09'], labelKey:'nav.beauty.sunscreen' }
     ];
     for (var c = 0; c < categories.length; c++){

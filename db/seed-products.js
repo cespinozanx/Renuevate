@@ -121,7 +121,7 @@ const PRODUCTS = [
   // Trae "shades" (9 tonos, uno sin stock: Cocoa) para el selector tipo
   // carrusel del modal de detalle -- misma foto para todos los tonos, ver
   // renderPdShades()/selectPdShade() en index.html.
-  { sku: 'NACAR-11', vertical: 'nacar', price: '$535 MXN', related: ['NACAR-08', 'NACAR-13', 'NACAR-14'], favorito: true,
+  { sku: 'NACAR-11', vertical: 'nacar', price: '$535 MXN', related: ['NACAR-08', 'NACAR-13', 'NACAR-14', 'NACAR-15'], favorito: true,
     name_i18n: { es: 'Maquillaje Líquido UP+ FPS15', en: 'UP+ Liquid Foundation SPF15', fr: 'Fond de Teint Liquide UP+ FPS15' },
     description_i18n: { es: 'Base de maquillaje con acabado mate, de larga duracion y cobertura construible, que corrige el tono de tu piel mientras la protege con activos anti edad, humectantes y antioxidantes.', en: 'A matte-finish, long-wearing liquid foundation with buildable coverage that corrects your skin tone while protecting it with anti-aging, moisturizing and antioxidant actives.', fr: 'Fond de teint liquide fini mat, longue tenue et couvrance modulable, qui corrige le teint de la peau tout en la protegeant grace a ses actifs anti-age, hydratants et antioxydants.' },
     image: 'media/nacar-11-maquillaje-front.webp',
@@ -142,7 +142,7 @@ const PRODUCTS = [
     ] },
   // Fix 84: segundo producto de "Maquillaje" (Carlos, 2026-09-01). Mismo
   // patron de shades que NACAR-11, 7 tonos, todos con stock.
-  { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13', 'NACAR-14'], favorito: false,
+  { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13', 'NACAR-14', 'NACAR-15'], favorito: false,
     name_i18n: { es: 'Brillo Labial', en: 'Lip Gloss', fr: 'Gloss à Lèvres' },
     description_i18n: { es: 'Formula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.', en: 'A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.', fr: 'Une formule qui fond sur les levres, pour une finition brillante inegalee et un effet volumateur.' },
     image: 'media/nacar-12-brillo-front.webp',
@@ -164,14 +164,14 @@ const PRODUCTS = [
   // referencia desde related de NACAR-11/12, pero su propio related queda
   // vacio (instruccion explicita de Carlos -- "cuando compran solo la brocha
   // no le pones nada").
-  { sku: 'NACAR-13', vertical: 'nacar', price: '$190 MXN', related: ['NACAR-14'], favorito: false,
+  { sku: 'NACAR-13', vertical: 'nacar', price: '$190 MXN', related: ['NACAR-14', 'NACAR-15'], favorito: false,
     name_i18n: { es: 'Brocha para Maquillaje Líquido', en: 'Liquid Foundation Brush', fr: 'Pinceau pour Maquillage Liquide' },
     description_i18n: { es: 'Consigue una piel perfecta y sin filtro con nuestra Brocha para Base de Maquillaje, que gracias a sus mas de 200 mil cerdas te brindara un acabado aterciopelado e impecable.', en: 'Get flawless, filter-free skin with our Foundation Brush, whose 200,000+ bristles deliver a velvety, impeccable finish.', fr: 'Obtenez une peau parfaite et sans filtre grace a notre Pinceau Fond de Teint, dont les plus de 200 000 poils offrent un fini veloute et impeccable.' },
     image: 'media/nacar-13-brocha-front.webp',
     long_description_es: ['Especialmente diseñada para base de maquillaje', 'Aplicación de cobertura media a alta', 'Tipo de Cerda: Sintética.'] },
   // Fix 116: cuarto producto de "Maquillaje" (Carlos, 2026-09-04) -- primer
   // labial de la categoria, con 10 tonos (mismo patron shades que NACAR-11/12).
-  { sku: 'NACAR-14', vertical: 'nacar', price: '$240 MXN', related: ['NACAR-11', 'NACAR-12', 'NACAR-13'], favorito: false,
+  { sku: 'NACAR-14', vertical: 'nacar', price: '$240 MXN', related: ['NACAR-11', 'NACAR-12', 'NACAR-13', 'NACAR-15'], favorito: false,
     name_i18n: { es: 'Labial Hidratante FPS 15', en: 'Moisturizing Lipstick SPF 15', fr: 'Rouge à Lèvres Hydratant FPS 15' },
     description_i18n: { es: 'Labiales Hidratantes FPS15, con una gama de tonos imprescindibles que haran deslumbrar tus labios en cualquier ocasion. Su formula es la combinacion perfecta entre textura ultra cremosa y colores intensos de larga duracion.', en: 'Moisturizing Lipsticks SPF15, with an essential range of shades that will make your lips dazzle on any occasion. Its formula is the perfect combination of an ultra-creamy texture and long-lasting, intense color.', fr: 'Rouges a Levres Hydratants FPS15, avec une gamme de teintes incontournables qui feront briller vos levres en toute occasion. Sa formule est la combinaison parfaite entre une texture ultra-cremeuse et des couleurs intenses longue tenue.' },
     image: 'media/nacar-14-labial-front.webp',
@@ -189,6 +189,24 @@ const PRODUCTS = [
       { name: 'Cereza', hex: '#D24352', available: true },
       { name: 'Fucsia', hex: '#C01D4B', available: true },
       { name: 'Ciruela', hex: '#4C1A32', available: true },
+    ] },
+  // Fix 117: quinto producto de "Maquillaje" (Carlos, 2026-09-04) -- polvo
+  // iluminador con 3 tonos (mismo patron shades que NACAR-11/12/14).
+  // "disclaimer_es" separa la clausula "Pode conter" (Carlos la paso en
+  // portugues -- "may contain") de la lista principal de ingredients_es,
+  // mismo patron que el disclaimer de NACAR-11.
+  { sku: 'NACAR-15', vertical: 'nacar', price: '$240 MXN', related: ['NACAR-11', 'NACAR-12', 'NACAR-13', 'NACAR-14'], favorito: false,
+    name_i18n: { es: 'Polvo Iluminador Desert Sunset', en: 'Desert Sunset Illuminating Powder', fr: 'Poudre Illuminatrice Desert Sunset' },
+    description_i18n: { es: 'Polvo iluminador de larga duracion, que proporciona un brillo radiante y aterciopelado.', en: 'Long-lasting illuminating powder that delivers a radiant, velvety glow.', fr: 'Poudre illuminatrice longue tenue, qui offre un eclat radieux et velouté.' },
+    image: 'media/nacar-15-polvo-front.webp',
+    long_description_es: ['Polvo ligero', 'Textura aterciopelada', 'Acabado uniforme', 'Larga duración'],
+    ingredients_es: ['Talc', 'Zea Mays (Corn) Starch', 'Dimethicone', 'Octyldodecyl Stearoyl Stearate', 'Zinc Stearate', 'Pentaerythrityl Tetraisostearate', 'Caprylyl Glycol', 'Isononyl Isononanoate', 'Phenoxyethanol', 'Hexylene Glycol'],
+    disclaimer_es: 'Puede contener/may contain: Tin Oxide, Mica, CI 77891, CI 77491, CI 77492, CI 77499 -- la carga de pigmento varia segun el tono.',
+    usage_es: 'Aplica con brocha sobre pomulos, puente de la nariz y arco de cupido con movimientos suaves. Usalo solo o sobre tu base de maquillaje favorita.',
+    shades: [
+      { name: 'Desert Sunset', hex: '#AA755C', available: true },
+      { name: 'Desert Rose', hex: '#BC897A', available: true },
+      { name: 'Desert Sand', hex: '#CAA699', available: true },
     ] },
 
   // VIGOR
