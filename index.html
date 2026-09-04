@@ -370,6 +370,14 @@ section{padding:92px 0;}
    video+foto). Tamano de fuente a la mitad del original (era 25px) por
    instruccion explicita de Carlos. */
 .phil-quote-below{grid-column:1/-1; font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:12.5px; line-height:1.6; color:var(--navy); text-align:center; max-width:640px; margin:28px auto 0;}
+/* Fix 114 (Carlos: "este texto crece el tamaño de la fuente"): en la pagina
+   aislada de Filosofia (#filosofiaPage) esta cita es el UNICO texto de la
+   pagina, con la foto grande arriba -- se ve pequeña a 12.5px (tamaño
+   pensado para cuando vivia como caption chico junto a otro contenido, ver
+   Fix 72). Se sube su tamaño ahi mismo con un selector mas especifico, sin
+   tocar el tamaño original de 12.5px por si esa clase se reutiliza en otro
+   lado a futuro. */
+#filosofiaPage .phil-quote-below{font-size:20px; max-width:760px; margin-top:36px;}
 /* Fix 74: link "Favoritos de Renuevate" debajo de la seccion de filosofia --
    mismo fondo --cream para que se sienta parte de la misma franja visual. */
 .phil-favorites{background:var(--cream); text-align:center; padding:6px 0 56px;}
