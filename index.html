@@ -284,6 +284,22 @@ section{padding:92px 0;}
 .vert-h2-quote{font-family:'Bodoni Moda','Playfair Display',Georgia,serif; font-weight:500;}
 .section-head p{color:var(--grey); margin-top:16px; font-size:16px;}
 
+/* Fix 113 (Carlos: "inmediatamente despues de Lo mejor para ti coloca un
+   carrusel de las imagenes llamadas Carrusel XXX"): franja horizontal de 5
+   fotos lifestyle de System Luminous, clicables (ver renderHomeCarousel() en
+   JS). scroll-snap-type:x da el efecto de "encaje" al arrastrar en mobile sin
+   necesitar libreria de carrusel. */
+.home-carousel{margin:4px 0 46px;}
+.home-carousel-track{display:flex; gap:18px; overflow-x:auto; overflow-y:hidden; padding:4px 4px 16px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;}
+.home-carousel-track::-webkit-scrollbar{height:6px;}
+.home-carousel-track::-webkit-scrollbar-thumb{background:var(--line); border-radius:3px;}
+.home-carousel-item{flex:0 0 auto; width:180px; scroll-snap-align:start; background:none; border:0; padding:0; cursor:pointer; text-align:center; font-family:inherit;}
+.hc-media{display:block; width:100%; aspect-ratio:3/4; border-radius:6px; overflow:hidden; background:var(--beige); box-shadow:0 6px 16px rgba(0,0,0,.08); border:1px solid var(--line); transition:transform .2s ease, box-shadow .2s ease;}
+.hc-media img{width:100%; height:100%; object-fit:cover; display:block;}
+.home-carousel-item:hover .hc-media{transform:translateY(-4px); box-shadow:0 14px 26px rgba(0,0,0,.14);}
+.hc-name{display:block; margin-top:10px; font-size:12.5px; font-weight:600; letter-spacing:.3px; color:var(--navy);}
+@media(max-width:760px){ .home-carousel-item{width:140px;} }
+
 .brand-map{text-align:center; margin:8px 0 50px;}
 .brand-map .bm-holding{display:inline-block; font-family:'Playfair Display',serif; font-weight:700; letter-spacing:3px; font-size:12.5px; color:var(--navy); padding:9px 22px; border:1px solid var(--line); border-radius:30px;}
 .brand-map .bm-line{width:1px; height:24px; background:var(--line); margin:8px auto;}
@@ -397,6 +413,16 @@ section{padding:92px 0;}
 body.viewing-product-page .home-only{display:none;}
 .zoom-back-link{display:inline-flex; align-items:center; gap:6px; margin:0 0 10px; padding:8px 16px; cursor:pointer; color:var(--ink); font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; border:1px solid var(--line); border-radius:30px; background:#fff; transition:background .15s,border-color .15s;}
 .zoom-back-link:hover{background:var(--cream); border-color:var(--ink);}
+/* Fix 113 (Carlos: "al dar click en filosofia no se muestra correctamente,
+   debes crear una pagina exclusiva de nuestra filosofia con la imagen que te
+   adjunto"): pagina aislada propia (#filosofiaPage), mismo mecanismo que
+   #zoom -- reusa .zoom-section/.zoom-hidden/.zoom-back-link para no duplicar
+   CSS de layout/oculto, solo se agrega el estilo del visual grande de abajo.
+   La imagen (seytu-filosofia-portada.webp) ya trae la cita en español
+   incrustada + marca de agua "Renuévate" -- object-fit:cover porque el
+   origen es exactamente 16:9 (2000x1125), practicamente sin recorte real. */
+.filosofia-visual{width:100%; aspect-ratio:16/9; border-radius:6px; overflow:hidden; box-shadow:0 10px 26px rgba(0,0,0,.08); border:1px solid var(--line); margin:8px 0 36px; background:#F0EEE9;}
+.filosofia-visual img{width:100%; height:100%; object-fit:cover; display:block;}
 .zoom-tabs{display:flex; justify-content:center; gap:10px; margin-bottom:52px; flex-wrap:wrap;}
 .zoom-tab{padding:10px 24px; border-radius:30px; border:1px solid var(--line); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700; cursor:pointer; color:var(--grey); background:#fff;}
 .zoom-tab.active{background:#F8F7F3;}
@@ -755,7 +781,18 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .pd-close{position:absolute; top:14px; right:14px; background:rgba(255,255,255,.9); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; line-height:1; cursor:pointer; color:var(--grey); z-index:3;}
 .pd-media-col{width:40%; flex:0 0 40%; display:flex; flex-direction:column; background:var(--beige); overflow-y:auto; max-height:88vh;}
 .pd-media{width:100%; aspect-ratio:3/4; background:var(--beige); display:flex; align-items:center; justify-content:center; overflow:hidden; flex:none;}
-.pd-media img{width:100%; height:100%; object-fit:contain; object-position:center;}
+/* Fix 113 (Carlos, capturas con X marcando espacio vacio arriba/abajo de la
+   foto en UP+ FPS15, Omniplus, etc.): .pd-media es 3:4 (retrato) pero casi
+   ninguna foto real del catalogo es 3:4 -- la mayoria es 1:1 (1200x1200) y
+   un par son 1.34 (paisaje, ej. Omniplus/Protector). object-fit:contain deja
+   esa proporcion sin llenar el recuadro (franjas vacias color --beige arriba
+   y abajo). Se cambia a cover, igual que TODOS los demas contenedores de
+   imagen del sitio (product-img, pd-thumb, hero-slide, phil-visual-img,
+   about-hero-imgs) -- la foto ahora llena el recuadro completo, recortando
+   bordes en vez de dejar espacio. Con fotos ya centradas en el producto el
+   recorte es minimo (ver Fix 113 tambien re-crop de NACAR-11/12 a 3:4 real
+   para que el recorte de cover sea casi nulo). */
+.pd-media img{width:100%; height:100%; object-fit:cover; object-position:center;}
 .pd-media svg{width:64px; height:64px; opacity:.35;}
 /* Filmstrip de miniaturas del detalle de producto -- solo aparece cuando el
    producto trae mas de una foto (p.img + p.gallery, ver openProductDetail).
@@ -1154,7 +1191,7 @@ var AZURA_CONFIG = {
       <p data-i18n-html="hero.p">Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.</p>
       <div class="hero-cta hero-cta-sm">
         <a class="btn btn-dark" onclick="openBeautyCatalog()" data-i18n="hero.cta1">Ver más</a>
-        <a class="btn btn-ghost" onclick="scrollToId('filosofia')" data-i18n="hero.cta2">Nuestra filosofia</a>
+        <a class="btn btn-ghost" onclick="goToFilosofia()" data-i18n="hero.cta2">Nuestra filosofia</a>
       </div>
     </div>
   </div>
@@ -1169,6 +1206,16 @@ var AZURA_CONFIG = {
            .logo (Bodoni Moda/Playfair Display), solo homologado a esta
            seccion, sin mayusculas ni tracking del logo). -->
       <h2 class="vert-h2-quote" data-i18n="vert.h2">"Lo mejor para ti"</h2>
+    </div>
+    <!-- Fix 113 (Carlos: "inmediatamente despues de Lo mejor para ti coloca
+         un carrusel de las imagenes llamadas Carrusel XXX"): franja
+         horizontal de 5 fotos lifestyle de System Luminous, clicables --
+         cada tarjeta lleva al catalogo filtrado a ese producto (mismo patron
+         probado del menu Belleza, ver openBeautyCategory()). El contenido se
+         llena en JS (renderHomeCarousel(), llamada desde applyLanguage())
+         para que el nombre debajo de cada foto salga en el idioma activo. -->
+    <div class="home-carousel reveal">
+      <div class="home-carousel-track" id="homeCarouselTrack"></div>
     </div>
     <div class="brand-map reveal">
       <!-- Fix 104 (Carlos, imagen con tache): antes decia "RENUEVATE" -- se
@@ -1224,45 +1271,15 @@ var AZURA_CONFIG = {
   </div>
 </section>
 
-<section class="philosophy home-only" id="filosofia">
-  <div class="container phil-grid">
-    <div class="reveal-stagger">
-      <!-- Fix 104 (Carlos: "quita esto Pensamos en tu bienestar. Cultivamos
-           habitos" + "quita la imagen que tienes inmediatamente abajo"):
-           se quitan el <h2> phil.h2 (dead key removido, ver I18N ES/EN/FR) y
-           el bloque .phil-showcase completo. La foto que vivia ahi
-           (media/seytu-filosofia-main.webp, la aplicacion del Protector
-           Solar Facial FPS 50+) NO se borra del sitio -- se reutiliza como
-           imagen de galeria en la ficha de detalle de NACAR-09 (ver
-           V.nacar.<lang>.products, gallery, mismo Fix). Columna izquierda
-           de .phil-grid queda solo con el eyebrow, centrado verticalmente
-           junto a la foto grande de la derecha (.phil-grid usa
-           align-items:center) -- si Carlos prefiere que esta columna no
-           quede tan vacia, avisar para agregar contenido nuevo aqui. -->
-      <div class="eyebrow" data-i18n="phil.eyebrow">Nuestra filosofía</div>
-    </div>
-    <!-- Fix 88: Carlos pidio revertir parcialmente Fix 87 -- la caja de la
-         derecha vuelve a llevar una foto maximizada (.phil-visual, ahora con
-         la foto "Main Suero" = el mismo seytu-filosofia-suero.webp de
-         siempre), pero esta vez con el texto de Fix 87 (.phil-statement)
-         como caption ABAJO del contenedor de la imagen, no reemplazandola.
-         .phil-visual-wrap es el que ocupa la 2a columna del grid; adentro,
-         .phil-visual vuelve a su tratamiento original (foto position:absolute
-         llenando la caja, ver Fix 75) y .phil-statement pasa a ser un
-         caption mas chico debajo, no un bloque centrado ocupando toda la caja. -->
-    <div class="phil-visual-wrap reveal">
-      <div class="phil-visual">
-        <img class="phil-visual-img" src="media/seytu-filosofia-suero.webp" alt="Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ" loading="lazy">
-      </div>
-      <p class="phil-statement" data-i18n-html="phil.statement">No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidarla</span>.</p>
-    </div>
-    <!-- Fix 72: la cita se saca de .phil-visual y baja de tamano a la mitad
-         (25px -> 12.5px), por instruccion de Carlos. Es 3er hijo directo de
-         .phil-grid para que grid-column:1/-1 (CSS .phil-quote-below) la
-         centre ocupando todo el ancho, debajo de las 2 columnas. -->
-    <div class="phil-quote-below" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;</div>
-  </div>
-</section>
+<!-- Fix 113 (Carlos: "crea una pagina exclusiva de nuestra filosofia" + "la
+     imagen que ahora vive alli quitala"): el bloque #filosofia que vivia
+     aqui, dentro del scroll de la home, se retira por completo -- ahora es
+     una pagina aislada propia (#filosofiaPage, junto a #zoom mas abajo) que
+     solo se muestra al pedirla explicitamente (nav "Nuestra filosofia" o el
+     CTA del hero, ver goToFilosofia()). La foto que vivia aqui
+     (media/seytu-filosofia-suero.webp) se retira de esta seccion y ya no
+     queda referenciada en ningun otro lado del sitio -- se deja el archivo
+     en media/ sin borrar por si se reutiliza a futuro. -->
 
 <!-- Fix 74: link "Favoritos de Renuevate" debajo de la seccion de filosofia
      (Fix 73, la de la foto grande), instruccion Carlos. Mismo fondo --cream
@@ -1303,6 +1320,27 @@ var AZURA_CONFIG = {
 
     <div class="beauty-rec-banner" id="beautyRecBanner" style="display:none;"></div>
     <div class="products-grid" id="productsGrid"></div>
+  </div>
+</section>
+
+<!-- Fix 113: pagina aislada de "Nuestra filosofia" -- mismo mecanismo de
+     #zoom (.zoom-section/.zoom-hidden/.zoom-back-link), la muestra
+     goToFilosofia() y la oculta resetToHomeState()/goHome(). La foto
+     (seytu-filosofia-portada.webp) ya trae la cita en español incrustada +
+     marca de agua "Renuévate", por eso NO se repite el mismo texto como
+     caption (ver phil.statement, que ya no se usa en esta pagina) -- solo se
+     deja la SEGUNDA cita (phil.quote, distinta a la de la imagen) debajo,
+     que si aporta contenido nuevo y da soporte a EN/FR. -->
+<section class="zoom-section zoom-hidden" id="filosofiaPage">
+  <div class="container">
+    <a class="zoom-back-link" onclick="goHome()" data-i18n-html="zoom.backHome">&#8592; Volver a inicio</a>
+    <div class="section-head reveal-stagger">
+      <div class="eyebrow" data-i18n="phil.eyebrow">Nuestra filosofía</div>
+    </div>
+    <div class="filosofia-visual reveal">
+      <img src="media/seytu-filosofia-portada.webp" alt="Nuestra filosofía Renuévate" loading="lazy">
+    </div>
+    <div class="phil-quote-below" data-i18n-html="phil.quote">&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;</div>
   </div>
 </section>
 
@@ -4799,6 +4837,11 @@ function goVertical(v){
   // no arrastra la ficha de producto dentro del scroll normal de la página.
   var zoomSection = document.getElementById('zoom');
   zoomSection.classList.remove('zoom-hidden');
+  // Fix 113: si el usuario venia de la pagina aislada de Filosofia, se oculta
+  // al entrar a un System Speciality -- ambas paginas (#zoom y
+  // #filosofiaPage) son mutuamente excluyentes dentro de viewing-product-page.
+  var filPageGV = document.getElementById('filosofiaPage');
+  if (filPageGV) filPageGV.classList.add('zoom-hidden');
   // Si veniamos del modo "solo catalogo" (openBeautyCatalog), restauramos la
   // vista completa de System Speciality (tabs + banner + rutinas) y el
   // eyebrow original -- goVertical() siempre es navegacion a un sistema
@@ -4832,6 +4875,12 @@ function resetToHomeState(){
   zoomSection.classList.add('zoom-hidden');
   zoomSection.classList.remove('catalog-mode');
   catalogModeActive = false;
+  // Fix 113: la pagina aislada de Filosofia usa el mismo mecanismo que #zoom
+  // (viewing-product-page + su propia clase zoom-hidden) -- se oculta aqui
+  // tambien para que "Volver a inicio"/goHome() la cierre sin importar por
+  // cual de las 2 paginas aisladas se haya entrado.
+  var filPage = document.getElementById('filosofiaPage');
+  if (filPage) filPage.classList.add('zoom-hidden');
   closeNav();
 }
 function goHome(){
@@ -4839,13 +4888,33 @@ function goHome(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 // Helper generico para links del nav/footer que apuntan a una seccion de la
-// home (filosofia, verticales) -- primero se asegura de que la home este
+// home (hoy solo "verticales") -- primero se asegura de que la home este
 // visible (por si veniamos de catalogo/System Speciality) y luego hace scroll.
 function goToHomeSection(id){
   resetToHomeState();
   scrollToId(id);
 }
-function goToFilosofia(){ goToHomeSection('filosofia'); }
+// Fix 113 (Carlos: "al dar click en filosofia no se muestra correctamente,
+// debes crear una pagina exclusiva de nuestra filosofia"): ya no hace scroll
+// dentro de la home -- #filosofia (el bloque viejo) se quito del flujo de la
+// home por completo. Ahora abre #filosofiaPage como pagina aislada propia,
+// exactamente el mismo patron que goVertical()/openBeautyCategory(): oculta
+// #zoom si estaba abierto, revela #filosofiaPage, oculta el resto de la home
+// (viewing-product-page + .home-only) y hace scroll al inicio de la pagina
+// nueva. "Volver a inicio" (goHome) y el logo del header regresan igual que
+// desde cualquier otra pagina aislada.
+function goToFilosofia(){
+  var zoomSection = document.getElementById('zoom');
+  zoomSection.classList.add('zoom-hidden');
+  zoomSection.classList.remove('catalog-mode');
+  catalogModeActive = false;
+  var filPage = document.getElementById('filosofiaPage');
+  filPage.classList.remove('zoom-hidden');
+  document.body.classList.add('viewing-product-page');
+  window.scrollTo({top:0, behavior:'auto'});
+  scrollToId('filosofiaPage');
+  closeNav();
+}
 
 // Página de "solo catalogo": reusa la ficha #zoom (mismo grid de productos,
 // panel de comentarios y banner de recomendacion) pero oculta los tabs
@@ -4863,6 +4932,9 @@ function openBeautyCatalog(){
   zoomSection.classList.remove('zoom-hidden');
   zoomSection.classList.add('catalog-mode');
   catalogModeActive = true;
+  // Fix 113: ver mismo comentario en goVertical() -- mutua exclusion con #filosofiaPage.
+  var filPageOC = document.getElementById('filosofiaPage');
+  if (filPageOC) filPageOC.classList.add('zoom-hidden');
   applyCatalogPageLabels();
   // Misma logica que goVertical(): el catalogo también debe verse como su
   // propia página, sin arrastrar hero/verticales/filosofia/newsletter al
@@ -4894,6 +4966,9 @@ function openBeautyCategory(skus, labelKey){
   zoomSection.classList.remove('zoom-hidden');
   zoomSection.classList.add('catalog-mode');
   catalogModeActive = true;
+  // Fix 113: ver mismo comentario en goVertical() -- mutua exclusion con #filosofiaPage.
+  var filPageBC = document.getElementById('filosofiaPage');
+  if (filPageBC) filPageBC.classList.add('zoom-hidden');
   applyCatalogCategoryLabels(labelKey);
   document.body.classList.add('viewing-product-page');
   window.scrollTo({top:0, behavior:'auto'});
@@ -5661,6 +5736,39 @@ function sendToBackend(provider, credential){
 }
 
 /* ===================== Selector de idioma ===================== */
+// Fix 113 (Carlos: carrusel debajo de "Lo mejor para ti", fotos llamadas
+// "Carrusel XXX" en el pedido original): 5 fotos lifestyle de System
+// Luminous. Cada tarjeta es clicable -- reusa openBeautyCategory() con un
+// solo sku (mismo patron ya probado del menu Belleza/Favoritos) para llevar
+// al usuario al catalogo filtrado a ese producto, sin depender de que
+// CURRENT_RENDERED_PRODUCTS ya este poblado de antemano (openBeautyCategory
+// llama renderVertical('nacar') primero, que es quien la puebla). El nombre
+// debajo de cada foto sale de V.nacar[currentLang].products para quedar en
+// el idioma activo -- se vuelve a pintar en cada applyLanguage().
+var HOME_CAROUSEL_ITEMS = [
+  { sku:'NACAR-06', img:'media/nacar-06-carrusel.webp', labelKey:'nav.beauty.cleanser' },
+  { sku:'NACAR-08', img:'media/nacar-08-carrusel.webp', labelKey:'nav.beauty.cleanser' },
+  { sku:'NACAR-09', img:'media/nacar-09-carrusel.webp', labelKey:'nav.beauty.cleanser' },
+  { sku:'NACAR-10', img:'media/nacar-10-carrusel.webp', labelKey:'nav.beauty.cleanser' },
+  { sku:'NACAR-11', img:'media/nacar-11-carrusel.webp', labelKey:'nav.beauty.treatment' }
+];
+function renderHomeCarousel(){
+  var track = document.getElementById('homeCarouselTrack');
+  if (!track) return;
+  var products = V.nacar[currentLang].products;
+  var html = '';
+  for (var i=0;i<HOME_CAROUSEL_ITEMS.length;i++){
+    var item = HOME_CAROUSEL_ITEMS[i];
+    var p = findProductBySku(products, item.sku);
+    var name = p ? p.name : '';
+    html += '<button type="button" class="home-carousel-item" onclick="openBeautyCategory([\'' + item.sku + '\'], \'' + item.labelKey + '\')">' +
+      '<span class="hc-media"><img src="' + item.img + '" alt="' + name + '" loading="lazy"></span>' +
+      '<span class="hc-name">' + name + '</span>' +
+      '</button>';
+  }
+  track.innerHTML = html;
+}
+
 function applyLanguage(lang){
   if (!I18N[lang]) return;
   currentLang = lang;
@@ -5721,6 +5829,7 @@ function applyLanguage(lang){
   renderVertical(currentV);
   if (catalogModeActive) applyCatalogPageLabels();
   renderSeasonalBanner();
+  renderHomeCarousel();
 }
 
 /* ===================== Chatbot (FAQ por palabra clave, 100% cliente) ===================== */
