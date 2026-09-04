@@ -378,6 +378,13 @@ section{padding:92px 0;}
    tocar el tamaño original de 12.5px por si esa clase se reutiliza en otro
    lado a futuro. */
 #filosofiaPage .phil-quote-below{font-size:20px; max-width:760px; margin-top:36px;}
+/* Fix 116 (Carlos: "crece el tamaño del texto Nuestra filosofia a 1.5
+   veces"): el eyebrow ".eyebrow" del sitio es 12px/3px de tracking (pensado
+   para un antetitulo chico arriba de un h2 grande) -- en #filosofiaPage es
+   el titulo principal de la pagina, asi que se escala x1.5 (12px->18px,
+   tracking 3px->4.5px) solo ahi, sin tocar la clase base usada en el resto
+   del sitio. */
+#filosofiaPage .eyebrow{font-size:18px; letter-spacing:4.5px;}
 /* Fix 74: link "Favoritos de Renuevate" debajo de la seccion de filosofia --
    mismo fondo --cream para que se sienta parte de la misma franja visual. */
 .phil-favorites{background:var(--cream); text-align:center; padding:6px 0 56px;}
