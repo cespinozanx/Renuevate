@@ -1043,9 +1043,20 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 @keyframes splashBrandIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
 .splash-skip{position:absolute; z-index:2; right:22px; bottom:28px; padding:10px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.55); background:rgba(0,0,0,.25); color:#fff; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; backdrop-filter:blur(2px);}
 .splash-skip:hover{background:rgba(255,255,255,.15);}
+/* Fix 119: boton de bocina (muted/unmuted) -- misma esquina que .splash-skip
+   pero del lado izquierdo, mismo look (pill translucido + blur) para que se
+   sientan como el mismo sistema de controles. Los dos SVG conviven en el DOM
+   y se alternan por CSS segun la clase .is-unmuted (arranca sin ella =
+   estado muted, que es el default real del video). */
+.splash-sound-btn{position:absolute; z-index:2; left:22px; bottom:28px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border-radius:999px; border:1px solid rgba(255,255,255,.55); background:rgba(0,0,0,.25); color:#fff; cursor:pointer; backdrop-filter:blur(2px);}
+.splash-sound-btn:hover{background:rgba(255,255,255,.15);}
+.splash-sound-btn .ssb-icon-unmuted{display:none;}
+.splash-sound-btn.is-unmuted .ssb-icon-muted{display:none;}
+.splash-sound-btn.is-unmuted .ssb-icon-unmuted{display:block;}
 @media (max-width:640px){
   .splash-brand .splash-logo{font-size:30px; letter-spacing:4px;}
   .splash-skip{right:16px; bottom:22px; padding:9px 16px;}
+  .splash-sound-btn{left:16px; bottom:20px;}
 }
 /* Fix 117: variante "panel" en desktop -- el fondo de .splash-intro deja de
    ser solido para que el sitio (ya pintado detras, nunca bloqueado) se vea
@@ -1074,6 +1085,20 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
       <div class="splash-logo">RENUÉVATE</div>
       <div class="splash-tag" id="splashTag">Un momento para ti</div>
     </div>
+    <!-- Fix 119 (Carlos: "el video no se escucha"): el video SI trae audio
+         (se re-encodo desde el original conservando la pista AAC -- antes se
+         habia comprimido sin audio por error). Pero arranca muteado a
+         proposito: ningun navegador (Chrome/Safari/Firefox, movil o
+         escritorio) permite autoplay CON sonido sin gesto del usuario --
+         si quitamos "muted" el video sencillamente no arrancaria para casi
+         nadie, reviviendo el bug de "no abre" del Fix 118. La solucion
+         estandar (Instagram/TikTok/Reels) es arrancar mudo + boton de
+         bocina para que quien quiera sonido lo active con un tap, que si
+         cuenta como gesto del usuario. Ver updateSplashSoundBtn() en el JS. -->
+    <button type="button" class="splash-sound-btn" id="splashSoundBtn" aria-label="Activar sonido">
+      <svg class="ssb-icon-muted" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><line x1="16" y1="9" x2="22" y2="15"/><line x1="22" y1="9" x2="16" y2="15"/></svg>
+      <svg class="ssb-icon-unmuted" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a9 9 0 0 1 0 12"/></svg>
+    </button>
   </div>
   <button type="button" class="splash-skip" id="splashSkipBtn">Saltar</button>
 </div>
@@ -1104,6 +1129,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   var lang = (typeof currentLang !== 'undefined' && tagByLang[currentLang]) ? currentLang : 'es';
   var tagEl = document.getElementById('splashTag');
   var skipBtn = document.getElementById('splashSkipBtn');
+  var soundBtn = document.getElementById('splashSoundBtn');
   if (tagEl) tagEl.textContent = tagByLang[lang];
   if (skipBtn) skipBtn.textContent = skipByLang[lang];
 
@@ -1143,12 +1169,26 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
     setTimeout(function(){ minDwellDone = true; if (videoFailed) dismissSplash(); }, 1400);
     function handleVideoFailure(){
       videoFailed = true;
+      if (soundBtn) soundBtn.style.display = 'none'; // sin video no hay nada que "des-mutear"
       try { if (typeof gtag === 'function') gtag('event', 'splash_video_blocked'); } catch(e) {}
       if (minDwellDone) dismissSplash();
     }
     video.addEventListener('error', handleVideoFailure);
     var playPromise = video.play();
     if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(handleVideoFailure);
+
+    // Fix 119: el video SI trae audio ahora (ver comentario junto al elemento
+    // video en el HTML), pero arranca muted=true a proposito -- es lo unico que
+    // permite el autoplay. Este boton es el unico lugar del splash donde se
+    // toca video.muted; un tap del usuario si cuenta como gesto valido para
+    // que el navegador permita activar el sonido.
+    if (soundBtn) {
+      soundBtn.addEventListener('click', function(){
+        video.muted = !video.muted;
+        soundBtn.classList.toggle('is-unmuted', !video.muted);
+        soundBtn.setAttribute('aria-label', video.muted ? 'Activar sonido' : 'Silenciar');
+      });
+    }
   } else {
     dismissSplash();
   }
