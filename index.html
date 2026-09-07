@@ -1072,12 +1072,13 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 </style>
 </head>
 <body>
-<!-- Fix 116: splash de bienvenida (Carlos, 2026-09-04) -- solo en la primera
-     carga de cada pestaña (ver sessionStorage en initSplashIntro() mas abajo).
-     Va como primer hijo de <body> para pintar antes que el resto del sitio. -->
+<!-- Fix 116/120: splash de bienvenida -- se muestra en CADA carga real de la
+     pagina (Carlos, 2026-09-05: "siempre siempre siempre"), ver el comentario
+     completo junto a initSplashIntro() mas abajo. Va como primer hijo de
+     <body> para pintar antes que el resto del sitio. -->
 <div class="splash-intro" id="splashIntro" aria-hidden="true">
   <div class="splash-panel">
-    <video class="splash-video" id="splashVideo" autoplay muted playsinline webkit-playsinline preload="auto">
+    <video class="splash-video" id="splashVideo" autoplay playsinline webkit-playsinline preload="auto">
       <source src="media/intro-splash.mp4" type="video/mp4">
     </video>
     <div class="splash-scrim"></div>
@@ -1085,16 +1086,16 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
       <div class="splash-logo">RENUÉVATE</div>
       <div class="splash-tag" id="splashTag">Un momento para ti</div>
     </div>
-    <!-- Fix 119 (Carlos: "el video no se escucha"): el video SI trae audio
-         (se re-encodo desde el original conservando la pista AAC -- antes se
-         habia comprimido sin audio por error). Pero arranca muteado a
-         proposito: ningun navegador (Chrome/Safari/Firefox, movil o
-         escritorio) permite autoplay CON sonido sin gesto del usuario --
-         si quitamos "muted" el video sencillamente no arrancaria para casi
-         nadie, reviviendo el bug de "no abre" del Fix 118. La solucion
-         estandar (Instagram/TikTok/Reels) es arrancar mudo + boton de
-         bocina para que quien quiera sonido lo active con un tap, que si
-         cuenta como gesto del usuario. Ver updateSplashSoundBtn() en el JS. -->
+    <!-- Fix 119/120 (Carlos: "el video no se escucha" / "que el audio este
+         habilitado por default"): el video SI trae audio (se re-encodo desde
+         el original conservando la pista AAC -- antes se habia comprimido
+         sin audio por error). El HTML ya NO trae el atributo "muted" --
+         el JS de mas abajo (initSplashIntro) intenta el autoplay CON sonido
+         primero. Aviso realista: la mayoria de navegadores van a bloquear
+         ese intento igual (es politica del navegador, no un bug de este
+         sitio) y el JS cae automaticamente a muted + boton de bocina
+         (Instagram/TikTok/Reels), para no revivir el bug de "no abre" del
+         Fix 118. Ver setSoundBtnState()/fallbackToMuted() en el JS. -->
     <button type="button" class="splash-sound-btn" id="splashSoundBtn" aria-label="Activar sonido">
       <svg class="ssb-icon-muted" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><line x1="16" y1="9" x2="22" y2="15"/><line x1="22" y1="9" x2="16" y2="15"/></svg>
       <svg class="ssb-icon-unmuted" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a9 9 0 0 1 0 12"/></svg>
@@ -1103,26 +1104,30 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   <button type="button" class="splash-skip" id="splashSkipBtn">Saltar</button>
 </div>
 <script>
-/* Fix 116/117: splash de bienvenida -- una sola vez por pestaña/sesion de
-   navegador (sessionStorage, no localStorage: queremos que se repita en una
-   sesion nueva, no que desaparezca para siempre en ese navegador). Se cierra
-   sola cuando el usuario le da "Saltar", cuando el video termina, o al llegar
-   al tope de 6s (Fix 117, Carlos 2026-09-04: el video dura 13s pero se corta
-   a 6s para no sentirse como un bloqueo largo -- ver feedback UX/B2C sobre el
-   splash). Si el video no puede cargar/reproducirse (ver 'error'/promise
-   rejection de .play()), se cierra de inmediato para no bloquear el sitio con
-   una pantalla negra. prefers-reduced-motion tambien la salta directo. */
+/* Fix 116/117/120: splash de bienvenida -- se muestra SIEMPRE que se carga
+   la pagina de verdad (Carlos, 2026-09-05: "siempre siempre siempre que se
+   muestre"). Antes solo aparecia una vez por pestaña (sessionStorage) -- se
+   quito ese candado a proposito. No hace falta distinguir "click en el logo
+   / Inicio" porque goHome() (ver mas abajo en el JS del sitio) nunca recarga
+   la pagina -- es un scroll/estado interno, asi que este script (que corre
+   una sola vez, al parsear el <body>) nunca se vuelve a ejecutar por eso; el
+   splash solo puede reaparecer si el navegador de verdad vuelve a pedir
+   index.html (recargar, volver a escribir la URL, abrir en pestaña nueva),
+   que es exactamente el caso que Carlos quiere cubrir. Se cierra sola cuando
+   el usuario le da "Saltar", cuando el video termina, o al llegar al tope de
+   6s (Fix 117: el video dura 13s pero se corta a 6s para no sentirse como un
+   bloqueo largo). Si el video no puede cargar/reproducirse (ver
+   'error'/promise rejection de .play()), se cierra de inmediato para no
+   bloquear el sitio con una pantalla negra. prefers-reduced-motion tambien
+   la salta directo. */
 (function initSplashIntro(){
   var el = document.getElementById('splashIntro');
   if (!el) return;
-  var alreadyShown = false;
-  try { alreadyShown = sessionStorage.getItem('renuevate_splash_shown') === '1'; } catch(e) {}
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (alreadyShown || reducedMotion) {
+  if (reducedMotion) {
     el.remove();
     return;
   }
-  try { sessionStorage.setItem('renuevate_splash_shown', '1'); } catch(e) {}
 
   var tagByLang = { es:'Un momento para ti', en:'A moment for you', fr:'Un moment pour vous' };
   var skipByLang = { es:'Saltar', en:'Skip', fr:'Passer' };
@@ -1144,25 +1149,14 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
     setTimeout(function(){ if (el && el.parentNode) el.remove(); }, 950);
   }
 
+  function setSoundBtnState(unmuted){
+    if (!soundBtn) return;
+    soundBtn.classList.toggle('is-unmuted', unmuted);
+    soundBtn.setAttribute('aria-label', unmuted ? 'Silenciar' : 'Activar sonido');
+  }
+
   var video = document.getElementById('splashVideo');
   if (video) {
-    // Fix 118 (Carlos: "el video en iOS y Android no abre, solo en web"):
-    // el elemento video ya traia autoplay+muted+playsinline (deberia bastar segun
-    // la politica de autoplay de iOS/Android desde hace anios), pero varios
-    // navegadores/webviews moviles (Low Power Mode de iOS, el webview interno
-    // de WhatsApp/Instagram cuando se abre el sitio desde un link compartido,
-    // Data Saver de Android) igual bloquean el autoplay incluso muteado.
-    // Reforzamos con .muted/.defaultMuted por JS (mas confiable que solo el
-    // atributo HTML en esos webviews) y, si aun asi el navegador rechaza el
-    // play(), YA NO cerramos el splash de inmediato: se sentia como "no abre
-    // nada" porque el rechazo puede llegar antes de que termine ni la
-    // animacion del logo. En su lugar dejamos el panel (fondo + "RENUÉVATE" +
-    // "Un momento para ti") visible su tiempo minimo de 1.4s -- sin video,
-    // pero como una pantalla de bienvenida intencional, no como un glitch.
-    // Tambien mandamos un evento GA4 (splash_video_blocked) para poder medir
-    // en Analytics que tan seguido pasa esto en produccion, en vez de
-    // adivinar.
-    try { video.muted = true; video.defaultMuted = true; } catch(e) {}
     video.addEventListener('ended', dismissSplash);
     var minDwellDone = false;
     var videoFailed = false;
@@ -1174,19 +1168,43 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
       if (minDwellDone) dismissSplash();
     }
     video.addEventListener('error', handleVideoFailure);
-    var playPromise = video.play();
-    if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(handleVideoFailure);
 
-    // Fix 119: el video SI trae audio ahora (ver comentario junto al elemento
-    // video en el HTML), pero arranca muted=true a proposito -- es lo unico que
-    // permite el autoplay. Este boton es el unico lugar del splash donde se
-    // toca video.muted; un tap del usuario si cuenta como gesto valido para
-    // que el navegador permita activar el sonido.
+    // Fix 120 (Carlos: "que el audio del video este habilitado por
+    // default"): intentamos primero CON sonido (quitamos el atributo
+    // "muted" del HTML -- ver <video id="splashVideo"> arriba). Aviso
+    // honesto: la mayoria de navegadores (Chrome, Safari, Firefox, en
+    // movil y escritorio) bloquean el autoplay con audio salvo que el
+    // usuario ya haya interactuado antes con video/audio en este dominio
+    // (el "Media Engagement Index" de Chrome, por ejemplo) -- asi que para
+    // la gran mayoria de visitas nuevas, este intento va a fallar y caemos
+    // al plan B: reintentar muted (igual que el Fix 118/119, para no
+    // revivir el bug de "no abre"), dejando el boton de bocina visible con
+    // su estado real (muted) para que activen el sonido con un tap. No es
+    // un bug de este sitio -- es una politica de seguridad del navegador
+    // que ningun sitio puede saltarse con codigo.
+    try { video.muted = false; video.defaultMuted = false; } catch(e) {}
+    var playPromise = video.play();
+    function fallbackToMuted(){
+      try { video.muted = true; video.defaultMuted = true; } catch(e) {}
+      setSoundBtnState(false);
+      var retryPromise = video.play();
+      if (retryPromise && typeof retryPromise.catch === 'function') retryPromise.catch(handleVideoFailure);
+    }
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.then(function(){ setSoundBtnState(!video.muted); }).catch(fallbackToMuted);
+    } else {
+      // Navegadores viejos sin Promise en .play(): asumimos que si arranco
+      // (no hay forma confiable de saber si el audio quedo bloqueado aqui).
+      setSoundBtnState(!video.muted);
+    }
+
+    // El boton de bocina sigue siendo el unico lugar donde se toca
+    // video.muted manualmente -- un tap del usuario si cuenta como gesto
+    // valido para que el navegador permita activar/silenciar el sonido.
     if (soundBtn) {
       soundBtn.addEventListener('click', function(){
         video.muted = !video.muted;
-        soundBtn.classList.toggle('is-unmuted', !video.muted);
-        soundBtn.setAttribute('aria-label', video.muted ? 'Activar sonido' : 'Silenciar');
+        setSoundBtnState(!video.muted);
       });
     }
   } else {
