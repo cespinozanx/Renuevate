@@ -194,6 +194,12 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 @media(max-width:760px){
   .hero-arrow{width:32px; height:32px;}
   .hero-arrow svg{width:14px; height:14px;}
+  /* Fix 123: en movil el hero es mucho mas alto (84vh, ver comentario junto
+     a .hero mas abajo) -- el mismo padding-bottom de escritorio deja el
+     texto proporcionalmente mas cerca del borde inferior, justo sobre la
+     franja donde suele estar el producto/mano en las fotos. Un empuje extra
+     aqui lo sube un poco mas que en escritorio. */
+  .hero-grid{padding-bottom:120px;}
 }
 .hero-slide-dots{position:absolute; z-index:3; left:0; right:0; bottom:16px; display:flex; justify-content:center; gap:8px;}
 .hero-slide-dot{width:7px; height:7px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.5); cursor:pointer; transition:background .25s ease, transform .25s ease;}
@@ -213,7 +219,14 @@ body.nav-lock{overflow:hidden;}
    sujeto/producto se mantiene centrado. Desktop sigue en 56vh (linea de
    abajo, sin tocar -- ese ya "se ve perfecto" segun Carlos). */
 .hero{position:relative; min-height:84vh; padding:0; display:flex; align-items:flex-end; overflow:hidden; background:#fff;}
-.hero-grid{position:relative; z-index:2; display:flex; justify-content:center; width:100%; padding-bottom:52px;}
+/* Fix 123 (Carlos: "las letras del carrusel deben estar un poco mas arriba,
+   no pueden estar en medio de las imagenes"): 52px de padding-bottom dejaba
+   el bloque de texto pegado casi al borde inferior del hero, que es
+   exactamente donde las fotos suelen tener al producto/mano en primer
+   plano -- el texto quedaba encima de esa zona en vez de verse como un
+   pie de foto separado. Subir el padding aleja el texto del borde y de esa
+   franja ocupada. */
+.hero-grid{position:relative; z-index:2; display:flex; justify-content:center; width:100%; padding-bottom:96px;}
 .hero-content{color:#fff; max-width:640px; text-align:center;}
 .hero-content .eyebrow{color:#F0DCA0;}
 .hero-content h1{font-size:clamp(36px,5.4vw,64px); line-height:1.1; margin:20px 0 22px; color:#fff; font-weight:600; text-shadow:0 3px 22px rgba(0,0,0,.35);}
