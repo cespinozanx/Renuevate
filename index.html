@@ -165,14 +165,32 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
    (posicion, margen desktop, sombra) que el video, solo cambia el contenido:
    ahora son <img class="hero-slide"> apiladas con crossfade por opacity. */
 .hero-media-frame{position:absolute; inset:0; width:100%; height:100%; overflow:hidden; background:#F8F7F3; z-index:0;}
-.hero-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; opacity:0; transition:opacity 1.4s ease;}
+/* Fix 128 (Carlos, 2026-09-11, tercera vuelta sobre el mismo problema:
+   "esta demasiado cerca, en iOS casi ni se entiende, por poco solo se ve
+   la nariz, necesito que las alejes"): hasta Fix 126 seguiamos ajustando
+   NUMEROS (object-position%, transform:scale()) sobre object-fit:cover.
+   Cover nunca deja de recortar, solo cambia QUE parte se recorta -- con
+   estas fotos nuevas eso ya no alcanza. La prueba esta en la captura de
+   escritorio que mando Carlos: el marco del hero en desktop es un rectangulo
+   MUY ancho (min-height:56vh contra un ancho de pantalla completo, aspecto
+   como 3.25:1). La foto del slide 2 (crema, 1696x2528, VERTICAL, aspecto
+   0.67:1) metida ahi con cover se escala para cubrir el ANCHO del marco, y
+   como el alto de la foto escalada queda gigante contra ese marco tan bajo,
+   cover recorta y deja visible solo un 20% de la altura total de la foto --
+   no importa que object-position uses, siempre vas a ver nada mas una
+   rebanada delgada (por eso "casi ni se entiende").
+   La unica forma de garantizar que SIEMPRE se vea la foto completa, sin
+   importar que tan vertical sea o que tan ancho sea el marco en cada
+   pantalla, es cambiar de cover a contain: el navegador la encoge hasta que
+   quepa entera (nunca recorta), rellenando el sobrante con el fondo crema
+   del marco (#F8F7F3, mismo criterio que ya se uso en Fix 89/125 para el
+   flatlay). Se quitan los object-position por slide (ya no hacen falta,
+   contain no recorta) y, mas abajo en @media max-width:760px, se quitan
+   tambien los transform:scale()/transform-origin por slide de Fix 79 a 126
+   -- eran parches para simular manualmente un recorte mas amable dentro de
+   cover; con contain ya no hay recorte que simular. */
+.hero-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; opacity:0; transition:opacity 1.4s ease;}
 .hero-slide.is-active{opacity:1;}
-/* Object-position por foto: mantiene rostro/producto centrado cuando el
-   recorte de "cover" cae del lado que menos conviene (ver comentario de
-   min-height arriba). */
-.hero-slide:nth-of-type(1){object-position:center 30%;}
-.hero-slide:nth-of-type(2){object-position:center 35%;}
-.hero-slide:nth-of-type(3){object-position:center 55%;}
 .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(20,18,14,.22) 0%, rgba(20,18,14,.08) 38%, rgba(20,18,14,.62) 100%);}
 /* Fix 69: los puntos no respondian al clic -- .hero-grid (el bloque de texto
    H1/parrafo/botones) también tiene z-index:2 y, aunque su fondo es
@@ -233,48 +251,15 @@ body.nav-lock{overflow:hidden;}
 .hero-content h1 .accent{color:#F0DCA0; border-color:#F0DCA0;}
 .hero-content p{font-size:17px; color:rgba(255,255,255,.92); max-width:520px; margin:0 auto 34px; font-weight:400;}
 .hero-cta{display:flex; gap:16px; flex-wrap:wrap; justify-content:center;}
-/* Fix 72: Carlos reporto que, pese a subir .hero a 84vh (Fix 69), en movil
-   "no se ve maximizada" y los rostros no quedan parciales/recortados como el
-   ejemplo que mando. Razon real: al ser una caja mas alta, object-fit:cover
-   solo gana recorte LATERAL (izq/der), no vertical -- el rostro completo
-   sigue cabiendo dentro del marco en vez de sentirse "en primer plano". La
-   única forma de garantizar un acercamiento real, sin importar el aspect
-   ratio de cada foto, es escalar la imagen por encima de su ajuste natural
-   con transform:scale() -- esto la agranda de verdad y empuja bordes (pelo,
-   hombros, fondo) fuera de cuadro, dejando el rostro/producto en un recorte
-   parcial mas dramatico, igual en cualquier teléfono. transform-origin usa
-   el mismo punto vertical que cada object-position de arriba, para que el
-   zoom no se desalinee del encuadre ya elegido por slide. */
+/* Fix 72 a 126 (historial largo, resumido): mientras el hero uso
+   object-fit:cover, cada vuelta de "se ve muy cerca/recortado" se atacaba
+   con mas transform:scale()/transform-origin por slide, simulando a mano un
+   recorte mas amable. Fix 128 elimino cover por completo (ver comentario
+   junto a .hero-slide arriba) -- con object-fit:contain la imagen nunca se
+   recorta, asi que estos parches de scale ya no aplican y se quitan todos.
+   El bloque de abajo queda solo por si algun slide necesita, a futuro, un
+   ajuste puntual (por ahora ninguno lo necesita). */
 @media(max-width:760px){
-  /* Fix 79 (2.0 para las 3) + Fix 83 (zoom diferenciado por contenido real
-     de cada foto, no parejo): los slides 1 y 2 (hero-carousel-1-labial.webp,
-     hero-carousel-2-crema.webp) son primeros planos de ROSTRO -- ahi Carlos
-     pidio otro 50% de acercamiento sobre el 2.0 ya aplicado (2.0 x 1.5 = 3.0).
-     El slide 3 (hero-carousel-3-flatlay.webp) NO tiene rostro -- es un
-     flatlay de 5 productos completos sobre una mesa; el mismo scale(2) que
-     los rostros lo dejaba practicamente ilegible (recortaba la mitad de los
-     productos). Ahi Carlos pidio reducir un 50% desde 2.0, es decir volver a
-     scale(1) -- sin zoom extra, se ve la composicion completa (el recorte
-     que quede es solo el que ya mete object-fit:cover al encajar la foto
-     apaisada dentro del marco vertical del hero en movil).
-     Fix 89: Carlos pidio reducir SOLO el slide 3 "ligeramente" en iOS/Android
-     para que se vean mejor los productos (los otros 2 quedan igual, no se
-     tocan). scale(1) ya era "sin zoom", asi que bajar de 1 a 0.9 encoge la
-     imagen un 10% desde su centro -- el marco (.hero-media-frame) tiene
-     fondo crema (#F8F7F3, el mismo crema de marca) detras, asi que el
-     margen que se revela alrededor se ve como un encuadre intencional, no
-     como un hueco roto.
-     Fix 118: 0.9 seguia sintiendose grande para Carlos -- bajado otro 20%,
-     a 0.72, mismo criterio (el margen crema alrededor se ve intencional).
-     Fix 124 (Carlos, 2026-09-10): el nuevo slide 2 ("Segunda Principal" --
-     Crema de Dia con el tubo en primer plano) SI necesita que se vea el
-     producto completo -- el zoom de 3x pensado para puro rostro le corta el
-     tubo. Se le quita el 3x pareja con 1 y se le da su propio scale mas bajo,
-     igual que al slide 3, para que el frasco quede visible en movil. */
-  .hero-slide{transform:scale(3);}
-  .hero-slide:nth-of-type(1){transform-origin:center 30%;}
-  .hero-slide:nth-of-type(2){transform-origin:center 40%; transform:scale(1.4);}
-  .hero-slide:nth-of-type(3){transform-origin:center 55%; transform:scale(0.72);}
 }
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a

@@ -26,6 +26,16 @@
 // Al final recalcula products.rating {stars, count} para los 8 skus, igual
 // que recomputeRating() en api/reviews.js.
 //
+// Fix 127 (Carlos, 2026-09-11): "agrega una foto a algunos comentarios ya
+// existentes" -- 4 fotos reales de producto (las mismas fotos nuevas del
+// Fix 125/126), una por resena, en los 4 productos que pidio: Roberto G.
+// (NACAR-09, Protector Solar) antes no tenia foto -- Fernanda L. ya tenia la
+// suya, asi que ahora las 2 resenas de ese producto quedan con imagen.
+// Diego H. (NACAR-07, Omniplus), Paulina G. (NACAR-12, Brillo Labial) y
+// Valeria N. (NACAR-10, Suero) tampoco tenian foto -- se sigue el mismo
+// criterio de siempre (photo en la PRIMERA resena listada del producto que
+// aun no tuviera una). No se toco ninguna resena de NACAR-06/08/11/13.
+//
 // Correr una sola vez (o cuantas veces se quiera refrescar):
 //   node db/seed-reviews.js
 //
@@ -65,7 +75,7 @@ const REVIEWS = [
   { sku: 'NACAR-06', name: 'Lucia P.', stars: 4, title: 'Rinde bastante', text: 'Buena espuma, rinde bastante. Solo me gustaria que el dispensador durara un poco mas.' },
 
   // NACAR-07 -- Omniplus Gel Premium (2 resenas)
-  { sku: 'NACAR-07', name: 'Diego H.', stars: 4, title: 'Buen producto', text: 'Buen producto, aunque el envío se tardo un poco mas de lo que decia.' },
+  { sku: 'NACAR-07', name: 'Diego H.', stars: 4, title: 'Buen producto', text: 'Buen producto, aunque el envío se tardo un poco mas de lo que decia.', photo: 'media/nacar-07-omniplus-review-diego.webp' },
   { sku: 'NACAR-07', name: 'Sofia R.', stars: 5, title: 'Ligero y refrescante', text: 'El gel se siente ligero y refresca al instante, ya es parte de mi rutina de las mananas.' },
 
   // NACAR-08 -- Crema de Dia FPS 30 (3 resenas)
@@ -75,10 +85,10 @@ const REVIEWS = [
 
   // NACAR-09 -- Protector Solar Facial FPS 50+ (2 resenas)
   { sku: 'NACAR-09', name: 'Fernanda L.', stars: 5, title: 'No deja la cara blanca', text: 'El protector solar no deja la cara blanca, eso ya es ganancia.', photo: 'media/nacar-09-spf50-abierto.webp' },
-  { sku: 'NACAR-09', name: 'Roberto G.', stars: 4, title: 'Buena proteccion', text: 'Buen protector, no irrita los ojos. Le doy 4 estrellas porque tarda un poco en absorber.' },
+  { sku: 'NACAR-09', name: 'Roberto G.', stars: 4, title: 'Buena proteccion', text: 'Buen protector, no irrita los ojos. Le doy 4 estrellas porque tarda un poco en absorber.', photo: 'media/nacar-09-spf50-review-roberto.webp' },
 
   // NACAR-10 -- Suero Facial Aloe Vera (3 resenas, agregadas en Fix 105)
-  { sku: 'NACAR-10', name: 'Valeria N.', stars: 5, title: 'Se nota rapidisimo', text: 'Desde la primera semana ya se notaba la piel mas fresca, huele riquisimo y no deja nada pegajoso.' },
+  { sku: 'NACAR-10', name: 'Valeria N.', stars: 5, title: 'Se nota rapidisimo', text: 'Desde la primera semana ya se notaba la piel mas fresca, huele riquisimo y no deja nada pegajoso.', photo: 'media/nacar-10-suero-review-valeria.webp' },
   { sku: 'NACAR-10', name: 'Jorge L.', stars: 4, title: 'Buen suero', text: 'Buen suero, se absorbe rapido. Le bajo una estrella porque el gotero a veces gotea de mas.' },
   { sku: 'NACAR-10', name: 'Ana Belen C.', stars: 5, title: 'Ya es indispensable', text: 'Lo uso manana y noche, ya no me imagino mi rutina sin el. Se los recomiendo a todas mis amigas.' },
 
@@ -88,7 +98,7 @@ const REVIEWS = [
   { sku: 'NACAR-11', name: 'Cynthia V.', stars: 5, title: 'No se ve como mascara', text: 'Se ve muy natural, no se ve como mascara ni se cuartea. Va a ser mi recompra fija.' },
 
   // NACAR-12 -- Brillo Labial (2 resenas, agregadas en Fix 105)
-  { sku: 'NACAR-12', name: 'Paulina G.', stars: 5, title: 'Brillo espectacular', text: 'El brillo es espectacular, no se siente pegajoso y el color se ve precioso en fotos.' },
+  { sku: 'NACAR-12', name: 'Paulina G.', stars: 5, title: 'Brillo espectacular', text: 'El brillo es espectacular, no se siente pegajoso y el color se ve precioso en fotos.', photo: 'media/nacar-12-brillo-review-paulina.webp' },
   { sku: 'NACAR-12', name: 'Renata O.', stars: 4, title: 'Bonito color', text: 'El tono Agata es hermoso, solo se me quita un poco rapido despues de comer.' },
 
   // NACAR-13 -- Brocha para Maquillaje Liquido (2 resenas, agregadas en Fix 105)
