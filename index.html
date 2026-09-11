@@ -265,10 +265,15 @@ body.nav-lock{overflow:hidden;}
      margen que se revela alrededor se ve como un encuadre intencional, no
      como un hueco roto.
      Fix 118: 0.9 seguia sintiendose grande para Carlos -- bajado otro 20%,
-     a 0.72, mismo criterio (el margen crema alrededor se ve intencional). */
+     a 0.72, mismo criterio (el margen crema alrededor se ve intencional).
+     Fix 124 (Carlos, 2026-09-10): el nuevo slide 2 ("Segunda Principal" --
+     Crema de Dia con el tubo en primer plano) SI necesita que se vea el
+     producto completo -- el zoom de 3x pensado para puro rostro le corta el
+     tubo. Se le quita el 3x pareja con 1 y se le da su propio scale mas bajo,
+     igual que al slide 3, para que el frasco quede visible en movil. */
   .hero-slide{transform:scale(3);}
   .hero-slide:nth-of-type(1){transform-origin:center 30%;}
-  .hero-slide:nth-of-type(2){transform-origin:center 35%;}
+  .hero-slide:nth-of-type(2){transform-origin:center 40%; transform:scale(1.4);}
   .hero-slide:nth-of-type(3){transform-origin:center 55%; transform:scale(0.72);}
 }
 @media(min-width:761px){
