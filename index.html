@@ -2691,6 +2691,7 @@ var DYN = {
        noReviewsYet:function(){ return 'Sé el primero en compartir tu experiencia con este producto.'; },
        writeReviewBtn:function(){ return 'Escribir mi opinión'; },
        cancelReviewBtn:function(){ return 'Cancelar'; },
+       loginToReviewBtn:function(){ return 'Inicia sesión para opinar'; },
        addToCart:function(){ return 'Agregar al carrito'; },
        viewDetail:function(){ return 'Ver detalle'; },
        comingSoonBadge:function(){ return 'Proximamente'; },
@@ -2859,6 +2860,7 @@ var DYN = {
        noReviewsYet:function(){ return 'Be the first to share your experience with this product.'; },
        writeReviewBtn:function(){ return 'Write my review'; },
        cancelReviewBtn:function(){ return 'Cancel'; },
+       loginToReviewBtn:function(){ return 'Sign in to review'; },
        addToCart:function(){ return 'Add to cart'; },
        viewDetail:function(){ return 'View detail'; },
        comingSoonBadge:function(){ return 'Coming soon'; },
@@ -3027,6 +3029,7 @@ var DYN = {
        noReviewsYet:function(){ return 'Soyez le premier a partager votre experience avec ce produit.'; },
        writeReviewBtn:function(){ return 'Ecrire mon avis'; },
        cancelReviewBtn:function(){ return 'Annuler'; },
+       loginToReviewBtn:function(){ return 'Connecte-toi pour donner ton avis'; },
        addToCart:function(){ return 'Ajouter au panier'; },
        viewDetail:function(){ return 'Voir le detail'; },
        comingSoonBadge:function(){ return 'Bientot disponible'; },
@@ -3453,7 +3456,15 @@ function loadReviewsForProduct(sku){
   // opinion" cada vez que se abre/cambia de ficha (antes se pintaba siempre
   // visible, ver comentario en el HTML).
   formEl.style.display = 'none';
-  writeBtn.textContent = DYN[currentLang].writeReviewBtn();
+  // Fix 129 (Carlos: "pides estar firmado pero por otro parece que dejas
+  // hacerlo y pones el boton cancelar, no veo eso claro ni facil de usar"):
+  // si no hay sesion, el boton ya no dice el generico "Escribir mi opinion"
+  // (que se siente como una invitacion abierta) -- dice directo "Inicia
+  // sesion para opinar", y toggleReviewForm() (ver mas abajo) lo manda RECTO
+  // al modal de login en vez de revelar el aviso con un boton "Cancelar" que
+  // no tiene nada que cancelar. Con sesion (haya comprado o no) se deja el
+  // texto de siempre -- ese caso si abre/cierra un panel real.
+  writeBtn.textContent = CURRENT_CUSTOMER.id ? DYN[currentLang].writeReviewBtn() : DYN[currentLang].loginToReviewBtn();
   // Fix 109: ya no se manda customerId en la URL -- el backend ahora lee
   // "purchased" de la cookie de sesion firmada (ver lib/session.js), no de
   // un customerId suelto en el query string (ese ID viajando en la URL era
@@ -3509,6 +3520,18 @@ function loadReviewsForProduct(sku){
 // estado correcto (inicia sesion / compra primero / formulario real) para el
 // sku de la ficha abierta -- este toggle solo controla visibilidad.
 function toggleReviewForm(){
+  // Fix 129 (Carlos: la captura de comentarios "pide estar firmado pero por
+  // otro lado parece que dejas hacerlo" -- el boton se abria igual sin
+  // sesion y mostraba "Cancelar" sobre un aviso de login, sin nada real que
+  // cancelar). Sin sesion, ya no se abre nada aqui: se manda derecho al
+  // modal de inicio de sesion, igual que requireLogin() en carrito/checkout.
+  // Solo con sesion iniciada tiene sentido el patron abrir/cerrar con
+  // "Cancelar" (ahi si hay un panel real -- el aviso de "debes comprarlo
+  // primero" o el formulario completo de estrellas/opinion/foto/titulo).
+  if (!CURRENT_CUSTOMER.id){
+    openAuthModal('signin');
+    return;
+  }
   var formEl = document.getElementById('pdReviewFormContainer');
   var btn = document.getElementById('pdWriteReviewBtn');
   var isOpen = formEl.style.display !== 'none';
@@ -5891,6 +5914,15 @@ function sendToBackend(provider, credential){
       // se limpia localStorage. mergeGuestCartIntoAccount() ya llama
       // refreshCart() al terminar (o de inmediato si no habia nada que fusionar).
       mergeGuestCartIntoAccount();
+      // Fix 129: si el cliente abrio el login desde el boton "Inicia sesion
+      // para opinar" (ver toggleReviewForm), la ficha del producto sigue
+      // abierta detras del modal -- sin esto, tendria que cerrar y volver a
+      // abrir la ficha para que el boton/formulario de resena se dieran
+      // cuenta de que ya inicio sesion.
+      var pdOverlay = document.getElementById('productDetailOverlay');
+      if (pdCurrentSku && pdOverlay && pdOverlay.classList.contains('is-open')){
+        loadReviewsForProduct(pdCurrentSku);
+      }
     }
     else {
       // El backend ya devuelve un mensaje generico y seguro para el usuario final
