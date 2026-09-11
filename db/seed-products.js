@@ -145,7 +145,7 @@ const PRODUCTS = [
   { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13', 'NACAR-14', 'NACAR-15'], favorito: false,
     name_i18n: { es: 'Brillo Labial', en: 'Lip Gloss', fr: 'Gloss à Lèvres' },
     description_i18n: { es: 'Formula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.', en: 'A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.', fr: 'Une formule qui fond sur les levres, pour une finition brillante inegalee et un effet volumateur.' },
-    image: 'media/nacar-12-brillo-front.webp',
+    image: 'media/nacar-12-brillo-lifestyle-hojas.webp',
     long_description_es: 'Acabado brillante y luminoso, con una formula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentacion de 8.5 g. Disponible en 7 tonos.',
     ingredients_es: ['Hydrogenated Polyisobutene', 'Tridecyl Trimellitate', 'Caprylic/Capric Triglyceride', 'Microcrystalline Wax (Cera Microcristalina)', 'Parfum (Fragrance)', 'Hydrogenated Vegetable Oil', 'Beeswax (Cera Alba)', 'Tocopheryl Acetate', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Hydrogenated Palm Acid', 'Mica', 'Silica', 'Stearyl Stearate', 'Dibutyl Lauroyl Glutamide', 'Calcium Aluminum Borosilicate', 'Bis-Stearyl Dimethicone', 'Phenoxyethanol', 'BHT', 'Cyclamen Aldehyde', 'Iron Oxide (CI 77491)', 'Titanium Dioxide (CI 77891)'],
     usage_es: 'Utilizalo solo o combinalo con tu labial hidratante o mate favorito.',
