@@ -308,16 +308,26 @@ section{padding:92px 0;}
    carrusel de las imagenes llamadas Carrusel XXX"): franja horizontal de 5
    fotos lifestyle de System Luminous, clicables (ver renderHomeCarousel() en
    JS). scroll-snap-type:x da el efecto de "encaje" al arrastrar en mobile sin
-   necesitar libreria de carrusel. */
+   necesitar libreria de carrusel.
+   Fix 125 (Carlos: "quiero que las imagenes tenga un marco elegante que
+   cubra incluso el texto, por cada imagen se ven perdidas no las quiero
+   como volando"): antes .hc-media (la foto) y .hc-name (el nombre) eran dos
+   piezas sueltas -- la foto con su propio marco/sombra y el nombre suelto
+   debajo, sin nada que las uniera visualmente ("volando"). Ahora el marco
+   (borde + sombra + radio) se mueve a .home-carousel-item, que envuelve foto
+   + nombre como una sola tarjeta; .hc-media pierde su borde/sombra propios
+   (ya los hereda del contenedor) y .hc-name pasa a vivir DENTRO de esa
+   tarjeta, en su propia franja con fondo y separador superior, en vez de
+   flotar en el margen exterior. */
 .home-carousel{margin:4px 0 46px;}
 .home-carousel-track{display:flex; gap:18px; overflow-x:auto; overflow-y:hidden; padding:4px 4px 16px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;}
 .home-carousel-track::-webkit-scrollbar{height:6px;}
 .home-carousel-track::-webkit-scrollbar-thumb{background:var(--line); border-radius:3px;}
-.home-carousel-item{flex:0 0 auto; width:180px; scroll-snap-align:start; background:none; border:0; padding:0; cursor:pointer; text-align:center; font-family:inherit;}
-.hc-media{display:block; width:100%; aspect-ratio:3/4; border-radius:6px; overflow:hidden; background:var(--beige); box-shadow:0 6px 16px rgba(0,0,0,.08); border:1px solid var(--line); transition:transform .2s ease, box-shadow .2s ease;}
+.home-carousel-item{flex:0 0 auto; width:180px; scroll-snap-align:start; background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden; padding:0; cursor:pointer; text-align:center; font-family:inherit; box-shadow:0 6px 16px rgba(0,0,0,.08); transition:transform .2s ease, box-shadow .2s ease;}
+.home-carousel-item:hover{transform:translateY(-4px); box-shadow:0 14px 26px rgba(0,0,0,.14);}
+.hc-media{display:block; width:100%; aspect-ratio:3/4; overflow:hidden; background:var(--beige);}
 .hc-media img{width:100%; height:100%; object-fit:cover; display:block;}
-.home-carousel-item:hover .hc-media{transform:translateY(-4px); box-shadow:0 14px 26px rgba(0,0,0,.14);}
-.hc-name{display:block; margin-top:10px; font-size:12.5px; font-weight:600; letter-spacing:.3px; color:var(--navy);}
+.hc-name{display:block; padding:10px 12px 14px; font-size:12.5px; font-weight:600; letter-spacing:.3px; color:var(--navy); background:#fff; border-top:1px solid var(--line);}
 @media(max-width:760px){ .home-carousel-item{width:140px;} }
 
 .brand-map{text-align:center; margin:8px 0 50px;}
@@ -496,9 +506,18 @@ body.viewing-product-page .home-only{display:none;}
    referencia del recorte hacia la izquierda (20% en vez de 50%) para que la
    ventana visible se centre en el frasco real, no en el centro geometrico
    de la foto (que es puro fondo). Selector por src -- es la unica foto del
-   catalogo con este problema real de encuadre. */
+   catalogo con este problema real de encuadre.
+   Fix 125 (Carlos: "sigue viendose mucho a la izquierda y se corta,
+   centrala mas"): el 20% de Fix 122 quedo corto. Medicion real sobre el
+   pixel (1400x1045, frasco entre x=309 y x=514, centro en x~410) contra el
+   marco 3:4 de .pd-media (ventana visible de 783.75px de ancho a esa
+   proporcion): con 20% la ventana visible es [123,907] -- dentro cabe el
+   frasco completo, pero le sobran 186px a la izquierda contra 393px a la
+   derecha, o sea el frasco se ve corrido hacia el borde izquierdo del
+   recuadro. Bajar a 4% mueve la ventana a [25,809], con margenes de ~284px
+   a cada lado del frasco -- ahi si queda centrado real dentro del marco. */
 .product-img img[src*="nacar-07-omniplus-front"],
-.pd-media img[src*="nacar-07-omniplus-front"]{ object-position:20% center; }
+.pd-media img[src*="nacar-07-omniplus-front"]{ object-position:4% center; }
 .product-img svg{width:52px; height:52px; opacity:.7; color:var(--active);}
 .product-body{padding:20px; flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;}
 .product-body .p-eyebrow{font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--active); font-weight:700;}
@@ -1214,6 +1233,14 @@ var AZURA_CONFIG = {
   </div>
 </header>
 
+<!-- Fix 125 (Carlos, 2026-09-11): reemplazo de las 3 fotos del carrusel del
+     hero por las fotos nuevas de producto (mismo criterio de Fix 79/83/89/118
+     ya documentado mas abajo en @media max-width:760 -- slide 1 y 2 son
+     primeros planos de rostro, slide 3 es flatlay sin rostro). El archivo de
+     slide 1 ya estaba en el repo desde anoche pero mal guardado como .png
+     (el <img> y el <link rel=preload> siempre pidieron .webp) -- por eso el
+     hero se veia roto/placeholder en slide 1 hasta este fix; se sustituye
+     por el .webp real y se borra el .png suelto. -->
 <section class="hero home-only">
   <div class="hero-media-frame" id="heroCarouselFrame">
     <img class="hero-slide is-active" src="media/hero-carousel-1-labial.webp" alt="" loading="eager" fetchpriority="high">
@@ -1955,11 +1982,22 @@ var V = {
             {name:"Cocoa", hex:"#62402E", available:false}
           ],
           related:["NACAR-08","NACAR-13","NACAR-14","NACAR-15"]},
+        /* Fix 125 (Carlos: "cambia la imagen principal por la segunda y
+           centrala"): NACAR-12 era el unico producto del catalogo que rompia
+           el patron de foto principal -- img/thumb apuntaban a una foto
+           lifestyle (lifestyle-hojas) y el "front" de estudio (el que si
+           tiene su propio thumb dedicado, nacar-12-brillo-thumb.webp, igual
+           que todos los demas SKUs) vivia enterrado en el gallery. Se
+           restaura el orden estandar: img/thumb = front + su thumb real,
+           gallery = las 2 fotos lifestyle. Como nacar-12-brillo-front.webp
+           es 1200x1600 (proporcion 3:4), calza exacto con el marco de
+           .pd-media (tambien 3:4) sin recorte ni object-position -- queda
+           centrada por construccion, no por parche de CSS. */
         {sku:"NACAR-12", tag:"Brillo labial", name:"Brillo Labial", desc:"Fórmula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.", price:"$340 MXN", favorito:false,
           longDesc:"Acabado brillante y luminoso, con una fórmula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentación de 8.5 g. Disponible en 7 tonos.",
           usage:"Utilízalo solo o combínalo con tu labial hidratante o mate favorito.",
           ingredients:["Hydrogenated Polyisobutene","Tridecyl Trimellitate","Caprylic/Capric Triglyceride","Microcrystalline Wax (Cera Microcristalina)","Parfum (Fragrance)","Hydrogenated Vegetable Oil","Beeswax (Cera Alba)","Tocopheryl Acetate","Simmondsia Chinensis (Jojoba) Seed Oil","Hydrogenated Palm Acid","Mica","Silica","Stearyl Stearate","Dibutyl Lauroyl Glutamide","Calcium Aluminum Borosilicate","Bis-Stearyl Dimethicone","Phenoxyethanol","BHT","Cyclamen Aldehyde","Iron Oxide (CI 77491)","Titanium Dioxide (CI 77891)"],
-          img:"media/nacar-12-brillo-lifestyle-hojas.webp", thumb:"media/nacar-12-brillo-lifestyle-hojas.webp", gallery:["media/nacar-12-brillo-front.webp","media/nacar-12-brillo-lifestyle-mano.webp"],
+          img:"media/nacar-12-brillo-front.webp", thumb:"media/nacar-12-brillo-thumb.webp", gallery:["media/nacar-12-brillo-lifestyle-hojas.webp","media/nacar-12-brillo-lifestyle-mano.webp"],
           shades:[
             {name:"Diamante", hex:"#E8CFCB", available:true},
             {name:"Ópalo", hex:"#C46B85", available:true},
@@ -2065,7 +2103,7 @@ var V = {
           longDesc:"Glossy, luminous finish with a lightweight, non-sticky formula. Its plumping effect includes actives that keep your lips soft and hydrated. 8.5 g. Available in 7 shades.",
           usage:"Use it alone or layer it over your favorite hydrating or matte lipstick.",
           ingredients:["Hydrogenated Polyisobutene","Tridecyl Trimellitate","Caprylic/Capric Triglyceride","Microcrystalline Wax (Cera Microcristalina)","Parfum (Fragrance)","Hydrogenated Vegetable Oil","Beeswax (Cera Alba)","Tocopheryl Acetate","Simmondsia Chinensis (Jojoba) Seed Oil","Hydrogenated Palm Acid","Mica","Silica","Stearyl Stearate","Dibutyl Lauroyl Glutamide","Calcium Aluminum Borosilicate","Bis-Stearyl Dimethicone","Phenoxyethanol","BHT","Cyclamen Aldehyde","Iron Oxide (CI 77491)","Titanium Dioxide (CI 77891)"],
-          img:"media/nacar-12-brillo-lifestyle-hojas.webp", thumb:"media/nacar-12-brillo-lifestyle-hojas.webp", gallery:["media/nacar-12-brillo-front.webp","media/nacar-12-brillo-lifestyle-mano.webp"],
+          img:"media/nacar-12-brillo-front.webp", thumb:"media/nacar-12-brillo-thumb.webp", gallery:["media/nacar-12-brillo-lifestyle-hojas.webp","media/nacar-12-brillo-lifestyle-mano.webp"],
           shades:[
             {name:"Diamante", hex:"#E8CFCB", available:true},
             {name:"Ópalo", hex:"#C46B85", available:true},
@@ -2171,7 +2209,7 @@ var V = {
           longDesc:"Fini brillant et lumineux, grâce à une formule légère et non collante. Son effet volumateur associe des actifs qui gardent les lèvres douces et hydratées. Format 8,5 g. Disponible en 7 teintes.",
           usage:"À utiliser seul ou associé à votre rouge à lèvres hydratant ou mat préféré.",
           ingredients:["Hydrogenated Polyisobutene","Tridecyl Trimellitate","Caprylic/Capric Triglyceride","Microcrystalline Wax (Cera Microcristalina)","Parfum (Fragrance)","Hydrogenated Vegetable Oil","Beeswax (Cera Alba)","Tocopheryl Acetate","Simmondsia Chinensis (Jojoba) Seed Oil","Hydrogenated Palm Acid","Mica","Silica","Stearyl Stearate","Dibutyl Lauroyl Glutamide","Calcium Aluminum Borosilicate","Bis-Stearyl Dimethicone","Phenoxyethanol","BHT","Cyclamen Aldehyde","Iron Oxide (CI 77491)","Titanium Dioxide (CI 77891)"],
-          img:"media/nacar-12-brillo-lifestyle-hojas.webp", thumb:"media/nacar-12-brillo-lifestyle-hojas.webp", gallery:["media/nacar-12-brillo-front.webp","media/nacar-12-brillo-lifestyle-mano.webp"],
+          img:"media/nacar-12-brillo-front.webp", thumb:"media/nacar-12-brillo-thumb.webp", gallery:["media/nacar-12-brillo-lifestyle-hojas.webp","media/nacar-12-brillo-lifestyle-mano.webp"],
           shades:[
             {name:"Diamante", hex:"#E8CFCB", available:true},
             {name:"Ópalo", hex:"#C46B85", available:true},
