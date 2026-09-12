@@ -2794,7 +2794,18 @@ var DYN = {
          complaintGuard:function(){ return 'Lamento el inconveniente. Te conecto ahora con un asesor humano para resolverlo con prioridad — comparte tu número de pedido por WhatsApp.'; },
          certUnknown:function(){ return 'Para darte información 100% correcta sobre esa certificacion, te conecto con un asesor humano que te la valida directamente.'; },
          frustrationGuard:function(){ return 'Lamento mucho la mala experiencia. Te conecto de inmediato con un asesor humano para resolverlo con prioridad.'; },
-         locationGuard:function(){ return 'Gracias por decirme dónde vives. Por ahora solo hacemos envíos dentro de México (entrega en 4 días hábiles); si estás fuera del país no podríamos enviarte todavía. Si quieres, te conecto con un asesor humano para ver opciones.'; }
+         locationGuard:function(){ return 'Gracias por decirme dónde vives. Por ahora solo hacemos envíos dentro de México (entrega en 4 días hábiles); si estás fuera del país no podríamos enviarte todavía. Si quieres, te conecto con un asesor humano para ver opciones.'; },
+         // Fix 130 (Carlos: "el chat debe funcionar como buscador tambien, si
+         // le pido un producto con una frase o parte deberia poder mandarle
+         // los productos y llevarme a ellos"): ver findChatProductMatches()/
+         // renderChatProductResults() -- reutilizan el mismo motor de
+         // busqueda con tolerancia a typos del buscador del header
+         // (runProductSearch/scoreProductMatch), asi que "brillo labial",
+         // "omniplus" o un typo como "protetor solar" encuentran el producto
+         // real y lo abren directo en su ficha, sin pasar por las preguntas
+         // frecuentes.
+         productFoundIntro:function(n){ return n === 1 ? 'Encontré este producto:' : 'Encontré estos productos:'; },
+         viewProductLabel:function(){ return 'Ver producto'; }
        },
        beautyQuiz:{
          choice:{
@@ -2963,7 +2974,9 @@ var DYN = {
          complaintGuard:function(){ return "I'm sorry for the inconvenience. Connecting you now with a human advisor as a priority — please share your order number on WhatsApp."; },
          certUnknown:function(){ return "To give you fully accurate information on that certification, I'll connect you with a human advisor who can verify it directly."; },
          frustrationGuard:function(){ return "I'm really sorry about the bad experience. Connecting you right away with a human advisor as a priority."; },
-         locationGuard:function(){ return "Thanks for letting me know where you're based. Right now we only ship within Mexico (delivery in 4 business days); if you're outside the country we can't ship to you yet. I can connect you with a human advisor if you'd like to check options."; }
+         locationGuard:function(){ return "Thanks for letting me know where you're based. Right now we only ship within Mexico (delivery in 4 business days); if you're outside the country we can't ship to you yet. I can connect you with a human advisor if you'd like to check options."; },
+         productFoundIntro:function(n){ return n === 1 ? 'I found this product:' : 'I found these products:'; },
+         viewProductLabel:function(){ return 'View product'; }
        },
        beautyQuiz:{
          choice:{
@@ -3132,7 +3145,9 @@ var DYN = {
          complaintGuard:function(){ return "Je suis desolee pour ce desagrement. Je vous mets en relation en priorite avec un conseiller humain — partagez votre número de commande sur WhatsApp."; },
          certUnknown:function(){ return "Pour vous donner une information totalement exacte sur cette certification, je vous mets en relation avec un conseiller humain qui la verifiera directement."; },
          frustrationGuard:function(){ return "Je suis vraiment desolee pour cette mauvaise experience. Je vous mets en relation immediatement avec un conseiller humain en priorite."; },
-         locationGuard:function(){ return "Merci de me dire ou vous habitez. Pour le moment, nous livrons uniquement au Mexique (livraison en 4 jours ouvres) ; si vous etes hors du pays, nous ne pouvons pas encore vous livrer. Je peux vous mettre en relation avec un conseiller humain si vous voulez voir les options."; }
+         locationGuard:function(){ return "Merci de me dire ou vous habitez. Pour le moment, nous livrons uniquement au Mexique (livraison en 4 jours ouvres) ; si vous etes hors du pays, nous ne pouvons pas encore vous livrer. Je peux vous mettre en relation avec un conseiller humain si vous voulez voir les options."; },
+         productFoundIntro:function(n){ return n === 1 ? "J'ai trouve ce produit :" : "J'ai trouve ces produits :"; },
+         viewProductLabel:function(){ return 'Voir le produit'; }
        },
        beautyQuiz:{
          choice:{
@@ -5639,6 +5654,75 @@ function runProductSearch(e){
   return false;
 }
 
+/* Fix 130 (Carlos: "el chat debe funcionar como buscador tambien, si le pido
+   un producto con una frase o parte deberia poder mandarle los productos y
+   llevarme a ellos"): reutiliza EXACTAMENTE el mismo motor de matching que ya
+   usa el buscador del header (normalizeSearchText/scoreProductMatch/
+   buildProductSearchBlob de runProductSearch, arriba) -- mismo catalogo V[],
+   mismo tolerancia a errores de tecleo, cero costo nuevo. La diferencia con
+   runProductSearch: esta version regresa una LISTA de candidatos (no abre
+   nada sola) porque en el chat puede haber mas de un match razonable (ej.
+   "protector" podria matchear el protector solar Y aparecer mencionado en la
+   descripcion de otro producto) y es mejor mostrarle 2-3 tarjetas al
+   visitante que adivinar por el cuando la duda es real. maxResults limita
+   cuantas tarjetas se pintan para no saturar el panel de chat (angosto).
+   scoreProductMatch ya exige que TODAS las palabras del query hicieran match
+   (ver "if (score < qWords.length) score = 0" en runProductSearch) -- por
+   eso "hola" o "como me ayudas" nunca generan un falso positivo aqui: no
+   comparten ninguna palabra con ningun producto real del catalogo. */
+function findChatProductMatches(text, maxResults){
+  var q = normalizeSearchText(text);
+  if (!q) return [];
+  var qWords = q.split(/\s+/).filter(Boolean);
+  var verticals = ['nacar', 'vigor', 'roble'];
+  var results = [];
+  for (var i = 0; i < verticals.length; i++){
+    var v = verticals[i];
+    var vd = V[v] && V[v][currentLang];
+    var products = (vd && vd.products) || [];
+    for (var j = 0; j < products.length; j++){
+      var p = products[j];
+      if (p.dummy) continue; // Fix 130: mismo criterio que runProductSearch -- nunca mandar a un "proximamente"
+      var normSku = normalizeSearchText(p.sku);
+      var normName = normalizeSearchText(p.name);
+      var score;
+      if ((q.length >= 4 && normSku.indexOf(q) !== -1) || normName.indexOf(q) !== -1){
+        score = 999;
+      } else {
+        score = scoreProductMatch(qWords, buildProductSearchBlob(p));
+        if (score < qWords.length) score = 0;
+      }
+      if (score > 0) results.push({ p: p, v: v, score: score });
+    }
+  }
+  results.sort(function(a, b){ return b.score - a.score; });
+  return results.slice(0, maxResults || 3);
+}
+/* Tarjeta de resultado en el chat -- mismo estilo visual que productCardHtml
+   (chat-pcard, ya usado por el recomendador de perfil), pero el CTA aqui SI
+   abre la ficha real del producto (openProductDetail), no solo el catalogo
+   del sistema: es justo la diferencia que pidio Carlos ("llevarme a ellos",
+   no solo mostrarme el sistema completo). Mismo llamado en el mismo orden
+   que ya usa runProductSearch al encontrar un match (goVertical ->
+   openProductDetail), asi que el comportamiento de "a donde te lleva" es
+   identico venga del buscador del header o del chat. */
+function chatProductResultCardHtml(match){
+  var j = DYN[currentLang].julieta;
+  var p = match.p, v = match.v;
+  return '<div class="chat-pcard">' +
+    '<div class="cp-icon" style="color:' + vColor(v) + '">' + iconSvg(v) + '</div>' +
+    '<div class="cp-body"><b>' + p.name + '</b><span>' + p.desc + '</span><em>' + p.price + '</em></div>' +
+    '<div class="cp-cta" onclick="closeAllPanels(); goVertical(\'' + v + '\'); openProductDetail(\'' + p.sku + '\');">' + j.viewProductLabel() + '</div>' +
+  '</div>';
+}
+function renderChatProductResults(matches){
+  var j = DYN[currentLang].julieta;
+  addChatMsg(j.productFoundIntro(matches.length), 'bot');
+  var html = '';
+  for (var i = 0; i < matches.length; i++){ html += chatProductResultCardHtml(matches[i]); }
+  addChatMsg(html, 'bot');
+}
+
 function subscribeForm(e){
   e.preventDefault();
   // Fix 100: antes este handler solo abria el modal de "gracias" sin mandar
@@ -6588,17 +6672,44 @@ function sendChat(){
   var wantsRecommendation = profile.hasIntent || (profile.age !== null && profile.gender !== null);
   if (wantsRecommendation){ showTyping(); setTimeout(function(){ hideTyping(); answerRecommendation(profile); }, 500); return; }
 
+  // Fix 130 (Carlos: "el chat debe funcionar como buscador tambien, si le
+  // pido un producto con una frase o parte deberia poder mandarle los
+  // productos y llevarme a ellos"): findChatProductMatches() exige que TODAS
+  // las palabras del mensaje hagan match (ver su comentario, junto a
+  // runProductSearch) -- por eso una pregunta normal en lenguaje natural
+  // ("cual es el precio del omniplus") NO dispara esto por accidente (ni
+  // "cual", "es", "el", "precio" ni "del" existen en ningun producto), pero
+  // "omniplus", "brillo labial" o "protector solar" si.
+  //
+  // Match fuerte (score 999 = el nombre completo del producto CONTIENE el
+  // mensaje, o el SKU calza): se muestra de inmediato, ni siquiera se
+  // consulta matchTopic -- el visitante nombro un producto puntual, eso gana
+  // sobre cualquier FAQ generica.
+  var productMatches = findChatProductMatches(text, 3);
+  var hasStrongProductMatch = productMatches.length && productMatches[0].score >= 999;
+  if (hasStrongProductMatch){
+    var strongMatches = productMatches.filter(function(m){ return m.score >= 999; });
+    showTyping();
+    setTimeout(function(){ hideTyping(); renderChatProductResults(strongMatches); }, 500);
+    return;
+  }
+
   showTyping();
   setTimeout(function(){
     hideTyping();
     var topic = matchTopic(text);
-    if (!topic){
-      /* Log ligero de fallback (solo en consola, sin backend todavia -- ver gap
-         documentado en la respuesta a Carlos: falta un endpoint real de log para
-         revisar preguntas no resueltas y ampliar el diccionario de intenciones). */
-      if (window.console && console.info) console.info('[Julieta] fallback sin match:', text);
-    }
-    answerTopic(topic || 'fallback');
+    if (topic){ answerTopic(topic); return; }
+    // Fix 130: si ninguna FAQ hizo match pero SI hay productos con match
+    // parcial tolerante a typos (ej. "tienen serun facial", "brilo labial"),
+    // eso vale mas que el fallback generico "No tengo esa respuesta" -- se
+    // le muestran las tarjetas en vez de dejarlo sin nada, igual que pidio
+    // Carlos.
+    if (productMatches.length){ renderChatProductResults(productMatches); return; }
+    /* Log ligero de fallback (solo en consola, sin backend todavia -- ver gap
+       documentado en la respuesta a Carlos: falta un endpoint real de log para
+       revisar preguntas no resueltas y ampliar el diccionario de intenciones). */
+    if (window.console && console.info) console.info('[Julieta] fallback sin match:', text);
+    answerTopic('fallback');
   }, 500);
 }
 
