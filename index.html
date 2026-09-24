@@ -1884,8 +1884,9 @@ var AZURA_CONFIG = {
 
 <!-- Fix 137: login + panel de Administracion del catalogo real (coleccion
      `products` en Mongo). La contrasena se valida en el servidor
-     (api/admin-auth.js) contra ADMIN_PASSWORD -- nunca hay una contrasena
-     guardada en este archivo. -->
+     (api/admin.js, ver Fix 140 -- fusionado con admin-products.js para no
+     rebasar el limite de 12 Serverless Functions del plan Hobby) contra
+     ADMIN_PASSWORD -- nunca hay una contrasena guardada en este archivo. -->
 <div class="profile-modal-overlay" id="adminLoginOverlay" onclick="if(event.target===this) closeAdminLogin();">
   <div class="privacy-modal admin-login-modal" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
     <button class="privacy-modal-close" onclick="closeAdminLogin()" aria-label="Cerrar">&times;</button>
@@ -4840,7 +4841,7 @@ function submitAdminLogin(ev){
   msgEl.textContent = '';
   msgEl.className = 'admin-login-msg';
   if (btn) btn.disabled = true;
-  fetch('/api/admin-auth', {
+  fetch('/api/admin?resource=auth', {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
@@ -4873,7 +4874,7 @@ function closeAdminPanel(){
 }
 
 function logoutAdmin(){
-  fetch('/api/admin-auth', { method: 'DELETE', credentials: 'same-origin' })
+  fetch('/api/admin?resource=auth', { method: 'DELETE', credentials: 'same-origin' })
     .then(function(){ closeAdminPanel(); })
     .catch(function(){ closeAdminPanel(); });
 }
@@ -4881,7 +4882,7 @@ function logoutAdmin(){
 function loadAdminProducts(){
   var listEl = document.getElementById('adminProductList');
   listEl.innerHTML = '<div class="admin-empty-state">Cargando…</div>';
-  fetch('/api/admin-products', { credentials: 'same-origin' })
+  fetch('/api/admin?resource=products', { credentials: 'same-origin' })
     .then(function(r){
       if (r.status === 401){
         closeAdminPanel();
@@ -5034,7 +5035,7 @@ function saveAdminProduct(){
     usage_es: document.getElementById('admFieldUsage').value
   };
 
-  fetch('/api/admin-products', {
+  fetch('/api/admin?resource=products', {
     method: 'PUT',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
