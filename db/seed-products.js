@@ -86,8 +86,8 @@ const PRODUCTS = [
   // index.html ya mostraba "Seytú System Time-Specialist" desde entonces,
   // pero este archivo se quedo con el nombre viejo. Se corrige aqui para que
   // ambas fuentes de verdad (ver nota dual-source-of-truth) vuelvan a coincidir.
-  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'], favorito: true,
-    name_i18n: { es: 'Seytú System Time-Specialist', en: 'Seytú System Time-Specialist', fr: 'Seytú System Time-Specialist' },
+  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'], favorito: true, system: 'time_specialist',
+    name_i18n: { es: 'Seytú System T-Specialist', en: 'Seytú System T-Specialist', fr: 'Seytú System T-Specialist' },
     description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
     image: 'media/nacar-08-dia-lifestyle-espejo.webp',
     long_description_es: 'Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.',
@@ -265,6 +265,11 @@ async function main() {
       // !== undefined (no solo truthy) porque false es un valor valido que
       // debe guardarse igual que true.
       if (p.favorito !== undefined) setFields.favorito = p.favorito;
+      // Fix 152 (Carlos, 2026-09-24): clasificacion opcional "System"
+      // (time_specialist/hair_speciality/spot_speciality) del panel admin --
+      // ver VALID_SYSTEMS en api/admin.js. Mismo patron !== undefined que el
+      // resto de campos opcionales de este loop.
+      if (p.system !== undefined) setFields.system = p.system;
 
       await db.collection('products').updateOne(
         { sku: p.sku },
