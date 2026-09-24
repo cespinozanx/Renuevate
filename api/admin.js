@@ -43,6 +43,17 @@ const {
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
 const VALID_VERTICALS = ['nacar', 'vigor', 'roble', 'accessory'];
+// Fix 144: clasificacion opcional "Sistema", independiente de `vertical`
+// (vertical sigue siendo obligatorio -- decide en que pagina del sitio vive
+// el producto). Un producto puede no pertenecer a ninguno (null/ausente).
+const VALID_SYSTEMS = ['time_specialist', 'hair_speciality', 'spot_speciality'];
+// Limite de imagenes por producto y de peso combinado (en caracteres de las
+// strings base64/URL recibidas) -- el plan Hobby de Vercel limita el body
+// de una funcion serverless a 4.5 MB; el frontend ya comprime cada foto en
+// el navegador antes de mandarla (ver resizeImageFileToDataUrl en index.html)
+// pero este limite es la ultima linea de defensa del lado servidor.
+const MAX_PRODUCT_IMAGES = 6;
+const MAX_IMAGES_TOTAL_CHARS = 3500000;
 
 let cachedClient = null;
 async function getDb() {
@@ -68,6 +79,18 @@ function validateProductPayload(body) {
     return 'El precio debe ser un número válido mayor o igual a 0.';
   }
   if (body.status && ['active', 'inactive'].indexOf(body.status) === -1) return 'Estado invalido.';
+  if (body.system != null && body.system !== '' && VALID_SYSTEMS.indexOf(body.system) === -1) {
+    return 'Sistema invalido.';
+  }
+  if (body.images !== undefined) {
+    if (!Array.isArray(body.images)) return 'Las imagenes deben ser una lista.';
+    if (body.images.length > MAX_PRODUCT_IMAGES) return 'Maximo ' + MAX_PRODUCT_IMAGES + ' imagenes por producto.';
+    for (var i = 0; i < body.images.length; i++) {
+      if (typeof body.images[i] !== 'string' || !body.images[i].trim()) return 'Una de las imagenes esta vacia o invalida.';
+    }
+    var totalImgChars = body.images.reduce(function (sum, s) { return sum + s.length; }, 0);
+    if (totalImgChars > MAX_IMAGES_TOTAL_CHARS) return 'Las imagenes pesan demasiado en conjunto. Sube menos fotos o de menor resolucion.';
+  }
   return null;
 }
 
@@ -143,6 +166,13 @@ async function handleProducts(req, res, db) {
       };
     }
     if (typeof body.favorito === 'boolean') setFields.favorito = body.favorito;
+    // Fix 144: system siempre se escribe explicito (incluido null) para que
+    // el admin pueda regresar un producto a "ningun sistema" desde el panel.
+    setFields.system = (body.system && VALID_SYSTEMS.indexOf(body.system) !== -1) ? body.system : null;
+    if (Array.isArray(body.images)) {
+      setFields.images = body.images;
+      setFields.image = body.images[0] || null;
+    }
     if (isNonEmptyString(body.long_description_es)) setFields.long_description_es = body.long_description_es.trim();
     if (Array.isArray(body.ingredients_es)) {
       setFields.ingredients_es = body.ingredients_es.map(String).map(function (s) { return s.trim(); }).filter(Boolean);

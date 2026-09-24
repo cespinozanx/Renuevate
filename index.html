@@ -897,10 +897,10 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .admin-login-msg{font-size:12px; margin-top:10px; min-height:16px;}
 .admin-login-msg.is-error{color:#B3261E;}
 
-.admin-panel-modal{max-width:1000px; width:96%; text-align:left; padding:28px 26px;}
+.admin-panel-modal{max-width:1320px; width:97%; text-align:left; padding:28px 26px;}
 .admin-panel-header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap; gap:12px; padding-right:26px;}
 .admin-panel-header .btn{padding:8px 14px; font-size:11.5px; border-radius:4px;}
-.admin-panel-layout{display:grid; grid-template-columns:280px 1fr; gap:22px; align-items:start;}
+.admin-panel-layout{display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:start;}
 .admin-product-list{border:1px solid var(--line); border-radius:6px; overflow:hidden;}
 .admin-product-list-search{padding:10px; border-bottom:1px solid var(--line); background:var(--cream);}
 .admin-product-list-search input{width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:4px; font-size:12.5px; font-family:inherit;}
@@ -928,10 +928,38 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .admin-save-msg.is-error{color:#B3261E;}
 .admin-save-msg.is-ok{color:#1E7A4C;}
 .admin-empty-state{color:var(--grey); font-size:13px; text-align:center; padding:50px 16px;}
+
+/* Fix 144: filtro por Sistema en la lista (izquierda), selector de Sistema
+   dentro del formulario, y galeria de imagenes editable -- ver renderAdmin*
+   en el JS mas abajo. */
+.admin-system-filter-bar{display:flex; flex-wrap:wrap; gap:6px; padding:10px 10px 0;}
+.admin-filter-pill{font-size:10.5px; letter-spacing:.3px; padding:6px 11px; border-radius:20px; border:1px solid var(--line); background:#fff; color:var(--ink); cursor:pointer; white-space:nowrap;}
+.admin-filter-pill:hover{border-color:var(--ink);}
+.admin-filter-pill.is-active{background:var(--ink); border-color:var(--ink); color:#fff;}
+
+.admin-system-pills{display:flex; flex-wrap:wrap; gap:8px;}
+.admin-system-pill{font-size:11.5px; padding:9px 14px; border-radius:20px; border:1px solid var(--line); background:#fff; color:var(--ink); cursor:pointer;}
+.admin-system-pill:hover{border-color:var(--ink);}
+.admin-system-pill.is-active{background:var(--nacar-soft); border-color:var(--nacar); color:var(--ink); font-weight:600;}
+.admin-system-hint{font-size:11px; color:var(--grey); margin-top:6px;}
+
+.admin-image-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-top:4px;}
+.admin-image-thumb{position:relative; aspect-ratio:1/1; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--cream);}
+.admin-image-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+.admin-image-thumb .admin-image-cover-tag{position:absolute; top:4px; left:4px; font-size:8.5px; letter-spacing:.4px; text-transform:uppercase; background:rgba(0,0,0,.65); color:#fff; padding:2px 6px; border-radius:3px;}
+.admin-image-remove{position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%; border:none; background:rgba(0,0,0,.65); color:#fff; font-size:13px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;}
+.admin-image-remove:hover{background:#B3261E;}
+.admin-image-add-tile{aspect-ratio:1/1; border:1.5px dashed var(--line); border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; cursor:pointer; color:var(--grey); font-size:10.5px; text-align:center; background:var(--cream);}
+.admin-image-add-tile:hover{border-color:var(--ink); color:var(--ink);}
+.admin-image-add-tile .plus{font-size:22px; line-height:1;}
+.admin-image-add-tile input{display:none;}
+.admin-image-hint{font-size:11px; color:var(--grey); margin-top:8px;}
+
 @media (max-width:760px){
   .admin-panel-layout{grid-template-columns:1fr;}
   .admin-field-row{grid-template-columns:1fr;}
   #adminProductList{max-height:220px;}
+  .admin-image-grid{grid-template-columns:repeat(3, 1fr);}
 }
 
 .beauty-rec-banner{max-width:920px; margin:0 auto 22px; background:var(--nacar-soft); border:1px solid var(--nacar); border-radius:6px; padding:14px 20px; font-size:13px; color:var(--ink); text-align:center;}
@@ -1906,7 +1934,7 @@ var AZURA_CONFIG = {
     <div class="admin-panel-header">
       <div>
         <h3 id="adminPanelTitle" style="margin-bottom:2px;">Administración del catálogo</h3>
-        <p class="pm-subtitle" style="margin-bottom:0;">Edita textos, precios y estado de los productos de Renuévate.</p>
+        <p class="pm-subtitle" style="margin-bottom:0;">Edita textos, precios, imágenes, sistema y estado de los productos de Renuévate.</p>
       </div>
       <div style="display:flex; gap:10px;">
         <button type="button" class="btn" style="border:1px solid var(--line); background:#fff; cursor:pointer;" onclick="startNewAdminProduct()">+ Nuevo producto</button>
@@ -1916,6 +1944,7 @@ var AZURA_CONFIG = {
     <div class="admin-panel-layout">
       <div>
         <div class="admin-product-list">
+          <div class="admin-system-filter-bar" id="adminSystemFilterBar"></div>
           <div class="admin-product-list-search">
             <input type="text" id="adminSearchInput" placeholder="Buscar por nombre o SKU" oninput="renderAdminProductList(this.value)">
           </div>
@@ -4806,7 +4835,31 @@ document.addEventListener("DOMContentLoaded", initLazyAutoplayVideos);
    reciente guardado en el panel, sin necesitar un deploy de codigo.
    ===================================================================== */
 
-var ADMIN_STATE = { products: [], selectedSku: null, isNew: false };
+var ADMIN_STATE = { products: [], selectedSku: null, isNew: false, systemFilter: null };
+
+// Fix 144: Carlos pidio imagenes vinculadas al producto (verlas, cambiarlas,
+// subirlas al crear) y una clasificacion opcional de "Sistema" (System Time
+// Specialist / System Hair Speciality / Speciality Spot), separada del
+// campo `vertical` (que sigue siendo obligatorio -- decide en que pagina
+// del sitio vive el producto, ver ADMIN_VERTICAL_LABELS). El campo nuevo
+// `system` es 100% opcional y no toca el storefront ni el vertical: solo
+// organiza/filtra dentro de este panel. Ningun producto lo trae por
+// default -- ni los existentes (no tienen el campo) ni los nuevos.
+var ADMIN_SYSTEM_LABELS = {
+  time_specialist: 'System Time Specialist',
+  hair_speciality: 'System Hair Speciality',
+  spot_speciality: 'Speciality Spot'
+};
+var ADMIN_SYSTEM_ORDER = ['time_specialist', 'hair_speciality', 'spot_speciality'];
+
+// Estado vivo de las imagenes del formulario abierto -- se resetea cada vez
+// que se pinta un producto o "nuevo producto" (ver renderAdminForm). Cada
+// entrada es un string: un data URL (foto recien subida, ya redimensionada
+// en el navegador) o una ruta ya existente (media/... o una guardada antes
+// desde este mismo panel). La primera imagen del arreglo es la portada.
+var ADMIN_IMAGE_STATE = [];
+var ADMIN_FORM_SYSTEM = null;
+var ADMIN_MAX_IMAGES = 6;
 
 function escapeHtmlAdmin(s){
   return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
@@ -4893,6 +4946,8 @@ function loadAdminProducts(){
       ADMIN_STATE.products = data.products || [];
       ADMIN_STATE.selectedSku = null;
       ADMIN_STATE.isNew = false;
+      ADMIN_STATE.systemFilter = null;
+      renderAdminSystemFilterBar();
       renderAdminProductList('');
       document.getElementById('adminFormWrap').innerHTML = '<div class="admin-empty-state">Selecciona un producto de la lista, o crea uno nuevo.</div>';
     })
@@ -4904,12 +4959,32 @@ function loadAdminProducts(){
 
 var ADMIN_VERTICAL_LABELS = { nacar: 'System T-Specialist', vigor: 'System Hair Speciality', roble: 'Speciality Spot', accessory: 'Accesorios' };
 
+function renderAdminSystemFilterBar(){
+  var bar = document.getElementById('adminSystemFilterBar');
+  if (!bar) return;
+  var html = '<div class="admin-filter-pill' + (!ADMIN_STATE.systemFilter ? ' is-active' : '') + '" onclick="setAdminSystemFilter(null)">Todos</div>';
+  ADMIN_SYSTEM_ORDER.forEach(function(sys){
+    var active = (ADMIN_STATE.systemFilter === sys) ? ' is-active' : '';
+    html += '<div class="admin-filter-pill' + active + '" onclick="setAdminSystemFilter(\'' + sys + '\')">' + ADMIN_SYSTEM_LABELS[sys] + '</div>';
+  });
+  bar.innerHTML = html;
+}
+
+function setAdminSystemFilter(sys){
+  ADMIN_STATE.systemFilter = sys || null;
+  renderAdminSystemFilterBar();
+  var searchInputEl = document.getElementById('adminSearchInput');
+  renderAdminProductList(searchInputEl ? searchInputEl.value : '');
+}
+
 function renderAdminProductList(filterText){
   var listEl = document.getElementById('adminProductList');
   var groups = { nacar: [], vigor: [], roble: [], accessory: [] };
   var q = (filterText || '').toLowerCase().trim();
+  var sysFilter = ADMIN_STATE.systemFilter;
   ADMIN_STATE.products.forEach(function(p){
     if (!groups[p.vertical]) return;
+    if (sysFilter && p.system !== sysFilter) return;
     var hay = (p.sku + ' ' + ((p.name_i18n && p.name_i18n.es) || '')).toLowerCase();
     if (q && hay.indexOf(q) === -1) return;
     groups[p.vertical].push(p);
@@ -4958,6 +5033,13 @@ function renderAdminForm(p){
     var vsel = (p && p.vertical === v) ? ' selected' : '';
     return '<option value="' + v + '"' + vsel + '>' + ADMIN_VERTICAL_LABELS[v] + '</option>';
   }).join('');
+  if (isNew) vertOptions = '<option value="" selected disabled>-- Selecciona --</option>' + vertOptions;
+
+  // Fix 144: se resetea el estado vivo de imagenes/sistema con lo que trae
+  // el producto (o vacio/ninguno si es nuevo) -- ver buildAdminImageGridHtml
+  // y buildAdminSystemPillsHtml mas abajo.
+  ADMIN_IMAGE_STATE = (p && Array.isArray(p.images) && p.images.length) ? p.images.slice() : ((p && p.image) ? [p.image] : []);
+  ADMIN_FORM_SYSTEM = (p && p.system) || null;
 
   var html = '';
   html += '<h4>' + (isNew ? 'Nuevo producto' : escapeHtmlAdmin(n.es || p.sku)) + '</h4>';
@@ -4967,8 +5049,18 @@ function renderAdminForm(p){
     (isNew ? '<input type="text" id="admFieldSku" placeholder="Ej. NACAR-16">' : ('<input type="text" value="' + p.sku + '" disabled>')) +
     '</div>';
 
-  html += '<div class="admin-field"><label>Vertical / System</label>' +
+  html += '<div class="admin-field"><label>Vertical (sección del sitio)</label>' +
     (isNew ? ('<select id="admFieldVertical">' + vertOptions + '</select>') : ('<input type="text" value="' + ADMIN_VERTICAL_LABELS[p.vertical] + '" disabled>')) +
+    '</div>';
+
+  html += '<div class="admin-field"><label>Imágenes del producto</label>' +
+    '<div class="admin-image-grid" id="admFieldImagesGrid">' + buildAdminImageGridHtml() + '</div>' +
+    '<div class="admin-image-hint">La primera foto es la portada (se usa en la tarjeta del catálogo). Para reordenar, quita y vuelve a subir en el orden que quieras. Máximo ' + ADMIN_MAX_IMAGES + ' fotos; se comprimen automáticamente al subirlas.</div>' +
+    '</div>';
+
+  html += '<div class="admin-field"><label>Sistema (opcional)</label>' +
+    '<div id="admFieldSystemPills">' + buildAdminSystemPillsHtml() + '</div>' +
+    '<div class="admin-system-hint">Si el producto pertenece a uno de estos 3 sistemas, selecciónalo. Al hacer clic en un sistema en la lista de la izquierda, solo se muestran los productos de ese sistema. Por defecto ningún producto pertenece a ninguno.</div>' +
     '</div>';
 
   html += '<div class="admin-field"><label>Nombre (ES / EN / FR)</label><div class="admin-field-row">' +
@@ -4993,6 +5085,98 @@ function renderAdminForm(p){
   html += '<div class="admin-form-actions"><button type="button" class="btn btn-dark" style="border:none; cursor:pointer;" onclick="saveAdminProduct()">Guardar cambios</button><span class="admin-save-msg" id="adminSaveMsg"></span></div>';
 
   wrap.innerHTML = html;
+}
+
+function buildAdminImageGridHtml(){
+  var html = '';
+  ADMIN_IMAGE_STATE.forEach(function(src, idx){
+    html += '<div class="admin-image-thumb">' +
+      (idx === 0 ? '<span class="admin-image-cover-tag">Portada</span>' : '') +
+      '<img src="' + src + '" alt="">' +
+      '<button type="button" class="admin-image-remove" onclick="removeAdminImage(' + idx + ')" aria-label="Quitar imagen">&times;</button>' +
+      '</div>';
+  });
+  if (ADMIN_IMAGE_STATE.length < ADMIN_MAX_IMAGES){
+    html += '<label class="admin-image-add-tile">' +
+      '<span class="plus">+</span><span>Agregar foto' + (ADMIN_IMAGE_STATE.length ? '' : 's') + '</span>' +
+      '<input type="file" accept="image/*" multiple onchange="handleAdminImageFiles(this.files); this.value=\'\';">' +
+      '</label>';
+  }
+  return html;
+}
+
+function renderAdminImageGrid(){
+  var el = document.getElementById('admFieldImagesGrid');
+  if (el) el.innerHTML = buildAdminImageGridHtml();
+}
+
+function removeAdminImage(idx){
+  ADMIN_IMAGE_STATE.splice(idx, 1);
+  renderAdminImageGrid();
+}
+
+function handleAdminImageFiles(fileList){
+  var files = Array.prototype.slice.call(fileList || []);
+  if (!files.length) return;
+  var room = ADMIN_MAX_IMAGES - ADMIN_IMAGE_STATE.length;
+  if (room <= 0){
+    alert('Máximo ' + ADMIN_MAX_IMAGES + ' imágenes por producto. Quita alguna antes de agregar otra.');
+    return;
+  }
+  files.slice(0, room).forEach(function(file){
+    resizeImageFileToDataUrl(file, 1100, 0.82, function(dataUrl){
+      if (!dataUrl) return;
+      ADMIN_IMAGE_STATE.push(dataUrl);
+      renderAdminImageGrid();
+    });
+  });
+}
+
+// Redimensiona en el navegador (canvas) antes de mandar la foto al servidor:
+// una foto de celular sin comprimir (3-6 MB) rebasa el limite de payload de
+// las funciones serverless de Vercel (4.5 MB en el plan Hobby, ver tambien
+// la validacion espejo en api/admin.js) y ademas infla el documento en
+// Mongo. 1100px de lado mayor + JPEG calidad .82 deja fotos de producto
+// nitidas en ~100-300 KB cada una.
+function resizeImageFileToDataUrl(file, maxDim, quality, cb){
+  if (!file || file.type.indexOf('image/') !== 0){ cb(null); return; }
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim){
+        if (w >= h){ h = Math.round(h * (maxDim / w)); w = maxDim; }
+        else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = function(){ cb(null); };
+    img.src = e.target.result;
+  };
+  reader.onerror = function(){ cb(null); };
+  reader.readAsDataURL(file);
+}
+
+function buildAdminSystemPillsHtml(){
+  var html = '<div class="admin-system-pills">';
+  html += '<div class="admin-system-pill' + (!ADMIN_FORM_SYSTEM ? ' is-active' : '') + '" onclick="setAdminFormSystem(null)">Ninguno</div>';
+  ADMIN_SYSTEM_ORDER.forEach(function(sys){
+    var active = (ADMIN_FORM_SYSTEM === sys) ? ' is-active' : '';
+    html += '<div class="admin-system-pill' + active + '" onclick="setAdminFormSystem(\'' + sys + '\')">' + ADMIN_SYSTEM_LABELS[sys] + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function setAdminFormSystem(sys){
+  ADMIN_FORM_SYSTEM = sys || null;
+  var el = document.getElementById('admFieldSystemPills');
+  if (el) el.innerHTML = buildAdminSystemPillsHtml();
 }
 
 function saveAdminProduct(){
@@ -5029,7 +5213,9 @@ function saveAdminProduct(){
     status: document.getElementById('admFieldActive').checked ? 'active' : 'inactive',
     long_description_es: document.getElementById('admFieldLongDesc').value,
     ingredients_es: ingredientesRaw.split('\n').map(function(s){ return s.trim(); }).filter(Boolean),
-    usage_es: document.getElementById('admFieldUsage').value
+    usage_es: document.getElementById('admFieldUsage').value,
+    images: ADMIN_IMAGE_STATE.slice(),
+    system: ADMIN_FORM_SYSTEM || null
   };
 
   fetch('/api/admin?resource=products', {
@@ -5050,7 +5236,8 @@ function saveAdminProduct(){
       msgEl.className = 'admin-save-msg is-ok';
       var merged = { sku: sku, vertical: vertical, name_i18n: payload.name_i18n, description_i18n: payload.description_i18n,
         unit_price: price, currency: 'MXN', favorito: payload.favorito, status: payload.status,
-        long_description_es: payload.long_description_es, ingredients_es: payload.ingredients_es, usage_es: payload.usage_es };
+        long_description_es: payload.long_description_es, ingredients_es: payload.ingredients_es, usage_es: payload.usage_es,
+        images: payload.images, system: payload.system, image: (payload.images && payload.images[0]) || null };
       var idx = -1;
       for (var i = 0; i < ADMIN_STATE.products.length; i++){ if (ADMIN_STATE.products[i].sku === sku){ idx = i; break; } }
       if (idx === -1) ADMIN_STATE.products.push(merged); else ADMIN_STATE.products[idx] = merged;
@@ -5094,6 +5281,14 @@ function applyAdminOverridesToV(products){
       if (dbP.name_i18n && dbP.name_i18n[lang]) p.name = dbP.name_i18n[lang];
       if (dbP.description_i18n && dbP.description_i18n[lang]) p.desc = dbP.description_i18n[lang];
       if (typeof dbP.favorito === 'boolean') p.favorito = dbP.favorito;
+      // Fix 144: si el admin cambio las fotos, reflejarlo tambien en el
+      // storefront (portada + galeria del modal de zoom) -- antes dbP.image
+      // se guardaba en Mongo pero nunca se leia aqui.
+      if (Array.isArray(dbP.images) && dbP.images.length){
+        p.img = dbP.images[0];
+        p.thumb = dbP.images[0];
+        p.gallery = dbP.images.slice(1);
+      }
       // long_description_es/ingredients_es/usage_es solo existen en español
       // en el catalogo real (ver db/seed-products.js) -- se aplican
       // unicamente al bloque ES para no pisar traducciones EN/FR ya hechas.
