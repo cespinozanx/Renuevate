@@ -168,16 +168,6 @@ module.exports = async (req, res) => {
 
   const resource = (req.query && req.query.resource) || '';
 
-  if (resource === 'envcheck') {
-    res.status(200).json({
-      adminPasswordSet: !!process.env.ADMIN_PASSWORD,
-      adminPasswordLength: process.env.ADMIN_PASSWORD ? process.env.ADMIN_PASSWORD.length : 0,
-      sessionSecretSet: !!process.env.SESSION_SECRET,
-      mongoUriSet: !!process.env.MONGODB_URI,
-      deployedAt: '2026-09-24T-recheck2',
-    });
-    return;
-  }
 
 
   try {
