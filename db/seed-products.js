@@ -71,7 +71,8 @@ const PRODUCTS = [
   { sku: 'NACAR-06', vertical: 'nacar', price: '$370 MXN', related: ['NACAR-08'], favorito: true,
     name_i18n: { es: 'Espuma Limpiadora Facial', en: 'Facial Cleansing Foam', fr: 'Mousse Nettoyante Faciale' },
     description_i18n: { es: 'Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.', en: 'With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.', fr: 'Avec certains ingredients naturels, la formule de la mousse nettoyante faciale SEYTU est ideale pour un nettoyage en profondeur.' },
-    image: 'media/nacar-06-espuma-front.webp',
+    image: 'media/nacar-06-espuma-lifestyle-ventana.webp',
+    images: ['media/nacar-06-espuma-lifestyle-ventana.webp', 'media/nacar-06-espuma-lifestyle-flatlay.webp', 'media/nacar-06-espuma-lifestyle-mano.webp'],
     long_description_es: 'Ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel. Intensa sensacion de frescura. Ideal para todo tipo de piel. Presentacion de 150 ml.',
     ingredients_es: ['Aqua (Water)', 'Sodium C14-16 Olefin Sulfonate', 'Sodium Cocoyl Isethionate', 'Sodium Lauroamphoacetate', 'Glycerin', 'Disodium Laureth Sulfosuccinate', 'Cocamidopropyl Betaine', 'PEG-8 Caprylic/Capric Glycerides', 'Polysorbate 20', 'Aloe Barbadensis Leaf Extract', 'Alaria Esculenta Extract', 'Moringa Oleifera Leaf Extract', 'Ethylhexylglycerin', 'PEG-12 Dimethicone', 'Cocamide MIPA', 'Benzyl Alcohol', 'Parfum (Fragrance)', 'Citric Acid', 'Benzyl Salicylate', 'Hexyl Cinnamal', 'Limonene'],
     usage_es: '1. Humedece el rostro con agua tibia. 2. Aplica una pequeña cantidad de espuma y masajea con movimientos circulares, evitando el contorno de ojos. 3. Enjuaga con abundante agua tibia y seca con una toalla limpia. Usa por la mañana y por la noche.' },
@@ -82,6 +83,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Omniplus Gel Premium', en: 'Omniplus Premium Gel', fr: 'Omniplus Gel Premium' },
     description_i18n: { es: 'Omniplus Gel Premium colabora a mantener la piel protegida de los ataques de los radicales libres y aumentar el nivel de hidratacion.', en: 'Omniplus Premium Gel helps keep skin protected from free-radical damage and increases hydration levels.', fr: "Omniplus Gel Premium aide a garder la peau protegee contre les radicaux libres et a augmenter son niveau d'hydratation." },
     image: 'media/nacar-07-omniplus-front.webp',
+    images: ['media/nacar-07-omniplus-front.webp', 'media/nacar-07-omniplus-marmol.webp', 'media/nacar-07-omniplus-mano.webp'],
     long_description_es: 'Tu mejor aliado para hidratar, humectar y acondicionar la piel. Brinda mayor proteccion, un aspecto saludable y ayuda a mejorar la elasticidad. Presentacion de 30 g.',
     ingredients_es: ['Extracto de levadura', 'Extracto de hoja de olivo', 'Extracto de arnica', 'Extractos de frutas silvestres', 'Aceite de jojoba'],
     usage_es: 'Aplica una pequeña cantidad sobre rostro y/o cuerpo limpio, con un suave masaje hasta su absorcion completa. Uso diario.' },
@@ -93,6 +95,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Seytú System T-Specialist', en: 'Seytú System T-Specialist', fr: 'Seytú System T-Specialist' },
     description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
     image: 'media/nacar-08-dia-lifestyle-espejo.webp',
+    images: ['media/nacar-08-dia-lifestyle-espejo.webp', 'media/nacar-08-dia-lifestyle-helechos.webp', 'media/nacar-08-dia-lifestyle-agua.webp'],
     long_description_es: 'Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.',
     ingredients_es: ['Aqua (Water)', 'Octocrylene', 'Ethylhexyl Methoxycinnamate', 'Butyl Methoxydibenzoylmethane', 'Niacinamide', 'Neopentyl Glycol Diheptanoate', 'Potassium Cetyl Phosphate', 'Cetearyl Alcohol', 'Polymethylsilsesquioxane', 'Glycerin', 'Sodium Acrylates Copolymer', 'Bakuchiol', 'Tocopheryl Acetate', 'Hyaluronic Acid', 'Squalene', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Portulaca Oleracea Extract', 'Lecithin', 'Hydrogenated Lecithin', 'Phenoxyethanol', 'Decylene Glycol', 'Caprylyl Glycol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA'],
     usage_es: 'Aplica cada mañana sobre el rostro limpio, como ultimo paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.' },
@@ -104,6 +107,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Protector Solar Facial FPS 50+', en: 'Facial Sunscreen SPF 50+', fr: 'Protection Solaire Visage FPS 50+' },
     description_i18n: { es: 'Protector solar facial con FPS 50+, ideal para pieles sensibles, toque seco, resistente al agua y libre de fragancia. Completa tu rutina facial y protege tu rostro.', en: 'SPF 50+ facial sunscreen, ideal for sensitive skin: dry touch, water-resistant and fragrance-free. Completes your facial routine and protects your skin.', fr: "Protection solaire visage FPS 50+, ideale pour les peaux sensibles : toucher sec, resistante a l'eau et sans parfum. Complete votre routine visage et protege votre peau." },
     image: 'media/nacar-09-protector-front.webp',
+    images: ['media/nacar-09-protector-front.webp', 'media/nacar-09-protector-piedra.webp', 'media/nacar-09-protector-mano.webp', 'media/seytu-filosofia-main.webp'],
     long_description_es: ['89% Ingredientes de origen natural', 'Toque Seco', 'Para toda la familia', 'Clinica y dermatologicamente probado', 'FPS 50+', 'Amigable con el oceano', 'Respetuoso de la ley hawaiana de proteccion a los corales'],
     ingredients_es: ['Aqua (Water)', 'Dicaprylyl Carbonate', 'Hydrogenated Ethylhexyl Olivate', 'Titanium Dioxide', 'Zinc Oxide (Nano)', 'Butyloctyl Salicylate', 'Hydrogenated Farnesene', 'Beeswax', 'Caprylyl Methicone', 'Glycerin', 'Silica', 'Aluminum Starch Octenylsuccinate', 'Polyhydroxystearic Acid', 'Sodium Chloride', 'Polysilicone-11', 'Sodium Stearoyl Lactylate', 'Benzotriazolyl Dodecyl P-Cresol', 'Cetyl PEG/PPG-10/1 Dimethicone', 'Caprylic/Capric Triglyceride', 'Stearic Acid', 'Hydrogenated Olive Oil Unsaponifiables', 'Dimethicone/Vinyl Dimethicone Crosspolymer', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Glyceryl Caprylate', 'Glyceryl Undecylenate', 'Helianthus Annuus (Sunflower) Seed Oil', 'Aluminum Hydroxide', 'Pentaerythrityl Tetra-Di-T-Butyl Hydroxyhydrocinnamate', 'Laureth-12', 'Laminaria Ochroleuca Extract', 'Tocopherol', 'Bisabolol', 'Triethoxycaprylylsilane', 'Benzyl Alcohol'],
     usage_es: 'Recomendacion de Uso: Aplicar de manera uniforme sobre la piel seca antes de la exposicion solar. Reaplicar cada 3 horas y despues de transpirar, nadar o secarte con toalla.' },
@@ -116,6 +120,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Suero Facial de Hidratación Profunda con Aloe Vera', en: 'Aloe Vera Deep Moisturizing Facial Serum', fr: "Serum Facial Hydratant Profond a l'Aloe Vera" },
     description_i18n: { es: 'El Suero Facial de Hidratación Profunda con Aloe Vera SEYTÚ hidrata a profundidad y contribuye a la firmeza y elasticidad de tu piel.', en: "SEYTU's Aloe Vera Deep Moisturizing Facial Serum deeply hydrates and helps improve your skin's firmness and elasticity.", fr: 'Le Serum Facial Hydratant Profond a l\'Aloe Vera SEYTU hydrate en profondeur et aide a ameliorer la fermete et l\'elasticite de votre peau.' },
     image: 'media/nacar-10-suero-lifestyle-mano.webp',
+    images: ['media/nacar-10-suero-lifestyle-mano.webp', 'media/nacar-10-suero-lifestyle-aloe.webp', 'media/nacar-10-suero-lifestyle-splash.webp'],
     long_description_es: 'Ideal para ayudar a mejorar la apariencia de las finas líneas de expresión causadas por la resequedad. Textura suave y ligera de fácil absorción.',
     ingredients_es: ['Enriquecido con péptidos precursores del colágeno y ácido hialurónico.'],
     usage_es: 'Aplica 2-3 gotas sobre rostro limpio, por la mañana y por la noche, con un ligero masaje hasta su absorción completa. Puedes usarlo antes de tu crema hidratante.' },
@@ -128,6 +133,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Maquillaje Líquido UP+ FPS15', en: 'UP+ Liquid Foundation SPF15', fr: 'Fond de Teint Liquide UP+ FPS15' },
     description_i18n: { es: 'Base de maquillaje con acabado mate, de larga duracion y cobertura construible, que corrige el tono de tu piel mientras la protege con activos anti edad, humectantes y antioxidantes.', en: 'A matte-finish, long-wearing liquid foundation with buildable coverage that corrects your skin tone while protecting it with anti-aging, moisturizing and antioxidant actives.', fr: 'Fond de teint liquide fini mat, longue tenue et couvrance modulable, qui corrige le teint de la peau tout en la protegeant grace a ses actifs anti-age, hydratants et antioxydants.' },
     image: 'media/nacar-11-maquillaje-front.webp',
+    images: ['media/nacar-11-maquillaje-front.webp', 'media/nacar-11-maquillaje-tonos-brazo.webp', 'media/nacar-11-maquillaje-closeup-piedras.webp', 'media/nacar-11-maquillaje-closeup-marmol.webp', 'media/nacar-11-maquillaje-closeup-textura.webp'],
     long_description_es: 'Formula a prueba de agua y sudor, con acabado homogeneo y mate. Su efecto soft focus difumina la apariencia de las finas lineas de expresion. Cobertura construible que se adapta a tu piel a lo largo del dia. Presentacion de 40 g. Disponible en 9 tonos.',
     ingredients_es: ['Aqua (Water)', 'Zinc Oxide', 'Cyclopentasiloxane', 'Isododecane', 'Trimethylsiloxysilicate', 'Cetearyl Alcohol', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Polymethylsilsesquioxane/Trimethylsiloxysilicate', 'Divinyldimethicone/Dimethicone/Phenylsilsesquioxane Crosspolymer', 'Dimethicone', 'PEG-10 Dimethicone', 'Hydrogenated Rapeseed Oil', 'C24-28 Alkyldimethylsiloxy Trimethylsiloxysilicate', 'Polymethylsilsesquioxane', 'Cetyl PEG/PPG-10/1 Dimethicone', 'Hexyl Laurate', 'PEG/PPG-18/18 Dimethicone', 'Microcrystalline Wax', 'Hydrolyzed Collagen', 'Polyglyceryl-4 Isostearate', 'Tocopheryl Acetate', 'Sodium Polyacrylate', 'Parfum (Fragrance)', 'Disteardimonium Hectorite', 'Caprylyl Glycol', 'Aluminum Hydroxide', 'Polysilicone-11', 'Propylene Carbonate', 'Triethoxycaprylylsilane', 'Butylene Glycol', 'Phenoxyethanol', 'DMDM Hydantoin', 'Xanthan Gum', 'Decylene Glycol', 'Hydrolyzed Wheat Protein', 'Ethylhexylglycerin', 'Hydrolyzed Soy Protein', 'Decyl Glucoside', 'Sodium Hyaluronate', 'Pectin', 'Hexylene Glycol', 'Serine', 'Arginine', 'Proline', 'Glucose', 'Carrageenan', 'Alpha-Isomethyl Ionone', 'Amyl Cinnamal', 'Anise Alcohol', 'Cinnamyl Alcohol', 'Citronellol', 'Geraniol', 'Hexyl Cinnamal', 'Hydroxycitronellal', 'Linalool'],
     usage_es: 'Aplica sobre el rostro limpio con los dedos, brocha o esponja, extendiendo del centro hacia afuera. Aumenta la cobertura con capas adicionales en las zonas que lo requieran.',
@@ -148,7 +154,8 @@ const PRODUCTS = [
   { sku: 'NACAR-12', vertical: 'nacar', price: '$340 MXN', related: ['NACAR-11', 'NACAR-13', 'NACAR-14', 'NACAR-15'], favorito: false,
     name_i18n: { es: 'Brillo Labial', en: 'Lip Gloss', fr: 'Gloss à Lèvres' },
     description_i18n: { es: 'Formula que se funde sobre los labios, con un acabado brillante inigualable y efecto voluminizador.', en: 'A formula that melts onto your lips, delivering an unbeatable glossy finish with a plumping effect.', fr: 'Une formule qui fond sur les levres, pour une finition brillante inegalee et un effet volumateur.' },
-    image: 'media/nacar-12-brillo-lifestyle-hojas.webp',
+    image: 'media/nacar-12-brillo-front.webp',
+    images: ['media/nacar-12-brillo-front.webp', 'media/nacar-12-brillo-lifestyle-hojas.webp', 'media/nacar-12-brillo-lifestyle-mano.webp'],
     long_description_es: 'Acabado brillante y luminoso, con una formula ligera y no pegajosa. Su efecto voluminizador incluye activos que mantienen tus labios suaves e hidratados. Presentacion de 8.5 g. Disponible en 7 tonos.',
     ingredients_es: ['Hydrogenated Polyisobutene', 'Tridecyl Trimellitate', 'Caprylic/Capric Triglyceride', 'Microcrystalline Wax (Cera Microcristalina)', 'Parfum (Fragrance)', 'Hydrogenated Vegetable Oil', 'Beeswax (Cera Alba)', 'Tocopheryl Acetate', 'Simmondsia Chinensis (Jojoba) Seed Oil', 'Hydrogenated Palm Acid', 'Mica', 'Silica', 'Stearyl Stearate', 'Dibutyl Lauroyl Glutamide', 'Calcium Aluminum Borosilicate', 'Bis-Stearyl Dimethicone', 'Phenoxyethanol', 'BHT', 'Cyclamen Aldehyde', 'Iron Oxide (CI 77491)', 'Titanium Dioxide (CI 77891)'],
     usage_es: 'Utilizalo solo o combinalo con tu labial hidratante o mate favorito.',
@@ -171,6 +178,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Brocha para Maquillaje Líquido', en: 'Liquid Foundation Brush', fr: 'Pinceau pour Maquillage Liquide' },
     description_i18n: { es: 'Consigue una piel perfecta y sin filtro con nuestra Brocha para Base de Maquillaje, que gracias a sus mas de 200 mil cerdas te brindara un acabado aterciopelado e impecable.', en: 'Get flawless, filter-free skin with our Foundation Brush, whose 200,000+ bristles deliver a velvety, impeccable finish.', fr: 'Obtenez une peau parfaite et sans filtre grace a notre Pinceau Fond de Teint, dont les plus de 200 000 poils offrent un fini veloute et impeccable.' },
     image: 'media/nacar-13-brocha-front.webp',
+    images: ['media/nacar-13-brocha-front.webp', 'media/nacar-13-brocha-closeup-bucket.webp', 'media/nacar-13-brocha-closeup-mano.webp'],
     long_description_es: ['Especialmente diseñada para base de maquillaje', 'Aplicación de cobertura media a alta', 'Tipo de Cerda: Sintética.'] },
   // Fix 116: cuarto producto de "Maquillaje" (Carlos, 2026-09-04) -- primer
   // labial de la categoria, con 10 tonos (mismo patron shades que NACAR-11/12).
@@ -178,6 +186,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Labial Hidratante FPS 15', en: 'Moisturizing Lipstick SPF 15', fr: 'Rouge à Lèvres Hydratant FPS 15' },
     description_i18n: { es: 'Labiales Hidratantes FPS15, con una gama de tonos imprescindibles que haran deslumbrar tus labios en cualquier ocasion. Su formula es la combinacion perfecta entre textura ultra cremosa y colores intensos de larga duracion.', en: 'Moisturizing Lipsticks SPF15, with an essential range of shades that will make your lips dazzle on any occasion. Its formula is the perfect combination of an ultra-creamy texture and long-lasting, intense color.', fr: 'Rouges a Levres Hydratants FPS15, avec une gamme de teintes incontournables qui feront briller vos levres en toute occasion. Sa formule est la combinaison parfaite entre une texture ultra-cremeuse et des couleurs intenses longue tenue.' },
     image: 'media/nacar-14-labial-front.webp',
+    images: ['media/nacar-14-labial-front.webp', 'media/nacar-14-labial-gama-tonos.webp', 'media/nacar-14-labial-lifestyle-piedra.webp', 'media/nacar-14-labial-lifestyle-arroyo.webp'],
     long_description_es: ['Alta pigmentación', 'Larga duración', 'Efecto satinado', 'Fórmula que acondiciona y humecta los labios', 'Adicionados con FPS 15 que protege tus labios contra los daños ambientales y los rayos UV.'],
     ingredients_es: ['Ricinus Communis (Castor) Seed Oil', 'Euphorbia Cerifera Cera', 'Benzophenone-3', 'Ethylhexyl Methoxycinnamate', 'Isopropyl Myristate', 'Aroma (Flavor)', 'Paraffin', 'Copernicia Cerifera (Carnauba) Cera', 'Hydrogenated Microcrystalline Wax', 'Microcrystalline Wax', 'Hydrogenated Vegetable Oil', 'Cera Alba', 'Tocopheryl Acetate', 'Hydrogenated Palm Acid', 'Stearyl Stearate', 'Phenoxyethanol', 'BHT', 'Butyrospermum Parkii (Shea) Butter', 'Canola Oil', 'Vitis Vinifera (Grape) Seed Oil', 'Titanium Dioxide (CI 77891)', 'Mica (CI 77019)', 'Red 6 Lake (CI 15850)', 'Yellow 6 Lake (CI 15980)', 'Red 7 Lake (CI 15850)', 'Iron Oxides (CI 77491)'],
     usage_es: 'Aplica directamente sobre los labios limpios, desde el centro hacia las comisuras. Reaplica despues de comer, beber o de una exposicion solar prolongada.',
@@ -202,6 +211,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Polvo Iluminador Desert Sunset', en: 'Desert Sunset Illuminating Powder', fr: 'Poudre Illuminatrice Desert Sunset' },
     description_i18n: { es: 'Polvo iluminador de larga duracion, que proporciona un brillo radiante y aterciopelado.', en: 'Long-lasting illuminating powder that delivers a radiant, velvety glow.', fr: 'Poudre illuminatrice longue tenue, qui offre un eclat radieux et velouté.' },
     image: 'media/nacar-15-polvo-front.webp',
+    images: ['media/nacar-15-polvo-front.webp', 'media/nacar-15-polvo-lifestyle-marmol.webp', 'media/nacar-15-polvo-lifestyle-tocador.webp'],
     long_description_es: ['Polvo ligero', 'Textura aterciopelada', 'Acabado uniforme', 'Larga duración'],
     ingredients_es: ['Talc', 'Zea Mays (Corn) Starch', 'Dimethicone', 'Octyldodecyl Stearoyl Stearate', 'Zinc Stearate', 'Pentaerythrityl Tetraisostearate', 'Caprylyl Glycol', 'Isononyl Isononanoate', 'Phenoxyethanol', 'Hexylene Glycol'],
     disclaimer_es: 'Puede contener/may contain: Tin Oxide, Mica, CI 77891, CI 77491, CI 77492, CI 77499 -- la carga de pigmento varia segun el tono.',
@@ -255,6 +265,16 @@ async function main() {
       // y solo los traen los 4 productos reales de Carlos).
       if (p.rating !== undefined) setFields.rating = p.rating;
       if (p.image !== undefined) setFields.image = p.image;
+      // Fix 155 (Carlos, 2026-09-24): galeria completa de fotos por producto
+      // (portada + extras) para que el panel admin deje de mostrar solo una
+      // foto al abrir la ficha -- ver ADMIN_IMAGE_STATE en index.html, cae a
+      // [p.image] cuando p.images esta vacio. OJO: applyAdminOverridesToV()
+      // en index.html usa images[0]/images.slice(1) para pisar el
+      // img/thumb/gallery que el storefront le muestra al cliente en cuanto
+      // este campo tenga contenido -- los valores de abajo son EXACTAMENTE
+      // los mismos que ya vive en V.nacar (index.html), asi que activar este
+      // campo no cambia nada visible en el sitio, solo alimenta el admin.
+      if (Array.isArray(p.images) && p.images.length) { setFields.images = p.images; setFields.image = p.images[0]; }
       if (p.long_description_es !== undefined) setFields.long_description_es = p.long_description_es;
       if (p.ingredients_es !== undefined) setFields.ingredients_es = p.ingredients_es;
       if (p.usage_es !== undefined) setFields.usage_es = p.usage_es;
