@@ -302,6 +302,14 @@ body.nav-lock{overflow:hidden;}
   .hero-slide:nth-of-type(1){object-position:38% center;}
   .hero-slide:nth-of-type(2){object-position:center center;}
   .hero-slide:nth-of-type(3){object-position:center center;}
+  /* Fix 138 (Carlos: "la segunda imagen no se mira bien, esta demasiado
+     cerca"): en movil el marco (84vh, ancho completo) es MAS ALTO que la
+     foto de la crema una vez escalada -- cover encuadra por ALTURA, asi que
+     aqui SIEMPRE se ve la foto completa de arriba a abajo (rostro + mano +
+     producto), solo se recorta un poco de los lados. No habia nada que
+     "alejar" en movil -- el problema reportado es exclusivo de desktop (ver
+     bloque de abajo). Se deja center/center sin cambios, confirmado con la
+     matematica real del recorte, no a ojo. */
 }
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
@@ -325,7 +333,29 @@ body.nav-lock{overflow:hidden;}
      de estas fotos y la franja inferior es superficie/fondo de relleno --
      un centro puro cortaria mas del sujeto arriba de lo que hace falta. */
   .hero-slide:nth-of-type(1){object-position:center 42%;}
-  .hero-slide:nth-of-type(2){object-position:center 38%;}
+  /* Fix 138 (Carlos: "la segunda imagen no se mira bien, esta demasiado
+     cerca, alejala"): diagnostico real, no ajuste a ojo -- en desktop el
+     marco mide ~56vh de alto por (ancho de pantalla - 128px), un aspecto de
+     hasta 3:1 en monitores anchos. La foto es un retrato vertical (rostro +
+     producto pegados, 2000x2981). Con cover sin barras (decision ya tomada
+     por Carlos en Fix 131) la ventana visible en desktop alcanza entre
+     ~22% y ~26% del alto TOTAL de la foto segun el monitor -- es
+     matematicamente imposible que quepan rostro completo Y producto
+     completo al mismo tiempo, sin importar la posicion. No existe un ajuste
+     de CSS que "aleje la camara" sin cortar contenido, porque no hay mas
+     foto alrededor del encuadre actual para revelar (ver resumen entregado
+     a Carlos con las 3 opciones). Carlos eligio "punto medio balanceado":
+     se prioriza ojos/nariz (el foco mas fuerte de una foto de belleza)
+     sobre frente/menton, y el nombre de marca del producto ("SEYTÚ
+     SYSTEM...") sobre el texto de FPS/precio de mas abajo. 38% dejaba
+     ver un poco mas de frente que de marca del producto; 40% balancea
+     ambos lados de ese recorte segun la medicion real (grid de referencia
+     sobre la foto, no estimado). El cambio visual es sutil a proposito --
+     es el maximo ajuste real disponible dentro de la restriccion fisica de
+     la foto, ver el resumen para las alternativas si se quiere un cambio
+     mas notorio (foto nueva con mas encuadre, o aceptar un margen de color
+     de marca en vez de full-bleed). */
+  .hero-slide:nth-of-type(2){object-position:center 40%;}
   .hero-slide:nth-of-type(3){object-position:center 45%;}
 }
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
@@ -334,6 +364,16 @@ body.nav-lock{overflow:hidden;}
 section{padding:92px 0;}
 .section-head{text-align:center; max-width:660px; margin:0 auto 52px;}
 .section-head h2{font-size:clamp(28px,3.8vw,44px); margin-top:14px;}
+/* Fix 136 (Carlos: "haz mas espaciado los titulos de System Time Specialist/
+   Time Speciality Health/Time Speciality Spot, en cada system deja un
+   espacio al triple del actual"): #zoomTitle es el UNICO elemento que
+   muestra los 3 (cambia de texto via renderVertical() segun la pestana
+   activa, ver JS) -- una sola regla aqui cubre los 3 "systems" a la vez.
+   Cada titulo son 2-3 palabras sueltas ("System Time Specialist"), por eso
+   el espaciado que se triplica es el espacio ENTRE PALABRAS (word-spacing),
+   no el tracking entre letras -- 0.6em suma sobre el espacio normal del
+   idioma, dejando un hueco total visualmente ~3x el que habia antes. */
+#zoomTitle{word-spacing:0.6em;}
 .section-head h2 .accent{color:var(--gold-text); border-color:var(--gold);}
 /* Fix 104: mismo font-family que .logo (Bodoni Moda/Playfair Display) para
    que la frase entre comillas de #verticales se sienta parte de la marca,
@@ -843,6 +883,60 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .bq-lead-msg.is-error{color:#B3261E;}
 .bq-lead-msg.is-ok{color:#1E7A4C;}
 
+/* ===================== Fix 137: Administracion del catalogo =====================
+   Carlos: "un boton discreto... casi sin que se note mucho... lucete con ese
+   formulario". El link vive en el footer (ver .admin-footer-link, mismo
+   tamano que el copyright para pasar desapercibido); el login y el panel
+   reusan el mismo patron visual .profile-modal-overlay/.privacy-modal que ya
+   usa el resto del sitio (beauty-choice-modal, search-modal, etc.) para que
+   no se sienta una pieza ajena pegada encima. */
+.admin-footer-link{cursor:pointer; opacity:.85;}
+.admin-footer-link:hover{text-decoration:underline;}
+
+.admin-login-modal{max-width:380px; text-align:center;}
+.admin-login-modal .cs-icon{width:52px; height:52px; border-radius:50%; background:var(--cream); color:var(--gold-text); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;}
+.admin-login-modal h3{font-size:20px; margin-bottom:6px;}
+.admin-login-modal input[type=password]{width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:4px; font-size:14px; font-family:inherit;}
+.admin-login-msg{font-size:12px; margin-top:10px; min-height:16px;}
+.admin-login-msg.is-error{color:#B3261E;}
+
+.admin-panel-modal{max-width:1000px; width:96%; text-align:left; padding:28px 26px;}
+.admin-panel-header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap; gap:12px; padding-right:26px;}
+.admin-panel-header .btn{padding:8px 14px; font-size:11.5px; border-radius:4px;}
+.admin-panel-layout{display:grid; grid-template-columns:280px 1fr; gap:22px; align-items:start;}
+.admin-product-list{border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+.admin-product-list-search{padding:10px; border-bottom:1px solid var(--line); background:var(--cream);}
+.admin-product-list-search input{width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:4px; font-size:12.5px; font-family:inherit;}
+#adminProductList{max-height:64vh; overflow-y:auto;}
+.admin-product-group-label{font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--grey); padding:12px 14px 4px; background:#fff;}
+.admin-product-row{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:10px 14px; cursor:pointer; border-top:1px solid var(--line); font-size:12.5px;}
+.admin-product-row:hover{background:var(--cream);}
+.admin-product-row.sel{background:var(--nacar-soft);}
+.admin-product-row .apr-sku{color:var(--grey); font-size:10.5px; margin-top:2px;}
+.admin-product-badge{font-size:9px; letter-spacing:.5px; text-transform:uppercase; padding:3px 8px; border-radius:10px; background:var(--line); color:var(--ink); white-space:nowrap;}
+.admin-product-badge.inactive{background:#f3d3d3; color:#B3261E;}
+.admin-form{border:1px solid var(--line); border-radius:6px; padding:22px; max-height:70vh; overflow-y:auto;}
+.admin-form h4{font-family:'Playfair Display',serif; font-size:18px; margin-bottom:2px;}
+.admin-form .apf-sku{font-size:11px; color:var(--grey); margin-bottom:18px;}
+.admin-field{margin-bottom:14px;}
+.admin-field label{display:block; font-size:10.5px; letter-spacing:.4px; text-transform:uppercase; color:var(--grey); margin-bottom:5px;}
+.admin-field input, .admin-field select, .admin-field textarea{width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:4px; font-size:13px; font-family:inherit; color:var(--ink); background:#fff;}
+.admin-field input:disabled{background:var(--cream); color:var(--grey);}
+.admin-field textarea{resize:vertical; min-height:52px; line-height:1.5;}
+.admin-field-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
+.admin-toggle-row{display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:13px;}
+.admin-toggle-row input{width:auto;}
+.admin-form-actions{display:flex; align-items:center; gap:14px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line);}
+.admin-save-msg{font-size:12px;}
+.admin-save-msg.is-error{color:#B3261E;}
+.admin-save-msg.is-ok{color:#1E7A4C;}
+.admin-empty-state{color:var(--grey); font-size:13px; text-align:center; padding:50px 16px;}
+@media (max-width:760px){
+  .admin-panel-layout{grid-template-columns:1fr;}
+  .admin-field-row{grid-template-columns:1fr;}
+  #adminProductList{max-height:220px;}
+}
+
 .beauty-rec-banner{max-width:920px; margin:0 auto 22px; background:var(--nacar-soft); border:1px solid var(--nacar); border-radius:6px; padding:14px 20px; font-size:13px; color:var(--ink); text-align:center;}
 .beauty-rec-banner b{color:#B8873A;}
 .beauty-rec-banner a{color:var(--navy); text-decoration:underline; cursor:pointer; margin-left:6px; font-size:12.5px;}
@@ -1241,7 +1335,7 @@ var AZURA_CONFIG = {
                desde busqueda y openFavoritesCategory, linea ~5141). -->
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
           <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.system.luminous">Speciality Luminous</a>
-          <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">Speciality Health</a>
+          <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">System Hair Speciality</a>
           <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
           <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
@@ -1456,7 +1550,7 @@ var AZURA_CONFIG = {
       </div>
       <div class="zoom-stats reveal-stagger">
         <div><b id="stat1">94%</b><span data-i18n="zoom.stat1Label">SATISFACCION*</span></div>
-        <div><b id="stat2">14 días</b><span data-i18n="zoom.stat2Label">PARA VER RESULTADOS*</span></div>
+        <div><b id="stat2">14 días</b><span id="stat2Label" data-i18n="zoom.stat2Label">PARA VER RESULTADOS*</span></div>
         <div><b id="stat3">+87%</b><span data-i18n="zoom.stat3Label">ORIGEN VERIFICADO</span></div>
       </div>
     </div>
@@ -1517,7 +1611,7 @@ var AZURA_CONFIG = {
     </div>
     <div><h5 data-i18n="footer.hVerticales">System Speciality</h5>
       <a onclick="goVertical('nacar')" data-i18n="footer.nacar">System T-Specialist</a>
-      <a onclick="goVertical('vigor')" data-i18n="footer.vigor">Speciality Health</a>
+      <a onclick="goVertical('vigor')" data-i18n="footer.vigor">System Hair Speciality</a>
       <a onclick="goVertical('roble')" data-i18n="footer.roble">Speciality Spot</a>
     </div>
     <div><h5 data-i18n="footer.hAyuda">Ayuda</h5>
@@ -1539,10 +1633,12 @@ var AZURA_CONFIG = {
     <div class="footer-bottom-text">
       <span data-i18n="footer.copyright">&copy; 2026 Renuévate. Todos los derechos reservados.</span>
       <span data-i18n="footer.prototypeNote">Diseñado en México, para tu bienestar.</span>
-      <!-- TESTIGO TEMPORAL (Carlos, 2026-09-10): marca visible para confirmar que un
-           commit/push tuyo SI llego a produccion en Vercel -- borrar este <span> en
-           cuanto lo veas en el sitio en vivo y confirmes que el deploy jalo el cambio. -->
-      <span style="color:#c0392b; font-weight:700;">● TEST-DEPLOY-124</span>
+      <!-- Fix 137 (Carlos: "un boton discreto que diga Administracion... en
+           el footer, mas escondido, menos trafico de clientes" -- ubicacion
+           confirmada explicitamente por Carlos entre 2 opciones). Mismo
+           tamano/color que el copyright de al lado a proposito, para que se
+           pierda visualmente en vez de destacar. -->
+      <span class="admin-footer-link" onclick="openAdminLogin()">Administración</span>
     </div>
     <select class="lang-select" id="langSelect" onchange="applyLanguage(this.value)" aria-label="Idioma / Language / Langue">
       <option value="es">ES · Español</option>
@@ -1786,6 +1882,55 @@ var AZURA_CONFIG = {
   </div>
 </div>
 
+<!-- Fix 137: login + panel de Administracion del catalogo real (coleccion
+     `products` en Mongo). La contrasena se valida en el servidor
+     (api/admin-auth.js) contra ADMIN_PASSWORD -- nunca hay una contrasena
+     guardada en este archivo. -->
+<div class="profile-modal-overlay" id="adminLoginOverlay" onclick="if(event.target===this) closeAdminLogin();">
+  <div class="privacy-modal admin-login-modal" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+    <button class="privacy-modal-close" onclick="closeAdminLogin()" aria-label="Cerrar">&times;</button>
+    <div class="cs-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    </div>
+    <h3 id="adminLoginTitle">Administración</h3>
+    <p class="pm-subtitle">Acceso restringido al catálogo de Renuévate.</p>
+    <form onsubmit="return submitAdminLogin(event)">
+      <input type="password" id="adminLoginPassword" placeholder="Contraseña" autocomplete="off">
+      <button type="submit" class="btn btn-dark" id="adminLoginSubmitBtn" style="width:100%; border:none; cursor:pointer; margin-top:14px;">Entrar</button>
+      <div class="admin-login-msg" id="adminLoginMsg"></div>
+    </form>
+  </div>
+</div>
+
+<div class="profile-modal-overlay" id="adminPanelOverlay" onclick="if(event.target===this) closeAdminPanel();">
+  <div class="privacy-modal admin-panel-modal" role="dialog" aria-modal="true" aria-labelledby="adminPanelTitle">
+    <button class="privacy-modal-close" onclick="closeAdminPanel()" aria-label="Cerrar">&times;</button>
+    <div class="admin-panel-header">
+      <div>
+        <h3 id="adminPanelTitle" style="margin-bottom:2px;">Administración del catálogo</h3>
+        <p class="pm-subtitle" style="margin-bottom:0;">Edita textos, precios y estado de los productos de Renuévate.</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn" style="border:1px solid var(--line); background:#fff; cursor:pointer;" onclick="startNewAdminProduct()">+ Nuevo producto</button>
+        <button type="button" class="btn" style="border:1px solid var(--line); background:#fff; cursor:pointer;" onclick="logoutAdmin()">Cerrar sesión</button>
+      </div>
+    </div>
+    <div class="admin-panel-layout">
+      <div>
+        <div class="admin-product-list">
+          <div class="admin-product-list-search">
+            <input type="text" id="adminSearchInput" placeholder="Buscar por nombre o SKU" oninput="renderAdminProductList(this.value)">
+          </div>
+          <div id="adminProductList"><div class="admin-empty-state">Cargando…</div></div>
+        </div>
+      </div>
+      <div class="admin-form" id="adminFormWrap">
+        <div class="admin-empty-state">Selecciona un producto de la lista, o crea uno nuevo.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="profile-modal-overlay" id="productDetailOverlay" onclick="if(event.target===this) closeProductDetail();">
   <div class="product-detail-modal" role="dialog" aria-modal="true" aria-labelledby="pdName">
     <button class="pd-close" onclick="closeProductDetail()" aria-label="Cerrar">&times;</button>
@@ -1995,7 +2140,7 @@ var V = {
       bannerTitle:"System T-Specialist Speciality",
       bannerText:"",
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"System Time Specialist",
-      stats:["94%","14 días","+87%"],
+      stats:["94%","Renuévate en 90 días","+87%"],
       products:[
         {sku:"NACAR-06", tag:"Limpiador facial", name:"Espuma Limpiadora Facial", desc:"Contiene ciertos ingredientes naturales, la formula de la espuma limpiadora facial SEYTU es ideal para una limpieza profunda.", price:"$370 MXN", favorito:true,
           longDesc:"Ideal para la limpieza diaria del cutis, ayuda a remover las impurezas de la piel. Intensa sensacion de frescura. Ideal para todo tipo de piel. Presentacion de 150 ml.",
@@ -2112,7 +2257,7 @@ var V = {
       bannerTitle:"The System T-Specialist Speciality",
       bannerText:"",
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"System Time Specialist",
-      stats:["94%","14 days","+87%"],
+      stats:["94%","Renew in 90 days","+87%"],
       products:[
         {sku:"NACAR-06", tag:"Facial cleanser", name:"Facial Cleansing Foam", desc:"With select natural ingredients, the SEYTU facial cleansing foam formula is ideal for a deep clean.", price:"$370 MXN", favorito:true,
           longDesc:"Ideal for daily cleansing of the skin, it helps remove impurities. Intense feeling of freshness. Ideal for all skin types. 150 ml.",
@@ -2218,7 +2363,7 @@ var V = {
       bannerTitle:"Le System T-Specialist Speciality",
       bannerText:"",
       tag:"Beauté féminine", msg:"Une luminosité qui prend soin d'elle-même.", bmLabel:"System Time Specialist",
-      stats:["94%","14 jours","+87%"],
+      stats:["94%","Renouvelez-vous en 90 jours","+87%"],
       products:[
         {sku:"NACAR-06", tag:"Nettoyant visage", name:"Mousse Nettoyante Faciale", desc:"Avec certains ingrédients naturels, la formule de la mousse nettoyante faciale SEYTU est idéale pour un nettoyage en profondeur.", price:"$370 MXN", favorito:true,
           longDesc:"Idéal pour le nettoyage quotidien du teint, il aide a eliminer les impuretés de la peau. Sensation de fraîcheur intense. Idéal pour tous types de peau. Format 150 ml.",
@@ -2326,7 +2471,7 @@ var V = {
     es:{ full:"System Hair Speciality", sub:"",
       bannerTitle:"System Hair Speciality",
       bannerText:"",
-      tag:"Nutrición y rendimiento", msg:"Energia que se sostiene.", bmLabel:"Time Speciality Health",
+      tag:"Nutrición y rendimiento", msg:"Energia que se sostiene.", bmLabel:"System Hair Speciality",
       stats:["92%","7 días","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Proteina", name:"Proteina Vegetal Vigor", desc:"22g de proteina limpia por porcion.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
@@ -2339,7 +2484,7 @@ var V = {
     en:{ full:"System Hair Speciality", sub:"",
       bannerTitle:"The System Hair Speciality",
       bannerText:"",
-      tag:"Nutrition & performance", msg:"Energy that lasts.", bmLabel:"Time Speciality Health",
+      tag:"Nutrition & performance", msg:"Energy that lasts.", bmLabel:"System Hair Speciality",
       stats:["92%","7 days","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Protein", name:"Vigor Plant Protein", desc:"22g of clean protein per serving.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
@@ -2352,7 +2497,7 @@ var V = {
     fr:{ full:"System Hair Speciality", sub:"",
       bannerTitle:"Le System Hair Speciality",
       bannerText:"",
-      tag:"Nutrition et performance", msg:"Une énergie qui dure.", bmLabel:"Time Speciality Health",
+      tag:"Nutrition et performance", msg:"Une énergie qui dure.", bmLabel:"System Hair Speciality",
       stats:["92%","7 jours","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Proteine", name:"Proteine Vegetale Vigor", desc:"22g de proteine pure par portion.", price:"$699 MXN", rating:{stars:4.8,count:521}, related:["VIGOR-03"]},
@@ -2412,7 +2557,7 @@ var I18N = {
   es:{
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
     "top.shipping":"Envío calculado en checkout . Entrega en 4 días hábiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
-    "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
+    "nav.nacar":"Belleza", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"System Hair Speciality", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
@@ -2437,7 +2582,7 @@ var I18N = {
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
     "footer.brandP":"System T-Specialist, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Speciality", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envíos y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate",
     "about.eyebrow":"Sobre Renuévate", "about.heroTitle":"Belleza y bienestar, con criterio.",
@@ -2527,7 +2672,7 @@ var I18N = {
   en:{
     "promo.shipping":"FREE shipping on orders over $1,800 MXN", "promo.cta":"Shop now",
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
-    "nav.nacar":"Beauty", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy", "nav.search":"See more",
+    "nav.nacar":"Beauty", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"System Hair Speciality", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy", "nav.search":"See more",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
     "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
@@ -2552,7 +2697,7 @@ var I18N = {
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
     "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
     "footer.brandP":"System T-Specialist, Health and Spot: wellness habits for every stage of your life.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Speciality", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
     "footer.hCompania":"Company", "footer.about":"About Renuévate",
     "about.eyebrow":"About Renuévate", "about.heroTitle":"Beauty and wellness, with judgment.",
@@ -2642,7 +2787,7 @@ var I18N = {
   fr:{
     "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre réel, a chaque étape de votre vie",
-    "nav.nacar":"Beauté", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"Speciality Health", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
+    "nav.nacar":"Beauté", "nav.system.luminous":"Speciality Luminous", "nav.system.health":"System Hair Speciality", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
@@ -2667,7 +2812,7 @@ var I18N = {
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
     "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un accès anticipé a nos systèmes.", "subscribeThanks.cta":"Compris",
     "footer.brandP":"System T-Specialist, Health et Spot : des habitudes de bien-etre pour chaque étape de votre vie.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Speciality", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre système", "footer.shipping":"Livraison et retours", "footer.faq":"Questions fréquentes", "footer.chat":"Discuter avec l'assistant",
     "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate",
     "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beauté et bien-etre, avec discernement.",
@@ -4641,6 +4786,345 @@ function initLazyAutoplayVideos(){
 }
 document.addEventListener("DOMContentLoaded", initLazyAutoplayVideos);
 
+/* =====================================================================
+   Fix 137: Administracion del catalogo (Carlos: boton discreto en el
+   footer -> login con contrasena fija -> formulario que reemplaza correr
+   sembrar-productos.bat a mano, "lucete con ese formulario") + hidratacion
+   del catalogo publico desde Mongo ("Todo de una vez: tambien conectar el
+   catalogo visible", eleccion explicita de Carlos entre las 2 opciones que
+   se le presentaron).
+
+   Decision de arquitectura (explicada en el resumen entregado a Carlos, no
+   silenciosa): en vez de reescribir todo el motor de render para que lea
+   Mongo en cada operacion (alto riesgo -- tocaria busqueda, chatbot Julieta,
+   carrito, "se compra junto con", favoritos, las 3 traducciones), se hace un
+   MERGE en caliente: al cargar la pagina se trae el catalogo real via
+   /api/products?includeInactive=1 y se sobreescriben en el objeto V ya
+   existente solo los campos que el admin puede editar (nombre, descripcion
+   corta, precio, favorito, y para español tambien descripcion
+   larga/ingredientes/modo de uso). Toda la logica de render, busqueda,
+   carrito y chatbot sigue funcionando exactamente igual que hoy porque
+   sigue leyendo V -- solo que ahora V arranca con el contenido mas
+   reciente guardado en el panel, sin necesitar un deploy de codigo.
+   ===================================================================== */
+
+var ADMIN_STATE = { products: [], selectedSku: null, isNew: false };
+
+function escapeHtmlAdmin(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+function openAdminLogin(){
+  closeNav();
+  document.getElementById('adminLoginPassword').value = '';
+  var msgEl = document.getElementById('adminLoginMsg');
+  msgEl.textContent = '';
+  msgEl.className = 'admin-login-msg';
+  document.getElementById('adminLoginOverlay').classList.add('is-open');
+  setTimeout(function(){
+    var el = document.getElementById('adminLoginPassword');
+    if (el) el.focus();
+  }, 60);
+}
+function closeAdminLogin(){
+  document.getElementById('adminLoginOverlay').classList.remove('is-open');
+}
+
+function submitAdminLogin(ev){
+  if (ev) ev.preventDefault();
+  var pwd = document.getElementById('adminLoginPassword').value;
+  var msgEl = document.getElementById('adminLoginMsg');
+  var btn = document.getElementById('adminLoginSubmitBtn');
+  msgEl.textContent = '';
+  msgEl.className = 'admin-login-msg';
+  if (btn) btn.disabled = true;
+  fetch('/api/admin-auth', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pwd })
+  }).then(function(r){
+    return r.json().then(function(data){ return { status: r.status, data: data }; });
+  }).then(function(res){
+    if (btn) btn.disabled = false;
+    if (res.status === 200 && res.data && res.data.ok){
+      closeAdminLogin();
+      openAdminPanel();
+    } else {
+      msgEl.textContent = (res.data && res.data.error) || 'No se pudo iniciar sesión.';
+      msgEl.className = 'admin-login-msg is-error';
+    }
+  }).catch(function(){
+    if (btn) btn.disabled = false;
+    msgEl.textContent = 'Error de conexión. Intenta de nuevo.';
+    msgEl.className = 'admin-login-msg is-error';
+  });
+  return false;
+}
+
+function openAdminPanel(){
+  document.getElementById('adminPanelOverlay').classList.add('is-open');
+  loadAdminProducts();
+}
+function closeAdminPanel(){
+  document.getElementById('adminPanelOverlay').classList.remove('is-open');
+}
+
+function logoutAdmin(){
+  fetch('/api/admin-auth', { method: 'DELETE', credentials: 'same-origin' })
+    .then(function(){ closeAdminPanel(); })
+    .catch(function(){ closeAdminPanel(); });
+}
+
+function loadAdminProducts(){
+  var listEl = document.getElementById('adminProductList');
+  listEl.innerHTML = '<div class="admin-empty-state">Cargando…</div>';
+  fetch('/api/admin-products', { credentials: 'same-origin' })
+    .then(function(r){
+      if (r.status === 401){
+        closeAdminPanel();
+        openAdminLogin();
+        throw new Error('unauthorized');
+      }
+      return r.json();
+    })
+    .then(function(data){
+      if (!data || !data.ok) throw new Error('bad response');
+      ADMIN_STATE.products = data.products || [];
+      ADMIN_STATE.selectedSku = null;
+      ADMIN_STATE.isNew = false;
+      renderAdminProductList('');
+      document.getElementById('adminFormWrap').innerHTML = '<div class="admin-empty-state">Selecciona un producto de la lista, o crea uno nuevo.</div>';
+    })
+    .catch(function(err){
+      if (err && err.message === 'unauthorized') return;
+      listEl.innerHTML = '<div class="admin-empty-state">No se pudo cargar el catálogo.</div>';
+    });
+}
+
+var ADMIN_VERTICAL_LABELS = { nacar: 'System T-Specialist', vigor: 'System Hair Speciality', roble: 'Speciality Spot', accessory: 'Accesorios' };
+
+function renderAdminProductList(filterText){
+  var listEl = document.getElementById('adminProductList');
+  var groups = { nacar: [], vigor: [], roble: [], accessory: [] };
+  var q = (filterText || '').toLowerCase().trim();
+  ADMIN_STATE.products.forEach(function(p){
+    if (!groups[p.vertical]) return;
+    var hay = (p.sku + ' ' + ((p.name_i18n && p.name_i18n.es) || '')).toLowerCase();
+    if (q && hay.indexOf(q) === -1) return;
+    groups[p.vertical].push(p);
+  });
+  var html = '';
+  ['nacar', 'vigor', 'roble', 'accessory'].forEach(function(v){
+    if (!groups[v].length) return;
+    html += '<div class="admin-product-group-label">' + ADMIN_VERTICAL_LABELS[v] + '</div>';
+    groups[v].forEach(function(p){
+      var sel = (ADMIN_STATE.selectedSku === p.sku) ? ' sel' : '';
+      var badge = p.status === 'inactive'
+        ? '<span class="admin-product-badge inactive">Inactivo</span>'
+        : '<span class="admin-product-badge">Activo</span>';
+      html += '<div class="admin-product-row' + sel + '" onclick="selectAdminProduct(\'' + p.sku + '\')">' +
+        '<div><div>' + escapeHtmlAdmin((p.name_i18n && p.name_i18n.es) || p.sku) + '</div><div class="apr-sku">' + p.sku + '</div></div>' +
+        badge + '</div>';
+    });
+  });
+  listEl.innerHTML = html || '<div class="admin-empty-state">Sin resultados.</div>';
+}
+
+function selectAdminProduct(sku){
+  ADMIN_STATE.selectedSku = sku;
+  ADMIN_STATE.isNew = false;
+  var searchInputEl = document.getElementById('adminSearchInput');
+  renderAdminProductList(searchInputEl ? searchInputEl.value : '');
+  var p = ADMIN_STATE.products.filter(function(x){ return x.sku === sku; })[0];
+  renderAdminForm(p);
+}
+
+function startNewAdminProduct(){
+  ADMIN_STATE.selectedSku = null;
+  ADMIN_STATE.isNew = true;
+  var searchInputEl = document.getElementById('adminSearchInput');
+  renderAdminProductList(searchInputEl ? searchInputEl.value : '');
+  renderAdminForm(null);
+}
+
+function renderAdminForm(p){
+  var wrap = document.getElementById('adminFormWrap');
+  var isNew = ADMIN_STATE.isNew;
+  var n = (p && p.name_i18n) || { es: '', en: '', fr: '' };
+  var d = (p && p.description_i18n) || { es: '', en: '', fr: '' };
+  var ingredientesTxt = (p && Array.isArray(p.ingredients_es)) ? p.ingredients_es.join('\n') : '';
+  var vertOptions = ['nacar', 'vigor', 'roble', 'accessory'].map(function(v){
+    var vsel = (p && p.vertical === v) ? ' selected' : '';
+    return '<option value="' + v + '"' + vsel + '>' + ADMIN_VERTICAL_LABELS[v] + '</option>';
+  }).join('');
+
+  var html = '';
+  html += '<h4>' + (isNew ? 'Nuevo producto' : escapeHtmlAdmin(n.es || p.sku)) + '</h4>';
+  html += '<div class="apf-sku">' + (isNew ? 'Se crea en Mongo al guardar.' : ('SKU ' + p.sku)) + '</div>';
+
+  html += '<div class="admin-field"><label>SKU</label>' +
+    (isNew ? '<input type="text" id="admFieldSku" placeholder="Ej. NACAR-16">' : ('<input type="text" value="' + p.sku + '" disabled>')) +
+    '</div>';
+
+  html += '<div class="admin-field"><label>Vertical / System</label>' +
+    (isNew ? ('<select id="admFieldVertical">' + vertOptions + '</select>') : ('<input type="text" value="' + ADMIN_VERTICAL_LABELS[p.vertical] + '" disabled>')) +
+    '</div>';
+
+  html += '<div class="admin-field"><label>Nombre (ES / EN / FR)</label><div class="admin-field-row">' +
+    '<input type="text" id="admFieldNameEs" placeholder="Español" value="' + escapeHtmlAdmin(n.es) + '">' +
+    '<input type="text" id="admFieldNameEn" placeholder="English" value="' + escapeHtmlAdmin(n.en) + '">' +
+    '<input type="text" id="admFieldNameFr" placeholder="Français" value="' + escapeHtmlAdmin(n.fr) + '">' +
+    '</div></div>';
+
+  html += '<div class="admin-field"><label>Descripción corta · Español</label><textarea id="admFieldDescEs">' + escapeHtmlAdmin(d.es) + '</textarea></div>';
+  html += '<div class="admin-field"><label>Descripción corta · English</label><textarea id="admFieldDescEn">' + escapeHtmlAdmin(d.en) + '</textarea></div>';
+  html += '<div class="admin-field"><label>Descripción corta · Français</label><textarea id="admFieldDescFr">' + escapeHtmlAdmin(d.fr) + '</textarea></div>';
+
+  html += '<div class="admin-field"><label>Precio (MXN)</label><input type="number" id="admFieldPrice" min="0" step="1" value="' + (p && typeof p.unit_price === 'number' ? p.unit_price : '') + '"></div>';
+
+  html += '<div class="admin-toggle-row"><label><input type="checkbox" id="admFieldFavorito"' + (p && p.favorito ? ' checked' : '') + '> Favorito de Renuévate</label></div>';
+  html += '<div class="admin-toggle-row"><label><input type="checkbox" id="admFieldActive"' + (!p || p.status !== 'inactive' ? ' checked' : '') + '> Visible en el sitio (activo)</label></div>';
+
+  html += '<div class="admin-field"><label>Descripción larga · solo Español</label><textarea id="admFieldLongDesc" style="min-height:90px;">' + escapeHtmlAdmin(p && p.long_description_es) + '</textarea></div>';
+  html += '<div class="admin-field"><label>Ingredientes · solo Español (uno por línea)</label><textarea id="admFieldIngredients" style="min-height:90px;">' + escapeHtmlAdmin(ingredientesTxt) + '</textarea></div>';
+  html += '<div class="admin-field"><label>Modo de uso · solo Español</label><textarea id="admFieldUsage">' + escapeHtmlAdmin(p && p.usage_es) + '</textarea></div>';
+
+  html += '<div class="admin-form-actions"><button type="button" class="btn btn-dark" style="border:none; cursor:pointer;" onclick="saveAdminProduct()">Guardar cambios</button><span class="admin-save-msg" id="adminSaveMsg"></span></div>';
+
+  wrap.innerHTML = html;
+}
+
+function saveAdminProduct(){
+  var msgEl = document.getElementById('adminSaveMsg');
+  msgEl.textContent = 'Guardando…';
+  msgEl.className = 'admin-save-msg';
+
+  var isNew = ADMIN_STATE.isNew;
+  var sku = isNew ? (document.getElementById('admFieldSku').value || '').trim().toUpperCase() : ADMIN_STATE.selectedSku;
+  var existing = ADMIN_STATE.products.filter(function(x){ return x.sku === sku; })[0];
+  var vertical = isNew ? document.getElementById('admFieldVertical').value : (existing ? existing.vertical : null);
+  var price = parseFloat(document.getElementById('admFieldPrice').value);
+  var ingredientesRaw = document.getElementById('admFieldIngredients').value || '';
+
+  if (!sku){ msgEl.textContent = 'Falta el SKU.'; msgEl.className = 'admin-save-msg is-error'; return; }
+  if (!vertical){ msgEl.textContent = 'Falta el vertical.'; msgEl.className = 'admin-save-msg is-error'; return; }
+  if (isNaN(price) || price < 0){ msgEl.textContent = 'Precio inválido.'; msgEl.className = 'admin-save-msg is-error'; return; }
+
+  var payload = {
+    sku: sku,
+    vertical: vertical,
+    name_i18n: {
+      es: document.getElementById('admFieldNameEs').value,
+      en: document.getElementById('admFieldNameEn').value,
+      fr: document.getElementById('admFieldNameFr').value
+    },
+    description_i18n: {
+      es: document.getElementById('admFieldDescEs').value,
+      en: document.getElementById('admFieldDescEn').value,
+      fr: document.getElementById('admFieldDescFr').value
+    },
+    unit_price: price,
+    favorito: document.getElementById('admFieldFavorito').checked,
+    status: document.getElementById('admFieldActive').checked ? 'active' : 'inactive',
+    long_description_es: document.getElementById('admFieldLongDesc').value,
+    ingredients_es: ingredientesRaw.split('\n').map(function(s){ return s.trim(); }).filter(Boolean),
+    usage_es: document.getElementById('admFieldUsage').value
+  };
+
+  fetch('/api/admin-products', {
+    method: 'PUT',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(r){
+    if (r.status === 401){
+      closeAdminPanel();
+      openAdminLogin();
+      throw new Error('unauthorized');
+    }
+    return r.json().then(function(data){ return { status: r.status, data: data }; });
+  }).then(function(res){
+    if (res.status === 200 && res.data && res.data.ok){
+      msgEl.textContent = 'Guardado.';
+      msgEl.className = 'admin-save-msg is-ok';
+      var merged = { sku: sku, vertical: vertical, name_i18n: payload.name_i18n, description_i18n: payload.description_i18n,
+        unit_price: price, currency: 'MXN', favorito: payload.favorito, status: payload.status,
+        long_description_es: payload.long_description_es, ingredients_es: payload.ingredients_es, usage_es: payload.usage_es };
+      var idx = -1;
+      for (var i = 0; i < ADMIN_STATE.products.length; i++){ if (ADMIN_STATE.products[i].sku === sku){ idx = i; break; } }
+      if (idx === -1) ADMIN_STATE.products.push(merged); else ADMIN_STATE.products[idx] = merged;
+      ADMIN_STATE.selectedSku = sku;
+      ADMIN_STATE.isNew = false;
+      var searchInputEl = document.getElementById('adminSearchInput');
+      renderAdminProductList(searchInputEl ? searchInputEl.value : '');
+      renderAdminForm(merged);
+      // Fix 137: refresca de inmediato el catalogo publico (V) para que el
+      // cambio se vea en el sitio sin recargar la pagina.
+      hydrateCatalogFromDB();
+    } else {
+      msgEl.textContent = (res.data && res.data.error) || 'No se pudo guardar.';
+      msgEl.className = 'admin-save-msg is-error';
+    }
+  }).catch(function(err){
+    if (err && err.message === 'unauthorized') return;
+    msgEl.textContent = 'Error de conexión.';
+    msgEl.className = 'admin-save-msg is-error';
+  });
+}
+
+// Aplica al objeto V (catalogo estatico que de verdad usa el render/busqueda/
+// carrito/chatbot) los campos editables desde el panel de Administracion,
+// tomados del catalogo real en Mongo. Solo sobreescribe lo que el admin
+// puede editar -- nunca toca tag/img/thumb/shades/related, que siguen
+// viniendo del codigo (ver comentario de cabecera de esta seccion).
+function applyAdminOverridesToV(products){
+  if (!Array.isArray(products) || typeof V === 'undefined') return;
+  var langs = ['es', 'en', 'fr'];
+  products.forEach(function(dbP){
+    var vert = V[dbP.vertical];
+    if (!vert) return;
+    langs.forEach(function(lang){
+      var langBlock = vert[lang];
+      if (!langBlock || !Array.isArray(langBlock.products)) return;
+      var p = langBlock.products.filter(function(x){ return x.sku === dbP.sku; })[0];
+      if (!p) return;
+      p._adminInactive = (dbP.status === 'inactive');
+      if (typeof dbP.unit_price === 'number') p.price = '$' + Math.round(dbP.unit_price) + ' MXN';
+      if (dbP.name_i18n && dbP.name_i18n[lang]) p.name = dbP.name_i18n[lang];
+      if (dbP.description_i18n && dbP.description_i18n[lang]) p.desc = dbP.description_i18n[lang];
+      if (typeof dbP.favorito === 'boolean') p.favorito = dbP.favorito;
+      // long_description_es/ingredients_es/usage_es solo existen en español
+      // en el catalogo real (ver db/seed-products.js) -- se aplican
+      // unicamente al bloque ES para no pisar traducciones EN/FR ya hechas.
+      if (lang === 'es'){
+        if (dbP.long_description_es) p.longDesc = dbP.long_description_es;
+        if (Array.isArray(dbP.ingredients_es) && dbP.ingredients_es.length) p.ingredients = dbP.ingredients_es;
+        if (dbP.usage_es) p.usage = dbP.usage_es;
+      }
+    });
+  });
+}
+
+// Trae el catalogo real (activos + inactivos, ver Fix 137 en api/products.js)
+// y lo mezcla sobre V. Si ya hay un System Speciality pintado en pantalla, lo
+// vuelve a pintar para que un cambio recien guardado se vea sin recargar.
+function hydrateCatalogFromDB(){
+  fetch('/api/products?includeInactive=1')
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      if (!data || !data.ok || !Array.isArray(data.products)) return;
+      applyAdminOverridesToV(data.products);
+      if (typeof currentV !== 'undefined' && currentV && document.getElementById('productsGrid')){
+        renderVertical(currentV);
+      }
+    })
+    .catch(function(err){ console.error('hydrateCatalogFromDB error:', err); });
+}
+document.addEventListener('DOMContentLoaded', hydrateCatalogFromDB);
+
 function saveCookiePrefs(){
   var a = document.getElementById('cookieAnalyticsToggle');
   var m = document.getElementById('cookieMarketingToggle');
@@ -5050,6 +5534,15 @@ function renderVertical(v){
   document.getElementById('stat1').textContent = d.stats[0];
   document.getElementById('stat2').textContent = d.stats[1];
   document.getElementById('stat3').textContent = d.stats[2];
+  // Fix 136 (Carlos: "quita lo de 14 dias PARA VER RESULTADOS* y pon
+  // Renuevate en 90 dias"): ese cambio es solo para System T-Specialist
+  // (nacar) -- vigor/roble tienen su propio numero de dias (7/21) con el
+  // mismo label compartido zoom.stat2Label, y ese label no aplica ya que
+  // stats[1] de nacar ahora es la frase completa, no un numero suelto. Se
+  // oculta el label SOLO cuando el vertical activo es nacar; vigor/roble
+  // siguen mostrando su numero + el label de siempre, sin tocarlos.
+  var stat2LabelEl = document.getElementById('stat2Label');
+  if (stat2LabelEl) stat2LabelEl.style.display = (v === 'nacar') ? 'none' : '';
 
   var tabs = document.querySelectorAll('.zoom-tab');
   for (var i=0;i<tabs.length;i++){ tabs[i].classList.toggle('active', tabs[i].dataset.v===v); }
@@ -5064,6 +5557,13 @@ function renderVertical(v){
   // en d.products (lista completa) para que "se compra junto con" no se
   // pierda solo por estar en vista filtrada.
   var listToRender = categoryFilterSku ? d.products.filter(function(pp){ return categoryFilterSku.indexOf(pp.sku) !== -1; }) : d.products;
+  // Fix 137: un producto que el panel de Administracion marco como inactivo
+  // (hydrateCatalogFromDB marca p._adminInactive=true, ver abajo) se oculta
+  // de este grid. Alcance deliberado v1: NO se quita todavia de busqueda,
+  // del chatbot Julieta ni de los bloques "se compra junto con" de otros
+  // productos -- eso queda pendiente para endurecer despues, se le avisa a
+  // Carlos en el resumen.
+  listToRender = listToRender.filter(function(pp){ return !pp._adminInactive; });
   for (var k=0;k<listToRender.length;k++){
     var p = listToRender[k];
     var ratingHtml = p.rating ? ('<div class="product-rating"><span class="stars">' + starsHtml(p.rating.stars) + '</span><span>' + p.rating.stars.toFixed(1) + ' (' + p.rating.count + ')</span></div>') : '';

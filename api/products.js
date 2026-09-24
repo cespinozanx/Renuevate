@@ -8,6 +8,9 @@
 // GET /api/products              -> todos los productos activos
 // GET /api/products?vertical=nacar -> solo esa vertical
 // GET /api/products?sku=NACAR-01   -> un producto puntual
+// GET /api/products?includeInactive=1 -> Fix 137: tambien incluye los
+//   marcados status:'inactive' (ver nota junto al filtro mas abajo). Solo lo
+//   usa la hidratacion del catalogo publico en index.html.
 
 const { MongoClient } = require('mongodb');
 const { applyCors } = require('../lib/cors');
@@ -38,8 +41,15 @@ module.exports = async (req, res) => {
     // Fix 109: catalogo publico, se espera alto trafico legitimo (cada carga
     // de pagina lo consulta) -- limite generoso, solo para frenar scripts.
     if (!(await checkRateLimit(req, res, db, { scope: 'products', limit: 120, windowSec: 60 }))) return;
-    const { vertical, sku } = req.query || {};
-    const filter = { status: 'active' };
+    // Fix 137: includeInactive es opcional y aditivo -- SOLO cuando se manda
+    // explicitamente, la respuesta tambien incluye productos status:'inactive'.
+    // Sin el parametro, el comportamiento es identico al de siempre (solo
+    // activos), asi que ningun consumidor existente cambia: cart.js/reviews.js
+    // ni siquiera llaman este endpoint (consultan Mongo directo, ver esos
+    // archivos), y el fetch original del catalogo publico tampoco lo manda.
+    const { vertical, sku, includeInactive } = req.query || {};
+    const filter = {};
+    if (!includeInactive) filter.status = 'active';
     if (vertical) filter.vertical = String(vertical);
     if (sku) filter.sku = String(sku);
 
