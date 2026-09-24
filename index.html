@@ -189,7 +189,28 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
    tambien los transform:scale()/transform-origin por slide de Fix 79 a 126
    -- eran parches para simular manualmente un recorte mas amable dentro de
    cover; con contain ya no hay recorte que simular. */
-.hero-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; opacity:0; transition:opacity 1.4s ease;}
+/* Fix 131 (Carlos, 2026-09-24: "las imagenes del carrusel inicial estan mal
+   dimensionadas para iOS, Android y web... quiero que uses estas a 100%
+   ajustadas por tipo de device", con 3 fotos nuevas de producto/macro que
+   reemplazan las anteriores). Carlos confirmo explicitamente que quiere
+   full-bleed (sin barras de color) aun a costa de recortar, no la garantia
+   de "se ve completa" de Fix 128 -- asi que se regresa de contain a cover.
+   La razon de fondo por la que esto NO repite el problema de Fix 72-127
+   (aquellas rondas de cover si se sentian mal): estas 3 fotos nuevas tienen
+   proporciones nativas muy distintas entre si (labial 2.03:1 horizontal,
+   flatlay 1.47:1, crema/rostro 1.04:1 casi cuadrada) y el marco del hero
+   tambien es muy distinto por dispositivo (movil ~0.55:1 muy angosto y
+   alto vs escritorio hasta ~3:1 muy ancho y bajo, ver comentarios de
+   .hero-media-frame arriba) -- un solo object-position igual para las 3
+   fotos y los 2 tipos de marco garantizaba que alguna combinacion recortara
+   justo el sujeto (por eso "casi ni se ve la nariz" de Fix 128). Aqui cada
+   foto tiene su propio punto focal, Y ADEMAS ese punto focal cambia entre
+   movil y escritorio (ver los 2 bloques @media mas abajo junto a .hero),
+   porque el recorte que cover aplica no es el mismo recorte en un marco
+   angosto-alto que en uno ancho-bajo. Object-position:center por defecto
+   aqui abajo es solo el valor base antes de que el media query
+   correspondiente lo sobreescriba por slide. */
+.hero-slide{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block; opacity:0; transition:opacity 1.4s ease;}
 .hero-slide.is-active{opacity:1;}
 .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(180deg, rgba(20,18,14,.22) 0%, rgba(20,18,14,.08) 38%, rgba(20,18,14,.62) 100%);}
 /* Fix 69: los puntos no respondian al clic -- .hero-grid (el bloque de texto
@@ -223,6 +244,14 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 .hero-slide-dot{width:7px; height:7px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.5); cursor:pointer; transition:background .25s ease, transform .25s ease;}
 .hero-slide-dot.is-active{background:#fff; transform:scale(1.35);}
 .hero-cta.hero-cta-sm .btn{padding:9px 18px; font-size:10.5px; letter-spacing:1.2px;}
+/* Fix 132 (Carlos: "en el carrusel baja un poco mas los botones... para que
+   en su posicion pongas [la leyenda de ingredientes]... y abajo de esa
+   leyenda los botones"): la leyenda nueva (.hero-ingredients-note, ver HTML
+   del hero) ocupa el lugar donde antes arrancaban los botones -- se empuja
+   el bloque de botones hacia abajo con este margin-top extra para que quede
+   claramente debajo de la leyenda, no pegado a ella. */
+.hero-cta.hero-cta-sm{margin-top:22px;}
+.hero-ingredients-note{font-size:13px; font-style:italic; color:rgba(255,255,255,.82); max-width:460px; margin:0 auto; text-align:center;}
 
 body.nav-lock{overflow:hidden;}
 
@@ -260,6 +289,19 @@ body.nav-lock{overflow:hidden;}
    El bloque de abajo queda solo por si algun slide necesita, a futuro, un
    ajuste puntual (por ahora ninguno lo necesita). */
 @media(max-width:760px){
+  /* Fix 131: marco movil ~0.55:1 (muy angosto y alto) contra fotos todas
+     mas anchas que altas -- cover siempre encuadra por ALTURA aqui y
+     recorta de los lados, asi que lo unico que importa en movil es el eje
+     X (donde queda el sujeto de izquierda a derecha). Foto 1 (labial): la
+     boca esta a la izquierda/centro y el frasco a la derecha -- 38% deja
+     ver la boca completa sin perder el frasco por el borde. Foto 3 (crema/
+     rostro): sujeto centrado, centro funciona. Foto 2 (flatlay 5
+     productos): con solo ~37% del ancho visible en movil, centrar la
+     ventana de recorte es lo que deja el mayor numero de frascos completos
+     en cuadro en vez de cortar uno a la mitad en un extremo. */
+  .hero-slide:nth-of-type(1){object-position:38% center;}
+  .hero-slide:nth-of-type(2){object-position:center center;}
+  .hero-slide:nth-of-type(3){object-position:center center;}
 }
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
@@ -275,6 +317,16 @@ body.nav-lock{overflow:hidden;}
      ancho real entre left y right en vez de heredar el 100% fijo. */
   .hero{min-height:56vh; background:#fff;}
   .hero-media-frame{left:64px; right:64px; width:auto; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
+  /* Fix 131: marco de escritorio muy ancho y bajo (hasta ~3:1) contra estas
+     3 fotos que son las MENOS anchas que ha tenido este carrusel -- aqui
+     cover encuadra por ANCHO y recorta arriba/abajo, asi que el eje Y es el
+     que importa. Se sube el punto focal por encima del centro geometrico
+     en las 3 (38-45%) porque el producto/rostro esta en el tercio superior
+     de estas fotos y la franja inferior es superficie/fondo de relleno --
+     un centro puro cortaria mas del sujeto arriba de lo que hace falta. */
+  .hero-slide:nth-of-type(1){object-position:center 42%;}
+  .hero-slide:nth-of-type(2){object-position:center 38%;}
+  .hero-slide:nth-of-type(3){object-position:center 45%;}
 }
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
 .btn-ghost:hover{background:rgba(255,255,255,.1);}
@@ -291,7 +343,7 @@ section{padding:92px 0;}
 
 /* Fix 113 (Carlos: "inmediatamente despues de Lo mejor para ti coloca un
    carrusel de las imagenes llamadas Carrusel XXX"): franja horizontal de 5
-   fotos lifestyle de System Luminous, clicables (ver renderHomeCarousel() en
+   fotos lifestyle de System T-Specialist, clicables (ver renderHomeCarousel() en
    JS). scroll-snap-type:x da el efecto de "encaje" al arrastrar en mobile sin
    necesitar libreria de carrusel.
    Fix 125 (Carlos: "quiero que las imagenes tenga un marco elegante que
@@ -316,7 +368,12 @@ section{padding:92px 0;}
 @media(max-width:760px){ .home-carousel-item{width:140px;} }
 
 .brand-map{text-align:center; margin:8px 0 50px;}
-.brand-map .bm-holding{display:inline-block; font-family:'Playfair Display',serif; font-weight:700; letter-spacing:3px; font-size:12.5px; color:var(--navy); padding:9px 22px; border:1px solid var(--line); border-radius:30px;}
+/* Fix 132 (Carlos: "en el texto SYSTEMS que esta como agrupador incrementa
+   el tamaño de la fuente al doble, centrado un estilo dorado"): 12.5px->25px
+   y color:var(--navy)->var(--gold-text) (mismo dorado ya usado en eyebrows y
+   acentos, ver :root arriba). Ya estaba centrado por .brand-map{text-align:
+   center} en el padre -- no hace falta tocar ese eje. */
+.brand-map .bm-holding{display:inline-block; font-family:'Playfair Display',serif; font-weight:700; letter-spacing:3px; font-size:25px; color:var(--gold-text); padding:9px 22px; border:1px solid var(--line); border-radius:30px;}
 .brand-map .bm-line{width:1px; height:24px; background:var(--line); margin:8px auto;}
 .brand-map .bm-verticals{display:flex; justify-content:center; gap:28px; flex-wrap:wrap;}
 .brand-map .bm-verticals span{font-size:11px; letter-spacing:1.6px; font-weight:700; color:var(--grey); position:relative; padding-left:16px; text-transform:uppercase;}
@@ -1254,6 +1311,9 @@ var AZURA_CONFIG = {
     <div class="hero-content reveal-stagger">
       <h1 data-i18n-html="hero.h1"><span class="accent">Transforma</span> tu vida, Renuévate</h1>
       <p data-i18n-html="hero.p">Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.</p>
+      <!-- Fix 132 (Carlos: "pon Ingredientes que buscan ser mas amigables
+           contigo y con el planeta, y abajo de esa leyenda los botones"). -->
+      <p class="hero-ingredients-note" data-i18n="hero.ingredientsNote">Ingredientes que buscan ser más amigables contigo y con el planeta.</p>
       <div class="hero-cta hero-cta-sm">
         <a class="btn btn-dark" onclick="openBeautyCatalog()" data-i18n="hero.cta1">Ver más</a>
         <a class="btn btn-ghost" onclick="goToFilosofia()" data-i18n="hero.cta2">Nuestra filosofia</a>
@@ -1274,7 +1334,7 @@ var AZURA_CONFIG = {
     </div>
     <!-- Fix 113 (Carlos: "inmediatamente despues de Lo mejor para ti coloca
          un carrusel de las imagenes llamadas Carrusel XXX"): franja
-         horizontal de 5 fotos lifestyle de System Luminous, clicables --
+         horizontal de 5 fotos lifestyle de System T-Specialist, clicables --
          cada tarjeta lleva al catalogo filtrado a ese producto (mismo patron
          probado del menu Belleza, ver openBeautyCategory()). El contenido se
          llena en JS (renderHomeCarousel(), llamada desde applyLanguage())
@@ -1286,7 +1346,7 @@ var AZURA_CONFIG = {
       <!-- Fix 104 (Carlos, imagen con tache): antes decia "RENUEVATE" -- se
            cambia a "SYSTEMS" para no repetir el nombre de marca (ya esta en
            el logo del header) y en su lugar anclar el concepto de "sistemas"
-           que titula esta seccion (System Luminous/Health/Spot abajo). -->
+           que titula esta seccion (System T-Specialist/Health/Spot abajo). -->
       <div class="bm-holding">SYSTEMS</div>
       <div class="bm-line"></div>
       <div class="bm-verticals">
@@ -1304,7 +1364,7 @@ var AZURA_CONFIG = {
           </video>
         </div>
         <div class="v-tag" id="vtagNacar">Belleza para mujer</div>
-        <h3>System Luminous Speciality</h3>
+        <h3>System T-Specialist Speciality</h3>
         <p class="v-msg" id="vmsgNacar">Luminosidad que se cuida.</p>
         <span class="v-cta" id="vctaNacar">Descubrir &#8594;</span>
       </div>
@@ -1372,7 +1432,7 @@ var AZURA_CONFIG = {
     <div class="zoom-banner reveal-stagger">
       <div>
         <div class="eyebrow" data-i18n="zoom.featured">Sistema destacado</div>
-        <h3 id="zoomBannerTitle">System Luminous Speciality</h3>
+        <h3 id="zoomBannerTitle">System T-Specialist Speciality</h3>
         <p id="zoomBannerText"></p>
         <a class="btn btn-vertical" style="margin-top:22px; cursor:pointer;" onclick="openComingSoon()" data-i18n="zoom.knowRitual">Conocer el sistema</a>
       </div>
@@ -1430,7 +1490,7 @@ var AZURA_CONFIG = {
         <img src="media/logo-icon.png" alt="Renuévate" class="footer-logo-icon" loading="lazy">
         <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
       </div>
-      <p data-i18n="footer.brandP">System Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.</p>
+      <p data-i18n="footer.brandP">System T-Specialist, Health y Spot: hábitos de bienestar para cada etapa de tu vida.</p>
       <div class="footer-social">
         <a href="#" id="socialInstagram" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
         <a href="#" id="socialTiktok" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M9 12a4 4 0 1 0 4 4V4c1 2 3 3 5 3"/></svg></a>
@@ -1686,7 +1746,7 @@ var AZURA_CONFIG = {
       <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyCatalog();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
         <h4 id="beautyChoiceCatalogTitle">Ver catalogo completo</h4>
-        <p id="beautyChoiceCatalogBody">Explora los 5 productos de System Luminous a tu ritmo.</p>
+        <p id="beautyChoiceCatalogBody">Explora los 5 productos de System T-Specialist a tu ritmo.</p>
       </div>
       <div class="beauty-choice-card" onclick="closeBeautyChoice(); openBeautyQuiz();">
         <div class="bc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.3v.2h6v-.2c0-.9.4-1.7 1-2.3A6 6 0 0 0 12 3Z"/></svg></div>
@@ -1912,9 +1972,9 @@ var AZURA_CONFIG = {
 /* ===================== Catalogo por vertical, con contenido por idioma ===================== */
 var V = {
   nacar: {
-    name:"System Luminous Speciality",
+    name:"System T-Specialist Speciality",
     es:{ full:"System Time Specialist", sub:"",
-      bannerTitle:"System Luminous Speciality",
+      bannerTitle:"System T-Specialist Speciality",
       bannerText:"",
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"System Time Specialist",
       stats:["94%","14 días","+87%"],
@@ -2031,7 +2091,7 @@ var V = {
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
     },
     en:{ full:"System Time Specialist", sub:"",
-      bannerTitle:"The System Luminous Speciality",
+      bannerTitle:"The System T-Specialist Speciality",
       bannerText:"",
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"System Time Specialist",
       stats:["94%","14 days","+87%"],
@@ -2137,7 +2197,7 @@ var V = {
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
     },
     fr:{ full:"System Time Specialist", sub:"",
-      bannerTitle:"Le System Luminous Speciality",
+      bannerTitle:"Le System T-Specialist Speciality",
       bannerText:"",
       tag:"Beauté féminine", msg:"Une luminosité qui prend soin d'elle-même.", bmLabel:"System Time Specialist",
       stats:["94%","14 jours","+87%"],
@@ -2338,7 +2398,7 @@ var I18N = {
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
-    "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia",
+    "hero.cta1":"Ver más", "hero.cta2":"Nuestra filosofia", "hero.ingredientsNote":"Ingredientes que buscan ser más amigables contigo y con el planeta.",
     "hero.visualCaption":"Cuatro sistemas de bienestar, un mismo estándar de origen y calidad.",
     "search.placeholder":"Busca un producto o sistema...", "search.btn":"Buscar", "search.subtitle":"Encuentra un producto, categoría o sistema completo", "search.notfound":"No encontramos resultados. Prueba con otra palabra o explora las verticales.", "search.found":"Encontramos {name} en {vertical}. Abriendo su ficha...", "search.foundCategory":"Mostrando productos de {name}...", "category.empty":"Proximamente nuevos productos en esta categoría.",
     "search.viewAllCatalog":"Ver todo el catálogo", "search.personalDiagnosis":"Diagnóstico personalizado",
@@ -2358,7 +2418,7 @@ var I18N = {
     "nl.eyebrow":"Unete a Renuévate", "nl.h2":'Recibe <span class="accent">novedades</span> y acceso anticipado a tus sistemas favoritos',
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
-    "footer.brandP":"System Luminous, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
+    "footer.brandP":"System T-Specialist, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envíos y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate",
@@ -2379,7 +2439,7 @@ var I18N = {
     "chat.a.purpose":"Te ayudo a encontrar tu sistema ideal, rápido y sin vueltas.",
     "chat.q.shipping":"Envíos", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
     "chat.a.shipping":"Hacemos envíos a todo Mexico, entrega en 4 días hábiles.",
-    "chat.a.verticals":"3 sistemas: System Luminous, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
+    "chat.a.verticals":"3 sistemas: System T-Specialist, System Health y System Spot Speciality. Exploralos en el menu System Speciality.",
     "chat.a.diagnostic":"Cuentame tu prioridad (energía, piel o rendimiento) y te recomiendo tu sistema.",
     "chat.a.prices":"Precios desde $259 hasta $699 MXN, segun producto.",
     "chat.a.ingredients":"Cada producto muestra sus ingredientes y origen en su ficha.",
@@ -2394,8 +2454,8 @@ var I18N = {
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o adabueo18@gmail.com.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
-    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System Luminous, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la página.",
-    "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System Luminous, System Health y System Spot Speciality.",
+    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System T-Specialist, System Health y System Spot Speciality) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la página.",
+    "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System T-Specialist, System Health y System Spot Speciality.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario hábil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
     "chat.a.account":"No necesitas cuenta para comprar. Si inicias sesión con Google o Facebook guardamos tu perfil y tus promociones.",
@@ -2453,7 +2513,7 @@ var I18N = {
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
     "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
-    "hero.cta1":"See more", "hero.cta2":"Our philosophy",
+    "hero.cta1":"See more", "hero.cta2":"Our philosophy", "hero.ingredientsNote":"Ingredients that aim to be kinder to you and the planet.",
     "hero.visualCaption":"Four wellness systems, one single standard of origin and quality.",
     "search.placeholder":"Search a product or system...", "search.btn":"Search", "search.subtitle":"Find a product, category or full system", "search.notfound":"No results found. Try another word or explore the verticals.", "search.found":"We found {name} in {vertical}. Opening its page...", "search.foundCategory":"Showing {name} products...", "category.empty":"New products coming soon in this category.",
     "search.viewAllCatalog":"View full catalog", "search.personalDiagnosis":"Personalized diagnosis",
@@ -2473,7 +2533,7 @@ var I18N = {
     "nl.eyebrow":"Join Renuévate", "nl.h2":'Get <span class="accent">news</span> and early access to your favorite systems',
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
     "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
-    "footer.brandP":"System Luminous, Health and Spot: wellness habits for every stage of your life.",
+    "footer.brandP":"System T-Specialist, Health and Spot: wellness habits for every stage of your life.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
     "footer.hCompania":"Company", "footer.about":"About Renuévate",
@@ -2494,7 +2554,7 @@ var I18N = {
     "chat.a.purpose":"I help you find your ideal system, fast and simple.",
     "chat.q.shipping":"Shipping", "chat.q.verticals":"Verticals", "chat.q.diagnostic":"How to choose my system", "chat.q.human":"Talk to a human",
     "chat.a.shipping":"We ship across Mexico, delivery in 4 business days.",
-    "chat.a.verticals":"3 systems: System Luminous, System Health and System Spot Speciality. Explore them in the System Speciality menu.",
+    "chat.a.verticals":"3 systems: System T-Specialist, System Health and System Spot Speciality. Explore them in the System Speciality menu.",
     "chat.a.diagnostic":"Tell me your priority (energy, skin or performance) and I'll recommend your system.",
     "chat.a.prices":"Prices from $259 to $699 MXN, depending on the product.",
     "chat.a.ingredients":"Each product page shows its ingredients and origin.",
@@ -2509,8 +2569,8 @@ var I18N = {
     "chat.a.loyalty":"Every purchase earns Renuévate points, redeemable on your next order.",
     "chat.a.contact":"Reach us on WhatsApp, this chat, or adabueo18@gmail.com.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
-    "chat.a.about":"Renuévate is a beauty and wellness online store: we bring together curated products in 3 systems (System Luminous, System Health and System Spot Speciality) and help you choose with judgment, not to sell. Learn more in \"About Renuévate\", at the bottom of the page.",
-    "chat.a.products":"We sell skin and hair care, and daily wellness across 3 systems: System Luminous, System Health and System Spot Speciality.",
+    "chat.a.about":"Renuévate is a beauty and wellness online store: we bring together curated products in 3 systems (System T-Specialist, System Health and System Spot Speciality) and help you choose with judgment, not to sell. Learn more in \"About Renuévate\", at the bottom of the page.",
+    "chat.a.products":"We sell skin and hair care, and daily wellness across 3 systems: System T-Specialist, System Health and System Spot Speciality.",
     "chat.a.hours":"The site takes orders 24/7. A human advisor is available on WhatsApp during business hours.",
     "chat.a.security":"Secure encrypted payment. We never store your card details on our servers.",
     "chat.a.account":"You don't need an account to buy. If you sign in with Google or Facebook we save your profile and promotions.",
@@ -2568,7 +2628,7 @@ var I18N = {
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
-    "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie",
+    "hero.cta1":"Voir plus", "hero.cta2":"Notre philosophie", "hero.ingredientsNote":"Des ingrédients qui cherchent à être plus respectueux de vous et de la planète.",
     "hero.visualCaption":"Quatre systèmes de bien-etre, un seul standard d'origine et de qualite.",
     "search.placeholder":"Recherchez un produit ou un système...", "search.btn":"Rechercher", "search.subtitle":"Trouvez un produit, une categorie ou un systeme complet", "search.notfound":"Aucun résultat. Essayez un autre mot ou explorez nos marques.", "search.found":"Nous avons trouve {name} dans {vertical}. Ouverture de sa fiche...", "search.foundCategory":"Affichage des produits de {name}...", "category.empty":"Nouveaux produits bientot disponibles dans cette categorie.",
     "search.viewAllCatalog":"Voir tout le catalogue", "search.personalDiagnosis":"Diagnostic personnalise",
@@ -2588,7 +2648,7 @@ var I18N = {
     "nl.eyebrow":"Rejoindre Renuévate", "nl.h2":'Recevez des <span class="accent">nouveautes</span> et un accès anticipé a vos systèmes favoris',
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
     "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un accès anticipé a nos systèmes.", "subscribeThanks.cta":"Compris",
-    "footer.brandP":"System Luminous, Health et Spot : des habitudes de bien-etre pour chaque étape de votre vie.",
+    "footer.brandP":"System T-Specialist, Health et Spot : des habitudes de bien-etre pour chaque étape de votre vie.",
     "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre système", "footer.shipping":"Livraison et retours", "footer.faq":"Questions fréquentes", "footer.chat":"Discuter avec l'assistant",
     "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate",
@@ -2609,7 +2669,7 @@ var I18N = {
     "chat.a.purpose":"Je vous aide a trouver votre système idéal, vite et simplement.",
     "chat.q.shipping":"Livraison", "chat.q.verticals":"Marques", "chat.q.diagnostic":"Comment choisir mon système", "chat.q.human":"Parler a un humain",
     "chat.a.shipping":"Nous livrons partout au Mexique, en 4 jours ouvres.",
-    "chat.a.verticals":"3 systèmes : System Luminous, System Health et System Spot Speciality. Explorez-les dans le menu System Speciality.",
+    "chat.a.verticals":"3 systèmes : System T-Specialist, System Health et System Spot Speciality. Explorez-les dans le menu System Speciality.",
     "chat.a.diagnostic":"Dites-moi votre priorite (énergie, peau, performance) et je recommande votre système.",
     "chat.a.prices":"Prix de $259 a $699 MXN, selon le produit.",
     "chat.a.ingrédients":"Chaque fiche produit affiche ses ingrédients et son origine.",
@@ -2624,8 +2684,8 @@ var I18N = {
     "chat.a.loyalty":"Chaque achat cumule des points Renuévate, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.",
     "chat.a.sustainability":"Emballages recyclables et ingrédients d'origine certifiee.",
-    "chat.a.about":"Renuévate est la boutique en ligne beauté et bien-etre : nous reunissons des produits sélectionnés en 3 systèmes (System Luminous, System Health et System Spot Speciality) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
-    "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systèmes : System Luminous, System Health et System Spot Speciality.",
+    "chat.a.about":"Renuévate est la boutique en ligne beauté et bien-etre : nous reunissons des produits sélectionnés en 3 systèmes (System T-Specialist, System Health et System Spot Speciality) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
+    "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systèmes : System T-Specialist, System Health et System Spot Speciality.",
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
     "chat.a.security":"Paiement sécurisé et chiffre. Nous ne stockons jamais les données de votre carte.",
     "chat.a.account":"Pas besoin de compte pour acheter. En vous connectant avec Google ou Facebook, nous gardons votre profil et vos promotions.",
@@ -2784,7 +2844,7 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Tu carrito existe como demostracion funcional, pero necesitas iniciar sesión para verlo y guardarlo.'; },
          talkHumanLabel:function(){ return 'Hablar con un asesor'; },
          restartLabel:function(){ return 'Elegir otra prioridad'; },
-         makeupUnavailable:function(){ return 'Nuestro fuerte es el cuidado de piel y bienestar con System Luminous, Health y Spot. Te muestro las opciones disponibles en nuestro catálogo, o te conecto con un asesor humano si buscas algo mas especifico.'; },
+         makeupUnavailable:function(){ return 'Nuestro fuerte es el cuidado de piel y bienestar con System T-Specialist, Health y Spot. Te muestro las opciones disponibles en nuestro catálogo, o te conecto con un asesor humano si buscas algo mas especifico.'; },
          makeupFallbackOptions:function(){ return [
            { label:'Ver cuidado de piel NACAR', action:function(){ chooseGoal('skin'); } },
            { label:'Ver catálogo completo', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
@@ -2816,7 +2876,7 @@ var DYN = {
            title:'¿Como quieres descubrir tu belleza?',
            subtitle:'Elige explorar el catalogo completo o responde 4 preguntas rápidas para una preseleccion hecha para ti.',
            catalogTitle:'Ver catalogo completo',
-           catalogBody:'Explora los 5 productos de System Luminous a tu ritmo.',
+           catalogBody:'Explora los 5 productos de System T-Specialist a tu ritmo.',
            quizTitle:'Diagnostico personalizado',
            quizBody:'4 preguntas y te preseleccionamos tus productos ideales.'
          },
@@ -2964,7 +3024,7 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Your cart exists as a working demo, but you need to sign in to see and keep it.'; },
          talkHumanLabel:function(){ return 'Talk to an advisor'; },
          restartLabel:function(){ return 'Choose another priority'; },
-         makeupUnavailable:function(){ return "We focus on skin care and wellness with System Luminous, Health and Spot. I can show you what's available in our catalog, or connect you with a human advisor if you're after something more specific."; },
+         makeupUnavailable:function(){ return "We focus on skin care and wellness with System T-Specialist, Health and Spot. I can show you what's available in our catalog, or connect you with a human advisor if you're after something more specific."; },
          makeupFallbackOptions:function(){ return [
            { label:'View NACAR skin care', action:function(){ chooseGoal('skin'); } },
            { label:'View full catalog', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
@@ -2987,7 +3047,7 @@ var DYN = {
            title:'How do you want to discover your beauty routine?',
            subtitle:'Browse the full catalog, or answer 4 quick questions and get a picked-for-you preselection.',
            catalogTitle:'View full catalog',
-           catalogBody:'Explore all 5 System Luminous products at your own pace.',
+           catalogBody:'Explore all 5 System T-Specialist products at your own pace.',
            quizTitle:'Personalized diagnosis',
            quizBody:'4 questions and we preselect your ideal products.'
          },
@@ -3135,7 +3195,7 @@ var DYN = {
          cartNeedsLogin:function(){ return 'Votre panier existe en demonstration fonctionnelle, mais vous devez vous connecter pour le voir et le conserver.'; },
          talkHumanLabel:function(){ return 'Parler a un conseiller'; },
          restartLabel:function(){ return 'Choisir une autre priorite'; },
-         makeupUnavailable:function(){ return "Notre spécialité est le soin de la peau et le bien-etre avec System Luminous, Health et Spot. Je peux vous montrer ce qui est disponible dans notre catalogue, ou vous mettre en relation avec un conseiller humain si vous cherchez autre chose."; },
+         makeupUnavailable:function(){ return "Notre spécialité est le soin de la peau et le bien-etre avec System T-Specialist, Health et Spot. Je peux vous montrer ce qui est disponible dans notre catalogue, ou vous mettre en relation avec un conseiller humain si vous cherchez autre chose."; },
          makeupFallbackOptions:function(){ return [
            { label:'Voir le soin de la peau NACAR', action:function(){ chooseGoal('skin'); } },
            { label:'Voir le catalogue complet', action:function(){ closeAllPanels(); openBeautyCatalog(); } },
@@ -3158,7 +3218,7 @@ var DYN = {
            title:'Comment souhaitez-vous decouvrir votre beauté?',
            subtitle:'Explorez le catalogue complet, ou repondez a 4 questions rapides pour une présélection faite pour vous.',
            catalogTitle:'Voir le catalogue complet',
-           catalogBody:'Explorez les 5 produits System Luminous a votre rythme.',
+           catalogBody:'Explorez les 5 produits System T-Specialist a votre rythme.',
            quizTitle:'Diagnostic personnalise',
            quizBody:'4 questions et nous preselectionnons vos produits ideaux.'
          },
@@ -4368,21 +4428,21 @@ var ABOUT_CONTENT = {
   es: { sections: [
     { h:'Quiénes somos', p:'En Renuévate creemos que cuidar tu piel, tu salud y tu bienestar no debería ser complicado. Por eso creamos una tienda online especializada en productos de belleza, skincare, nutrición y cuidado personal, seleccionados por su calidad, respaldo y <span class="accent">beneficios reales</span>. No buscamos tener miles de productos en un catálogo interminable: preferimos ofrecer soluciones que aporten valor y ayuden a las personas a sentirse y verse mejor cada día.' },
     { h:'Nuestra misión', p:'Ayudarte a encontrar los productos adecuados para tus objetivos de belleza y bienestar, sin confusión ni recomendaciones genéricas. Existen cientos de opciones para el cuidado facial, los suplementos nutricionales y el cuidado masculino; nuestro objetivo es simplificar esa decisión para que puedas elegir con confianza aquello que realmente necesitas.' },
-    { h:'Cómo seleccionamos nuestros productos', p:'Cada producto disponible en Renuévate forma parte de una solución específica: evaluamos sus ingredientes, beneficios, calidad y propósito antes de incorporarlo a nuestra tienda. Para facilitar tu experiencia, organizamos nuestras recomendaciones en tres líneas especializadas — <b>System Luminous Speciality</b>, enfocado en skincare, cuidado facial, hidratación, luminosidad y rejuvenecimiento de la piel; <b>System Health Speciality</b>, diseñado para apoyar la nutrición, el bienestar integral, la energía y el rendimiento diario; y <b>System Spot Speciality</b>, desarrollado para cubrir las necesidades específicas del cuidado masculino — además de herramientas de diagnóstico y asesoría personalizada para ayudarte a identificar el sistema más adecuado según tus necesidades y estilo de vida.' },
+    { h:'Cómo seleccionamos nuestros productos', p:'Cada producto disponible en Renuévate forma parte de una solución específica: evaluamos sus ingredientes, beneficios, calidad y propósito antes de incorporarlo a nuestra tienda. Para facilitar tu experiencia, organizamos nuestras recomendaciones en tres líneas especializadas — <b>System T-Specialist Speciality</b>, enfocado en skincare, cuidado facial, hidratación, luminosidad y rejuvenecimiento de la piel; <b>System Health Speciality</b>, diseñado para apoyar la nutrición, el bienestar integral, la energía y el rendimiento diario; y <b>System Spot Speciality</b>, desarrollado para cubrir las necesidades específicas del cuidado masculino — además de herramientas de diagnóstico y asesoría personalizada para ayudarte a identificar el sistema más adecuado según tus necesidades y estilo de vida.' },
     { h:'Nuestro compromiso contigo', p:'Somos una tienda 100% en línea comprometida con la transparencia, la atención personalizada y la confianza de nuestros clientes. Trabajamos con precios claros, información detallada sobre ingredientes y beneficios, y acompañamiento humano cuando lo necesitas. En Renuévate no creemos en promesas milagrosas: creemos en productos de calidad, hábitos consistentes y <span class="accent">resultados que se sostienen en el tiempo</span>.' },
     { h:'Más que una tienda de belleza', p:'Renuévate nace con una visión simple: ayudarte a renovar tu bienestar, fortalecer tu confianza y construir una mejor versión de ti mismo a través del cuidado consciente de tu piel, tu salud y tu imagen personal. Porque cuando te cuidas por dentro y por fuera, los resultados se reflejan en cada aspecto de tu vida.' },
   ] },
   en: { sections: [
     { h:'Who we are', p:'At Renuévate we believe that taking care of your skin, your health and your wellbeing shouldn\'t be complicated. That\'s why we built an online store focused on beauty, skincare, nutrition and personal care products, selected for their quality, backing and <span class="accent">real benefits</span>. We\'re not chasing an endless catalog with thousands of products — we\'d rather offer solutions that add real value and help people feel and look better every day.' },
     { h:'Our mission', p:'To help you find the right products for your beauty and wellness goals, without confusion or generic recommendations. There are hundreds of options out there for facial care, nutritional supplements and men\'s grooming; our goal is to simplify that decision so you can confidently choose what you actually need.' },
-    { h:'How we select our products', p:'Every product available at Renuévate is part of a specific solution: we evaluate its ingredients, benefits, quality and purpose before adding it to our store. To make things easier, we organize our recommendations into three specialized lines — <b>System Luminous Speciality</b>, focused on skincare, facial care, hydration, radiance and skin renewal; <b>System Health Speciality</b>, built to support nutrition, overall wellness, energy and daily performance; and <b>System Spot Speciality</b>, developed to cover the specific needs of men\'s grooming — plus diagnostic tools and personalized guidance to help you identify the right system for your needs and lifestyle.' },
+    { h:'How we select our products', p:'Every product available at Renuévate is part of a specific solution: we evaluate its ingredients, benefits, quality and purpose before adding it to our store. To make things easier, we organize our recommendations into three specialized lines — <b>System T-Specialist Speciality</b>, focused on skincare, facial care, hydration, radiance and skin renewal; <b>System Health Speciality</b>, built to support nutrition, overall wellness, energy and daily performance; and <b>System Spot Speciality</b>, developed to cover the specific needs of men\'s grooming — plus diagnostic tools and personalized guidance to help you identify the right system for your needs and lifestyle.' },
     { h:'Our commitment to you', p:'We are a 100% online store committed to transparency, personalized attention and our customers\' trust. We work with clear pricing, detailed information about ingredients and benefits, and human support whenever you need it. At Renuévate we don\'t believe in miracle promises: we believe in quality products, consistent habits, and <span class="accent">results that hold up over time</span>.' },
     { h:'More than a beauty store', p:'Renuévate was born from a simple vision: to help you renew your wellbeing, strengthen your confidence, and build a better version of yourself through the conscious care of your skin, your health and your personal image. Because when you take care of yourself inside and out, the results show up in every part of your life.' },
   ] },
   fr: { sections: [
     { h:'Qui nous sommes', p:'Chez Renuévate, nous pensons que prendre soin de votre peau, de votre sante et de votre bien-etre ne devrait pas etre complique. C\'est pourquoi nous avons créé une boutique en ligne spécialisée dans les produits de beauté, de soin de la peau, de nutrition et de soin personnel, sélectionnés pour leur qualite, leur serieux et leurs <span class="accent">bienfaits reels</span>. Nous ne cherchons pas a avoir des milliers de produits dans un catalogue sans fin : nous preferons proposer des solutions qui apportent une vraie valeur et aident chacun a se sentir et a se voir mieux chaque jour.' },
     { h:'Notre mission', p:'Vous aider a trouver les produits adaptes a vos objectifs de beauté et de bien-etre, sans confusion ni recommandations generiques. Il existe des centaines d\'options pour le soin du visage, les complements nutritionnels et le soin masculin ; notre objectif est de simplifier cette decision pour que vous puissiez choisir en toute confiance ce dont vous avez vraiment besoin.' },
-    { h:'Comment nous selectionnons nos produits', p:'Chaque produit disponible chez Renuévate fait partie d\'une solution précise : nous evaluons ses ingrédients, ses bienfaits, sa qualite et son objectif avant de l\'integrer a notre boutique. Pour simplifier votre experience, nous organisons nos recommandations en trois lignes specialisees — <b>System Luminous Speciality</b>, axe sur le soin de la peau, l\'hydratation, l\'éclat et le rajeunissement cutane ; <b>System Health Speciality</b>, conçu pour soutenir la nutrition, le bien-etre global, l\'énergie et la performance quotidienne ; et <b>System Spot Speciality</b>, developpe pour repondre aux besoins specifiques du soin masculin — ainsi que des outils de diagnostic et un accompagnement personnalise pour vous aider a identifier le système le plus adapte a vos besoins et a votre mode de vie.' },
+    { h:'Comment nous selectionnons nos produits', p:'Chaque produit disponible chez Renuévate fait partie d\'une solution précise : nous evaluons ses ingrédients, ses bienfaits, sa qualite et son objectif avant de l\'integrer a notre boutique. Pour simplifier votre experience, nous organisons nos recommandations en trois lignes specialisees — <b>System T-Specialist Speciality</b>, axe sur le soin de la peau, l\'hydratation, l\'éclat et le rajeunissement cutane ; <b>System Health Speciality</b>, conçu pour soutenir la nutrition, le bien-etre global, l\'énergie et la performance quotidienne ; et <b>System Spot Speciality</b>, developpe pour repondre aux besoins specifiques du soin masculin — ainsi que des outils de diagnostic et un accompagnement personnalise pour vous aider a identifier le système le plus adapte a vos besoins et a votre mode de vie.' },
     { h:'Notre engagement envers vous', p:'Nous sommes une boutique 100% en ligne engagee pour la transparence, l\'attention personnalisee et la confiance de nos clients. Nous travaillons avec des prix clairs, des informations detaillees sur les ingrédients et les bienfaits, et un accompagnement humain des que vous en avez besoin. Chez Renuévate, nous ne croyons pas aux promesses miracles : nous croyons en des produits de qualite, des habitudes constantes et des <span class="accent">résultats qui durent dans le temps</span>.' },
     { h:'Plus qu\'une boutique de beauté', p:'Renuévate est nee d\'une vision simple : vous aider a renouveler votre bien-etre, renforcer votre confiance et construire une meilleure version de vous-même grace a un soin conscient de votre peau, de votre sante et de votre image personnelle. Parce que lorsque vous prenez soin de vous, a l\'intérieur comme a l\'extérieur, les résultats se refletent dans chaque aspect de votre vie.' },
   ] },
@@ -5130,7 +5190,7 @@ function goToFilosofia(){
 // bloque de rutinas -- ver CSS .zoom-section.catalog-mode. Punto de entrada
 // único para: 1) CTA "Catalogo" del menu Belleza, 2) CTA "Ver mi preseleccion"
 // al final del diagnostico (goToBeautyRecommendation). El catalogo hoy solo
-// cubre System Luminous (Nacar) porque es lo que vive bajo el menu Belleza;
+// cubre System T-Specialist (Nacar) porque es lo que vive bajo el menu Belleza;
 // si crece a mas de una vertical, este es el lugar para unificar productos.
 var catalogModeActive = false;
 function openBeautyCatalog(){
