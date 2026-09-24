@@ -832,7 +832,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 /* Fix 69: modal de busqueda -- mismo patron visual que coming-soon-modal
    (icono circular + titulo + texto), con un form de una linea (input+boton)
    y una linea de feedback debajo para "no encontramos"/"encontramos X". */
-.search-modal{max-width:420px; text-align:center;}
+.search-modal{max-width:560px; text-align:center;}
 .search-modal .cs-icon{width:52px; height:52px; border-radius:50%; background:var(--cream); color:var(--gold-text); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;}
 .search-modal h3{font-size:20px; margin-bottom:6px;}
 .search-modal .pm-subtitle{margin-bottom:20px;}
@@ -851,9 +851,11 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .search-submit-btn{flex-shrink:0; width:40px; height:40px; border-radius:50%; border:none; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s ease;}
 .search-submit-btn:hover{background:var(--gold);}
 .search-feedback{margin-top:16px; font-size:12.5px; color:var(--grey); min-height:16px; line-height:1.5;}
-.search-quicklinks{display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;}
-.search-quicklinks button{flex:1; min-width:140px; background:none; border:1px solid var(--line); border-radius:30px; padding:10px 16px; font-size:12px; color:var(--ink); cursor:pointer; transition:border-color .15s;}
-.search-quicklinks button:hover{border-color:var(--navy); color:var(--navy);}
+.search-quicklinks{display:flex; gap:14px; margin-top:22px; flex-wrap:wrap;}
+.search-quicklinks button{flex:1; min-width:170px; display:flex; flex-direction:column; align-items:center; gap:10px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px 16px 18px; font-size:12.5px; font-weight:600; letter-spacing:.2px; color:var(--ink); cursor:pointer; transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease;}
+.search-quicklinks .sq-icon{width:38px; height:38px; border-radius:50%; background:var(--nacar-soft); color:#B8873A; display:flex; align-items:center; justify-content:center; transition:transform .2s ease;}
+.search-quicklinks button:hover{border-color:var(--nacar); box-shadow:0 12px 26px rgba(0,0,0,.09); transform:translateY(-3px);}
+.search-quicklinks button:hover .sq-icon{transform:scale(1.08);}
 .beauty-choice-options{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;}
 .beauty-choice-card{border:1px solid var(--line); border-radius:6px; padding:22px 18px; cursor:pointer; text-align:left; transition:box-shadow .2s, border-color .2s; background:#fff;}
 .beauty-choice-card:hover{box-shadow:0 10px 24px rgba(0,0,0,.08); border-color:var(--nacar);}
@@ -1860,8 +1862,14 @@ var AZURA_CONFIG = {
          van directo a openBeautyCatalog()/openBeautyQuiz() (mismos flujos
          que ya existen desde el modal beautyChoiceOverlay). -->
     <div class="search-quicklinks">
-      <button type="button" onclick="closeSearchModal(); openBeautyCatalog();" data-i18n="search.viewAllCatalog">Ver todo el catálogo</button>
-      <button type="button" onclick="closeSearchModal(); openBeautyQuiz();" data-i18n="search.personalDiagnosis">Diagnóstico personalizado</button>
+      <button type="button" onclick="closeSearchModal(); openBeautyCatalog();">
+        <span class="sq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+        <span data-i18n="search.viewAllCatalog">Ver todo el catálogo</span>
+      </button>
+      <button type="button" onclick="closeSearchModal(); openBeautyQuiz();">
+        <span class="sq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M2 12h4M18 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/><circle cx="12" cy="12" r="3.2"/></svg></span>
+        <span data-i18n="search.personalDiagnosis">Diagnóstico personalizado</span>
+      </button>
     </div>
   </div>
 </div>
