@@ -300,16 +300,19 @@ body.nav-lock{overflow:hidden;}
      ventana de recorte es lo que deja el mayor numero de frascos completos
      en cuadro en vez de cortar uno a la mitad en un extremo. */
   .hero-slide:nth-of-type(1){object-position:38% center;}
-  .hero-slide:nth-of-type(2){object-position:center center;}
+  .hero-slide:nth-of-type(2){object-position:30% center;}
   .hero-slide:nth-of-type(3){object-position:center center;}
-  /* Fix 138 (Carlos: "la segunda imagen no se mira bien, esta demasiado
-     cerca"): en movil el marco (84vh, ancho completo) es MAS ALTO que la
-     foto de la crema una vez escalada -- cover encuadra por ALTURA, asi que
-     aqui SIEMPRE se ve la foto completa de arriba a abajo (rostro + mano +
-     producto), solo se recorta un poco de los lados. No habia nada que
-     "alejar" en movil -- el problema reportado es exclusivo de desktop (ver
-     bloque de abajo). Se deja center/center sin cambios, confirmado con la
-     matematica real del recorte, no a ojo. */
+  /* Fix 141: Carlos remplazo la foto de slide 2 por una toma macro nueva
+     (rostro + tubo SEYTU mas juntos, mismo aspecto vertical 0.67:1 que la
+     anterior). En movil cover sigue encuadrando por ALTURA (el marco 84vh
+     es mas alto que la foto escalada) -- se ve el 100% de la foto de
+     arriba a abajo sin importar el eje X, solo cambia cuanto se recorta de
+     los lados. Con center (50%) el texto "SEYTU" quedaba a la mitad,
+     cortando la S. 30% mueve la ventana un poco a la izquierda -- se
+     confirmo con simulacion real del crop (no a ojo) que a 30% se ve la
+     etiqueta completa (SEYTU / SYSTEM 8 / TIME-SPECIALIST / Crema de Dia /
+     FPS 30 / 50ml) Y la mano/dedos aplicando la crema, sin cortar nada
+     relevante de ningun lado. */
 }
 @media(min-width:761px){
   /* Antes el video ocupaba todo el ancho/alto de pantalla (86vh, borde a
@@ -333,29 +336,23 @@ body.nav-lock{overflow:hidden;}
      de estas fotos y la franja inferior es superficie/fondo de relleno --
      un centro puro cortaria mas del sujeto arriba de lo que hace falta. */
   .hero-slide:nth-of-type(1){object-position:center 42%;}
-  /* Fix 138 (Carlos: "la segunda imagen no se mira bien, esta demasiado
-     cerca, alejala"): diagnostico real, no ajuste a ojo -- en desktop el
-     marco mide ~56vh de alto por (ancho de pantalla - 128px), un aspecto de
-     hasta 3:1 en monitores anchos. La foto es un retrato vertical (rostro +
-     producto pegados, 2000x2981). Con cover sin barras (decision ya tomada
-     por Carlos en Fix 131) la ventana visible en desktop alcanza entre
-     ~22% y ~26% del alto TOTAL de la foto segun el monitor -- es
-     matematicamente imposible que quepan rostro completo Y producto
-     completo al mismo tiempo, sin importar la posicion. No existe un ajuste
-     de CSS que "aleje la camara" sin cortar contenido, porque no hay mas
-     foto alrededor del encuadre actual para revelar (ver resumen entregado
-     a Carlos con las 3 opciones). Carlos eligio "punto medio balanceado":
-     se prioriza ojos/nariz (el foco mas fuerte de una foto de belleza)
-     sobre frente/menton, y el nombre de marca del producto ("SEYTÚ
-     SYSTEM...") sobre el texto de FPS/precio de mas abajo. 38% dejaba
-     ver un poco mas de frente que de marca del producto; 40% balancea
-     ambos lados de ese recorte segun la medicion real (grid de referencia
-     sobre la foto, no estimado). El cambio visual es sutil a proposito --
-     es el maximo ajuste real disponible dentro de la restriccion fisica de
-     la foto, ver el resumen para las alternativas si se quiere un cambio
-     mas notorio (foto nueva con mas encuadre, o aceptar un margen de color
-     de marca en vez de full-bleed). */
-  .hero-slide:nth-of-type(2){object-position:center 40%;}
+  /* Fix 141 (sigue de Fix 138): el ajuste de porcentaje ya se habia agotado
+     -- se probo matematicamente que ninguna posicion cabia rostro completo
+     Y producto completo en la ventana de ~22-26% del marco de desktop. La
+     salida real (confirmada con Carlos, no una tercera adivinada) fue
+     reemplazar la foto por una toma macro mas cerrada (rostro + tubo ya
+     pegados desde el encuadre original, sin espacio muerto de fondo). Sigue
+     siendo vertical (0.67:1, misma proporcion que la anterior) porque asi
+     llego la foto nueva -- el marco panoramico de desktop (~3:1) sigue sin
+     poder mostrar el texto de especificaciones (SYSTEM/Crema de Dia/FPS
+     30/50ml), eso se acepto a proposito: en el hero solo importa que se
+     reconozca la marca (SEYTU) y el gesto de aplicar la crema, el detalle
+     de producto vive en la ficha. 13% se confirmo con una simulacion real
+     del crop (no estimado) en los dos extremos del ancho de escritorio:
+     deja ver el cierre del tubo, "SEYTU", los labios y la aplicacion de
+     crema en el cachete de forma consistente sin importar el ancho de
+     pantalla. */
+  .hero-slide:nth-of-type(2){object-position:center 13%;}
   .hero-slide:nth-of-type(3){object-position:center 45%;}
 }
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
