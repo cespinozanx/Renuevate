@@ -386,9 +386,15 @@ section{padding:92px 0;}
 .v-card{position:relative; border-radius:4px; overflow:hidden; cursor:pointer; min-height:350px; display:flex; flex-direction:column; justify-content:flex-end; padding:28px 24px; color:var(--ink); transition:transform .25s ease, box-shadow .25s ease; box-shadow:0 6px 18px rgba(0,0,0,.06); background:#F8F7F3; border:1px solid var(--line); border-top:4px solid var(--line);}
 .v-card:hover{transform:translateY(-6px); box-shadow:0 18px 32px rgba(0,0,0,.12);}
 .v-card .v-icon{width:36px; height:36px; margin-bottom:16px; opacity:1; color:var(--grey);}
-.v-card .v-media{width:100%; aspect-ratio:3/2; border-radius:6px; overflow:hidden; margin:0 auto 18px; background:#EAE6DC; box-shadow:0 6px 16px rgba(0,0,0,.08);}
+.v-card .v-media{position:relative; width:100%; aspect-ratio:3/2; border-radius:6px; overflow:hidden; margin:0 auto 18px; background:#EAE6DC; box-shadow:0 6px 16px rgba(0,0,0,.08);}
 .v-card .v-media-el{width:100%; height:100%; object-fit:cover; display:block; border:0;}
 @media(prefers-reduced-motion:reduce){ .v-media-el{display:none;} }
+/* Fix 133: mismo patron de crossfade que .hero-slide (ver comentario junto a
+   esa regla) -- varias fotos apiladas position:absolute dentro de un
+   .v-media ya vuelto position:relative arriba, rotadas por opacity via
+   initVCardSlideshows() (ver JS). */
+.vcard-slide{position:absolute; inset:0; opacity:0; transition:opacity 1.1s ease;}
+.vcard-slide.is-active{opacity:1;}
 /* Misma razon que el video del hero: una tarjeta con video autoplay no debe
    arrancar animada con opacity:0 (hijo directo de .reveal-stagger) o el
    decodificador se puede quedar suspendido en algunos navegadores Android. */
@@ -1356,12 +1362,24 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div class="verticals-grid reveal-stagger">
-      <div class="v-card nacar has-video" onclick="goVertical('nacar')">
+      <!-- Fix 133 (Carlos: "quita las imagenes de videos cortos y pon
+           secuencialmente" las fotos nuevas de producto): el video corto se
+           retira de esta tarjeta -- ya no necesita la clase has-video (esa
+           existia solo para que un <video> autoplay no arrancara con
+           opacity:0 del reveal-stagger, ver comentario junto a esa regla en
+           el CSS; una foto no tiene ese riesgo). Se reemplaza por 4 fotos
+           reales de producto (.vcard-slide) apiladas con el mismo patron de
+           crossfade que ya usa el hero (.hero-slide), rotadas solas via
+           JS (ver initVCardSlideshows()). Se dejo fuera la 5a foto que
+           Carlos mando (la de fondo con moleculas) porque su texto de
+           empaque sale corrupto/ilegible en varias etiquetas -- no es apta
+           para produccion tal cual. */ -->
+      <div class="v-card nacar" onclick="goVertical('nacar')">
         <div class="v-media">
-          <video class="v-media-el" muted loop playsinline preload="none" poster="media/seytu-system8-showcase-poster.jpg" aria-hidden="true">
-            <source src="media/seytu-system8-showcase-mobile.mp4" type="video/mp4" media="(max-width: 760px)">
-            <source src="media/seytu-system8-showcase.mp4" type="video/mp4">
-          </video>
+          <img class="v-media-el vcard-slide is-active" src="media/seytu-system8-tile-1-contorno.webp" alt="" loading="lazy">
+          <img class="v-media-el vcard-slide" src="media/seytu-system8-tile-2-suero.webp" alt="" loading="lazy">
+          <img class="v-media-el vcard-slide" src="media/seytu-system8-tile-3-caja.webp" alt="" loading="lazy">
+          <img class="v-media-el vcard-slide" src="media/seytu-system8-tile-4-crema-mano.webp" alt="" loading="lazy">
         </div>
         <div class="v-tag" id="vtagNacar">Belleza para mujer</div>
         <h3>System T-Specialist Speciality</h3>
@@ -1498,7 +1516,7 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div><h5 data-i18n="footer.hVerticales">System Speciality</h5>
-      <a onclick="goVertical('nacar')" data-i18n="footer.nacar">Speciality Luminous</a>
+      <a onclick="goVertical('nacar')" data-i18n="footer.nacar">System T-Specialist</a>
       <a onclick="goVertical('vigor')" data-i18n="footer.vigor">Speciality Health</a>
       <a onclick="goVertical('roble')" data-i18n="footer.roble">Speciality Spot</a>
     </div>
@@ -2419,7 +2437,7 @@ var I18N = {
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
     "footer.brandP":"System T-Specialist, Health y Spot: hábitos de bienestar para cada etapa de tu vida.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envíos y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate",
     "about.eyebrow":"Sobre Renuévate", "about.heroTitle":"Belleza y bienestar, con criterio.",
@@ -2534,7 +2552,7 @@ var I18N = {
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
     "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
     "footer.brandP":"System T-Specialist, Health and Spot: wellness habits for every stage of your life.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
     "footer.hCompania":"Company", "footer.about":"About Renuévate",
     "about.eyebrow":"About Renuévate", "about.heroTitle":"Beauty and wellness, with judgment.",
@@ -2649,7 +2667,7 @@ var I18N = {
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
     "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un accès anticipé a nos systèmes.", "subscribeThanks.cta":"Compris",
     "footer.brandP":"System T-Specialist, Health et Spot : des habitudes de bien-etre pour chaque étape de votre vie.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"Speciality Luminous", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"Speciality Health", "footer.roble":"Speciality Spot",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre système", "footer.shipping":"Livraison et retours", "footer.faq":"Questions fréquentes", "footer.chat":"Discuter avec l'assistant",
     "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate",
     "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beauté et bien-etre, avec discernement.",
@@ -4555,6 +4573,32 @@ function initHeroCarousel(){
 }
 document.addEventListener("DOMContentLoaded", initHeroCarousel);
 
+/* Fix 133: mismo mecanismo de auto-rotate que el hero de arriba
+   (heroStartAutoRotate/heroGoToSlide), version generica para cualquier
+   .v-media que traiga varias .vcard-slide adentro -- hoy solo la tarjeta
+   nacar las usa, pero si a futuro vigor/roble tambien cambian su video por
+   fotos, esta misma funcion ya las rota sin tocar nada mas. Un timer
+   independiente por tarjeta (no uno global) para que agregar/quitar
+   tarjetas a futuro no requiera tocar este codigo. */
+var vcardSlideTimers = [];
+function initVCardSlideshows(){
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  vcardSlideTimers.forEach(function(t){ clearInterval(t); });
+  vcardSlideTimers = [];
+  document.querySelectorAll(".v-media").forEach(function(media){
+    var slides = media.querySelectorAll(".vcard-slide");
+    if (slides.length < 2) return;
+    var idx = 0;
+    if (reduceMotion) return; // se queda en la primera foto, sin rotar
+    var timer = setInterval(function(){
+      idx = (idx + 1) % slides.length;
+      slides.forEach(function(s, i){ s.classList.toggle("is-active", i === idx); });
+    }, 3200);
+    vcardSlideTimers.push(timer);
+  });
+}
+document.addEventListener("DOMContentLoaded", initVCardSlideshows);
+
 // Fix 80: los 4 videos decorativos (3 System speciality + filosofia) traian
 // atributo autoplay -- eso obliga al navegador a descargar y reproducir el
 // video en cuanto entra al DOM, sin importar si esta fuera de pantalla.
@@ -4573,7 +4617,13 @@ function initLazyAutoplayVideos(){
   // Fix 88: .phil-showcase-el paso de <video> a <img> (Carlos pidio quitar el
   // mini video Ken Burns de la filosofia) -- se saca del selector porque
   // v.play()/v.pause() no existen en un <img> y tronarian el forEach.
-  var vids = document.querySelectorAll('.v-media-el');
+  // Fix 133: mismo problema se repite con las nuevas <img class="v-media-el
+  // vcard-slide"> de la tarjeta nacar (ver HTML) -- de nuevo v.play() no
+  // existe en un <img> y tronaria el forEach de abajo, esta vez apagando el
+  // autoplay de las tarjetas vigor/roble que SI siguen usando <video>. Se
+  // acota el selector a la etiqueta <video> en vez de excluir clases una por
+  // una cada vez que aparece un nuevo <img> reusando .v-media-el.
+  var vids = document.querySelectorAll('video.v-media-el');
   if (!vids.length) return;
   if (!('IntersectionObserver' in window)){
     // Fallback sin soporte: reproducir todo de una vez, como antes.
