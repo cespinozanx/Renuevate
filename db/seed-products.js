@@ -45,19 +45,22 @@ function parsePrice(str) {
   return match ? Number(match[0]) : 0;
 }
 
-// Skus que este seed ya NO siembra en Renuévate. Dos grupos:
-// 1) Raiz/Suplementos (Optimus/Omniplus/Power Maker/Magnus): se separo a su
-//    propio sitio/marca -- ver decision de division de sitios (2026-08-06).
-//    Los mismos 4 productos se siembran activos en la base del sitio nuevo.
-// 2) NACAR-01 a 04: eran productos mock del prototipo original (precio y
-//    rating inventados, sin foto ni ficha real), nunca correspondieron a un
-//    producto SEYTU/OMNILIFE real. Se retiran al limpiar el catalogo Nacar
-//    para dejar solo los 4 productos reales (NACAR-06/07/08/09) cargados con
-//    foto, precio e ingredientes verdaderos (2026-08-11).
-// Se desactivan en vez de borrarse, por si algun carrito/orden ya los
-// referencia en esta base, no truena una validacion contra un sku que
-// desaparecio de golpe.
-const RETIRED_DEMO_SKUS = ['RAIZ-01', 'RAIZ-02', 'RAIZ-03', 'RAIZ-04', 'OPTIMUS', 'OMNIPLUS', 'POWERMAKER', 'MAGNUS', 'NACAR-01', 'NACAR-02', 'NACAR-03', 'NACAR-04', 'VIGOR-01', 'VIGOR-02', 'VIGOR-03', 'VIGOR-04', 'ROBLE-01', 'ROBLE-02', 'ROBLE-03', 'ROBLE-04'];
+// Skus que este seed ya NO siembra en Renuévate: Raiz/Suplementos
+// (Optimus/Omniplus/Power Maker/Magnus) -- se separo a su propio sitio/marca,
+// ver decision de division de sitios (2026-08-06); los mismos 4 productos se
+// siembran activos en la base del sitio nuevo.
+// Se desactivan (no se borran) por si algun carrito/orden ya los referencia
+// en esta base -- no truena una validacion contra un sku que desaparecio de
+// golpe.
+//
+// NACAR-01..04 y VIGOR-01..04/ROBLE-01..04 (mock del prototipo original y
+// fichas de prueba de Hair/Spot) ya NO viven aqui -- Fix 154 (Carlos,
+// 2026-09-24) los borro por completo de la base con
+// db/delete-retired-products.js, a peticion explicita de Carlos ("ni como
+// deshabilitados los muestres"). Ese script SI revisa la coleccion `orders`
+// antes de borrar cada sku, mismo criterio de seguridad que este comentario
+// describe para el resto de la lista.
+const RETIRED_DEMO_SKUS = ['RAIZ-01', 'RAIZ-02', 'RAIZ-03', 'RAIZ-04', 'OPTIMUS', 'OMNIPLUS', 'POWERMAKER', 'MAGNUS'];
 
 const PRODUCTS = [
   // NACAR -- solo los 4 productos reales (foto, precio e ingredientes
