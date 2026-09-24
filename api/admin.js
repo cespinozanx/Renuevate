@@ -168,18 +168,6 @@ module.exports = async (req, res) => {
 
   const resource = (req.query && req.query.resource) || '';
 
-  // DIAGNOSTICO TEMPORAL - Fix 142 debug. NO expone el valor, solo si esta
-  // presente y su longitud. Se retira en cuanto se confirme la causa del
-  // 401 persistente en /api/admin?resource=auth. No requiere DB.
-  if (resource === 'envcheck') {
-    res.status(200).json({
-      adminPasswordSet: !!process.env.ADMIN_PASSWORD,
-      adminPasswordLength: process.env.ADMIN_PASSWORD ? process.env.ADMIN_PASSWORD.length : 0,
-      sessionSecretSet: !!process.env.SESSION_SECRET,
-      mongoUriSet: !!process.env.MONGODB_URI,
-    });
-    return;
-  }
 
   try {
     const db = await getDb();
