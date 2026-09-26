@@ -92,7 +92,7 @@ const PRODUCTS = [
   // pero este archivo se quedo con el nombre viejo. Se corrige aqui para que
   // ambas fuentes de verdad (ver nota dual-source-of-truth) vuelvan a coincidir.
   { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'], favorito: true, system: 'time_specialist',
-    name_i18n: { es: 'Seytú System T-Specialist', en: 'Seytú System T-Specialist', fr: 'Seytú System T-Specialist' },
+    name_i18n: { es: 'Crema de Día FPS 30', en: 'SPF 30 Day Cream', fr: 'Crème de Jour FPS 30' },
     description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
     image: 'media/nacar-08-dia-lifestyle-espejo.webp',
     images: ['media/nacar-08-dia-lifestyle-espejo.webp', 'media/nacar-08-dia-lifestyle-helechos.webp', 'media/nacar-08-dia-lifestyle-agua.webp'],
@@ -221,6 +221,25 @@ const PRODUCTS = [
       { name: 'Desert Rose', hex: '#BC897A', available: true },
       { name: 'Desert Sand', hex: '#CAA699', available: true },
     ] },
+
+  // Fix 158 (Carlos, 2026-09-26): producto nuevo agregado por el panel de
+  // admin -- no aparecio en el sitio porque el catalogo publico (V.nacar en
+  // index.html) es un arreglo estatico por idioma, y applyAdminOverridesToV()
+  // SOLO sobreescribe fichas que ya existen ahi por SKU (ver su propio
+  // comentario de cabecera: "nunca toca tag/img/thumb/shades/related, que
+  // siguen viniendo del codigo") -- nunca inyecta una ficha nueva. Se agrega
+  // aqui + en index.html (V.nacar ES/EN/FR) siguiendo el mismo patron manual
+  // de siempre (ver Fix 71/84/87). usage_es se deja vacio a proposito: Carlos
+  // no proporciono el modo de uso, no se inventa una instruccion de aplicacion
+  // de un producto cosmetico -- pendiente que la de.
+  { sku: 'NACAR-16', vertical: 'nacar', price: '$470 MXN', related: [], favorito: false, system: 'time_specialist',
+    name_i18n: { es: 'Crema para Contorno de Ojos', en: 'Eye Contour Cream', fr: 'Crème Contour des Yeux' },
+    description_i18n: { es: 'Cuida y mejora la apariencia de líneas finas y arrugas en la delicada zona del contorno de ojos, contribuye a reducir la apariencia de las bolsas y ojeras logrando una mirada revitalizada. Se recomienda utilizar el sistema completo para lograr mejores resultados.', en: 'Cares for and improves the appearance of fine lines and wrinkles in the delicate eye contour area, and helps reduce the look of puffiness and dark circles for a revitalized gaze. Use with the complete system for best results.', fr: "Prend soin de la zone délicate du contour des yeux et améliore l'apparence des ridules, tout en aidant à réduire les poches et les cernes pour un regard revitalisé. Utilisez avec le système complet pour de meilleurs résultats." },
+    image: 'media/nacar-16-contorno-front.webp',
+    images: ['media/nacar-16-contorno-front.webp', 'media/nacar-16-contorno-lifestyle.webp'],
+    long_description_es: ['Mejora la apariencia de líneas finas y arrugas', 'Brinda un efecto lifting en la mirada', 'Contribuye a reducir la apariencia de las bolsas y ojeras', 'Brinda firmeza y elasticidad al contorno', 'Ayuda a retrasar y disminuir los signos de edad en el área de los ojos'],
+    ingredients_es: ['Aqua (Water)', 'Caprylic/Capric Triglyceride', 'Sodium Acrylates Copolymer', 'Cetearyl Alcohol', 'Macadamia Ternifolia Seed Oil', 'Camellia Japonica Seed Oil', 'Hyaluronic Acid', 'Tocopheryl Acetate', 'Bakuchiol', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Portulaca Oleracea Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Acetyl Hexapeptide-8', 'Glycerin', 'Lecithin', 'Soy Isoflavones', 'Polysorbate 80', 'Alcohol', 'Sodium Polyacrylate', 'Phenoxyethanol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA', 'BHT'],
+    usage_es: '' },
 
   // VIGOR y ROBLE: productos de prueba retirados (Fix 151, Carlos 2026-09-24).
   // Los SKUs quedan en RETIRED_DEMO_SKUS arriba para desactivarse en Mongo
