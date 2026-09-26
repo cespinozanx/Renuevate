@@ -1498,7 +1498,7 @@ var AZURA_CONFIG = {
         <span class="bm-roble" id="bmRoble">Spot &middot; Speciality</span>
       </div>
     </div>
-    <div class="verticals-grid reveal-stagger">
+    <div class="verticals-grid reveal-stagger" id="systemsGrid">
       <!-- Fix 162 (Carlos, 2026-09-26): vuelve el video a esta tarjeta --
            Carlos mando un clip nuevo del producto real (System 8 Time-
            Specialist) para reemplazar las 4 fotos del Fix 133. Se re-agrega
@@ -1664,7 +1664,7 @@ var AZURA_CONFIG = {
       <a onclick="goVertical('roble')" data-i18n="footer.roble">Speciality Spot</a>
     </div>
     <div><h5 data-i18n="footer.hAyuda">Ayuda</h5>
-      <a onclick="goToHomeSection('verticales')" data-i18n="footer.diag">Como elegir tu sistema</a>
+      <a onclick="goToHomeSection('systemsGrid')" data-i18n="footer.diag">Como elegir tu sistema</a>
       <a onclick="openTermsModal()" data-i18n="footer.shipping">Envíos y devoluciones</a>
       <a onclick="openFaqModal()" data-i18n="footer.faq">Preguntas frecuentes</a>
       <a onclick="openChat()" data-i18n="footer.chat">Chatea con el asistente</a>
@@ -6993,7 +6993,9 @@ var HOME_CAROUSEL_ITEMS = [
   { sku:'NACAR-08', img:'media/nacar-08-carrusel.webp', labelKey:'nav.beauty.cleanser' },
   { sku:'NACAR-09', img:'media/nacar-09-carrusel.webp', labelKey:'nav.beauty.cleanser' },
   { sku:'NACAR-10', img:'media/nacar-10-carrusel.webp', labelKey:'nav.beauty.cleanser' },
-  { sku:'NACAR-11', img:'media/nacar-11-carrusel.webp', labelKey:'nav.beauty.treatment' }
+  { sku:'NACAR-11', img:'media/nacar-11-carrusel.webp', labelKey:'nav.beauty.treatment' },
+  // Fix 167 (Carlos, 2026-09-26): 6ta tarjeta -- Brillo Labial.
+  { sku:'NACAR-12', img:'media/nacar-12-carrusel.webp', labelKey:'nav.beauty.treatment' }
 ];
 function renderHomeCarousel(){
   var track = document.getElementById('homeCarouselTrack');
