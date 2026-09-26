@@ -1368,7 +1368,7 @@ var AZURA_CONFIG = {
                labelKey de categoria (ver openBeautyCategory/openProductDetail
                desde busqueda y openFavoritesCategory, linea ~5141). -->
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
-          <a data-v="nacar" onclick="goVertical('nacar'); closeNav();" data-i18n="nav.system.luminous">System T-Specialist</a>
+          <a data-v="nacar" onclick="goVertical('nacar','time_specialist'); closeNav();" data-i18n="nav.system.luminous">System T-Specialist</a>
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">System Hair Specialist</a>
           <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
           <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
@@ -1502,7 +1502,7 @@ var AZURA_CONFIG = {
            Carlos mando (la de fondo con moleculas) porque su texto de
            empaque sale corrupto/ilegible en varias etiquetas -- no es apta
            para produccion tal cual. */ -->
-      <div class="v-card nacar" onclick="goVertical('nacar')">
+      <div class="v-card nacar" onclick="goVertical('nacar','time_specialist')">
         <div class="v-media">
           <img class="v-media-el vcard-slide is-active" src="media/seytu-system8-tile-1-contorno.webp" alt="" loading="lazy">
           <img class="v-media-el vcard-slide" src="media/seytu-system8-tile-2-suero.webp" alt="" loading="lazy">
@@ -1570,7 +1570,7 @@ var AZURA_CONFIG = {
       <p id="zoomSubtitle"></p>
     </div>
     <div class="zoom-tabs reveal-stagger">
-      <div class="zoom-tab active" data-v="nacar" data-i18n="nav.system.luminous" onclick="goVertical('nacar')">System T-Specialist</div>
+      <div class="zoom-tab active" data-v="nacar" data-i18n="nav.system.luminous" onclick="goVertical('nacar','time_specialist')">System T-Specialist</div>
       <div class="zoom-tab" data-v="vigor" data-i18n="nav.system.health" onclick="goVertical('vigor')">System Hair Specialist</div>
       <div class="zoom-tab" data-v="roble" data-i18n="nav.system.spot" onclick="goVertical('roble')">Speciality Spot</div>
     </div>
@@ -1644,7 +1644,7 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div><h5 data-i18n="footer.hVerticales">System Speciality</h5>
-      <a onclick="goVertical('nacar')" data-i18n="footer.nacar">System T-Specialist</a>
+      <a onclick="goVertical('nacar','time_specialist')" data-i18n="footer.nacar">System T-Specialist</a>
       <a onclick="goVertical('vigor')" data-i18n="footer.vigor">System Hair Specialist</a>
       <a onclick="goVertical('roble')" data-i18n="footer.roble">Speciality Spot</a>
     </div>
@@ -2196,7 +2196,7 @@ var V = {
           ingredients:["Extracto de levadura","Extracto de hoja de olivo","Extracto de arnica","Extractos de frutas silvestres","Aceite de jojoba"],
           img:"media/nacar-07-omniplus-front.webp", thumb:"media/nacar-07-omniplus-thumb.webp", gallery:["media/nacar-07-omniplus-marmol.webp","media/nacar-07-omniplus-mano.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Crema de día", name:"Crema de Día FPS 30", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN", favorito:true,
+        {sku:"NACAR-08", tag:"Crema de día", name:"Crema de Día FPS 30", desc:"Renueva y protege, hidratacion con FPS 30.", price:"$725 MXN", favorito:true, system:"time_specialist",
           longDesc:"Combate la apariencia de los principales signos de la edad, estimula la produccion de colageno y elastina y ayuda a mejorar la textura y firmeza de la piel. Con propiedades antioxidantes e hidratantes, protege la piel contra los rayos UVA/UVB. Para mejores resultados, usala junto con el resto de tu rutina Nacar. Presentacion de 50 ml.",
           usage:"Aplica cada mañana sobre el rostro limpio, como último paso de tu rutina antes del maquillaje. Evita el contacto con los ojos. Reaplica en caso de exposicion solar prolongada.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
@@ -2292,7 +2292,7 @@ var V = {
             {name:"Desert Sand", hex:"#CAA699", available:true}
           ],
           related:["NACAR-11","NACAR-12","NACAR-13","NACAR-14"]},
-        {sku:"NACAR-16", tag:"Contorno de ojos", name:"Crema para Contorno de Ojos", desc:"Cuida y mejora la apariencia de líneas finas y arrugas en la delicada zona del contorno de ojos, contribuye a reducir la apariencia de las bolsas y ojeras logrando una mirada revitalizada. Se recomienda utilizar el sistema completo para lograr mejores resultados.", price:"$470 MXN", favorito:false,
+        {sku:"NACAR-16", tag:"Contorno de ojos", name:"Crema para Contorno de Ojos", desc:"Cuida y mejora la apariencia de líneas finas y arrugas en la delicada zona del contorno de ojos, contribuye a reducir la apariencia de las bolsas y ojeras logrando una mirada revitalizada. Se recomienda utilizar el sistema completo para lograr mejores resultados.", price:"$470 MXN", favorito:false, system:"time_specialist",
           longDesc:["Mejora la apariencia de líneas finas y arrugas","Brinda un efecto lifting en la mirada","Contribuye a reducir la apariencia de las bolsas y ojeras","Brinda firmeza y elasticidad al contorno","Ayuda a retrasar y disminuir los signos de edad en el área de los ojos"],
           usage:"",
           ingredients:["Aqua (Water)","Caprylic/Capric Triglyceride","Sodium Acrylates Copolymer","Cetearyl Alcohol","Macadamia Ternifolia Seed Oil","Camellia Japonica Seed Oil","Hyaluronic Acid","Tocopheryl Acetate","Bakuchiol","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Portulaca Oleracea Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Acetyl Hexapeptide-8","Glycerin","Lecithin","Soy Isoflavones","Polysorbate 80","Alcohol","Sodium Polyacrylate","Phenoxyethanol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA","BHT"],
@@ -2319,7 +2319,7 @@ var V = {
           ingredients:["Yeast extract","Olive leaf extract","Arnica extract","Wild berry extracts","Jojoba oil"],
           img:"media/nacar-07-omniplus-front.webp", thumb:"media/nacar-07-omniplus-thumb.webp", gallery:["media/nacar-07-omniplus-marmol.webp","media/nacar-07-omniplus-mano.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Day cream", name:"SPF 30 Day Cream", desc:"Renews and protects, hydration with SPF 30.", price:"$725 MXN", favorito:true,
+        {sku:"NACAR-08", tag:"Day cream", name:"SPF 30 Day Cream", desc:"Renews and protects, hydration with SPF 30.", price:"$725 MXN", favorito:true, system:"time_specialist",
           longDesc:"Fights the appearance of the main signs of aging, stimulates collagen and elastin production, and helps improve skin texture and firmness. With antioxidant and hydrating properties, it protects skin against UVA/UVB rays. For best results, use it alongside the rest of your Nacar routine. 50 ml.",
           usage:"Apply every morning to clean skin, as the last step of your routine before makeup. Avoid contact with the eyes. Reapply after prolonged sun exposure.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
@@ -2404,7 +2404,7 @@ var V = {
             {name:"Desert Sand", hex:"#CAA699", available:true}
           ],
           related:["NACAR-11","NACAR-12","NACAR-13","NACAR-14"]},
-        {sku:"NACAR-16", tag:"Eye cream", name:"Eye Contour Cream", desc:"Cares for and improves the appearance of fine lines and wrinkles in the delicate eye contour area, and helps reduce the look of puffiness and dark circles for a revitalized gaze. Use with the complete system for best results.", price:"$470 MXN", favorito:false,
+        {sku:"NACAR-16", tag:"Eye cream", name:"Eye Contour Cream", desc:"Cares for and improves the appearance of fine lines and wrinkles in the delicate eye contour area, and helps reduce the look of puffiness and dark circles for a revitalized gaze. Use with the complete system for best results.", price:"$470 MXN", favorito:false, system:"time_specialist",
           longDesc:["Improves the appearance of fine lines and wrinkles","Provides a lifting effect around the eyes","Helps reduce the appearance of bags and dark circles","Provides firmness and elasticity to the eye contour","Helps delay and reduce signs of aging in the eye area"],
           usage:"",
           ingredients:["Aqua (Water)","Caprylic/Capric Triglyceride","Sodium Acrylates Copolymer","Cetearyl Alcohol","Macadamia Ternifolia Seed Oil","Camellia Japonica Seed Oil","Hyaluronic Acid","Tocopheryl Acetate","Bakuchiol","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Portulaca Oleracea Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Acetyl Hexapeptide-8","Glycerin","Lecithin","Soy Isoflavones","Polysorbate 80","Alcohol","Sodium Polyacrylate","Phenoxyethanol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA","BHT"],
@@ -2431,7 +2431,7 @@ var V = {
           ingredients:["Extrait de levure","Extrait de feuille d'olivier","Extrait d'arnica","Extraits de fruits sauvages","Huile de jojoba"],
           img:"media/nacar-07-omniplus-front.webp", thumb:"media/nacar-07-omniplus-thumb.webp", gallery:["media/nacar-07-omniplus-marmol.webp","media/nacar-07-omniplus-mano.webp"],
           related:["NACAR-09"]},
-        {sku:"NACAR-08", tag:"Crème de jour", name:"Crème de Jour FPS 30", desc:"Rénove et protège, hydratation avec FPS 30.", price:"$725 MXN", favorito:true,
+        {sku:"NACAR-08", tag:"Crème de jour", name:"Crème de Jour FPS 30", desc:"Rénove et protège, hydratation avec FPS 30.", price:"$725 MXN", favorito:true, system:"time_specialist",
           longDesc:"Combat l'apparence des principaux signes de l'âge, stimule la production de collagène et d'elastine et aide a améliorer la texture et la fermeté de la peau. Avec des propriétés antioxydantes et hydratantes, elle protège la peau contre les rayons UVA/UVB. Pour de meilleurs résultats, utilisez-la avec le reste de votre routine Nacar. Format 50 ml.",
           usage:"Appliquer chaque matin sur une peau propre, comme dernière étape de votre routine avant le maquillage. Eviter le contact avec les yeux. Reappliquer en cas d'exposition prolongée au soleil.",
           ingredients:["Aqua (Water)","Octocrylene","Ethylhexyl Methoxycinnamate","Butyl Methoxydibenzoylmethane","Niacinamide","Neopentyl Glycol Diheptanoate","Potassium Cetyl Phosphate","Cetearyl Alcohol","Polymethylsilsesquioxane","Glycerin","Sodium Acrylates Copolymer","Bakuchiol","Tocopheryl Acetate","Hyaluronic Acid","Squalene","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Portulaca Oleracea Extract","Lecithin","Hydrogenated Lecithin","Phenoxyethanol","Decylene Glycol","Caprylyl Glycol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA"],
@@ -2516,7 +2516,7 @@ var V = {
             {name:"Desert Sand", hex:"#CAA699", available:true}
           ],
           related:["NACAR-11","NACAR-12","NACAR-13","NACAR-14"]},
-        {sku:"NACAR-16", tag:"Contour des yeux", name:"Crème Contour des Yeux", desc:"Prend soin de la zone délicate du contour des yeux et améliore l'apparence des ridules, tout en aidant à réduire les poches et les cernes pour un regard revitalisé. Utilisez avec le système complet pour de meilleurs résultats.", price:"$470 MXN", favorito:false,
+        {sku:"NACAR-16", tag:"Contour des yeux", name:"Crème Contour des Yeux", desc:"Prend soin de la zone délicate du contour des yeux et améliore l'apparence des ridules, tout en aidant à réduire les poches et les cernes pour un regard revitalisé. Utilisez avec le système complet pour de meilleurs résultats.", price:"$470 MXN", favorito:false, system:"time_specialist",
           longDesc:["Améliore l'apparence des ridules et rides","Procure un effet lifting au regard","Aide à réduire l'apparence des poches et des cernes","Apporte fermeté et élasticité au contour des yeux","Aide à retarder et atténuer les signes de l'âge dans la zone des yeux"],
           usage:"",
           ingredients:["Aqua (Water)","Caprylic/Capric Triglyceride","Sodium Acrylates Copolymer","Cetearyl Alcohol","Macadamia Ternifolia Seed Oil","Camellia Japonica Seed Oil","Hyaluronic Acid","Tocopheryl Acetate","Bakuchiol","Triticum Vulgare/Aestivum (Wheat) Grain Extract","Portulaca Oleracea Extract","Helianthus Annuus (Sunflower) Seed Oil","Rosmarinus Officinalis (Rosemary) Leaf Extract","Acetyl Hexapeptide-8","Glycerin","Lecithin","Soy Isoflavones","Polysorbate 80","Alcohol","Sodium Polyacrylate","Phenoxyethanol","Butylene Glycol","Sodium Hydroxide","Tetrasodium EDTA","BHT"],
@@ -5284,6 +5284,7 @@ function applyAdminOverridesToV(products){
       if (dbP.name_i18n && dbP.name_i18n[lang]) p.name = dbP.name_i18n[lang];
       if (dbP.description_i18n && dbP.description_i18n[lang]) p.desc = dbP.description_i18n[lang];
       if (typeof dbP.favorito === 'boolean') p.favorito = dbP.favorito;
+      if (dbP.system !== undefined) p.system = dbP.system || null; // Fix 160: activa el filtro por sistema (ver categorySystemFilter)
       // Fix 144: si el admin cambio las fotos, reflejarlo tambien en el
       // storefront (portada + galeria del modal de zoom) -- antes dbP.image
       // se guardaba en Mongo pero nunca se leia aqui.
@@ -5711,6 +5712,15 @@ var lastBeautyRecommendation = null; // {order:[sku,...], routineIdx:0-2} -- set
 // NACAR-08) -- por eso es arreglo y no un sku suelto. Se resetea en
 // goVertical() y openBeautyCatalog() para no dejar "pegado" el filtro.
 var categoryFilterSku = null;
+// Fix 160 (Carlos, 2026-09-26): "System T-Specialist" dejo de ser sinonimo de
+// "toda la vertical nacar" -- ahora es un kit/sistema especifico (hoy: Crema
+// de Dia FPS30 + Contorno de Ojos), filtrado en vivo por el campo p.system de
+// cada producto (el mismo campo que ya usa el panel de Administracion, ver
+// ADMIN_SYSTEM_LABELS/ADMIN_FORM_SYSTEM -- antes ese campo no tocaba el
+// storefront, ver applyAdminOverridesToV). null = sin filtro por sistema.
+// Se resetea en openBeautyCatalog()/openBeautyCategory() igual que
+// categoryFilterSku, para no dejarlo "pegado" al navegar a otra vista.
+var categorySystemFilter = null;
 var BQ_STATE = { step: 0, answers: {} };
 var BQ_ROUTINE_BY_TIME = { 1:0, 2:0, 3:1, 4:2, 5:2 };
 
@@ -5752,7 +5762,7 @@ function renderVertical(v){
   // mayoria de categorías, 2 para "Tratamiento"). relatedHtml sigue buscando
   // en d.products (lista completa) para que "se compra junto con" no se
   // pierda solo por estar en vista filtrada.
-  var listToRender = categoryFilterSku ? d.products.filter(function(pp){ return categoryFilterSku.indexOf(pp.sku) !== -1; }) : d.products;
+  var listToRender = categorySystemFilter ? d.products.filter(function(pp){ return pp.system === categorySystemFilter; }) : (categoryFilterSku ? d.products.filter(function(pp){ return categoryFilterSku.indexOf(pp.sku) !== -1; }) : d.products);
   // Fix 137: un producto que el panel de Administracion marco como inactivo
   // (hydrateCatalogFromDB marca p._adminInactive=true, ver abajo) se oculta
   // de este grid. Alcance deliberado v1: NO se quita todavia de busqueda,
@@ -5842,8 +5852,15 @@ function renderVertical(v){
   }
 }
 
-function goVertical(v){
+function goVertical(v, systemFilter){
   categoryFilterSku = null; // Fix 58: navegar a un System Speciality siempre muestra todos sus productos
+  // Fix 160: systemFilter es opcional a proposito -- los llamados genericos a
+  // goVertical() (busqueda, chatbot, "se compra junto con", productos
+  // relacionados) NO mandan este argumento y siguen viendo la vertical
+  // completa como siempre. Solo los 4 puntos de entrada que dicen
+  // literalmente "System T-Specialist" (menu Belleza, tarjeta home, zoom-tab,
+  // footer) lo mandan como 'time_specialist'.
+  categorySystemFilter = systemFilter || null;
   renderVertical(v);
   // El catalogo (#zoom) vive oculto por default -- solo se revela cuando el
   // usuario pide explicitamente ver un sistema (menu Belleza/System Speciality,
@@ -5941,6 +5958,7 @@ function goToFilosofia(){
 var catalogModeActive = false;
 function openBeautyCatalog(){
   categoryFilterSku = null; // Fix 58: "Explorar catalogo" siempre muestra los 4 productos, sin filtro
+  categorySystemFilter = null; // Fix 160: idem, catalogo completo nunca debe heredar un filtro de sistema
   renderVertical('nacar');
   var zoomSection = document.getElementById('zoom');
   zoomSection.classList.remove('zoom-hidden');
@@ -5975,6 +5993,7 @@ function applyCatalogPageLabels(){
 // puede agrupar 2 productos con tags distintos.
 function openBeautyCategory(skus, labelKey){
   categoryFilterSku = skus;
+  categorySystemFilter = null; // Fix 160: una categoria del menu Belleza nunca debe heredar un filtro de sistema
   renderVertical('nacar');
   var zoomSection = document.getElementById('zoom');
   zoomSection.classList.remove('zoom-hidden');
