@@ -91,7 +91,7 @@ const PRODUCTS = [
   // index.html ya mostraba "Seytú System Time-Specialist" desde entonces,
   // pero este archivo se quedo con el nombre viejo. Se corrige aqui para que
   // ambas fuentes de verdad (ver nota dual-source-of-truth) vuelvan a coincidir.
-  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06'], favorito: true, system: 'time_specialist',
+  { sku: 'NACAR-08', vertical: 'nacar', price: '$725 MXN', related: ['NACAR-06', 'NACAR-16', 'NACAR-17', 'NACAR-18'], favorito: true, system: 'time_specialist',
     name_i18n: { es: 'Crema de Día FPS 30', en: 'SPF 30 Day Cream', fr: 'Crème de Jour FPS 30' },
     description_i18n: { es: 'Renueva y protege, hidratacion con FPS 30.', en: 'Renews and protects, hydration with SPF 30.', fr: 'Renove et protege, hydratation avec FPS 30.' },
     image: 'media/nacar-08-dia-lifestyle-espejo.webp',
@@ -240,12 +240,60 @@ const PRODUCTS = [
     long_description_es: ['Mejora la apariencia de líneas finas y arrugas', 'Brinda un efecto lifting en la mirada', 'Contribuye a reducir la apariencia de las bolsas y ojeras', 'Brinda firmeza y elasticidad al contorno', 'Ayuda a retrasar y disminuir los signos de edad en el área de los ojos'],
     ingredients_es: ['Aqua (Water)', 'Caprylic/Capric Triglyceride', 'Sodium Acrylates Copolymer', 'Cetearyl Alcohol', 'Macadamia Ternifolia Seed Oil', 'Camellia Japonica Seed Oil', 'Hyaluronic Acid', 'Tocopheryl Acetate', 'Bakuchiol', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Portulaca Oleracea Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Acetyl Hexapeptide-8', 'Glycerin', 'Lecithin', 'Soy Isoflavones', 'Polysorbate 80', 'Alcohol', 'Sodium Polyacrylate', 'Phenoxyethanol', 'Butylene Glycol', 'Sodium Hydroxide', 'Tetrasodium EDTA', 'BHT'],
     usage_es: '' },
+  // Fix 164 (Carlos, 2026-09-26): "Suero de Noche", 3er producto real del kit
+  // T-Specialist. Foto propia (no reutiliza la de NACAR-16).
+  { sku: 'NACAR-17', vertical: 'nacar', price: '$810 MXN', related: ['NACAR-08', 'NACAR-16', 'NACAR-18'], favorito: false, system: 'time_specialist',
+    name_i18n: { es: 'Suero de Noche', en: 'Night Serum', fr: 'Sérum de Nuit' },
+    description_i18n: { es: 'Contribuye a mejorar el aspecto de cansancio e hinchazón, actuando durante la noche y revelando una apariencia renovada por la mañana, disminuyendo los signos de la edad. Se recomienda utilizar el sistema completo para lograr mejores resultados.', en: 'Helps improve the look of tiredness and puffiness, working overnight to reveal a renewed appearance by morning while reducing signs of aging. Use with the complete system for best results.', fr: "Aide à améliorer l'aspect de fatigue et de gonflement, en agissant pendant la nuit pour révéler une apparence renouvelée au réveil, tout en réduisant les signes de l'âge. Utilisez avec le système complet pour de meilleurs résultats." },
+    image: 'media/nacar-17-suero-noche-front.webp',
+    images: ['media/nacar-17-suero-noche-front.webp'],
+    long_description_es: ['Mejora la apariencia de las líneas de expresión y la hiperpigmentación', 'Disminuye los signos de cansancio e hinchazón de la piel', 'Colabora a incrementar la firmeza y elasticidad de la piel', 'Retrasa el envejecimiento prematuro', 'Actúa revelando una apariencia renovada por la mañana'],
+    ingredients_es: ['Aqua (Water)', 'Caprylic/Capric Triglyceride', 'Niacinamide', 'Glycerin', 'Cetearyl Alcohol', 'Sodium Acrylates Copolymer', 'Dimethicone', 'Macadamia Ternifolia Seed Oil', 'Camellia Japonica Seed Oil', 'Tocopheryl Acetate', 'Bakuchiol', 'Hyaluronic Acid', 'Retinyl Palmitate', 'Squalene', 'Tocopherol', 'Triticum Vulgare/Aestivum (Wheat) Grain Extract', 'Portulaca Oleracea Extract', 'Helianthus Annuus (Sunflower) Seed Oil', 'Rosmarinus Officinalis (Rosemary) Leaf Extract', 'Hydrolyzed Oat Protein', 'Lecithin', 'Hydrogenated Lecithin', 'Theobroma Cacao (Cocoa) Seed Butter', 'Adenosine Triphosphate', 'Mica', 'Dipotassium Phosphate', 'PVP', 'Quercetin', 'Acetyl Hexapeptide-8', 'Sodium Polyacrylate', 'Phenoxyethanol', 'Caprylyl Glycol', 'Decylene Glycol', 'Butylene Glycol', 'Tetrasodium EDTA', 'Disodium EDTA', 'BHT'],
+    usage_es: '' },
+  // Fix 164: "Suplemento T-Specialist" -- SIN foto (Carlos penso que la habia
+  // adjuntado pero solo llego la del Suero de Noche; queda pendiente que la
+  // envie). longDesc no viene en bullets (no se dieron Beneficios en el
+  // mensaje original), se usa la misma descripcion corta como parrafo.
+  { sku: 'NACAR-18', vertical: 'nacar', price: '$790 MXN', related: ['NACAR-08', 'NACAR-16', 'NACAR-17'], favorito: false, system: 'time_specialist',
+    name_i18n: { es: 'Suplemento T-Specialist', en: 'T-Specialist Supplement', fr: 'Complément T-Specialist' },
+    description_i18n: { es: 'Suplemento alimenticio, sabor arándano, adicionado con fitoceramidas de trigo, vitamina C, Vitamina E y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.', en: 'Dietary supplement, blueberry flavor, with added wheat phytoceramides, vitamin C, vitamin E and zinc. Content: 150 g, box with 30 sachets of 5 g each.', fr: 'Complément alimentaire, saveur myrtille, enrichi en phytocéramides de blé, vitamine C, vitamine E et zinc. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.' },
+    long_description_es: 'Suplemento alimenticio, sabor arándano, adicionado con fitoceramidas de trigo, vitamina C, Vitamina E y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.',
+    ingredients_es: ['Goma de Acacia', 'Inulina', 'Saborizantes Artificiales', 'Extracto de Trigo', 'Ácido Cítrico', 'Ácido Tartárico', 'Glicósidos de Esteviol', 'Colorante Antocianina', 'Dióxido de Silicio', 'Ácido Málico', 'Ascorbato de Calcio', 'Gluconato de Zinc', 'Goma Guar', 'Acetato de Alfa-Tocoferol'],
+    usage_es: 'Tomar 2 sobres al día.' },
 
-  // VIGOR y ROBLE: productos de prueba retirados (Fix 151, Carlos 2026-09-24).
-  // Los SKUs quedan en RETIRED_DEMO_SKUS arriba para desactivarse en Mongo
-  // (status:'inactive') al correr este script -- nunca se borran registros,
-  // por si algun carrito/orden ya los referencia. Los productos reales de
-  // Hair y Spot se vincularan en un paso posterior.
+  // VIGOR: primeros 3 productos reales de System Hair Specialist (Fix 165,
+  // Carlos 2026-09-26) -- cierra el "se vincularan en un paso posterior" de
+  // la nota de Fix 151 (arriba). ROBLE (Speciality Spot) sigue sin fichas
+  // reales; RETIRED_DEMO_SKUS sigue vigente para los mocks de ambos.
+  { sku: 'VIGOR-01', vertical: 'vigor', price: '$530 MXN', related: ['VIGOR-02', 'VIGOR-03'], favorito: false, system: 'hair_speciality',
+    name_i18n: { es: 'Shampoo Fortificante', en: 'Fortifying Shampoo', fr: 'Shampoing Fortifiant' },
+    description_i18n: { es: 'Especialmente formulado para ayudar a la recuperación capilar, reducir la caída y aumentar el grosor de la fibra capilar, haciendo lucir un cabello más hidratado, brillante y manejable.', en: 'Specially formulated to help hair recovery, reduce hair loss and increase hair fiber thickness, leaving hair looking more hydrated, shiny and manageable.', fr: "Spécialement formulé pour aider à la récupération capillaire, réduire la chute et augmenter l'épaisseur de la fibre capillaire, pour des cheveux plus hydratés, brillants et faciles à coiffer." },
+    image: 'media/vigor-01-shampoo-front.webp',
+    images: ['media/vigor-01-shampoo-front.webp'],
+    long_description_es: ['Colabora a reducir la caída del cabello', 'Favorece el fortalecimiento capilar desde la raíz', 'Recupera el brillo e hidratación del cabello', 'Protege la salud del cuero cabelludo'],
+    ingredients_es: ['Aqua (Water)', 'Sodium Methyl Cocoyl Taurate', 'Cocamidopropyl Betaine', 'Cocamide DEA', 'Disodium Cocoamphodiacetate', 'Curcuma Longa (Turmeric) Callus Conditioned Media', 'Calendula Officinalis Flower Extract', 'Thymus Vulgaris (Thyme) Extract', 'Aloe Barbadensis Leaf Extract', 'Glycerin', 'Disodium Laureth Sulfosuccinate', 'PEG-40 Hydrogenated Castor Oil', 'Chlorphenesin', 'Trideceth-9', 'Laureth-4', 'Phytic Acid', 'Glycol Distearate', 'Parfum (Fragrance)', 'Sodium Chloride', 'Sodium Benzoate', 'Pentylene Glycol', 'Citric Acid', 'Potassium Sorbate', 'Tetrasodium EDTA', 'Phenoxyethanol'],
+    usage_es: 'Lavar el cabello masajeando por un minuto el cuero cabelludo. Aclarar con abundante agua. Repetir de ser necesario.' },
+  { sku: 'VIGOR-02', vertical: 'vigor', price: '$695 MXN', related: ['VIGOR-01', 'VIGOR-03'], favorito: false, system: 'hair_speciality',
+    name_i18n: { es: 'Loción Capilar Fortificante', en: 'Fortifying Hair Lotion', fr: 'Lotion Capillaire Fortifiante' },
+    description_i18n: { es: 'Estimula y tonifica el cuero cabelludo para obtener un cabello más abundante, hidratado, brillante y manejable.', en: 'Stimulates and tones the scalp for fuller, more hydrated, shiny and manageable hair.', fr: 'Stimule et tonifie le cuir chevelu pour des cheveux plus abondants, hydratés, brillants et faciles à coiffer.' },
+    image: 'media/vigor-02-locion-front.webp',
+    images: ['media/vigor-02-locion-front.webp'],
+    long_description_es: ['Controla la caída del cabello', 'Fomenta la microcirculación en el cuero cabelludo', 'Estimula el crecimiento del cabello', 'Colabora a recuperar y aumentar el volumen capilar'],
+    ingredients_es: ['Aqua (Water)', 'Alcohol Denat.', 'Glycerin', 'Curcuma Longa (Turmeric) Callus Conditioned Media', 'Thymus Vulgaris (Thyme) Extract', 'PEG-40 Hydrogenated Castor Oil', 'Trideceth-9', 'Chlorphenesin', 'Phytic Acid', 'Lactic Acid', 'Potassium Sorbate', 'Parfum (Fragrance)', 'Tromethamine', 'Phenoxyethanol', 'Pentylene Glycol'],
+    usage_es: 'Después de lavar el cabello con el Shampoo Fortificante, con el cabello seco o ligeramente húmedo, aplicar la loción directamente en el cuero cabelludo con ayuda del gotero, enfocándose en sienes, coronilla y nacimiento del cabello. Masajear suavemente por un minuto, distribuyendo el producto por todo el cuero cabelludo. No enjuagar. Para mejores resultados, usar diariamente, de preferencia por las noches.' },
+  { sku: 'VIGOR-03', vertical: 'vigor', price: '$1,035 MXN', related: ['VIGOR-01', 'VIGOR-02'], favorito: false, system: 'hair_speciality',
+    name_i18n: { es: 'Suplemento H-Specialist', en: 'H-Specialist Supplement', fr: 'Complément H-Specialist' },
+    description_i18n: { es: 'Suplemento alimenticio sabor fresa, adicionado con KERANAT™, Biotina, Vitamina A, C, B5, B6, Zinc y Selenio. Contenido 150 g, caja con 30 sobres de 5 g cada uno.', en: 'Strawberry-flavored dietary supplement, with added KERANAT™, Biotin, Vitamin A, C, B5, B6, Zinc and Selenium. Content: 150 g, box with 30 sachets of 5 g each.', fr: "Complément alimentaire saveur fraise, enrichi en KERANAT™, Biotine, Vitamine A, C, B5, B6, Zinc et Sélénium. Contenu : 150 g, boîte de 30 sachets de 5 g chacun." },
+    image: 'media/vigor-03-suplemento-front.webp',
+    images: ['media/vigor-03-suplemento-front.webp'],
+    long_description_es: 'Suplemento alimenticio sabor fresa, adicionado con KERANAT™, Biotina, Vitamina A, C, B5, B6, Zinc y Selenio. Contenido 150 g, caja con 30 sobres de 5 g cada uno. Este producto no es un medicamento. El consumo de este producto es responsabilidad de quien lo recomienda y de quien lo usa.',
+    ingredients_es: ['Fibra de Acacia', 'Aceite de Mijo (Panicum miliaceum)', 'Ácido Ascórbico', 'Sabor Fresa (Saborizante Idéntico al Natural)', 'Ácido Málico (Acidulante)', 'Dióxido de Silicio (Antihumectante)', 'Lecitina de Girasol (Estabilizante)', 'Citrato de Potasio (Regulador de Acidez)', 'Glucósidos de Esteviol (Edulcorante Natural)', 'Goma Guar (Estabilizante)', 'Goma Xanthana (Estabilizante)', 'Ácido Cítrico (Acidulante)', 'Color Carmín (Colorante Natural)', 'Óxido de Zinc', 'Extracto de Fruto del Monje (Siraitia grosvenorii) (Fruto) (Edulcorante Natural)', 'Pantotenato de Calcio', 'Color Cúrcuma (Colorante Natural)', 'Palmitato de Vitamina A', 'Clorhidrato de Piridoxina', 'Selenita de Sodio', 'Biotina'],
+    usage_es: 'Tomar 1 sobre diluido en agua diariamente.' },
+
+  // ROBLE (Speciality Spot): sin productos reales todavia -- sus SKUs mock
+  // siguen en RETIRED_DEMO_SKUS arriba para desactivarse en Mongo
+  // (status:'''inactive''') al correr este script -- nunca se borran
+  // registros, por si algun carrito/orden ya los referencia (ver Fix 151).
 
   // Accesorios de carrito (upsell de bolsas, ver BAG_MODELS en index.html).
   // vertical:'accessory' a proposito -- no pertenecen a ninguno de los 4
