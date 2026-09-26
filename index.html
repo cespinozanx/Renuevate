@@ -1490,24 +1490,24 @@ var AZURA_CONFIG = {
       </div>
     </div>
     <div class="verticals-grid reveal-stagger">
-      <!-- Fix 133 (Carlos: "quita las imagenes de videos cortos y pon
-           secuencialmente" las fotos nuevas de producto): el video corto se
-           retira de esta tarjeta -- ya no necesita la clase has-video (esa
-           existia solo para que un <video> autoplay no arrancara con
-           opacity:0 del reveal-stagger, ver comentario junto a esa regla en
-           el CSS; una foto no tiene ese riesgo). Se reemplaza por 4 fotos
-           reales de producto (.vcard-slide) apiladas con el mismo patron de
-           crossfade que ya usa el hero (.hero-slide), rotadas solas via
-           JS (ver initVCardSlideshows()). Se dejo fuera la 5a foto que
-           Carlos mando (la de fondo con moleculas) porque su texto de
-           empaque sale corrupto/ilegible en varias etiquetas -- no es apta
-           para produccion tal cual. */ -->
-      <div class="v-card nacar" onclick="goVertical('nacar','time_specialist')">
+      <!-- Fix 162 (Carlos, 2026-09-26): vuelve el video a esta tarjeta --
+           Carlos mando un clip nuevo del producto real (System 8 Time-
+           Specialist) para reemplazar las 4 fotos del Fix 133. Se re-agrega
+           la clase has-video (existe para que el <video> autoplay no
+           arranque con opacity:0 del reveal-stagger, ver esa regla en el
+           CSS) exactamente igual que vigor/roble. El clip que mando Carlos
+           venia en HEVC/1244x1666 (no reproduce en la mayoria de navegadores
+           dentro de <video>) -- se transcodifico a H.264/700px de ancho,
+           sin audio, ~230KB (misma familia de peso que los clips de
+           vigor/roble). Un solo <source> (a diferencia de vigor/roble que
+           traen variante mobile/desktop): Carlos solo proporciono un clip;
+           el recuadro ya lo recorta con object-fit:cover en cualquier
+           tamaño de pantalla. -->
+      <div class="v-card nacar has-video" onclick="goVertical('nacar','time_specialist')">
         <div class="v-media">
-          <img class="v-media-el vcard-slide is-active" src="media/seytu-system8-tile-1-contorno.webp" alt="" loading="lazy">
-          <img class="v-media-el vcard-slide" src="media/seytu-system8-tile-2-suero.webp" alt="" loading="lazy">
-          <img class="v-media-el vcard-slide" src="media/seytu-system8-tile-3-caja.webp" alt="" loading="lazy">
-          <img class="v-media-el vcard-slide" src="media/seytu-system8-tile-4-crema-mano.webp" alt="" loading="lazy">
+          <video class="v-media-el" muted loop playsinline preload="none" poster="media/seytu-system-t-showcase-poster.jpg" aria-hidden="true">
+            <source src="media/seytu-system-t-showcase.mp4" type="video/mp4">
+          </video>
         </div>
         <div class="v-tag" id="vtagNacar">Belleza para mujer</div>
         <h3>System T-Specialist</h3>
@@ -5265,9 +5265,24 @@ function saveAdminProduct(){
 
 // Aplica al objeto V (catalogo estatico que de verdad usa el render/busqueda/
 // carrito/chatbot) los campos editables desde el panel de Administracion,
-// tomados del catalogo real en Mongo. Solo sobreescribe lo que el admin
-// puede editar -- nunca toca tag/img/thumb/shades/related, que siguen
-// viniendo del codigo (ver comentario de cabecera de esta seccion).
+// tomados del catalogo real en Mongo.
+//
+// Fix 161 (Carlos, 2026-09-26): "no grabo nada, no lo veo" (Fix 158) seguia
+// pasando para CUALQUIER producto nuevo, no solo el de esa vez -- el diseño
+// original de esta funcion SOLO actualizaba una ficha que ya existiera en el
+// codigo por SKU, nunca inyectaba una que no existiera todavia (ver el fix
+// anterior). Ahora, si el SKU de Mongo no se encuentra en un idioma, se crea
+// una ficha minima aqui mismo y se agrega al arreglo de esa vertical/idioma
+// -- ya no hace falta el paso manual de tocar index.html + seed-products.js
+// para que un producto nuevo aparezca en el sitio. Limitacion conocida y
+// aceptada (documentada a Carlos): el panel de Admin no captura tag/shades/
+// related/galeria curada, asi que una ficha inyectada asi sale mas sencilla
+// que una agregada a mano en codigo -- pero YA es visible y vendible de
+// inmediato, que es lo que importa. longDesc/ingredients/usage_es solo
+// existen en Español en Mongo -- se siembran igual en EN/FR a falta de
+// traduccion (mejor mostrar el texto en español que dejar la ficha en
+// blanco); si despues se traduce a mano en el codigo, esa traduccion ya no
+// se pisa (el bloque `if (lang === 'es')` de abajo solo aplica a ES).
 function applyAdminOverridesToV(products){
   if (!Array.isArray(products) || typeof V === 'undefined') return;
   var langs = ['es', 'en', 'fr'];
@@ -5278,7 +5293,13 @@ function applyAdminOverridesToV(products){
       var langBlock = vert[lang];
       if (!langBlock || !Array.isArray(langBlock.products)) return;
       var p = langBlock.products.filter(function(x){ return x.sku === dbP.sku; })[0];
-      if (!p) return;
+      if (!p){
+        p = { sku: dbP.sku, tag: '', name: '', desc: '', price: '$0 MXN', favorito: false, related: [],
+          longDesc: dbP.long_description_es || '',
+          ingredients: (Array.isArray(dbP.ingredients_es) && dbP.ingredients_es.length) ? dbP.ingredients_es : [],
+          usage: dbP.usage_es || '' };
+        langBlock.products.push(p);
+      }
       p._adminInactive = (dbP.status === 'inactive');
       if (typeof dbP.unit_price === 'number') p.price = '$' + Math.round(dbP.unit_price) + ' MXN';
       if (dbP.name_i18n && dbP.name_i18n[lang]) p.name = dbP.name_i18n[lang];
