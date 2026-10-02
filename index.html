@@ -244,6 +244,7 @@ nav.main a.active{border-color:var(--active); color:var(--navy);}
 .hero-slide-dot{width:7px; height:7px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.5); cursor:pointer; transition:background .25s ease, transform .25s ease;}
 .hero-slide-dot.is-active{background:#fff; transform:scale(1.35);}
 .hero-cta.hero-cta-sm .btn{padding:9px 18px; font-size:10.5px; letter-spacing:1.2px; min-width:172px; justify-content:center;}
+.hero-cta.hero-cta-sm .btn-dark{min-width:220px; padding:12px 26px;}
 /* Fix 132 (Carlos: "en el carrusel baja un poco mas los botones... para que
    en su posicion pongas [la leyenda de ingredientes]... y abajo de esa
    leyenda los botones"): la leyenda nueva (.hero-ingredients-note, ver HTML
@@ -410,7 +411,7 @@ section{padding:92px 0;}
    y color:var(--navy)->var(--gold-text) (mismo dorado ya usado en eyebrows y
    acentos, ver :root arriba). Ya estaba centrado por .brand-map{text-align:
    center} en el padre -- no hace falta tocar ese eje. */
-.brand-map .bm-holding{display:inline-block; font-family:'Playfair Display',serif; font-weight:700; letter-spacing:5px; font-size:38px; color:var(--gold-text); padding:13px 32px; border:1px solid var(--line); border-radius:44px;}
+.brand-map .bm-holding{display:inline-block; font-family:'Playfair Display',serif; font-weight:700; letter-spacing:11px; font-size:42px; color:var(--gold-text); padding:20px 130px; border:1px solid var(--line); border-radius:60px;}
 .brand-map .bm-line{width:1px; height:24px; background:var(--line); margin:8px auto;}
 .brand-map .bm-verticals{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
 .brand-map .bm-verticals span{display:flex; align-items:center; justify-content:center; gap:8px; font-size:12.5px; letter-spacing:1.8px; font-weight:700; color:var(--grey); text-transform:uppercase;}
@@ -1212,7 +1213,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .zoom-stats{grid-template-columns:1fr;}
   .section-head{padding:0 6px;}
   .brand-map .bm-verticals{grid-template-columns:1fr; gap:18px;}
-  .brand-map .bm-holding{font-size:27px; letter-spacing:3.5px; padding:10px 22px;}
+  .brand-map .bm-holding{font-size:31px; letter-spacing:5px; padding:14px 46px;}
   section{padding:48px 0;}
   .footer-grid{grid-template-columns:1fr !important;}
   .phil-grid{gap:32px;}
@@ -2664,7 +2665,7 @@ var V = {
     es:{ full:"System Spot Speciality", sub:"",
       bannerTitle:"System Spot Speciality",
       bannerText:"",
-      tag:"Próximamente", msg:"Fuerza que se cuida a si misma.", bmLabel:"Time Speciality Spot",
+      tag:"Próximamente", msg:"Fuerza que se cuida a si misma.", bmLabel:"System Spot Specialist",
       stats:["95%","21 días","100%"],
       products:[],
       routines:[]
@@ -2672,7 +2673,7 @@ var V = {
     en:{ full:"System Spot Speciality", sub:"",
       bannerTitle:"The System Spot Speciality",
       bannerText:"",
-      tag:"Coming soon", msg:"Strength that takes care of itself.", bmLabel:"Time Speciality Spot",
+      tag:"Coming soon", msg:"Strength that takes care of itself.", bmLabel:"System Spot Specialist",
       stats:["95%","21 days","100%"],
       products:[],
       routines:[]
@@ -2680,7 +2681,7 @@ var V = {
     fr:{ full:"System Spot Speciality", sub:"",
       bannerTitle:"Le System Spot Speciality",
       bannerText:"",
-      tag:"Bientôt disponible", msg:"Une force qui prend soin d'elle-même.", bmLabel:"Time Speciality Spot",
+      tag:"Bientôt disponible", msg:"Une force qui prend soin d'elle-même.", bmLabel:"System Spot Specialist",
       stats:["95%","21 jours","100%"],
       products:[],
       routines:[]
