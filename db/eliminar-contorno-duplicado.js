@@ -1,32 +1,23 @@
-// db/eliminar-contorno-duplicado.js
+// db/eliminar-contorno-duplicado.js (v2)
 //
-// Fix 173 (Carlos, 2026-10-02): diagnostico confirmado via la API publica
-// del catalogo (GET /api/products?includeInactive=1, sin necesidad de
-// credenciales): el catalogo en vivo tiene 21 productos, y el que
-// corresponde a "Crema para Contorno de Ojos" NO tiene sku "NACAR-16"
-// (el que usan index.html y seed-products.js) -- tiene sku literal
-// "CREMA PARA CONTORNO DE OJOS" (el nombre quedo metido en el campo sku,
-// probablemente al editarlo alguna vez desde el panel admin). El panel
-// admin NO permite borrar productos (api/admin.js solo tiene GET y PUT
-// para resource=products, ningun DELETE) -- por eso Carlos no podia
-// quitarlo el mismo desde ahi.
+// Fix 180 (Carlos, 2026-10-02): Carlos tenia razon -- sembrar-productos.bat
+// y sembrar-resenas.bat usan el MISMO .env y corren bien contra la base de
+// produccion, asi que la base de datos SI es la correcta (descartada la
+// teoria de Fix 179). El bug real era mas tonto: la v1 de este script
+// buscaba el documento con un match EXACTO de string
+// (findOne({sku:'CREMA PARA CONTORNO DE OJOS'})), y la API publica que usé
+// para diagnosticar pasa el JSON por un resumen de IA (WebFetch) que
+// normaliza mayusculas/espacios al describirlo -- el sku real guardado en
+// Mongo puede traer un espacio de mas, una mayuscula distinta, o un
+// caracter invisible, y un match exacto falla silenciosamente ahi aunque
+// el documento exista.
 //
-// Por que se ve "duplicado": el catalogo fijo (objeto V en index.html)
-// siempre muestra su propia ficha de NACAR-16, y applyAdminOverridesToV()
-// inyecta ADEMAS cualquier producto de Mongo cuyo sku no haga match con
-// ninguno ya existente en V -- como "CREMA PARA CONTORNO DE OJOS" no
-// matchea "NACAR-16", se inyecta como ficha aparte: 2 tarjetas idénticas
-// en el catalogo. Ademas, mientras ese sku este mal, agregar el producto
-// real NACAR-16 al carrito puede fallar en checkout (no hay documento con
-// ese sku exacto en products).
-//
-// Este script BORRA ese documento malformado (sku="CREMA PARA CONTORNO DE
-// OJOS"). Igual que db/delete-retired-products.js: antes de borrar,
-// revisa la coleccion `orders` por si algun pedido ya lo referencio -- si
-// lo encuentra, NO borra y lo reporta para revision manual.
-//
-// Despues de correr esto, dale doble clic a sembrar-productos.bat para
-// recrear la ficha correcta con sku NACAR-16 (upsert, no duplica).
+// v2 ya no exige texto exacto: busca con regex case-insensitive cualquier
+// producto cuyo sku O nombre (es) contenga "contorno", imprime el sku
+// EXACTO tal como esta en la base (con JSON.stringify, para que cualquier
+// espacio/caracter raro se vea entre comillas), y borra por _id (no por
+// texto) cualquiera de esos resultados cuyo sku no sea el correcto
+// "NACAR-16". Misma revision de seguridad contra `orders` antes de borrar.
 //
 // Uso: node db/eliminar-contorno-duplicado.js (o doble clic en
 // eliminar-contorno-duplicado.bat). Corre 100% en tu maquina -- Claude
@@ -57,7 +48,7 @@ loadDotEnv();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
-const SKU_MALFORMADO = 'CREMA PARA CONTORNO DE OJOS';
+const SKU_CORRECTO = 'NACAR-16';
 
 async function main() {
   if (!MONGODB_URI) throw new Error('Falta MONGODB_URI en el .env de este proyecto.');
@@ -66,25 +57,45 @@ async function main() {
   try {
     const db = client.db(MONGODB_DB);
 
-    const doc = await db.collection('products').findOne({ sku: SKU_MALFORMADO });
-    if (!doc) {
-      console.log('No se encontro ningun producto con sku "' + SKU_MALFORMADO + '". Puede que ya se haya corregido.');
+    const candidatos = await db.collection('products').find({
+      $or: [
+        { sku: { $regex: 'contorno', $options: 'i' } },
+        { 'name_i18n.es': { $regex: 'contorno', $options: 'i' } },
+      ],
+    }).toArray();
+
+    if (candidatos.length === 0) {
+      console.log('No se encontro ningun producto relacionado a "contorno" (ni por sku ni por nombre).');
       return;
     }
-    console.log('Encontrado:', JSON.stringify({ _id: String(doc._id), sku: doc.sku, name: doc.name_i18n && doc.name_i18n.es, status: doc.status }));
 
-    const orderCount = await db.collection('orders').countDocuments({ 'items.sku': SKU_MALFORMADO });
-    if (orderCount > 0) {
-      console.warn('SALTADO: hay ' + orderCount + ' orden(es) que referencian este sku exacto -- no se borra, revisar a mano.');
+    console.log('Encontrados ' + candidatos.length + ' documento(s) relacionados a "contorno":');
+    for (const doc of candidatos) {
+      console.log('  _id=' + String(doc._id) + ' sku=' + JSON.stringify(doc.sku) + ' name=' + JSON.stringify(doc.name_i18n && doc.name_i18n.es));
+    }
+
+    const malformados = candidatos.filter((doc) => doc.sku !== SKU_CORRECTO);
+    if (malformados.length === 0) {
+      console.log('Ninguno tiene sku distinto a "' + SKU_CORRECTO + '" -- no hay nada que borrar.');
       return;
     }
 
-    const result = await db.collection('products').deleteOne({ sku: SKU_MALFORMADO });
-    if (result.deletedCount > 0) {
-      console.log('Borrado. Ahora corre sembrar-productos.bat para recrear la ficha correcta (sku NACAR-16).');
-    } else {
-      console.log('No se borro nada (no deletedCount).');
+    for (const doc of malformados) {
+      const skuTexto = String(doc.sku || '');
+      const orderCount = await db.collection('orders').countDocuments({ 'items.sku': skuTexto });
+      if (orderCount > 0) {
+        console.warn('SALTADO _id=' + String(doc._id) + ': hay ' + orderCount + ' orden(es) que lo referencian -- no se borra, revisar a mano.');
+        continue;
+      }
+      const result = await db.collection('products').deleteOne({ _id: doc._id });
+      if (result.deletedCount > 0) {
+        console.log('Borrado _id=' + String(doc._id) + ' (sku=' + JSON.stringify(doc.sku) + ').');
+      } else {
+        console.log('No se borro _id=' + String(doc._id) + ' (no deletedCount).');
+      }
     }
+
+    console.log('Listo. Ahora corre sembrar-productos.bat para asegurar que la ficha correcta (sku NACAR-16) este presente.');
   } finally {
     await client.close();
   }
