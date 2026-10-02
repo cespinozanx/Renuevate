@@ -363,7 +363,7 @@ section{padding:92px 0;}
 .section-head{text-align:center; max-width:660px; margin:0 auto 52px;}
 .section-head h2{font-size:clamp(28px,3.8vw,44px); margin-top:14px;}
 /* Fix 136 (Carlos: "haz mas espaciado los titulos de System Time Specialist/
-   Time Speciality Hair/Time Speciality Spot, en cada system deja un
+   Time Speciality Hair/System Spot Specialist, en cada system deja un
    espacio al triple del actual"): #zoomTitle es el UNICO elemento que
    muestra los 3 (cambia de texto via renderVertical() segun la pestana
    activa, ver JS) -- una sola regla aqui cubre los 3 "systems" a la vez.
@@ -1383,7 +1383,7 @@ var AZURA_CONFIG = {
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
           <a data-v="nacar" onclick="goVertical('nacar','time_specialist'); closeNav();" data-i18n="nav.system.luminous">System T-Specialist</a>
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">System Hair Specialist</a>
-          <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">Speciality Spot</a>
+          <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">System Spot Specialist</a>
           <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
           <!-- Fix 74: nuevo submenu al fondo de Belleza, instruccion Carlos.
@@ -1585,7 +1585,7 @@ var AZURA_CONFIG = {
     <div class="zoom-tabs reveal-stagger">
       <div class="zoom-tab active" data-v="nacar" data-i18n="nav.system.luminous" onclick="goVertical('nacar','time_specialist')">System T-Specialist</div>
       <div class="zoom-tab" data-v="vigor" data-i18n="nav.system.health" onclick="goVertical('vigor')">System Hair Specialist</div>
-      <div class="zoom-tab" data-v="roble" data-i18n="nav.system.spot" onclick="goVertical('roble')">Speciality Spot</div>
+      <div class="zoom-tab" data-v="roble" data-i18n="nav.system.spot" onclick="goVertical('roble')">System Spot Specialist</div>
     </div>
 
     <div class="zoom-banner reveal-stagger">
@@ -1663,7 +1663,7 @@ var AZURA_CONFIG = {
     <div><h5 data-i18n="footer.hVerticales">System Speciality</h5>
       <a onclick="goVertical('nacar','time_specialist')" data-i18n="footer.nacar">System T-Specialist</a>
       <a onclick="goVertical('vigor')" data-i18n="footer.vigor">System Hair Specialist</a>
-      <a onclick="goVertical('roble')" data-i18n="footer.roble">Speciality Spot</a>
+      <a onclick="goVertical('roble')" data-i18n="footer.roble">System Spot Specialist</a>
     </div>
     <div><h5 data-i18n="footer.hAyuda">Ayuda</h5>
       <a onclick="goToHomeSection('systemsGrid')" data-i18n="footer.diag">Como elegir tu sistema</a>
@@ -2694,7 +2694,7 @@ var I18N = {
   es:{
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
     "top.shipping":"Envío calculado en checkout . Entrega en 4 días hábiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
-    "nav.nacar":"Belleza", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
+    "nav.nacar":"Belleza", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
@@ -2719,7 +2719,7 @@ var I18N = {
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
     "footer.brandP":"System T-Specialist, Hair y Spot: hábitos de bienestar para cada etapa de tu vida.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Spot Specialist",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envíos y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate",
     "about.eyebrow":"Sobre Renuévate", "about.heroTitle":"Belleza y bienestar, con criterio.",
@@ -2809,7 +2809,7 @@ var I18N = {
   en:{
     "promo.shipping":"FREE shipping on orders over $1,800 MXN", "promo.cta":"Shop now",
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
-    "nav.nacar":"Beauty", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Our philosophy", "nav.search":"See more",
+    "nav.nacar":"Beauty", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Our philosophy", "nav.search":"See more",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
     "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
@@ -2834,7 +2834,7 @@ var I18N = {
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
     "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
     "footer.brandP":"System T-Specialist, Hair and Spot: wellness habits for every stage of your life.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Spot Specialist",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
     "footer.hCompania":"Company", "footer.about":"About Renuévate",
     "about.eyebrow":"About Renuévate", "about.heroTitle":"Beauty and wellness, with judgment.",
@@ -2924,7 +2924,7 @@ var I18N = {
   fr:{
     "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre réel, a chaque étape de votre vie",
-    "nav.nacar":"Beauté", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"Speciality Spot", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
+    "nav.nacar":"Beauté", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
@@ -2949,7 +2949,7 @@ var I18N = {
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
     "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un accès anticipé a nos systèmes.", "subscribeThanks.cta":"Compris",
     "footer.brandP":"System T-Specialist, Hair et Spot : des habitudes de bien-etre pour chaque étape de votre vie.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"Speciality Spot",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Spot Specialist",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre système", "footer.shipping":"Livraison et retours", "footer.faq":"Questions fréquentes", "footer.chat":"Discuter avec l'assistant",
     "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate",
     "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beauté et bien-etre, avec discernement.",
@@ -4949,7 +4949,7 @@ var ADMIN_STATE = { products: [], selectedSku: null, isNew: false, systemFilter:
 
 // Fix 144: Carlos pidio imagenes vinculadas al producto (verlas, cambiarlas,
 // subirlas al crear) y una clasificacion opcional de "Sistema" (System Time
-// Specialist / System Hair Specialist / Speciality Spot), separada del
+// Specialist / System Hair Specialist / System Spot Specialist), separada del
 // campo `vertical` (que sigue siendo obligatorio -- decide en que pagina
 // del sitio vive el producto, ver ADMIN_VERTICAL_LABELS). El campo nuevo
 // `system` es 100% opcional y no toca el storefront ni el vertical: solo
@@ -4958,7 +4958,7 @@ var ADMIN_STATE = { products: [], selectedSku: null, isNew: false, systemFilter:
 var ADMIN_SYSTEM_LABELS = {
   time_specialist: 'System T-Specialist',
   hair_speciality: 'System Hair Specialist',
-  spot_speciality: 'Speciality Spot'
+  spot_speciality: 'System Spot Specialist'
 };
 var ADMIN_SYSTEM_ORDER = ['time_specialist', 'hair_speciality', 'spot_speciality'];
 
@@ -5067,7 +5067,7 @@ function loadAdminProducts(){
     });
 }
 
-var ADMIN_VERTICAL_LABELS = { nacar: 'System T-Specialist', vigor: 'System Hair Specialist', roble: 'Speciality Spot', accessory: 'Accesorios' };
+var ADMIN_VERTICAL_LABELS = { nacar: 'System T-Specialist', vigor: 'System Hair Specialist', roble: 'System Spot Specialist', accessory: 'Accesorios' };
 
 function renderAdminSystemFilterBar(){
   var bar = document.getElementById('adminSystemFilterBar');
