@@ -300,9 +300,9 @@ body.nav-lock{overflow:hidden;}
      productos): con solo ~37% del ancho visible en movil, centrar la
      ventana de recorte es lo que deja el mayor numero de frascos completos
      en cuadro en vez de cortar uno a la mitad en un extremo. */
-  .hero-slide:nth-of-type(1){object-position:38% center; transform:scale(.7); transform-origin:38% center;}
-  .hero-slide:nth-of-type(2){object-position:30% center; transform:scale(.7); transform-origin:30% center;}
-  .hero-slide:nth-of-type(3){object-position:center center; transform:scale(.7); transform-origin:center center;}
+  .hero-slide:nth-of-type(1){object-position:38% center;}
+  .hero-slide:nth-of-type(2){object-position:30% center;}
+  .hero-slide:nth-of-type(3){object-position:center center;}
   /* Fix 141: Carlos remplazo la foto de slide 2 por una toma macro nueva
      (rostro + tubo SEYTU mas juntos, mismo aspecto vertical 0.67:1 que la
      anterior). En movil cover sigue encuadrando por ALTURA (el marco 84vh
@@ -327,7 +327,7 @@ body.nav-lock{overflow:hidden;}
      hacia la derecha, quedando recortado por el overflow:hidden de .hero --
      eso era el "lado derecho recortado". width:auto aquí resuelve el
      ancho real entre left y right en vez de heredar el 100% fijo. */
-  .hero{min-height:56vh; background:#fff;}
+  .hero{min-height:78vh; background:#fff;}
   .hero-media-frame{left:64px; right:64px; width:auto; border-radius:10px; box-shadow:0 22px 50px rgba(0,0,0,.16);}
   /* Fix 131: marco de escritorio muy ancho y bajo (hasta ~3:1) contra estas
      3 fotos que son las MENOS anchas que ha tenido este carrusel -- aqui
@@ -336,7 +336,7 @@ body.nav-lock{overflow:hidden;}
      en las 3 (38-45%) porque el producto/rostro esta en el tercio superior
      de estas fotos y la franja inferior es superficie/fondo de relleno --
      un centro puro cortaria mas del sujeto arriba de lo que hace falta. */
-  .hero-slide:nth-of-type(1){object-position:center 42%; transform:scale(.7); transform-origin:center 42%;}
+  .hero-slide:nth-of-type(1){object-position:center 42%;}
   /* Fix 141 (sigue de Fix 138): el ajuste de porcentaje ya se habia agotado
      -- se probo matematicamente que ninguna posicion cabia rostro completo
      Y producto completo en la ventana de ~22-26% del marco de desktop. La
@@ -353,8 +353,8 @@ body.nav-lock{overflow:hidden;}
      deja ver el cierre del tubo, "SEYTU", los labios y la aplicacion de
      crema en el cachete de forma consistente sin importar el ancho de
      pantalla. */
-  .hero-slide:nth-of-type(2){object-position:center 13%; transform:scale(.7); transform-origin:center 13%;}
-  .hero-slide:nth-of-type(3){object-position:center 45%; transform:scale(.7); transform-origin:center 45%;}
+  .hero-slide:nth-of-type(2){object-position:center 13%;}
+  .hero-slide:nth-of-type(3){object-position:center 45%;}
 }
 .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.55); color:#fff;}
 .btn-ghost:hover{background:rgba(255,255,255,.1);}
