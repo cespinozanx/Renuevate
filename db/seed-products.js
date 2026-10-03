@@ -39,9 +39,14 @@ loadDotEnv();
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGODB_DB = process.env.MONGODB_DB || 'azura';
 
-// price viene como "$389 MXN" en el frontend -- se parsea a numero aqui.
+// price viene como "$389 MXN" o "$1,035.00 MXN" en el frontend -- se parsea
+// a numero aqui. Fix 195 (2026-10-03): se quitan las comas de miles ANTES del
+// match -- el regex anterior se detenia en la primera coma y truncaba precios
+// de 4+ digitos (ej. "$1,035.00 MXN" parseaba a 1 en vez de 1035), provocando
+// que VIGOR-03 se sembrara y vendiera en produccion a $1 MXN. Ver incidente
+// reportado por Carlos: "no podemos tener un producto con un valor de 1 MXN".
 function parsePrice(str) {
-  const match = String(str).match(/[\d.]+/);
+  const match = String(str).replace(/,/g, '').match(/[\d.]+/);
   return match ? Number(match[0]) : 0;
 }
 
@@ -285,7 +290,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Suplemento H-Specialist', en: 'H-Specialist Supplement', fr: 'Complément H-Specialist' },
     description_i18n: { es: 'Suplemento alimenticio sabor fresa, adicionado con KERANAT™, Biotina, Vitamina A, C, B5, B6, Zinc y Selenio. Contenido 150 g, caja con 30 sobres de 5 g cada uno.', en: 'Strawberry-flavored dietary supplement, with added KERANAT™, Biotin, Vitamin A, C, B5, B6, Zinc and Selenium. Content: 150 g, box with 30 sachets of 5 g each.', fr: "Complément alimentaire saveur fraise, enrichi en KERANAT™, Biotine, Vitamine A, C, B5, B6, Zinc et Sélénium. Contenu : 150 g, boîte de 30 sachets de 5 g chacun." },
     image: 'media/vigor-03-suplemento-front.webp',
-    images: ['media/vigor-03-suplemento-front.webp'],
+    images: ['media/vigor-03-suplemento-front.webp', 'media/vigor-03-suplemento-lifestyle-tina.webp', 'media/vigor-03-suplemento-lifestyle-flatlay.webp'],
     long_description_es: 'Suplemento alimenticio sabor fresa, adicionado con KERANAT™, Biotina, Vitamina A, C, B5, B6, Zinc y Selenio. Contenido 150 g, caja con 30 sobres de 5 g cada uno. Este producto no es un medicamento. El consumo de este producto es responsabilidad de quien lo recomienda y de quien lo usa.',
     ingredients_es: ['Fibra de Acacia', 'Aceite de Mijo (Panicum miliaceum)', 'Ácido Ascórbico', 'Sabor Fresa (Saborizante Idéntico al Natural)', 'Ácido Málico (Acidulante)', 'Dióxido de Silicio (Antihumectante)', 'Lecitina de Girasol (Estabilizante)', 'Citrato de Potasio (Regulador de Acidez)', 'Glucósidos de Esteviol (Edulcorante Natural)', 'Goma Guar (Estabilizante)', 'Goma Xanthana (Estabilizante)', 'Ácido Cítrico (Acidulante)', 'Color Carmín (Colorante Natural)', 'Óxido de Zinc', 'Extracto de Fruto del Monje (Siraitia grosvenorii) (Fruto) (Edulcorante Natural)', 'Pantotenato de Calcio', 'Color Cúrcuma (Colorante Natural)', 'Palmitato de Vitamina A', 'Clorhidrato de Piridoxina', 'Selenita de Sodio', 'Biotina'],
     usage_es: 'Tomar 1 sobre diluido en agua diariamente.' },
