@@ -277,7 +277,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Loción Capilar Fortificante', en: 'Fortifying Hair Lotion', fr: 'Lotion Capillaire Fortifiante' },
     description_i18n: { es: 'Estimula y tonifica el cuero cabelludo para obtener un cabello más abundante, hidratado, brillante y manejable.', en: 'Stimulates and tones the scalp for fuller, more hydrated, shiny and manageable hair.', fr: 'Stimule et tonifie le cuir chevelu pour des cheveux plus abondants, hydratés, brillants et faciles à coiffer.' },
     image: 'media/vigor-02-locion-front.webp',
-    images: ['media/vigor-02-locion-front.webp'],
+    images: ['media/vigor-02-locion-front.webp', 'media/vigor-02-locion-lifestyle-splash.webp'],
     long_description_es: ['Controla la caída del cabello', 'Fomenta la microcirculación en el cuero cabelludo', 'Estimula el crecimiento del cabello', 'Colabora a recuperar y aumentar el volumen capilar'],
     ingredients_es: ['Aqua (Water)', 'Alcohol Denat.', 'Glycerin', 'Curcuma Longa (Turmeric) Callus Conditioned Media', 'Thymus Vulgaris (Thyme) Extract', 'PEG-40 Hydrogenated Castor Oil', 'Trideceth-9', 'Chlorphenesin', 'Phytic Acid', 'Lactic Acid', 'Potassium Sorbate', 'Parfum (Fragrance)', 'Tromethamine', 'Phenoxyethanol', 'Pentylene Glycol'],
     usage_es: 'Después de lavar el cabello con el Shampoo Fortificante, con el cabello seco o ligeramente húmedo, aplicar la loción directamente en el cuero cabelludo con ayuda del gotero, enfocándose en sienes, coronilla y nacimiento del cabello. Masajear suavemente por un minuto, distribuyendo el producto por todo el cuero cabelludo. No enjuagar. Para mejores resultados, usar diariamente, de preferencia por las noches.' },
