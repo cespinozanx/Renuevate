@@ -39,7 +39,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="media/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="media/favicon-180.png">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"Renuévate","url":"https://renuevatehoy.vercel.app/","logo":"https://renuevatehoy.vercel.app/media/logo-icon.png","image":"https://renuevatehoy.vercel.app/media/og-image.jpg","description":"Cuidado facial SEYTÚ en México: limpiadores, protector solar, crema de día y sueros faciales.","address":{"@type":"PostalAddress","addressLocality":"Cancún","addressRegion":"Quintana Roo","addressCountry":"MX"}}
+{"@context":"https://schema.org","@type":"Organization","name":"Renuévate","url":"https://renuevatehoy.vercel.app/","logo":"https://renuevatehoy.vercel.app/media/logo-leaf-tile.png","image":"https://renuevatehoy.vercel.app/media/og-image.jpg","description":"Cuidado facial SEYTÚ en México: limpiadores, protector solar, crema de día y sueros faciales.","address":{"@type":"PostalAddress","addressLocality":"Cancún","addressRegion":"Quintana Roo","addressCountry":"MX"}}
 </script>
 <!-- Fix 78: preload de la imagen del hero (LCP) -- es la imagen mas grande
      que se pinta primero en pantalla; sin este preload el navegador la
@@ -121,7 +121,11 @@ img,svg{display:block;}
 header.site{position:sticky; top:0; z-index:65; background:#fff; border-bottom:1px solid var(--line); transition:box-shadow .2s;}
 header.site.scrolled{box-shadow:0 2px 14px rgba(0,0,0,.06);}
 .nav-row{display:flex; align-items:center; justify-content:space-between; height:80px;}
-.logo-wrap{display:flex; flex-direction:column;}
+.logo-wrap{display:flex; flex-direction:row; align-items:center; gap:8px;}
+/* Fix 198 (Carlos, 2026-10-04): nuevo logo (brote de hoja) a la izquierda del wordmark. PNG transparente
+   con aire alrededor (el trazo ocupa ~74% del lienzo), por eso el alto es mayor que el del texto. */
+.logo-leaf{height:38px; width:38px; display:block; flex:none; object-fit:contain;}
+.logo-wrap .logo{flex:none;}
 .logo{font-family:'Bodoni Moda','Playfair Display',Georgia,serif; font-weight:500; font-size:32px; letter-spacing:.06em; text-transform:uppercase; color:#1A1A1A; line-height:1.1;}
 .logo span{color:var(--gold-text); font-size:11px; letter-spacing:2.5px; font-family:'Manrope',sans-serif; font-weight:700; vertical-align:2px;}
 .logo span.logo-accent{font-style:italic; font-weight:500; color:#C9A227; font-size:.88em; letter-spacing:0; font-family:inherit; line-height:1; display:inline-block; vertical-align:middle; margin:0;}
@@ -363,7 +367,7 @@ section{padding:92px 0;}
 .section-head{text-align:center; max-width:660px; margin:0 auto 52px;}
 .section-head h2{font-size:clamp(28px,3.8vw,44px); margin-top:14px;}
 /* Fix 136 (Carlos: "haz mas espaciado los titulos de System Time Specialist/
-   Time Speciality Hair/System Support Specialist, en cada system deja un
+   Time Speciality Hair/System Spot Specialist, en cada system deja un
    espacio al triple del actual"): #zoomTitle es el UNICO elemento que
    muestra los 3 (cambia de texto via renderVertical() segun la pestana
    activa, ver JS) -- una sola regla aqui cubre los 3 "systems" a la vez.
@@ -411,7 +415,7 @@ section{padding:92px 0;}
    y color:var(--navy)->var(--gold-text) (mismo dorado ya usado en eyebrows y
    acentos, ver :root arriba). Ya estaba centrado por .brand-map{text-align:
    center} en el padre -- no hace falta tocar ese eje. */
-.brand-map .bm-holding{display:inline-block; box-sizing:border-box; font-family:'Playfair Display',serif; font-weight:600; font-size:34px; letter-spacing:84px; color:var(--gold-text); padding:24px 36px; border:1px solid var(--line); border-radius:50px;}
+.brand-map .bm-holding{display:inline-block; box-sizing:border-box; font-family:'Playfair Display',serif; font-weight:600; font-size:30.6px; letter-spacing:84px; color:var(--gold-text); padding:24px 36px; border:1px solid var(--line); border-radius:50px;}
 .brand-map .bm-line{width:1px; height:24px; background:var(--line); margin:8px auto;}
 .brand-map .bm-verticals{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
 .brand-map .bm-verticals span{display:flex; align-items:center; justify-content:center; gap:8px; font-size:12.5px; letter-spacing:1.8px; font-weight:700; color:var(--grey); text-transform:uppercase;}
@@ -798,7 +802,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
 .footer-grid a:hover{color:#fff;}
 .footer-brand .logo{color:#fff; white-space:nowrap; font-size:26px; flex-shrink:0;}
 .footer-logo-row{display:flex; align-items:center; gap:10px;}
-.footer-logo-icon{width:36px; height:36px; border-radius:9px; object-fit:cover; box-shadow:0 4px 14px rgba(0,0,0,.25); flex-shrink:0;}
+.footer-logo-icon{width:40px; height:40px; border-radius:9px; object-fit:cover; box-shadow:0 4px 14px rgba(0,0,0,.25); flex-shrink:0;}
 .footer-brand p{font-size:13px; color:#a3a3a3; margin:12px 0 16px; max-width:280px;}
 .footer-social{display:flex; gap:12px;}
 .footer-social a{width:34px; height:34px; border-radius:50%; border:1px solid rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center;}
@@ -1199,6 +1203,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
      tocar el logo de desktop/footer. */
   .logo{flex:1; text-align:center; font-size:21px; white-space:nowrap; letter-spacing:.03em;}
   .footer-logo-row .logo{flex:none; text-align:left;}
+  .logo-leaf{height:26px; width:26px;}
   nav.main{position:fixed; top:0; right:-100%; width:78%; max-width:320px; height:100vh; z-index:70; background:#fff; flex-direction:column; padding:100px 30px; gap:26px; transition:right .3s ease; box-shadow:-8px 0 24px rgba(0,0,0,.15);}
   nav.main.open{right:0;}
   .nav-close{display:block;}
@@ -1213,7 +1218,7 @@ footer{background:var(--grey); color:#e2e2e2; padding-top:40px;}
   .zoom-stats{grid-template-columns:1fr;}
   .section-head{padding:0 6px;}
   .brand-map .bm-verticals{grid-template-columns:1fr; gap:18px;}
-  .brand-map .bm-holding{font-size:17px; letter-spacing:24px; padding:15px 16px;}
+  .brand-map .bm-holding{font-size:15.3px; letter-spacing:24px; padding:15px 16px;}
   section{padding:48px 0;}
   .footer-grid{grid-template-columns:1fr !important;}
   .phil-grid{gap:32px;}
@@ -1354,6 +1359,7 @@ var AZURA_CONFIG = {
   <div class="container nav-row">
     <div class="hamburger" id="hamburgerBtn" onclick="toggleNav()" role="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><span></span><span></span><span></span></div>
     <div class="logo-wrap" onclick="goHome()" style="cursor:pointer;">
+      <img class="logo-leaf" src="media/logo-leaf.png" alt="" width="38" height="38">
       <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
     </div>
     <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
@@ -1383,7 +1389,7 @@ var AZURA_CONFIG = {
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
           <a data-v="nacar" onclick="goVertical('nacar','time_specialist'); closeNav();" data-i18n="nav.system.luminous">System T-Specialist</a>
           <a data-v="vigor" onclick="goVertical('vigor'); closeNav();" data-i18n="nav.system.health">System Hair Specialist</a>
-          <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">System Support Specialist</a>
+          <a data-v="roble" onclick="goVertical('roble'); closeNav();" data-i18n="nav.system.spot">System Spot Specialist</a>
           <a onclick="openBeautyChoice(); closeNav();" data-i18n="nav.beauty.quiz">Diagnostico personalizado</a>
           <div class="nav-dropdown-divider" aria-hidden="true"></div>
           <!-- Fix 74: nuevo submenu al fondo de Belleza, instruccion Carlos.
@@ -1499,7 +1505,7 @@ var AZURA_CONFIG = {
       <div class="bm-verticals">
         <span class="bm-nacar" id="bmNacar">Luminous &middot; Speciality</span>
         <span class="bm-vigor" id="bmVigor">Hair &middot; Speciality</span>
-        <span class="bm-roble" id="bmRoble">Support &middot; Specialist</span>
+        <span class="bm-roble" id="bmRoble">Spot &middot; Specialist</span>
       </div>
     </div>
     <div class="verticals-grid reveal-stagger" id="systemsGrid">
@@ -1547,7 +1553,7 @@ var AZURA_CONFIG = {
           </video>
         </div>
         <div class="v-tag" id="vtagRoble">Próximamente</div>
-        <h3>System Support Specialist</h3>
+        <h3>System Spot Specialist</h3>
         <p class="v-msg" id="vmsgRoble">Fuerza que se cuida a si misma.</p>
         <span class="v-cta" id="vctaRoble">Descubrir &#8594;</span>
       </div>
@@ -1585,7 +1591,7 @@ var AZURA_CONFIG = {
     <div class="zoom-tabs reveal-stagger">
       <div class="zoom-tab active" data-v="nacar" data-i18n="nav.system.luminous" onclick="goVertical('nacar','time_specialist')">System T-Specialist</div>
       <div class="zoom-tab" data-v="vigor" data-i18n="nav.system.health" onclick="goVertical('vigor')">System Hair Specialist</div>
-      <div class="zoom-tab" data-v="roble" data-i18n="nav.system.spot" onclick="goVertical('roble')">System Support Specialist</div>
+      <div class="zoom-tab" data-v="roble" data-i18n="nav.system.spot" onclick="goVertical('roble')">System Spot Specialist</div>
     </div>
 
     <div class="zoom-banner reveal-stagger">
@@ -1650,7 +1656,7 @@ var AZURA_CONFIG = {
   <div class="container footer-grid reveal-stagger">
     <div class="footer-brand">
       <div class="footer-logo-row">
-        <img src="media/logo-icon.png" alt="Renuévate" class="footer-logo-icon" loading="lazy">
+        <img src="media/logo-leaf-tile.png" alt="Renuévate" class="footer-logo-icon" loading="lazy" width="40" height="40">
         <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
       </div>
       <p data-i18n="footer.brandP">System T-Specialist, Hair y Spot: hábitos de bienestar para cada etapa de tu vida.</p>
@@ -1663,7 +1669,7 @@ var AZURA_CONFIG = {
     <div><h5 data-i18n="footer.hVerticales">System Speciality</h5>
       <a onclick="goVertical('nacar','time_specialist')" data-i18n="footer.nacar">System T-Specialist</a>
       <a onclick="goVertical('vigor')" data-i18n="footer.vigor">System Hair Specialist</a>
-      <a onclick="goVertical('roble')" data-i18n="footer.roble">System Support Specialist</a>
+      <a onclick="goVertical('roble')" data-i18n="footer.roble">System Spot Specialist</a>
     </div>
     <div><h5 data-i18n="footer.hAyuda">Ayuda</h5>
       <a onclick="goToHomeSection('systemsGrid')" data-i18n="footer.diag">Como elegir tu sistema</a>
@@ -2325,6 +2331,7 @@ var V = {
           longDesc:"Suplemento alimenticio, sabor arándano, adicionado con fitoceramidas de trigo, vitamina C, Vitamina E y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.",
           usage:"Tomar 2 sobres al día.",
           ingredients:["Goma de Acacia","Inulina","Saborizantes Artificiales","Extracto de Trigo","Ácido Cítrico","Ácido Tartárico","Glicósidos de Esteviol","Colorante Antocianina","Dióxido de Silicio","Ácido Málico","Ascorbato de Calcio","Gluconato de Zinc","Goma Guar","Acetato de Alfa-Tocoferol"],
+          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo.webp","media/nacar-18-suplemento-lifestyle-cactus.webp"],
           related:["NACAR-08","NACAR-16","NACAR-17"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
@@ -2448,6 +2455,7 @@ var V = {
           longDesc:"Dietary supplement, blueberry flavor, with added wheat phytoceramides, vitamin C, vitamin E and zinc. Content: 150 g, box with 30 sachets of 5 g each.",
           usage:"Take 2 sachets a day.",
           ingredients:["Acacia Gum","Inulin","Artificial Flavors","Wheat Extract","Citric Acid","Tartaric Acid","Steviol Glycosides","Anthocyanin Color","Silicon Dioxide","Malic Acid","Calcium Ascorbate","Zinc Gluconate","Guar Gum","Alpha-Tocopherol Acetate"],
+          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo.webp","media/nacar-18-suplemento-lifestyle-cactus.webp"],
           related:["NACAR-08","NACAR-16","NACAR-17"]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
@@ -2571,6 +2579,7 @@ var V = {
           longDesc:"Complément alimentaire, saveur myrtille, enrichi en phytocéramides de blé, vitamine C, vitamine E et zinc. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.",
           usage:"Prendre 2 sachets par jour.",
           ingredients:["Gomme d'Acacia","Inuline","Arômes Artificiels","Extrait de Blé","Acide Citrique","Acide Tartrique","Glycosides de Stéviol","Colorant Anthocyane","Dioxyde de Silicium","Acide Malique","Ascorbate de Calcium","Gluconate de Zinc","Gomme de Guar","Acétate d'Alpha-Tocophérol"],
+          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo.webp","media/nacar-18-suplemento-lifestyle-cactus.webp"],
           related:["NACAR-08","NACAR-16","NACAR-17"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complète", desc:"routine en 5 étapes avec contour et protection."}]
@@ -2594,13 +2603,13 @@ var V = {
           longDesc:["Controla la caída del cabello","Fomenta la microcirculación en el cuero cabelludo","Estimula el crecimiento del cabello","Colabora a recuperar y aumentar el volumen capilar"],
           usage:"Después de lavar el cabello con el Shampoo Fortificante, con el cabello seco o ligeramente húmedo, aplicar la loción directamente en el cuero cabelludo con ayuda del gotero, enfocándose en sienes, coronilla y nacimiento del cabello. Masajear suavemente por un minuto, distribuyendo el producto por todo el cuero cabelludo. No enjuagar. Para mejores resultados, usar diariamente, de preferencia por las noches.",
           ingredients:["Aqua (Water)","Alcohol Denat.","Glycerin","Curcuma Longa (Turmeric) Callus Conditioned Media","Thymus Vulgaris (Thyme) Extract","PEG-40 Hydrogenated Castor Oil","Trideceth-9","Chlorphenesin","Phytic Acid","Lactic Acid","Potassium Sorbate","Parfum (Fragrance)","Tromethamine","Phenoxyethanol","Pentylene Glycol"],
-          img:"media/vigor-02-locion-front.webp", thumb:"media/vigor-02-locion-front.webp", gallery:["media/vigor-02-locion-lifestyle-splash.webp","media/vigor-02-locion-lifestyle-zen.webp","media/vigor-02-locion-lifestyle-loto.webp","media/vigor-02-locion-lifestyle-flatlay.webp"],
+          img:"media/vigor-02-locion-front.webp", thumb:"media/vigor-02-locion-front.webp", gallery:["media/vigor-02-locion-lifestyle-loto.webp","media/vigor-02-locion-lifestyle-flatlay.webp"],
           related:["VIGOR-01","VIGOR-03"]},
         {sku:"VIGOR-03", tag:"Suplemento alimenticio", name:"Suplemento H-Specialist", desc:"Suplemento alimenticio sabor fresa, adicionado con KERANAT™, Biotina, Vitamina A, C, B5, B6, Zinc y Selenio. Contenido 150 g, caja con 30 sobres de 5 g cada uno.", price:"$1,035.00 MXN", favorito:false, system:"hair_speciality",
           longDesc:"Suplemento alimenticio sabor fresa, adicionado con KERANAT™, Biotina, Vitamina A, C, B5, B6, Zinc y Selenio. Contenido 150 g, caja con 30 sobres de 5 g cada uno. Este producto no es un medicamento. El consumo de este producto es responsabilidad de quien lo recomienda y de quien lo usa.",
           usage:"Tomar 1 sobre diluido en agua diariamente.",
           ingredients:["Fibra de Acacia","Aceite de Mijo (Panicum miliaceum)","Ácido Ascórbico","Sabor Fresa (Saborizante Idéntico al Natural)","Ácido Málico (Acidulante)","Dióxido de Silicio (Antihumectante)","Lecitina de Girasol (Estabilizante)","Citrato de Potasio (Regulador de Acidez)","Glucósidos de Esteviol (Edulcorante Natural)","Goma Guar (Estabilizante)","Goma Xanthana (Estabilizante)","Ácido Cítrico (Acidulante)","Color Carmín (Colorante Natural)","Óxido de Zinc","Extracto de Fruto del Monje (Siraitia grosvenorii) (Fruto) (Edulcorante Natural)","Pantotenato de Calcio","Color Cúrcuma (Colorante Natural)","Palmitato de Vitamina A","Clorhidrato de Piridoxina","Selenita de Sodio","Biotina"],
-          img:"media/vigor-03-suplemento-front-v2.webp", thumb:"media/vigor-03-suplemento-front-v2.webp", gallery:["media/vigor-03-suplemento-lifestyle-tina.webp","media/vigor-03-suplemento-lifestyle-flatlay.webp"],
+          img:"media/vigor-03-suplemento-front-v2.webp", thumb:"media/vigor-03-suplemento-front-v2.webp", gallery:["media/vigor-03-suplemento-lifestyle-tina.webp","media/vigor-03-suplemento-lifestyle-bote.webp"],
           related:["VIGOR-01","VIGOR-02"]}
       ],
       routines:[]
@@ -2621,13 +2630,13 @@ var V = {
           longDesc:["Controls hair loss","Promotes scalp microcirculation","Stimulates hair growth","Helps restore and increase hair volume"],
           usage:"After washing your hair with the Fortifying Shampoo, with hair dry or slightly damp, apply the lotion directly onto the scalp using the dropper, focusing on the temples, crown and hairline. Gently massage for one minute, spreading the product over the whole scalp. Do not rinse. For best results, use daily, preferably at night.",
           ingredients:["Aqua (Water)","Alcohol Denat.","Glycerin","Curcuma Longa (Turmeric) Callus Conditioned Media","Thymus Vulgaris (Thyme) Extract","PEG-40 Hydrogenated Castor Oil","Trideceth-9","Chlorphenesin","Phytic Acid","Lactic Acid","Potassium Sorbate","Parfum (Fragrance)","Tromethamine","Phenoxyethanol","Pentylene Glycol"],
-          img:"media/vigor-02-locion-front.webp", thumb:"media/vigor-02-locion-front.webp", gallery:["media/vigor-02-locion-lifestyle-splash.webp","media/vigor-02-locion-lifestyle-zen.webp","media/vigor-02-locion-lifestyle-loto.webp","media/vigor-02-locion-lifestyle-flatlay.webp"],
+          img:"media/vigor-02-locion-front.webp", thumb:"media/vigor-02-locion-front.webp", gallery:["media/vigor-02-locion-lifestyle-loto.webp","media/vigor-02-locion-lifestyle-flatlay.webp"],
           related:["VIGOR-01","VIGOR-03"]},
         {sku:"VIGOR-03", tag:"Dietary supplement", name:"H-Specialist Supplement", desc:"Strawberry-flavored dietary supplement, with added KERANAT™, Biotin, Vitamin A, C, B5, B6, Zinc and Selenium. Content: 150 g, box with 30 sachets of 5 g each.", price:"$1,035.00 MXN", favorito:false, system:"hair_speciality",
           longDesc:"Strawberry-flavored dietary supplement, with added KERANAT™, Biotin, Vitamin A, C, B5, B6, Zinc and Selenium. Content: 150 g, box with 30 sachets of 5 g each. This product is not a medicine. Use of this product is the responsibility of whoever recommends it and whoever uses it.",
           usage:"Take 1 sachet diluted in water daily.",
           ingredients:["Acacia Fiber","Millet Oil (Panicum miliaceum)","Ascorbic Acid","Strawberry Flavor (Nature-Identical Flavoring)","Malic Acid (Acidulant)","Silicon Dioxide (Anti-Caking Agent)","Sunflower Lecithin (Stabilizer)","Potassium Citrate (Acidity Regulator)","Steviol Glycosides (Natural Sweetener)","Guar Gum (Stabilizer)","Xanthan Gum (Stabilizer)","Citric Acid (Acidulant)","Carmine Color (Natural Coloring)","Zinc Oxide","Monk Fruit Extract (Siraitia grosvenorii) (Fruit) (Natural Sweetener)","Calcium Pantothenate","Turmeric Color (Natural Coloring)","Vitamin A Palmitate","Pyridoxine Hydrochloride","Sodium Selenite","Biotin"],
-          img:"media/vigor-03-suplemento-front-v2.webp", thumb:"media/vigor-03-suplemento-front-v2.webp", gallery:["media/vigor-03-suplemento-lifestyle-tina.webp","media/vigor-03-suplemento-lifestyle-flatlay.webp"],
+          img:"media/vigor-03-suplemento-front-v2.webp", thumb:"media/vigor-03-suplemento-front-v2.webp", gallery:["media/vigor-03-suplemento-lifestyle-tina.webp","media/vigor-03-suplemento-lifestyle-bote.webp"],
           related:["VIGOR-01","VIGOR-02"]}
       ],
       routines:[]
@@ -2648,40 +2657,40 @@ var V = {
           longDesc:["Contrôle la chute des cheveux","Favorise la microcirculation du cuir chevelu","Stimule la pousse des cheveux","Aide à retrouver et augmenter le volume capillaire"],
           usage:"Après avoir lavé les cheveux avec le Shampoing Fortifiant, cheveux secs ou légèrement humides, appliquer la lotion directement sur le cuir chevelu à l'aide du compte-gouttes, en insistant sur les tempes, le sommet du crâne et la racine des cheveux. Masser doucement pendant une minute en répartissant le produit sur tout le cuir chevelu. Ne pas rincer. Pour de meilleurs résultats, utiliser quotidiennement, de préférence le soir.",
           ingredients:["Aqua (Water)","Alcohol Denat.","Glycerin","Curcuma Longa (Turmeric) Callus Conditioned Media","Thymus Vulgaris (Thyme) Extract","PEG-40 Hydrogenated Castor Oil","Trideceth-9","Chlorphenesin","Phytic Acid","Lactic Acid","Potassium Sorbate","Parfum (Fragrance)","Tromethamine","Phenoxyethanol","Pentylene Glycol"],
-          img:"media/vigor-02-locion-front.webp", thumb:"media/vigor-02-locion-front.webp", gallery:["media/vigor-02-locion-lifestyle-splash.webp","media/vigor-02-locion-lifestyle-zen.webp","media/vigor-02-locion-lifestyle-loto.webp","media/vigor-02-locion-lifestyle-flatlay.webp"],
+          img:"media/vigor-02-locion-front.webp", thumb:"media/vigor-02-locion-front.webp", gallery:["media/vigor-02-locion-lifestyle-loto.webp","media/vigor-02-locion-lifestyle-flatlay.webp"],
           related:["VIGOR-01","VIGOR-03"]},
         {sku:"VIGOR-03", tag:"Complément alimentaire", name:"Complément H-Specialist", desc:"Complément alimentaire saveur fraise, enrichi en KERANAT™, Biotine, Vitamine A, C, B5, B6, Zinc et Sélénium. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.", price:"$1,035.00 MXN", favorito:false, system:"hair_speciality",
           longDesc:"Complément alimentaire saveur fraise, enrichi en KERANAT™, Biotine, Vitamine A, C, B5, B6, Zinc et Sélénium. Contenu : 150 g, boîte de 30 sachets de 5 g chacun. Ce produit n'est pas un médicament. La consommation de ce produit est de la responsabilité de la personne qui le recommande et de celle qui l'utilise.",
           usage:"Prendre 1 sachet dilué dans de l'eau chaque jour.",
           ingredients:["Fibre d'Acacia","Huile de Millet (Panicum miliaceum)","Acide Ascorbique","Arôme Fraise (Arôme Identique au Naturel)","Acide Malique (Acidifiant)","Dioxyde de Silicium (Antiagglomérant)","Lécithine de Tournesol (Stabilisant)","Citrate de Potassium (Régulateur d'Acidité)","Glycosides de Stéviol (Édulcorant Naturel)","Gomme de Guar (Stabilisant)","Gomme Xanthane (Stabilisant)","Acide Citrique (Acidifiant)","Colorant Carmin (Colorant Naturel)","Oxyde de Zinc","Extrait de Fruit du Moine (Siraitia grosvenorii) (Fruit) (Édulcorant Naturel)","Pantothénate de Calcium","Colorant Curcuma (Colorant Naturel)","Palmitate de Vitamine A","Chlorhydrate de Pyridoxine","Sélénite de Sodium","Biotine"],
-          img:"media/vigor-03-suplemento-front-v2.webp", thumb:"media/vigor-03-suplemento-front-v2.webp", gallery:["media/vigor-03-suplemento-lifestyle-tina.webp","media/vigor-03-suplemento-lifestyle-flatlay.webp"],
+          img:"media/vigor-03-suplemento-front-v2.webp", thumb:"media/vigor-03-suplemento-front-v2.webp", gallery:["media/vigor-03-suplemento-lifestyle-tina.webp","media/vigor-03-suplemento-lifestyle-bote.webp"],
           related:["VIGOR-01","VIGOR-02"]}
       ],
       routines:[]
     }
   },
   roble: {
-    name:"System Support Specialist",
-    es:{ full:"System Support Specialist", sub:"",
-      bannerTitle:"System Support Specialist",
+    name:"System Spot Specialist",
+    es:{ full:"System Spot Specialist", sub:"",
+      bannerTitle:"System Spot Specialist",
       bannerText:"",
-      tag:"Próximamente", msg:"Fuerza que se cuida a si misma.", bmLabel:"System Support Specialist",
+      tag:"Próximamente", msg:"Fuerza que se cuida a si misma.", bmLabel:"System Spot Specialist",
       stats:["95%","21 días","100%"],
       products:[],
       routines:[]
     },
-    en:{ full:"System Support Specialist", sub:"",
-      bannerTitle:"The System Support Specialist",
+    en:{ full:"System Spot Specialist", sub:"",
+      bannerTitle:"The System Spot Specialist",
       bannerText:"",
-      tag:"Coming soon", msg:"Strength that takes care of itself.", bmLabel:"System Support Specialist",
+      tag:"Coming soon", msg:"Strength that takes care of itself.", bmLabel:"System Spot Specialist",
       stats:["95%","21 days","100%"],
       products:[],
       routines:[]
     },
-    fr:{ full:"System Support Specialist", sub:"",
-      bannerTitle:"Le System Support Specialist",
+    fr:{ full:"System Spot Specialist", sub:"",
+      bannerTitle:"Le System Spot Specialist",
       bannerText:"",
-      tag:"Bientôt disponible", msg:"Une force qui prend soin d'elle-même.", bmLabel:"System Support Specialist",
+      tag:"Bientôt disponible", msg:"Une force qui prend soin d'elle-même.", bmLabel:"System Spot Specialist",
       stats:["95%","21 jours","100%"],
       products:[],
       routines:[]
@@ -2694,7 +2703,7 @@ var I18N = {
   es:{
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
     "top.shipping":"Envío calculado en checkout . Entrega en 4 días hábiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
-    "nav.nacar":"Belleza", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Support Specialist", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
+    "nav.nacar":"Belleza", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
     "hero.h1":'<span class="accent">Transforma</span> tu vida, Renuévate',
     "hero.p":'Renuévate es una forma de <span class="accent">volver a ti</span>, a través del cuidado personal.',
@@ -2719,7 +2728,7 @@ var I18N = {
     "nl.p":"Un correo a la semana. Sin spam. Cancela cuando quieras.", "nl.submit":"Suscribirme", "nl.google":"Continuar con Google", "nl.facebook":"Continuar con Facebook",
     "subscribeThanks.title":"Gracias por suscribirte", "subscribeThanks.body":"Ya formas parte de la comunidad Renuévate. Te escribiremos una vez a la semana con novedades y acceso anticipado a nuestros sistemas.", "subscribeThanks.cta":"Entendido",
     "footer.brandP":"System T-Specialist, Hair y Spot: hábitos de bienestar para cada etapa de tu vida.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Support Specialist",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Spot Specialist",
     "footer.hAyuda":"Ayuda", "footer.diag":"Como elegir tu sistema", "footer.shipping":"Envíos y devoluciones", "footer.faq":"Preguntas frecuentes", "footer.chat":"Chatea con el asistente",
     "footer.hCompania":"Compañía", "footer.about":"Sobre Renuévate",
     "about.eyebrow":"Sobre Renuévate", "about.heroTitle":"Belleza y bienestar, con criterio.",
@@ -2739,7 +2748,7 @@ var I18N = {
     "chat.a.purpose":"Te ayudo a encontrar tu sistema ideal, rápido y sin vueltas.",
     "chat.q.shipping":"Envíos", "chat.q.verticals":"Verticales", "chat.q.diagnostic":"Como elijo mi sistema", "chat.q.human":"Hablar con un humano",
     "chat.a.shipping":"Hacemos envíos a todo Mexico, entrega en 4 días hábiles.",
-    "chat.a.verticals":"3 sistemas: System T-Specialist, System Hair y System Support Specialist. Exploralos en el menu System Speciality.",
+    "chat.a.verticals":"3 sistemas: System T-Specialist, System Hair y System Spot Specialist. Exploralos en el menu System Speciality.",
     "chat.a.diagnostic":"Cuentame tu prioridad (energía, piel o rendimiento) y te recomiendo tu sistema.",
     "chat.a.prices":"Precios desde $259 hasta $699 MXN, segun producto.",
     "chat.a.ingredients":"Cada producto muestra sus ingredientes y origen en su ficha.",
@@ -2754,8 +2763,8 @@ var I18N = {
     "chat.a.loyalty":"Cada compra suma puntos Renuévate, canjeables en tu proximo pedido.",
     "chat.a.contact":"Escribenos por WhatsApp, este chat, o adabueo18@gmail.com.",
     "chat.a.sustainability":"Empaques reciclables e ingredientes de origen certificado.",
-    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System T-Specialist, System Hair y System Support Specialist) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la página.",
-    "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System T-Specialist, System Hair y System Support Specialist.",
+    "chat.a.about":"Renuévate es la tienda online de belleza y bienestar: reunimos productos curados en 3 sistemas (System T-Specialist, System Hair y System Spot Specialist) y te ayudamos a elegir con criterio, no por vender. Conoce mas en \"Sobre Renuévate\", al pie de la página.",
+    "chat.a.products":"Vendemos cuidado de piel y cabello, y bienestar diario en 3 sistemas: System T-Specialist, System Hair y System Spot Specialist.",
     "chat.a.hours":"El sitio compra 24/7. Un asesor humano te atiende por WhatsApp en horario hábil.",
     "chat.a.security":"Pago seguro con cifrado. No guardamos los datos de tu tarjeta en nuestros servidores.",
     "chat.a.account":"No necesitas cuenta para comprar. Si inicias sesión con Google o Facebook guardamos tu perfil y tus promociones.",
@@ -2809,7 +2818,7 @@ var I18N = {
   en:{
     "promo.shipping":"FREE shipping on orders over $1,800 MXN", "promo.cta":"Shop now",
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
-    "nav.nacar":"Beauty", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Support Specialist", "nav.filosofia":"Our philosophy", "nav.search":"See more",
+    "nav.nacar":"Beauty", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Our philosophy", "nav.search":"See more",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
     "hero.h1":'<span class="accent">Transform</span> your life, Renuévate',
     "hero.p":'Renuévate is a way to <span class="accent">come back to yourself</span>, through personal care.',
@@ -2834,7 +2843,7 @@ var I18N = {
     "nl.p":"One email a week. No spam. Cancel anytime.", "nl.submit":"Subscribe", "nl.google":"Continue with Google", "nl.facebook":"Continue with Facebook",
     "subscribeThanks.title":"Thanks for subscribing", "subscribeThanks.body":"You're now part of the Renuévate community. We'll write once a week with news and early access to our systems.", "subscribeThanks.cta":"Got it",
     "footer.brandP":"System T-Specialist, Hair and Spot: wellness habits for every stage of your life.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Support Specialist",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Spot Specialist",
     "footer.hAyuda":"Help", "footer.diag":"How to choose your system", "footer.shipping":"Shipping & returns", "footer.faq":"FAQ", "footer.chat":"Chat with the assistant",
     "footer.hCompania":"Company", "footer.about":"About Renuévate",
     "about.eyebrow":"About Renuévate", "about.heroTitle":"Beauty and wellness, with judgment.",
@@ -2854,7 +2863,7 @@ var I18N = {
     "chat.a.purpose":"I help you find your ideal system, fast and simple.",
     "chat.q.shipping":"Shipping", "chat.q.verticals":"Verticals", "chat.q.diagnostic":"How to choose my system", "chat.q.human":"Talk to a human",
     "chat.a.shipping":"We ship across Mexico, delivery in 4 business days.",
-    "chat.a.verticals":"3 systems: System T-Specialist, System Hair and System Support Specialist. Explore them in the System Speciality menu.",
+    "chat.a.verticals":"3 systems: System T-Specialist, System Hair and System Spot Specialist. Explore them in the System Speciality menu.",
     "chat.a.diagnostic":"Tell me your priority (energy, skin or performance) and I'll recommend your system.",
     "chat.a.prices":"Prices from $259 to $699 MXN, depending on the product.",
     "chat.a.ingredients":"Each product page shows its ingredients and origin.",
@@ -2869,8 +2878,8 @@ var I18N = {
     "chat.a.loyalty":"Every purchase earns Renuévate points, redeemable on your next order.",
     "chat.a.contact":"Reach us on WhatsApp, this chat, or adabueo18@gmail.com.",
     "chat.a.sustainability":"Recyclable packaging and certified-origin ingredients.",
-    "chat.a.about":"Renuévate is a beauty and wellness online store: we bring together curated products in 3 systems (System T-Specialist, System Hair and System Support Specialist) and help you choose with judgment, not to sell. Learn more in \"About Renuévate\", at the bottom of the page.",
-    "chat.a.products":"We sell skin and hair care, and daily wellness across 3 systems: System T-Specialist, System Hair and System Support Specialist.",
+    "chat.a.about":"Renuévate is a beauty and wellness online store: we bring together curated products in 3 systems (System T-Specialist, System Hair and System Spot Specialist) and help you choose with judgment, not to sell. Learn more in \"About Renuévate\", at the bottom of the page.",
+    "chat.a.products":"We sell skin and hair care, and daily wellness across 3 systems: System T-Specialist, System Hair and System Spot Specialist.",
     "chat.a.hours":"The site takes orders 24/7. A human advisor is available on WhatsApp during business hours.",
     "chat.a.security":"Secure encrypted payment. We never store your card details on our servers.",
     "chat.a.account":"You don't need an account to buy. If you sign in with Google or Facebook we save your profile and promotions.",
@@ -2924,7 +2933,7 @@ var I18N = {
   fr:{
     "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre réel, a chaque étape de votre vie",
-    "nav.nacar":"Beauté", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Support Specialist", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
+    "nav.nacar":"Beauté", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
     "hero.h1":'<span class="accent">Transforme</span> votre vie, Renuévate',
     "hero.p":'Renuévate est une facon de <span class="accent">revenir a vous</span>, grace au soin personnel.',
@@ -2949,7 +2958,7 @@ var I18N = {
     "nl.p":"Un e-mail par semaine. Pas de spam. Annulez quand vous voulez.", "nl.submit":"M'inscrire", "nl.google":"Continuer avec Google", "nl.facebook":"Continuer avec Facebook",
     "subscribeThanks.title":"Merci de votre inscription", "subscribeThanks.body":"Vous faites desormais partie de la communaute Renuévate. Nous vous ecrirons une fois par semaine avec des nouveautes et un accès anticipé a nos systèmes.", "subscribeThanks.cta":"Compris",
     "footer.brandP":"System T-Specialist, Hair et Spot : des habitudes de bien-etre pour chaque étape de votre vie.",
-    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Support Specialist",
+    "footer.hVerticales":"System Speciality", "footer.nacar":"System T-Specialist", "footer.vigor":"System Hair Specialist", "footer.roble":"System Spot Specialist",
     "footer.hAyuda":"Aide", "footer.diag":"Comment choisir votre système", "footer.shipping":"Livraison et retours", "footer.faq":"Questions fréquentes", "footer.chat":"Discuter avec l'assistant",
     "footer.hCompania":"Entreprise", "footer.about":"A propos de Renuévate",
     "about.eyebrow":"A propos de Renuévate", "about.heroTitle":"Beauté et bien-etre, avec discernement.",
@@ -2969,7 +2978,7 @@ var I18N = {
     "chat.a.purpose":"Je vous aide a trouver votre système idéal, vite et simplement.",
     "chat.q.shipping":"Livraison", "chat.q.verticals":"Marques", "chat.q.diagnostic":"Comment choisir mon système", "chat.q.human":"Parler a un humain",
     "chat.a.shipping":"Nous livrons partout au Mexique, en 4 jours ouvres.",
-    "chat.a.verticals":"3 systèmes : System T-Specialist, System Hair et System Support Specialist. Explorez-les dans le menu System Speciality.",
+    "chat.a.verticals":"3 systèmes : System T-Specialist, System Hair et System Spot Specialist. Explorez-les dans le menu System Speciality.",
     "chat.a.diagnostic":"Dites-moi votre priorite (énergie, peau, performance) et je recommande votre système.",
     "chat.a.prices":"Prix de $259 a $699 MXN, selon le produit.",
     "chat.a.ingrédients":"Chaque fiche produit affiche ses ingrédients et son origine.",
@@ -2984,8 +2993,8 @@ var I18N = {
     "chat.a.loyalty":"Chaque achat cumule des points Renuévate, a utiliser sur la prochaine commande.",
     "chat.a.contact":"Ecrivez-nous sur WhatsApp, ce chat, ou adabueo18@gmail.com.",
     "chat.a.sustainability":"Emballages recyclables et ingrédients d'origine certifiee.",
-    "chat.a.about":"Renuévate est la boutique en ligne beauté et bien-etre : nous reunissons des produits sélectionnés en 3 systèmes (System T-Specialist, System Hair et System Support Specialist) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
-    "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systèmes : System T-Specialist, System Hair et System Support Specialist.",
+    "chat.a.about":"Renuévate est la boutique en ligne beauté et bien-etre : nous reunissons des produits sélectionnés en 3 systèmes (System T-Specialist, System Hair et System Spot Specialist) et vous aidons a choisir avec discernement, pas pour vendre. En savoir plus dans \"A propos de Renuévate\", en bas de page.",
+    "chat.a.products":"Nous vendons des soins de la peau et des cheveux, et du bien-etre quotidien sur 3 systèmes : System T-Specialist, System Hair et System Spot Specialist.",
     "chat.a.hours":"Le site prend des commandes 24h/24. Un conseiller humain repond sur WhatsApp aux heures ouvrees.",
     "chat.a.security":"Paiement sécurisé et chiffre. Nous ne stockons jamais les données de votre carte.",
     "chat.a.account":"Pas besoin de compte pour acheter. En vous connectant avec Google ou Facebook, nous gardons votre profil et vos promotions.",
@@ -4728,21 +4737,21 @@ var ABOUT_CONTENT = {
   es: { sections: [
     { h:'Quiénes somos', p:'En Renuévate creemos que cuidar tu piel, tu salud y tu bienestar no debería ser complicado. Por eso creamos una tienda online especializada en productos de belleza, skincare, nutrición y cuidado personal, seleccionados por su calidad, respaldo y <span class="accent">beneficios reales</span>. No buscamos tener miles de productos en un catálogo interminable: preferimos ofrecer soluciones que aporten valor y ayuden a las personas a sentirse y verse mejor cada día.' },
     { h:'Nuestra misión', p:'Ayudarte a encontrar los productos adecuados para tus objetivos de belleza y bienestar, sin confusión ni recomendaciones genéricas. Existen cientos de opciones para el cuidado facial, los suplementos nutricionales y el cuidado masculino; nuestro objetivo es simplificar esa decisión para que puedas elegir con confianza aquello que realmente necesitas.' },
-    { h:'Cómo seleccionamos nuestros productos', p:'Cada producto disponible en Renuévate forma parte de una solución específica: evaluamos sus ingredientes, beneficios, calidad y propósito antes de incorporarlo a nuestra tienda. Para facilitar tu experiencia, organizamos nuestras recomendaciones en tres líneas especializadas — <b>System T-Specialist</b>, enfocado en skincare, cuidado facial, hidratación, luminosidad y rejuvenecimiento de la piel; <b>System Hair Specialist</b>, diseñado para apoyar la nutrición, el bienestar integral, la energía y el rendimiento diario; y <b>System Support Specialist</b>, desarrollado para cubrir las necesidades específicas del cuidado masculino — además de herramientas de diagnóstico y asesoría personalizada para ayudarte a identificar el sistema más adecuado según tus necesidades y estilo de vida.' },
+    { h:'Cómo seleccionamos nuestros productos', p:'Cada producto disponible en Renuévate forma parte de una solución específica: evaluamos sus ingredientes, beneficios, calidad y propósito antes de incorporarlo a nuestra tienda. Para facilitar tu experiencia, organizamos nuestras recomendaciones en tres líneas especializadas — <b>System T-Specialist</b>, enfocado en skincare, cuidado facial, hidratación, luminosidad y rejuvenecimiento de la piel; <b>System Hair Specialist</b>, diseñado para apoyar la nutrición, el bienestar integral, la energía y el rendimiento diario; y <b>System Spot Specialist</b>, desarrollado para cubrir las necesidades específicas del cuidado masculino — además de herramientas de diagnóstico y asesoría personalizada para ayudarte a identificar el sistema más adecuado según tus necesidades y estilo de vida.' },
     { h:'Nuestro compromiso contigo', p:'Somos una tienda 100% en línea comprometida con la transparencia, la atención personalizada y la confianza de nuestros clientes. Trabajamos con precios claros, información detallada sobre ingredientes y beneficios, y acompañamiento humano cuando lo necesitas. En Renuévate no creemos en promesas milagrosas: creemos en productos de calidad, hábitos consistentes y <span class="accent">resultados que se sostienen en el tiempo</span>.' },
     { h:'Más que una tienda de belleza', p:'Renuévate nace con una visión simple: ayudarte a renovar tu bienestar, fortalecer tu confianza y construir una mejor versión de ti mismo a través del cuidado consciente de tu piel, tu salud y tu imagen personal. Porque cuando te cuidas por dentro y por fuera, los resultados se reflejan en cada aspecto de tu vida.' },
   ] },
   en: { sections: [
     { h:'Who we are', p:'At Renuévate we believe that taking care of your skin, your health and your wellbeing shouldn\'t be complicated. That\'s why we built an online store focused on beauty, skincare, nutrition and personal care products, selected for their quality, backing and <span class="accent">real benefits</span>. We\'re not chasing an endless catalog with thousands of products — we\'d rather offer solutions that add real value and help people feel and look better every day.' },
     { h:'Our mission', p:'To help you find the right products for your beauty and wellness goals, without confusion or generic recommendations. There are hundreds of options out there for facial care, nutritional supplements and men\'s grooming; our goal is to simplify that decision so you can confidently choose what you actually need.' },
-    { h:'How we select our products', p:'Every product available at Renuévate is part of a specific solution: we evaluate its ingredients, benefits, quality and purpose before adding it to our store. To make things easier, we organize our recommendations into three specialized lines — <b>System T-Specialist</b>, focused on skincare, facial care, hydration, radiance and skin renewal; <b>System Hair Specialist</b>, built to support nutrition, overall wellness, energy and daily performance; and <b>System Support Specialist</b>, developed to cover the specific needs of men\'s grooming — plus diagnostic tools and personalized guidance to help you identify the right system for your needs and lifestyle.' },
+    { h:'How we select our products', p:'Every product available at Renuévate is part of a specific solution: we evaluate its ingredients, benefits, quality and purpose before adding it to our store. To make things easier, we organize our recommendations into three specialized lines — <b>System T-Specialist</b>, focused on skincare, facial care, hydration, radiance and skin renewal; <b>System Hair Specialist</b>, built to support nutrition, overall wellness, energy and daily performance; and <b>System Spot Specialist</b>, developed to cover the specific needs of men\'s grooming — plus diagnostic tools and personalized guidance to help you identify the right system for your needs and lifestyle.' },
     { h:'Our commitment to you', p:'We are a 100% online store committed to transparency, personalized attention and our customers\' trust. We work with clear pricing, detailed information about ingredients and benefits, and human support whenever you need it. At Renuévate we don\'t believe in miracle promises: we believe in quality products, consistent habits, and <span class="accent">results that hold up over time</span>.' },
     { h:'More than a beauty store', p:'Renuévate was born from a simple vision: to help you renew your wellbeing, strengthen your confidence, and build a better version of yourself through the conscious care of your skin, your health and your personal image. Because when you take care of yourself inside and out, the results show up in every part of your life.' },
   ] },
   fr: { sections: [
     { h:'Qui nous sommes', p:'Chez Renuévate, nous pensons que prendre soin de votre peau, de votre sante et de votre bien-etre ne devrait pas etre complique. C\'est pourquoi nous avons créé une boutique en ligne spécialisée dans les produits de beauté, de soin de la peau, de nutrition et de soin personnel, sélectionnés pour leur qualite, leur serieux et leurs <span class="accent">bienfaits reels</span>. Nous ne cherchons pas a avoir des milliers de produits dans un catalogue sans fin : nous preferons proposer des solutions qui apportent une vraie valeur et aident chacun a se sentir et a se voir mieux chaque jour.' },
     { h:'Notre mission', p:'Vous aider a trouver les produits adaptes a vos objectifs de beauté et de bien-etre, sans confusion ni recommandations generiques. Il existe des centaines d\'options pour le soin du visage, les complements nutritionnels et le soin masculin ; notre objectif est de simplifier cette decision pour que vous puissiez choisir en toute confiance ce dont vous avez vraiment besoin.' },
-    { h:'Comment nous selectionnons nos produits', p:'Chaque produit disponible chez Renuévate fait partie d\'une solution précise : nous evaluons ses ingrédients, ses bienfaits, sa qualite et son objectif avant de l\'integrer a notre boutique. Pour simplifier votre experience, nous organisons nos recommandations en trois lignes specialisees — <b>System T-Specialist</b>, axe sur le soin de la peau, l\'hydratation, l\'éclat et le rajeunissement cutane ; <b>System Hair Specialist</b>, conçu pour soutenir la nutrition, le bien-etre global, l\'énergie et la performance quotidienne ; et <b>System Support Specialist</b>, developpe pour repondre aux besoins specifiques du soin masculin — ainsi que des outils de diagnostic et un accompagnement personnalise pour vous aider a identifier le système le plus adapte a vos besoins et a votre mode de vie.' },
+    { h:'Comment nous selectionnons nos produits', p:'Chaque produit disponible chez Renuévate fait partie d\'une solution précise : nous evaluons ses ingrédients, ses bienfaits, sa qualite et son objectif avant de l\'integrer a notre boutique. Pour simplifier votre experience, nous organisons nos recommandations en trois lignes specialisees — <b>System T-Specialist</b>, axe sur le soin de la peau, l\'hydratation, l\'éclat et le rajeunissement cutane ; <b>System Hair Specialist</b>, conçu pour soutenir la nutrition, le bien-etre global, l\'énergie et la performance quotidienne ; et <b>System Spot Specialist</b>, developpe pour repondre aux besoins specifiques du soin masculin — ainsi que des outils de diagnostic et un accompagnement personnalise pour vous aider a identifier le système le plus adapte a vos besoins et a votre mode de vie.' },
     { h:'Notre engagement envers vous', p:'Nous sommes une boutique 100% en ligne engagee pour la transparence, l\'attention personnalisee et la confiance de nos clients. Nous travaillons avec des prix clairs, des informations detaillees sur les ingrédients et les bienfaits, et un accompagnement humain des que vous en avez besoin. Chez Renuévate, nous ne croyons pas aux promesses miracles : nous croyons en des produits de qualite, des habitudes constantes et des <span class="accent">résultats qui durent dans le temps</span>.' },
     { h:'Plus qu\'une boutique de beauté', p:'Renuévate est nee d\'une vision simple : vous aider a renouveler votre bien-etre, renforcer votre confiance et construire une meilleure version de vous-même grace a un soin conscient de votre peau, de votre sante et de votre image personnelle. Parce que lorsque vous prenez soin de vous, a l\'intérieur comme a l\'extérieur, les résultats se refletent dans chaque aspect de votre vie.' },
   ] },
@@ -4949,7 +4958,7 @@ var ADMIN_STATE = { products: [], selectedSku: null, isNew: false, systemFilter:
 
 // Fix 144: Carlos pidio imagenes vinculadas al producto (verlas, cambiarlas,
 // subirlas al crear) y una clasificacion opcional de "Sistema" (System Time
-// Specialist / System Hair Specialist / System Support Specialist), separada del
+// Specialist / System Hair Specialist / System Spot Specialist), separada del
 // campo `vertical` (que sigue siendo obligatorio -- decide en que pagina
 // del sitio vive el producto, ver ADMIN_VERTICAL_LABELS). El campo nuevo
 // `system` es 100% opcional y no toca el storefront ni el vertical: solo
@@ -4958,7 +4967,7 @@ var ADMIN_STATE = { products: [], selectedSku: null, isNew: false, systemFilter:
 var ADMIN_SYSTEM_LABELS = {
   time_specialist: 'System T-Specialist',
   hair_speciality: 'System Hair Specialist',
-  spot_speciality: 'System Support Specialist'
+  spot_speciality: 'System Spot Specialist'
 };
 var ADMIN_SYSTEM_ORDER = ['time_specialist', 'hair_speciality', 'spot_speciality'];
 
@@ -5067,7 +5076,7 @@ function loadAdminProducts(){
     });
 }
 
-var ADMIN_VERTICAL_LABELS = { nacar: 'System T-Specialist', vigor: 'System Hair Specialist', roble: 'System Support Specialist', accessory: 'Accesorios' };
+var ADMIN_VERTICAL_LABELS = { nacar: 'System T-Specialist', vigor: 'System Hair Specialist', roble: 'System Spot Specialist', accessory: 'Accesorios' };
 
 function renderAdminSystemFilterBar(){
   var bar = document.getElementById('adminSystemFilterBar');
