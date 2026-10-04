@@ -283,7 +283,52 @@ const VALIDATORS = {
         total: { bsonType: ['double', 'int'] },
         currency: { bsonType: 'string' },
         status: { enum: ['confirmed', 'cancelled'] },
+        // Fix 199: trazabilidad de pago (Clip). Opcionales: ordenes viejas (Mercado Pago o
+        // sin pasarela) no los traen. Nunca se guarda dato de tarjeta, solo ids de referencia.
+        payment_provider: { enum: ['clip', 'mercadopago', null] },
+        clip_payment_request_id: { bsonType: ['string', 'null'] },
+        clip_receipt_no: { bsonType: ['string', 'null'] },
+        checkout_session_id: { bsonType: ['objectId', 'null'] },
         created_at: { bsonType: 'date' },
+      },
+    },
+  },
+
+  // Fix 199 (Clip): foto del pedido calculada en servidor ANTES de mandar al cliente a pagar.
+  // Es la fuente de verdad contra la que se valida monto/moneda cuando Clip confirma el pago
+  // (ISO 27001:2022 A.8.26 / A.8.28). No contiene datos personales ni de tarjeta.
+  checkout_sessions: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['customer_id', 'provider', 'status', 'items', 'total', 'currency', 'created_at'],
+      properties: {
+        customer_id: { bsonType: 'objectId' },
+        provider: { enum: ['clip'] },
+        status: { enum: ['created', 'link_created', 'completed', 'failed', 'expired', 'amount_mismatch'] },
+        items: {
+          bsonType: 'array',
+          minItems: 1,
+          items: {
+            bsonType: 'object',
+            required: ['sku', 'name', 'unit_price', 'qty'],
+            properties: {
+              sku: { bsonType: 'string' },
+              name: { bsonType: 'string' },
+              vertical: { bsonType: ['string', 'null'] },
+              unit_price: { bsonType: ['double', 'int'] },
+              qty: { bsonType: 'int', minimum: 1 },
+              shade: { bsonType: ['string', 'null'] },
+            },
+          },
+        },
+        total: { bsonType: ['double', 'int'] },
+        currency: { bsonType: 'string' },
+        clip_payment_request_id: { bsonType: 'string' },
+        order_id: { bsonType: ['objectId', 'null'] },
+        failure: { bsonType: 'string' },
+        created_at: { bsonType: 'date' },
+        updated_at: { bsonType: 'date' },
+        completed_at: { bsonType: 'date' },
       },
     },
   },
@@ -598,6 +643,23 @@ async function setupCollections(db) {
 
   await ensureIndex(db.collection('orders'), { customer_id: 1, created_at: -1 }, { name: 'idx_customer_orders' });
   await ensureIndex(db.collection('orders'), { status: 1 }, { name: 'idx_status' });
+  // Fix 199: idempotencia del pago Clip -- una sola orden por payment_request_id aunque el
+  // webhook reintente o el cliente regrese varias veces. partialFilterExpression en vez de
+  // sparse: las ordenes sin Clip (campo ausente o null) no cuentan.
+  await ensureIndex(
+    db.collection('orders'),
+    { clip_payment_request_id: 1 },
+    { unique: true, partialFilterExpression: { clip_payment_request_id: { $type: 'string' } }, name: 'uniq_clip_payment_request' }
+  );
+
+  await ensureIndex(db.collection('checkout_sessions'), { clip_payment_request_id: 1 }, { sparse: true, name: 'idx_clip_payment_request' });
+  await ensureIndex(db.collection('checkout_sessions'), { customer_id: 1, created_at: -1 }, { name: 'idx_customer_created' });
+  // Sesiones sin completar se purgan a los 90 dias; las completadas quedan como evidencia contable.
+  await ensureIndex(
+    db.collection('checkout_sessions'),
+    { created_at: 1 },
+    { expireAfterSeconds: 90 * 24 * 3600, partialFilterExpression: { status: { $in: ['created', 'link_created', 'failed', 'expired'] } }, name: 'ttl_unfinished_sessions' }
+  );
 
   await ensureIndex(db.collection('products'), { sku: 1 }, { unique: true, name: 'uniq_sku' });
   await ensureIndex(db.collection('products'), { vertical: 1, status: 1 }, { name: 'idx_vertical_status' });

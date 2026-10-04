@@ -1,4 +1,8 @@
 // api/checkout.js
+// FIX 199: pasarela activa = CLIP (ver bloque CLIP al final de este archivo y
+// CLIP-ISO27001.md). El flujo de Mercado Pago de abajo se conserva como rollback
+// (PAYMENT_PROVIDER=mercadopago).
+//
 // Crea una preferencia de pago en Mercado Pago Checkout Pro a partir del
 // carrito real del cliente (recalculado siempre contra `products`, nunca se
 // confia en lo que mande el navegador -- misma disciplina que api/cart.js).
@@ -63,10 +67,16 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
 
-  const isWebhook = req.query && req.query.action === 'webhook';
-  if (isWebhook) { return handleWebhook(req, res); }
+  const action = req.query && req.query.action;
+  // Webhooks y conciliacion: ambos proveedores siguen atendidos aunque el activo cambie
+  // (pagos en vuelo durante un rollback no se pierden).
+  if (action === 'webhook') { return handleWebhook(req, res); }          // Mercado Pago
+  if (action === 'clip-webhook') { return handleClipWebhook(req, res); }  // Clip
+  if (action === 'confirm') { return handleClipConfirm(req, res); }       // Clip: regreso del cliente
 
   if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
+  // Fix 199: Clip es la pasarela activa; PAYMENT_PROVIDER=mercadopago hace rollback sin redeploy de codigo.
+  if (paymentProvider() === 'clip') { return handleCreateClipLink(req, res); }
   return handleCreatePreference(req, res);
 };
 
@@ -278,5 +288,389 @@ async function handleWebhook(req, res) {
   } catch (err) {
     console.error('checkout.js (webhook) error:', err);
     res.status(200).json({ ok: true, error: 'INTERNAL_ERROR' });
+  }
+}
+
+
+// =============================================================================
+// CLIP (Checkout Redireccionado) -- Fix 199 (Carlos, 2026-10-04)
+// =============================================================================
+// Clip reemplaza a Mercado Pago como pasarela activa. El cliente paga en la
+// pagina hospedada por Clip (completa-tu-pago.payclip.com): el sitio y este
+// servidor NUNCA ven el numero de tarjeta (alcance PCI SAQ-A).
+//
+// Flujo:
+//   1. POST /api/checkout            -> recalcula el carrito en servidor, guarda una
+//                                        sesion en `checkout_sessions`, crea el link en Clip
+//                                        y devuelve { ok, redirect_url }.
+//   2. El cliente paga en Clip y vuelve a /?checkout=success|error|default&ref=<sesion>.
+//   3. POST /api/checkout?action=confirm        (la pagina, al volver) y
+//      POST /api/checkout?action=clip-webhook   (Clip, server-to-server)
+//      ambos llaman a settleClipSession(): consulta el estado REAL del pago en la API de
+//      Clip, valida monto y moneda contra lo que se guardo en el paso 1 y crea la orden
+//      de forma idempotente (indice unico orders.clip_payment_request_id).
+//
+// Variables de entorno (SOLO en Vercel, nunca en el repo ni en el navegador):
+//   CLIP_API_KEY / CLIP_SECRET_KEY   credenciales de la cuenta Clip (Basic auth)
+//   SITE_URL                         base para redirection_url y webhook_url
+//   PAYMENT_PROVIDER                 'clip' (default) | 'mercadopago' (rollback sin redeploy)
+//   MIN_UNIT_PRICE_MXN               piso de precio por linea (default 20); rechaza el cobro si
+//                                    algun precio queda por debajo (control contra datos corruptos,
+//                                    ver incidente VIGOR-03 a $1 MXN, Fix 195)
+//
+// Controles ISO/IEC 27001:2022 y plan de pruebas: ver CLIP-ISO27001.md.
+// Vive en este archivo (no en api/clip.js) por el tope de 12 Serverless
+// Functions del plan Hobby de Vercel (hoy hay 12, una nueva tumbaria el build).
+
+const CLIP_API_BASE = 'https://api.payclip.com';
+const CLIP_TIMEOUT_MS = 10000;
+const CLIP_HOST = 'payclip.com';
+const CLIP_MIN_AMOUNT = 1; // minimo que acepta Clip por link de pago
+const CLIP_ID_RE = /^[0-9a-fA-F-]{8,36}$/;
+
+function paymentProvider() {
+  return String(process.env.PAYMENT_PROVIDER || 'clip').toLowerCase() === 'mercadopago' ? 'mercadopago' : 'clip';
+}
+
+function minUnitPrice() {
+  const n = Number(process.env.MIN_UNIT_PRICE_MXN);
+  return Number.isFinite(n) && n >= 0 ? n : 20;
+}
+
+function round2(n) {
+  return Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+}
+
+function clipAuthHeader() {
+  const key = process.env.CLIP_API_KEY;
+  const secret = process.env.CLIP_SECRET_KEY;
+  if (!key || !secret) return null;
+  return 'Basic ' + Buffer.from(`${key}:${secret}`).toString('base64');
+}
+
+// Unico punto de salida hacia Clip: solo https://api.payclip.com, con timeout y
+// sin seguir redirecciones. Nunca se registran headers ni credenciales.
+async function clipRequest(path, method, bodyObj) {
+  const auth = clipAuthHeader();
+  if (!auth) { const e = new Error('CLIP_NOT_CONFIGURED'); e.code = 'CLIP_NOT_CONFIGURED'; throw e; }
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), CLIP_TIMEOUT_MS);
+  try {
+    return await fetch(CLIP_API_BASE + path, {
+      method,
+      headers: { Authorization: auth, 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: bodyObj ? JSON.stringify(bodyObj) : undefined,
+      signal: ctrl.signal,
+      redirect: 'error',
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// La URL de pago que regresa Clip solo se acepta si es https y de *.payclip.com
+// (defensa en profundidad contra una respuesta alterada / open redirect).
+function isClipUrl(u) {
+  try {
+    const x = new URL(String(u));
+    return x.protocol === 'https:' && (x.hostname === CLIP_HOST || x.hostname.endsWith('.' + CLIP_HOST));
+  } catch (e) {
+    return false;
+  }
+}
+
+// Recalcula SIEMPRE contra `products` (nunca contra lo que mande el navegador ni
+// contra unit_price_snapshot del carrito). Los items "guardar para despues" no se cobran.
+async function buildClipCartLines(db, custId) {
+  const cartDoc = await db.collection('carts').findOne({ customer_id: custId, status: 'active' });
+  if (!cartDoc || !cartDoc.items || !cartDoc.items.length) return { error: 'El carrito esta vacio.', code: 400 };
+  const activeLines = cartDoc.items.filter((i) => !i.saved);
+  const skus = activeLines.map((i) => i.sku);
+  const products = await db.collection('products').find({ sku: { $in: skus }, status: 'active' }).toArray();
+  const bySku = new Map(products.map((p) => [p.sku, p]));
+
+  const floor = minUnitPrice();
+  const lines = [];
+  for (const line of activeLines) {
+    const product = bySku.get(line.sku);
+    if (!product) continue; // sku inactivo/retirado: se ignora igual que en el carrito visible
+    const qty = Number(line.qty);
+    const unit = Number(product.unit_price);
+    if (!Number.isInteger(qty) || qty < 1 || qty > 999) return { error: 'Cantidad invalida en el carrito.', code: 400 };
+    if (product.currency && product.currency !== 'MXN') return { error: 'Moneda no soportada para este producto.', code: 400 };
+    if (!Number.isFinite(unit) || unit < floor) {
+      console.error('checkout.js (clip) - SECURITY PRICE_GUARD: precio por debajo del piso, cobro bloqueado', { sku: product.sku, unit_price: unit, floor });
+      return { error: 'Uno de los productos del carrito tiene un precio no valido. Escribenos para ayudarte.', code: 409 };
+    }
+    const baseName = (product.name_i18n && product.name_i18n.es) || product.sku;
+    lines.push({
+      sku: product.sku,
+      name: line.shade ? `${baseName} - Tono: ${line.shade}` : baseName,
+      vertical: product.vertical || null,
+      unit_price: unit,
+      qty,
+      shade: line.shade || null,
+    });
+  }
+  if (!lines.length) return { error: 'Ninguno de los productos en el carrito esta disponible para comprar.', code: 400 };
+  return { lines };
+}
+
+function clipDescription(lines) {
+  const text = lines.map((l) => `${l.name} x${l.qty}`).join(', ');
+  return text.length > 250 ? text.slice(0, 247) + '...' : text;
+}
+
+async function handleCreateClipLink(req, res) {
+  try {
+    if (!clipAuthHeader()) {
+      res.status(501).json({
+        error: 'NOT_CONFIGURED',
+        message: 'Clip todavia no esta configurado en este sitio (faltan CLIP_API_KEY / CLIP_SECRET_KEY). Ver CLIP-ISO27001.md.',
+      });
+      return;
+    }
+
+    // La identidad para cobrar viene de la cookie de sesion firmada, nunca del body.
+    const sessionCid = getSessionCustomerId(req);
+    if (!sessionCid || !ObjectId.isValid(sessionCid)) {
+      res.status(401).json({ error: 'Tu sesion expiro o no has iniciado sesion. Inicia sesion de nuevo.', code: 'SESSION_REQUIRED' });
+      return;
+    }
+    const custId = new ObjectId(sessionCid);
+
+    const db = await getDb();
+    if (!(await checkRateLimit(req, res, db, { scope: 'checkout', limit: 10, windowSec: 60 }))) return;
+
+    const built = await buildClipCartLines(db, custId);
+    if (built.error) { res.status(built.code).json({ error: built.error }); return; }
+    const lines = built.lines;
+    const total = round2(lines.reduce((sum, l) => sum + l.unit_price * l.qty, 0));
+    if (!(total >= CLIP_MIN_AMOUNT)) { res.status(400).json({ error: 'El total del pedido es menor al minimo permitido.' }); return; }
+
+    // Foto del pedido ANTES de salir a Clip: es la fuente de verdad contra la que se
+    // valida el monto cobrado cuando Clip confirma el pago.
+    const sessions = db.collection('checkout_sessions');
+    const ins = await sessions.insertOne({
+      customer_id: custId,
+      provider: 'clip',
+      status: 'created',
+      items: lines,
+      total,
+      currency: 'MXN',
+      created_at: new Date(),
+    });
+    const ref = String(ins.insertedId); // 24 chars hex, cumple el limite de 36 de external_reference
+
+    const base = siteUrl();
+    const body = {
+      amount: total,
+      currency: 'MXN',
+      purchase_description: clipDescription(lines),
+      redirection_url: {
+        success: `${base}/?checkout=success&ref=${ref}`,
+        error: `${base}/?checkout=error&ref=${ref}`,
+        default: `${base}/?checkout=default&ref=${ref}`,
+      },
+      webhook_url: `${base}/api/checkout?action=clip-webhook`,
+      // Minimizacion de datos personales: Clip recibe solo la referencia opaca, sin nombre,
+      // correo, telefono ni direccion del cliente.
+      metadata: { external_reference: ref },
+      override_settings: { locale: 'es-MX' },
+    };
+
+    let resp;
+    let data;
+    try {
+      resp = await clipRequest('/v2/checkout', 'POST', body);
+      data = await resp.json().catch(() => ({}));
+    } catch (e) {
+      await sessions.updateOne({ _id: ins.insertedId }, { $set: { status: 'failed', failure: 'CLIP_UNREACHABLE', updated_at: new Date() } });
+      console.error('checkout.js (clip) - no se pudo contactar a Clip:', e && e.name);
+      res.status(502).json({ error: 'No se pudo iniciar el pago con Clip. Intenta de nuevo en unos minutos.' });
+      return;
+    }
+
+    if (!resp.ok || !data || !data.payment_request_id || !isClipUrl(data.payment_request_url)) {
+      await sessions.updateOne({ _id: ins.insertedId }, { $set: { status: 'failed', failure: 'CLIP_REJECTED', updated_at: new Date() } });
+      console.error('checkout.js (clip) - Clip rechazo el link de pago:', { http: resp.status, error_code: data && data.error_code, session: ref });
+      res.status(502).json({ error: 'No se pudo crear el pago en Clip. Intenta de nuevo.' });
+      return;
+    }
+
+    await sessions.updateOne(
+      { _id: ins.insertedId },
+      { $set: { status: 'link_created', clip_payment_request_id: String(data.payment_request_id), updated_at: new Date() } }
+    );
+
+    res.status(200).json({ ok: true, provider: 'clip', redirect_url: data.payment_request_url, reference: ref });
+  } catch (err) {
+    console.error('checkout.js (clip) error:', err && err.message);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+}
+
+// Consulta el estado REAL del pago en Clip y, si esta completado y el monto coincide,
+// crea la orden. Es idempotente: se puede llamar N veces (webhook repetido, regreso del
+// cliente, ambos a la vez) y solo existe una orden por clip_payment_request_id.
+// Clip no documenta firma en sus webhooks, asi que el payload NUNCA se usa como prueba
+// de pago: solo avisa que vale la pena consultar a Clip directamente.
+async function settleClipSession(db, session) {
+  if (session.status === 'completed') return { status: 'already', order_id: session.order_id || null };
+  if (!session.clip_payment_request_id) return { status: 'pending' };
+
+  const sessions = db.collection('checkout_sessions');
+  let pay;
+  try {
+    const resp = await clipRequest(`/v2/checkout/${encodeURIComponent(session.clip_payment_request_id)}`, 'GET');
+    pay = await resp.json().catch(() => null);
+    if (!resp.ok || !pay) {
+      console.error('checkout.js (clip) - no se pudo leer el estado del pago:', { http: resp.status, session: String(session._id) });
+      return { status: 'lookup_failed' };
+    }
+  } catch (e) {
+    console.error('checkout.js (clip) - error consultando estado en Clip:', e && e.name, { session: String(session._id) });
+    return { status: 'lookup_failed' };
+  }
+
+  if (pay.payment_request_id && String(pay.payment_request_id) !== session.clip_payment_request_id) {
+    console.error('checkout.js (clip) - SECURITY: payment_request_id de la respuesta no coincide con la sesion', { session: String(session._id) });
+    return { status: 'review' };
+  }
+
+  if (pay.status === 'CHECKOUT_CANCELLED' || pay.status === 'CHECKOUT_EXPIRED') {
+    await sessions.updateOne(
+      { _id: session._id, status: { $ne: 'completed' } },
+      { $set: { status: pay.status === 'CHECKOUT_EXPIRED' ? 'expired' : 'failed', updated_at: new Date() } }
+    );
+    return { status: pay.status === 'CHECKOUT_EXPIRED' ? 'expired' : 'cancelled' };
+  }
+  if (pay.status !== 'CHECKOUT_COMPLETED') return { status: 'pending' };
+
+  // Integridad: lo cobrado debe ser exactamente lo que calculo el servidor al crear el link.
+  const paid = Number(pay.amount);
+  const currencyOk = !pay.currency || String(pay.currency) === session.currency;
+  if (!Number.isFinite(paid) || Math.abs(paid - session.total) > 0.009 || !currencyOk) {
+    console.error('checkout.js (clip) - SECURITY: monto o moneda no coinciden, orden NO creada', {
+      session: String(session._id), expected: session.total, paid, currency: pay.currency,
+    });
+    await sessions.updateOne({ _id: session._id }, { $set: { status: 'amount_mismatch', updated_at: new Date() } });
+    return { status: 'review' };
+  }
+
+  const now = new Date();
+  const order = {
+    customer_id: session.customer_id,
+    items: session.items.map((it) => ({
+      sku: it.sku,
+      name: it.name,
+      vertical: it.vertical || null,
+      unit_price: Number(it.unit_price),
+      qty: Number(it.qty),
+      shade: it.shade || null,
+    })),
+    subtotal: session.total,
+    applied_promotions: [],
+    total: session.total,
+    currency: session.currency,
+    status: 'confirmed',
+    payment_provider: 'clip',
+    clip_payment_request_id: session.clip_payment_request_id,
+    clip_receipt_no: pay.receipt_no ? String(pay.receipt_no) : null,
+    checkout_session_id: session._id,
+    created_at: now,
+  };
+
+  let orderId;
+  try {
+    const r = await db.collection('orders').insertOne(order);
+    orderId = r.insertedId;
+    order._id = orderId;
+  } catch (e) {
+    if (e && e.code === 11000) {
+      // Otra llamada concurrente ya creo la orden: indice unico uniq_clip_payment_request.
+      const existing = await db.collection('orders').findOne({ clip_payment_request_id: session.clip_payment_request_id });
+      await sessions.updateOne({ _id: session._id }, { $set: { status: 'completed', order_id: existing ? existing._id : null, updated_at: new Date() } });
+      return { status: 'already', order_id: existing ? existing._id : null };
+    }
+    throw e;
+  }
+
+  await sessions.updateOne({ _id: session._id }, { $set: { status: 'completed', order_id: orderId, completed_at: now, updated_at: now } });
+
+  // La orden ya existe: lo que sigue no debe tumbar la respuesta si algo falla, pero se registra.
+  try {
+    await recordPurchaseForLoyalty(db, { customerId: session.customer_id, order, now });
+  } catch (e) {
+    console.error('checkout.js (clip) - orden creada pero fallo el motor de lealtad:', e && e.message, { order: String(orderId) });
+  }
+  try {
+    await db.collection('carts').updateOne(
+      { customer_id: session.customer_id, status: 'active' },
+      { $set: { items: [], updated_at: now } }
+    );
+  } catch (e) {
+    console.error('checkout.js (clip) - orden creada pero no se pudo vaciar el carrito:', e && e.message, { order: String(orderId) });
+  }
+  return { status: 'completed', order_id: orderId };
+}
+
+// Webhook de Clip (server-to-server). Solo se usa como aviso: se busca el id en nuestras
+// sesiones (ids desconocidos se ignoran sin tocar Clip) y el estado se verifica con la API.
+async function handleClipWebhook(req, res) {
+  try {
+    if (!clipAuthHeader()) { res.status(200).json({ ok: true, skipped: 'NOT_CONFIGURED' }); return; }
+    const db = await getDb();
+    if (!(await checkRateLimit(req, res, db, { scope: 'clip-webhook', limit: 120, windowSec: 60 }))) return;
+
+    const body = req.body && typeof req.body === 'object' ? req.body : {};
+    const query = req.query || {};
+    const candidates = [body.payment_request_id, body.id, query.payment_request_id, query.id]
+      .filter((v) => typeof v === 'string' && CLIP_ID_RE.test(v));
+
+    let handled = 0;
+    for (const id of Array.from(new Set(candidates))) {
+      const session = await db.collection('checkout_sessions').findOne({ provider: 'clip', clip_payment_request_id: id });
+      if (!session) continue;
+      const result = await settleClipSession(db, session);
+      handled += 1;
+      console.log('checkout.js (clip) webhook:', { session: String(session._id), result: result.status });
+    }
+    res.status(200).json({ ok: true, handled });
+  } catch (err) {
+    // 500 invita a Clip a reintentar si hubo una falla transitoria (Mongo caido, etc.).
+    console.error('checkout.js (clip) webhook error:', err && err.message);
+    res.status(500).json({ ok: false });
+  }
+}
+
+// El cliente vuelve de Clip con ?checkout=success&ref=<sesion>. Este endpoint concilia en ese
+// momento (no depende de que el webhook haya llegado primero). Solo el dueno de la sesion
+// (cookie firmada) puede consultar su referencia.
+async function handleClipConfirm(req, res) {
+  if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
+  try {
+    const sessionCid = getSessionCustomerId(req);
+    if (!sessionCid || !ObjectId.isValid(sessionCid)) {
+      res.status(401).json({ error: 'SESSION_REQUIRED', code: 'SESSION_REQUIRED' });
+      return;
+    }
+    const ref = req.body && req.body.ref;
+    if (typeof ref !== 'string' || !ObjectId.isValid(ref)) { res.status(400).json({ error: 'Referencia invalida.' }); return; }
+
+    const db = await getDb();
+    if (!(await checkRateLimit(req, res, db, { scope: 'checkout-confirm', limit: 20, windowSec: 60 }))) return;
+
+    const session = await db.collection('checkout_sessions').findOne({
+      _id: new ObjectId(ref), customer_id: new ObjectId(sessionCid), provider: 'clip',
+    });
+    if (!session) { res.status(404).json({ error: 'Pago no encontrado.' }); return; }
+
+    const result = await settleClipSession(db, session);
+    const map = { completed: 'completed', already: 'completed', pending: 'pending', lookup_failed: 'pending', cancelled: 'failed', expired: 'failed', review: 'review' };
+    res.status(200).json({ ok: true, status: map[result.status] || 'pending', order_id: result.order_id ? String(result.order_id) : null });
+  } catch (err) {
+    console.error('checkout.js (clip) confirm error:', err && err.message);
+    res.status(500).json({ error: 'Error interno del servidor.' });
   }
 }

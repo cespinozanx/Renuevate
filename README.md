@@ -253,6 +253,9 @@ Los iconos del footer ya estan conectados a `AZURA_CONFIG.SOCIAL_INSTAGRAM_URL`,
 
 ## 14. Pagos con tarjeta / Google Pay — que se necesita antes de activarlo
 
+> **Actualización Fix 199 (2026-10-04):** la pasarela de pago activa es **Clip** (Checkout Redireccionado). Configuración, flujo, controles ISO 27001 y rollback a Mercado Pago: ver `CLIP-ISO27001.md`.
+
+
 **No actives esto sin un procesador real de por medio.** El sitio hoy NO tiene ninguna pasarela de pago conectada (el carrito y "metodos de pago guardados" son un placeholder de demostracion). Para cobrar con tarjeta o Google Pay de forma segura y sin volverte responsable de cumplimiento PCI-DSS nivel 1 (auditoria costosa), la arquitectura recomendada es:
 
 **Principio no negociable:** el sitio nunca debe recibir, ver ni almacenar el numero de tarjeta completo ni el CVV en su propio servidor. Eso ya esta reflejado en el copy actual (`account.pciNote`: "solo se guardan los ultimos 4 digitos"). Cualquier integracion debe mantener esa promesa con arquitectura real, no solo con el texto.
