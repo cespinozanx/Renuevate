@@ -300,7 +300,7 @@ const PRODUCTS = [
   // productos reales. ROBLE-01..04 mock se borraron en Fix 154, los SKUs
   // quedaron libres. Ingredientes/modo de uso del suplemento: Carlos no los
   // envio todavia (no se inventan; la ficha oculta esas secciones si estan vacias).
-  { sku: 'ROBLE-01', vertical: 'roble', price: '$630 MXN', related: ['ROBLE-02'], favorito: false, system: 'spot_speciality',
+  { sku: 'ROBLE-01', vertical: 'roble', price: '$630 MXN', related: ['ROBLE-02', 'ROBLE-03'], favorito: false, system: 'spot_speciality',
     name_i18n: { es: 'Suplemento Spot Specialist', en: 'Spot Specialist Supplement', fr: 'Complément Spot Specialist' },
     description_i18n: { es: 'Suplemento alimenticio sabor Manzana Verde, adicionado con Probióticos Lactobacillus Rhamnosus, Vitaminas A, C, Niacina y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.', en: 'Green apple flavored dietary supplement, with added Lactobacillus rhamnosus probiotics, vitamins A and C, niacin and zinc. Content: 150 g, box with 30 sachets of 5 g each.', fr: 'Complément alimentaire saveur pomme verte, enrichi en probiotiques Lactobacillus rhamnosus, vitamines A et C, niacine et zinc. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.' },
     image: 'media/roble-01-suplemento-front.webp',
@@ -308,7 +308,7 @@ const PRODUCTS = [
     long_description_es: 'Suplemento alimenticio sabor Manzana Verde, adicionado con Probióticos Lactobacillus Rhamnosus, Vitaminas A, C, Niacina y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.',
     ingredients_es: [],
     usage_es: '' },
-  { sku: 'ROBLE-02', vertical: 'roble', price: '$310 MXN', related: ['ROBLE-01'], favorito: false, system: 'spot_speciality',
+  { sku: 'ROBLE-02', vertical: 'roble', price: '$310 MXN', related: ['ROBLE-01', 'ROBLE-03'], favorito: false, system: 'spot_speciality',
     name_i18n: { es: 'Dermolimpiador Facial', en: 'Facial Dermo-Cleanser', fr: 'Dermo-nettoyant Visage' },
     description_i18n: { es: 'Limpiador facial adicionado con ácido salicílico que remueve las impurezas, limpia los poros a profundidad, sin resecar la piel.', en: 'Facial cleanser with added salicylic acid that removes impurities and deep-cleans pores without drying the skin.', fr: 'Nettoyant visage enrichi en acide salicylique qui élimine les impuretés et nettoie les pores en profondeur, sans dessécher la peau.' },
     image: 'media/roble-02-dermolimpiador-front.webp',
@@ -316,6 +316,17 @@ const PRODUCTS = [
     long_description_es: ['Limpia la piel sin secarla y sin dejar efecto de tirantez.', 'Remueve impurezas y limpia los poros a profundidad.', 'Disminuye la acumulación de impurezas y sebo en el rostro.'],
     ingredients_es: ['AQUA (WATER)', 'SODIUM C14-16 OLEFIN SULFONATE', 'COCAMIDOPROPYL BETAINE', 'SODIUM LAUROYL METHYL ISETHIONATE', 'PROPYLENE GLYCOL', 'PEG-200 HYDROGENATED GLYCERYL PALMATE', 'PEG/PPG-120/10 TRIMETHYLOLPROPANE TRIOLEATE', 'LAURETH-2', 'SODIUM CHLORIDE', 'SALICYLIC ACID', 'BACILLUS FERMENT EXTRACT FILTRATE', 'ALLANTOIN', 'PEG-7 GLYCERYL COCOATE', 'MENTHOL', 'PHENOXYETHANOL', 'ETHYLHEXYLGLYCERIN', 'SODIUM BENZOATE', 'SODIUM HYDROXIDE', 'CITRIC ACID', 'TETRASODIUM EDTA'],
     usage_es: 'Uso mañana y noche.' },
+
+  // Fix 202 (Carlos, 2026-10-05): Gel Localizado Spot Specialist (15 ml). Sin "Usos recomendados"
+  // en el texto que envio Carlos -> usage vacio (no se inventa).
+  { sku: 'ROBLE-03', vertical: 'roble', price: '$250 MXN', related: ['ROBLE-02', 'ROBLE-01'], favorito: false, system: 'spot_speciality',
+    name_i18n: { es: 'Gel Localizado Spot Specialist', en: 'Spot Specialist Spot Gel', fr: 'Gel Localisé Spot Specialist' },
+    description_i18n: { es: 'Gel localizado para efecto directo en los brotes. Disminuye la apariencia del tamaño de las imperfecciones, a la vez que evita la acumulación de impurezas.', en: 'Targeted gel with direct effect on breakouts. Reduces the appearance of blemish size while preventing the buildup of impurities.', fr: 'Gel localisé à effet direct sur les boutons. Réduit l\'apparence de la taille des imperfections tout en évitant l\'accumulation d\'impuretés.' },
+    image: 'media/roble-03-gel-localizado-front.webp',
+    images: ['media/roble-03-gel-localizado-front.webp', 'media/roble-03-gel-localizado-lifestyle-espejo.webp', 'media/roble-03-gel-localizado-lifestyle-reposo.webp'],
+    long_description_es: ['Disminuye el tamaño de brotes.', 'Ayuda a desobstruir los poros de manera continua.', 'Evita la acumulación de impurezas, disminuyendo la aparición de nuevos brotes.'],
+    ingredients_es: ['AQUA (WATER)', 'ALCOHOL', 'PROPYLENE GLYCOL', 'AMMONIUM POLYACRYLOYLDIMETHYL TAURATE', 'SALICYLIC ACID', 'MADECASSOSIDE', 'ALLANTOIN', 'BACILLUS FERMENT EXTRACT FILTRATE', 'PORTULACA OLERACEA EXTRACT', 'BUTYLENE GLYCOL', 'ETHYLHEXYLGLYCERIN', 'TETRASODIUM EDTA', 'PHENOXYETHANOL', 'SODIUM HYDROXIDE'],
+    usage_es: '' },
 
   // Accesorios de carrito (upsell de bolsas, ver BAG_MODELS en index.html).
   // vertical:'accessory' a proposito -- no pertenecen a ninguno de los 4
