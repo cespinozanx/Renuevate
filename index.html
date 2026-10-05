@@ -578,6 +578,13 @@ body.viewing-product-page .home-only{display:none;}
 .zoom-banner h3{font-size:clamp(25px,3.2vw,36px); color:var(--navy); margin:12px 0 16px;}
 .zoom-banner p{font-size:15.5px; opacity:.9; max-width:460px; color:var(--grey);}
 #zoomBannerText{white-space:pre-line; line-height:1.6;} /* Fix 209: el texto del banner T-Specialist trae saltos de linea */
+/* Fix 217 (Carlos): banner de System Spot -- sin recuadro de estadisticas,
+   texto centrado, tipografia serif cursiva mas delicada y la linea de
+   resultados en negritas y dorado. Solo aplica con data-v="roble". */
+.zoom-banner[data-v="roble"] .zoom-stats{display:none;}
+.zoom-banner[data-v="roble"] > div:first-child{text-align:center;}
+.zoom-banner[data-v="roble"] #zoomBannerText{font-family:'Playfair Display',Georgia,serif; font-style:italic; font-weight:500; font-size:19px; line-height:1.75; letter-spacing:.2px; margin-left:auto; margin-right:auto; max-width:440px;}
+.zoom-banner[data-v="roble"] .zb-hl{display:block; margin-top:14px; font-style:normal; font-weight:700; font-size:20px; letter-spacing:.4px; color:#A9792D;}
 /* Fix 163 (Carlos, 2026-09-26): banner "Sistema destacado" -- se agrega
    video (reusa el mismo clip de la tarjeta home) y se quita el boton
    "Conocer el sistema".
@@ -2691,7 +2698,8 @@ var V = {
     name:"System Spot Specialist",
     es:{ full:"System Spot Specialist", sub:"",
       bannerTitle:"System Spot Specialist",
-      bannerText:"Cuida tu piel de adentro hacia afuera.\nProbióticos, vitaminas A y C, zinc y ácido salicílico.\nResultados en menos de 90 días.",
+      bannerText:"Cuida tu piel de adentro hacia afuera.\nProbióticos, vitaminas A y C, zinc y ácido salicílico.",
+      bannerHighlight:"Resultados en menos de 90 días.",
       tag:"Próximamente", msg:"Fuerza que se cuida a si misma.", bmLabel:"System Spot Specialist",
       stats:["95%","21 días","100%"],
       products:[
@@ -2718,7 +2726,8 @@ var V = {
     },
     en:{ full:"System Spot Specialist", sub:"",
       bannerTitle:"The System Spot Specialist",
-      bannerText:"Care for your skin from the inside out.\nProbiotics, vitamins A and C, zinc and salicylic acid.\nResults in less than 90 days.",
+      bannerText:"Care for your skin from the inside out.\nProbiotics, vitamins A and C, zinc and salicylic acid.",
+      bannerHighlight:"Results in less than 90 days.",
       tag:"Coming soon", msg:"Strength that takes care of itself.", bmLabel:"System Spot Specialist",
       stats:["95%","21 days","100%"],
       products:[
@@ -2745,7 +2754,8 @@ var V = {
     },
     fr:{ full:"System Spot Specialist", sub:"",
       bannerTitle:"Le System Spot Specialist",
-      bannerText:"Prenez soin de votre peau de l'intérieur vers l'extérieur.\nProbiotiques, vitamines A et C, zinc et acide salicylique.\nRésultats en moins de 90 jours.",
+      bannerText:"Prenez soin de votre peau de l'intérieur vers l'extérieur.\nProbiotiques, vitamines A et C, zinc et acide salicylique.",
+      bannerHighlight:"Résultats en moins de 90 jours.",
       tag:"Bientôt disponible", msg:"Une force qui prend soin d'elle-même.", bmLabel:"System Spot Specialist",
       stats:["95%","21 jours","100%"],
       products:[
@@ -6006,7 +6016,18 @@ function renderVertical(v){
   document.getElementById('zoomTitle').textContent = d.full;
   document.getElementById('zoomSubtitle').textContent = d.sub;
   document.getElementById('zoomBannerTitle').textContent = d.bannerTitle;
-  document.getElementById('zoomBannerText').textContent = d.bannerText;
+  var zbText = document.getElementById('zoomBannerText');
+  zbText.textContent = d.bannerText;
+  /* Fix 217: linea destacada (negritas + dorado) para System Spot. Se arma con
+     createElement/textContent, nunca con innerHTML. */
+  if (d.bannerHighlight){
+    var zbHl = document.createElement('span');
+    zbHl.className = 'zb-hl';
+    zbHl.textContent = d.bannerHighlight;
+    zbText.appendChild(zbHl);
+  }
+  var zbBox = document.querySelector('.zoom-banner');
+  if (zbBox) zbBox.setAttribute('data-v', v);
   document.getElementById('stat1').textContent = d.stats[0];
   document.getElementById('stat2').textContent = d.stats[1];
   document.getElementById('stat3').textContent = d.stats[2];
