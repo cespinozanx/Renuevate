@@ -574,6 +574,7 @@ body.viewing-product-page .home-only{display:none;}
 .zoom-banner{border-radius:4px; padding:40px 46px; color:var(--ink); display:grid; grid-template-columns:1.1fr .9fr; gap:42px; align-items:center; margin-bottom:58px; background:#F8F7F3; border:1px solid var(--line); border-top:4px solid var(--active);}
 .zoom-banner h3{font-size:clamp(25px,3.2vw,36px); color:var(--navy); margin:12px 0 16px;}
 .zoom-banner p{font-size:15.5px; opacity:.9; max-width:460px; color:var(--grey);}
+#zoomBannerText{white-space:pre-line; line-height:1.6;} /* Fix 209: el texto del banner T-Specialist trae saltos de linea */
 /* Fix 163 (Carlos, 2026-09-26): banner "Sistema destacado" -- se agrega
    video (reusa el mismo clip de la tarjeta home) y se quita el boton
    "Conocer el sistema".
@@ -1603,7 +1604,6 @@ var AZURA_CONFIG = {
 
     <div class="zoom-banner reveal-stagger">
       <div>
-        <div class="eyebrow" data-i18n="zoom.featured">Sistema destacado</div>
         <h3 id="zoomBannerTitle">System T-Specialist</h3>
         <p id="zoomBannerText"></p>
         <div class="zoom-stats reveal-stagger">
@@ -2210,7 +2210,7 @@ var V = {
     name:"System T-Specialist",
     es:{ full:"System T-Specialist", sub:"",
       bannerTitle:"System T-Specialist",
-      bannerText:"",
+      bannerText:"Disminuye arrugas sin botox.\nColágenos y elastina\nVitamina C y Lipowheat, niacinamida, ácido hialurónico y bakuchiol.",
       tag:"Belleza para mujer", msg:"Luminosidad que se cuida.", bmLabel:"System T-Specialist",
       stats:["94%","Renuévate en 90 días","+87%"],
       products:[
@@ -2345,7 +2345,7 @@ var V = {
     },
     en:{ full:"System T-Specialist", sub:"",
       bannerTitle:"The System T-Specialist",
-      bannerText:"",
+      bannerText:"Reduces wrinkles without Botox.\nCollagens and elastin\nVitamin C and Lipowheat, niacinamide, hyaluronic acid and bakuchiol.",
       tag:"Beauty for women", msg:"Radiance that takes care of itself.", bmLabel:"System T-Specialist",
       stats:["94%","Renew in 90 days","+87%"],
       products:[
@@ -2469,7 +2469,7 @@ var V = {
     },
     fr:{ full:"System T-Specialist", sub:"",
       bannerTitle:"Le System T-Specialist",
-      bannerText:"",
+      bannerText:"Réduit les rides sans botox.\nCollagènes et élastine\nVitamine C et Lipowheat, niacinamide, acide hyaluronique et bakuchiol.",
       tag:"Beauté féminine", msg:"Une luminosité qui prend soin d'elle-même.", bmLabel:"System T-Specialist",
       stats:["94%","Renouvelez-vous en 90 jours","+87%"],
       products:[
@@ -2782,7 +2782,7 @@ var I18N = {
     "phil.eyebrow":"Nuestra filosofía",
     "phil.quote":'&ldquo;Elegimos cada producto con el mismo cuidado que le darías a alguien a quien amas: pensando siempre primero en su <span class="accent">bienestar</span>.&rdquo;',
     "phil.statement":'No se trata de cómo se ve tu piel, sino de lo que eliges para <span class="accent">cuidarla</span>.',
-    "zoom.eyebrow":"Nuestro sistema", "zoom.featured":"Sistema destacado", "zoom.knowRitual":"Conocer el sistema",
+    "zoom.eyebrow":"Nuestro sistema", "zoom.knowRitual":"Conocer el sistema",
     "catalog.eyebrow":"", "catalog.title":"Catálogo", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"Ver catálogo completo &#8594;",
     "zoom.backHome":"&#8592; Volver a inicio",
@@ -2897,7 +2897,7 @@ var I18N = {
     "phil.eyebrow":"Our philosophy",
     "phil.quote":"&ldquo;We choose every product the way we'd choose one for someone we love: <span class=\"accent\">wellness</span> first.&rdquo;",
     "phil.statement":"It's not about how your skin looks, but about what you choose to <span class=\"accent\">care for</span>.",
-    "zoom.eyebrow":"Our system", "zoom.featured":"Featured system", "zoom.knowRitual":"Explore the system",
+    "zoom.eyebrow":"Our system", "zoom.knowRitual":"Explore the system",
     "catalog.eyebrow":"", "catalog.title":"Catalog", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"View full catalog &#8594;",
     "zoom.backHome":"&#8592; Back to home",
@@ -3012,7 +3012,7 @@ var I18N = {
     "phil.eyebrow":"Notre philosophie",
     "phil.quote":"&ldquo;Nous choisissons chaque produit comme nous le ferions pour quelqu'un que nous aimons : le <span class=\"accent\">bien-etre</span> d'abord.&rdquo;",
     "phil.statement":"Il ne s'agit pas de l'apparence de votre peau, mais de ce que vous choisissez de <span class=\"accent\">prendre soin</span>.",
-    "zoom.eyebrow":"Notre système", "zoom.featured":"Système phare", "zoom.knowRitual":"Decouvrir le système",
+    "zoom.eyebrow":"Notre système", "zoom.knowRitual":"Decouvrir le système",
     "catalog.eyebrow":"", "catalog.title":"Catalogue", "catalog.subtitle":"",
     "catalog.categorySubtitle":"", "catalog.viewAll":"Voir le catalogue complet &#8594;",
     "zoom.backHome":"&#8592; Retour à l'accueil",
