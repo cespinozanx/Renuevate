@@ -451,6 +451,7 @@ section{padding:92px 0;}
      palabras sueltas del titulo ("System"/"Time"/"Specialist", etc.) al
      triple del espacio normal, sin tocar el tracking entre letras. */
   word-spacing:0.6em;}
+.v-card .v-tag.v-tag-desc{text-transform:none; letter-spacing:.2px; font-size:13px; opacity:.9; line-height:1.4; padding:0 6px;}
 .v-card .v-tag{font-size:11.5px; text-transform:uppercase; letter-spacing:2px; opacity:.85; margin:7px 0 15px; color:var(--grey); text-align:center;}
 .v-card .v-msg{font-size:14px; opacity:1; margin-bottom:18px; font-style:italic; font-family:'Playfair Display',serif; font-weight:500; color:var(--grey); text-align:center;}
 .v-card .v-cta{font-size:11.5px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; display:inline-flex; align-items:center; gap:6px; align-self:flex-end;}
@@ -1558,7 +1559,7 @@ var AZURA_CONFIG = {
             <source src="media/seytu-system-h-showcase-desktop.mp4" type="video/mp4">
           </video>
         </div>
-        <div class="v-tag" id="vtagVigor">Cuidado capilar</div>
+        <div class="v-tag v-tag-desc" id="vtagVigor">Nutrición capilar para un cabello abundante.</div>
         <h3>System Hair Specialist</h3>
         <p class="v-msg" id="vmsgVigor">Energia que se sostiene.</p>
         <span class="v-cta" id="vctaVigor">Descubrir &#8594;</span>
@@ -1569,7 +1570,7 @@ var AZURA_CONFIG = {
             <source src="media/seytu-system-spot-slideshow-v3.mp4" type="video/mp4">
           </video>
         </div>
-        <div class="v-tag" id="vtagRoble">Próximamente</div>
+        <div class="v-tag v-tag-desc" id="vtagRoble">Cuidado facial para pieles con imperfecciones.</div>
         <h3>System Spot Specialist</h3>
         <p class="v-msg" id="vmsgRoble">Fuerza que se cuida a si misma.</p>
         <span class="v-cta" id="vctaRoble">Descubrir &#8594;</span>
@@ -2619,7 +2620,7 @@ var V = {
       bannerTitle:"System Hair Specialist",
       bannerText:"Cabello más abundante, hidratado y con brillo.\nKeranat, biotina, vitaminas, zinc y selenio.",
       bannerHighlight:"Resultados en menos de 90 días.",
-      tag:"Próximamente", msg:"Energia que se sostiene.", bmLabel:"System Hair Specialist",
+      tag:"Próximamente", cardText:"Nutrición capilar para un cabello abundante.", msg:"Energia que se sostiene.", bmLabel:"System Hair Specialist",
       stats:["92%","7 días","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Shampoo fortificante", name:"Shampoo Fortificante", desc:"Especialmente formulado para ayudar a la recuperación capilar, reducir la caída y aumentar el grosor de la fibra capilar, haciendo lucir un cabello más hidratado, brillante y manejable.", price:"$530 MXN", favorito:false, system:"hair_speciality",
@@ -2647,7 +2648,7 @@ var V = {
       bannerTitle:"The System Hair Specialist",
       bannerText:"Fuller, hydrated, shinier-looking hair.\nKeranat, biotin, vitamins, zinc and selenium.",
       bannerHighlight:"Results in less than 90 days.",
-      tag:"Coming soon", msg:"Energy that lasts.", bmLabel:"System Hair Specialist",
+      tag:"Coming soon", cardText:"Hair nutrition for fuller, healthier-looking hair.", msg:"Energy that lasts.", bmLabel:"System Hair Specialist",
       stats:["92%","7 days","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Fortifying shampoo", name:"Fortifying Shampoo", desc:"Specially formulated to help hair recovery, reduce hair loss and increase hair fiber thickness, leaving hair looking more hydrated, shiny and manageable.", price:"$530 MXN", favorito:false, system:"hair_speciality",
@@ -2675,7 +2676,7 @@ var V = {
       bannerTitle:"Le System Hair Specialist",
       bannerText:"Des cheveux plus denses, hydratés et brillants.\nKeranat, biotine, vitamines, zinc et sélénium.",
       bannerHighlight:"Résultats en moins de 90 jours.",
-      tag:"Bientôt disponible", msg:"Une énergie qui dure.", bmLabel:"System Hair Specialist",
+      tag:"Bientôt disponible", cardText:"Nutrition capillaire pour des cheveux plus denses.", msg:"Une énergie qui dure.", bmLabel:"System Hair Specialist",
       stats:["92%","7 jours","100%"],
       products:[
         {sku:"VIGOR-01", tag:"Shampoing fortifiant", name:"Shampoing Fortifiant", desc:"Spécialement formulé pour aider à la récupération capillaire, réduire la chute et augmenter l'épaisseur de la fibre capillaire, pour des cheveux plus hydratés, brillants et faciles à coiffer.", price:"$530 MXN", favorito:false, system:"hair_speciality",
@@ -2706,7 +2707,7 @@ var V = {
       bannerTitle:"System Spot Specialist",
       bannerText:"Cuida tu piel de adentro hacia afuera.\nProbióticos, vitaminas A y C, zinc y ácido salicílico.",
       bannerHighlight:"Resultados en menos de 90 días.",
-      tag:"Próximamente", msg:"Fuerza que se cuida a si misma.", bmLabel:"System Spot Specialist",
+      tag:"Próximamente", cardText:"Cuidado facial para pieles con imperfecciones.", msg:"Fuerza que se cuida a si misma.", bmLabel:"System Spot Specialist",
       stats:["95%","21 días","100%"],
       products:[
         {sku:"ROBLE-01", tag:"Suplemento alimenticio", name:"Suplemento Spot Specialist", desc:"Suplemento alimenticio sabor Manzana Verde, adicionado con Probióticos Lactobacillus Rhamnosus, Vitaminas A, C, Niacina y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.", price:"$630 MXN", favorito:false, system:"spot_speciality",
@@ -2734,7 +2735,7 @@ var V = {
       bannerTitle:"The System Spot Specialist",
       bannerText:"Care for your skin from the inside out.\nProbiotics, vitamins A and C, zinc and salicylic acid.",
       bannerHighlight:"Results in less than 90 days.",
-      tag:"Coming soon", msg:"Strength that takes care of itself.", bmLabel:"System Spot Specialist",
+      tag:"Coming soon", cardText:"Facial care for blemish-prone skin.", msg:"Strength that takes care of itself.", bmLabel:"System Spot Specialist",
       stats:["95%","21 days","100%"],
       products:[
         {sku:"ROBLE-01", tag:"Dietary supplement", name:"Spot Specialist Supplement", desc:"Green apple flavored dietary supplement, with added Lactobacillus rhamnosus probiotics, vitamins A and C, niacin and zinc. Content: 150 g, box with 30 sachets of 5 g each.", price:"$630 MXN", favorito:false, system:"spot_speciality",
@@ -2762,7 +2763,7 @@ var V = {
       bannerTitle:"Le System Spot Specialist",
       bannerText:"Prenez soin de votre peau de l'intérieur vers l'extérieur.\nProbiotiques, vitamines A et C, zinc et acide salicylique.",
       bannerHighlight:"Résultats en moins de 90 jours.",
-      tag:"Bientôt disponible", msg:"Une force qui prend soin d'elle-même.", bmLabel:"System Spot Specialist",
+      tag:"Bientôt disponible", cardText:"Soin du visage pour les peaux à imperfections.", msg:"Une force qui prend soin d'elle-même.", bmLabel:"System Spot Specialist",
       stats:["95%","21 jours","100%"],
       products:[
         {sku:"ROBLE-01", tag:"Complément alimentaire", name:"Complément Spot Specialist", desc:"Complément alimentaire saveur pomme verte, enrichi en probiotiques Lactobacillus rhamnosus, vitamines A et C, niacine et zinc. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.", price:"$630 MXN", favorito:false, system:"spot_speciality",
@@ -7297,7 +7298,9 @@ function applyLanguage(lang){
   var verts = ['nacar','vigor','roble'];
   var caps = ['Nacar','Vigor','Roble'];
   for (var k=0;k<verts.length;k++){
-    document.getElementById('vtag'+caps[k]).textContent = V[verts[k]][lang].tag;
+    var vt = document.getElementById('vtag'+caps[k]), vd = V[verts[k]][lang];
+    vt.textContent = vd.cardText || vd.tag; /* Fix 220: la tarjeta muestra una frase breve, sin 'Proximamente' */
+    vt.classList.toggle('v-tag-desc', !!vd.cardText);
     document.getElementById('vmsg'+caps[k]).textContent = V[verts[k]][lang].msg;
     document.getElementById('vcta'+caps[k]).innerHTML = dict['vert.cta'];
   }
