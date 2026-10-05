@@ -38,6 +38,13 @@ if errorlevel 1 (
   exit /b 1
 )
 
+call node db\seed-reviews-ejemplo.js
+if errorlevel 1 (
+  echo Hubo un error en db\seed-reviews-ejemplo.js.
+  pause
+  exit /b 1
+)
+
 echo.
 echo Listo. Las resenas de ejemplo ya estan en tu base de datos Atlas.
 pause
