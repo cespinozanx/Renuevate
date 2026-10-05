@@ -1,0 +1,97 @@
+[
+ {
+  "sku": "NACAR-06",
+  "slug": "espuma-limpiadora-facial-nacar-06",
+  "name": "Espuma Limpiadora Facial"
+ },
+ {
+  "sku": "NACAR-07",
+  "slug": "omniplus-gel-premium-nacar-07",
+  "name": "Omniplus Gel Premium"
+ },
+ {
+  "sku": "NACAR-08",
+  "slug": "crema-de-dia-fps-30-nacar-08",
+  "name": "Crema de Día FPS 30"
+ },
+ {
+  "sku": "NACAR-09",
+  "slug": "protector-solar-facial-fps-50-nacar-09",
+  "name": "Protector Solar Facial FPS 50+"
+ },
+ {
+  "sku": "NACAR-10",
+  "slug": "suero-facial-de-hidratacion-profunda-con-aloe-vera-nacar-10",
+  "name": "Suero Facial de Hidratación Profunda con Aloe Vera"
+ },
+ {
+  "sku": "NACAR-11",
+  "slug": "maquillaje-liquido-up-fps15-nacar-11",
+  "name": "Maquillaje Líquido UP+ FPS15"
+ },
+ {
+  "sku": "NACAR-12",
+  "slug": "brillo-labial-nacar-12",
+  "name": "Brillo Labial"
+ },
+ {
+  "sku": "NACAR-13",
+  "slug": "brocha-para-maquillaje-liquido-nacar-13",
+  "name": "Brocha para Maquillaje Líquido"
+ },
+ {
+  "sku": "NACAR-14",
+  "slug": "labial-hidratante-fps-15-nacar-14",
+  "name": "Labial Hidratante FPS 15"
+ },
+ {
+  "sku": "NACAR-15",
+  "slug": "polvo-iluminador-desert-sunset-nacar-15",
+  "name": "Polvo Iluminador Desert Sunset"
+ },
+ {
+  "sku": "NACAR-16",
+  "slug": "crema-para-contorno-de-ojos-nacar-16",
+  "name": "Crema para Contorno de Ojos"
+ },
+ {
+  "sku": "NACAR-17",
+  "slug": "suero-de-noche-nacar-17",
+  "name": "Suero de Noche"
+ },
+ {
+  "sku": "NACAR-18",
+  "slug": "suplemento-t-specialist-nacar-18",
+  "name": "Suplemento T-Specialist"
+ },
+ {
+  "sku": "VIGOR-01",
+  "slug": "shampoo-fortificante-vigor-01",
+  "name": "Shampoo Fortificante"
+ },
+ {
+  "sku": "VIGOR-02",
+  "slug": "locion-capilar-fortificante-vigor-02",
+  "name": "Loción Capilar Fortificante"
+ },
+ {
+  "sku": "VIGOR-03",
+  "slug": "suplemento-h-specialist-vigor-03",
+  "name": "Suplemento H-Specialist"
+ },
+ {
+  "sku": "ROBLE-01",
+  "slug": "suplemento-spot-specialist-roble-01",
+  "name": "Suplemento Spot Specialist"
+ },
+ {
+  "sku": "ROBLE-02",
+  "slug": "dermolimpiador-facial-roble-02",
+  "name": "Dermolimpiador Facial"
+ },
+ {
+  "sku": "ROBLE-03",
+  "slug": "gel-localizado-spot-specialist-roble-03",
+  "name": "Gel Localizado Spot Specialist"
+ }
+]

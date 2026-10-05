@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Renuévate | Cuidado facial y bienestar SEYTÚ — México</title>
+<title>Renuévate | Productos SEYTÚ by Omnilife en México</title>
 <!-- Fix 78: bloque SEO -- no existia ninguno de estos tags (meta description,
      canonical, Open Graph, Twitter Card, robots, JSON-LD). Sin meta
      description Google arma su propio snippet (a veces con texto irrelevante
@@ -17,14 +17,14 @@
      "protector solar FPS 50 Cancun") se necesitarian rutas propias por
      producto (server-rendered o al menos con SSR/prerender) -- ese es un
      cambio de arquitectura, no algo que se resuelva solo con meta tags. -->
-<meta name="description" content="Renuévate: cuidado facial SEYTÚ en México. Limpiadores, protector solar FPS 50+, crema de día y sueros faciales con envío a todo el país.">
+<meta name="description" content="Compra productos SEYTÚ by Omnilife en México: cuidado facial, protector solar FPS 50+, cuidado capilar y suplementos. Catálogo completo y envío a todo el país.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://renuevatehoy.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Renuévate">
 <meta property="og:locale" content="es_MX">
-<meta property="og:title" content="Renuévate | Cuidado facial y bienestar SEYTÚ">
-<meta property="og:description" content="Cuidado facial SEYTÚ en México: limpiadores, protector solar FPS 50+, crema de día y sueros faciales. Envío a todo el país.">
+<meta property="og:title" content="Renuévate | Productos SEYTÚ by Omnilife en México">
+<meta property="og:description" content="Productos SEYTÚ by Omnilife en México: cuidado facial, protector solar FPS 50+, cuidado capilar y suplementos. Envío a todo el país.">
 <meta property="og:url" content="https://renuevatehoy.vercel.app/">
 <!-- JPG, no webp -- algunos crawlers de redes sociales (Facebook/WhatsApp/
      Twitter) siguen sin renderizar bien el preview cuando la imagen OG es
@@ -33,13 +33,16 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="896">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Renuévate | Cuidado facial y bienestar SEYTÚ">
-<meta name="twitter:description" content="Cuidado facial SEYTÚ en México: limpiadores, protector solar FPS 50+, crema de día y sueros faciales. Envío a todo el país.">
+<meta name="twitter:title" content="Renuévate | Productos SEYTÚ by Omnilife en México">
+<meta name="twitter:description" content="Productos SEYTÚ by Omnilife en México: cuidado facial, protector solar FPS 50+, cuidado capilar y suplementos. Envío a todo el país.">
 <meta name="twitter:image" content="https://renuevatehoy.vercel.app/media/og-image.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="media/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="media/favicon-180.png">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"Renuévate","url":"https://renuevatehoy.vercel.app/","logo":"https://renuevatehoy.vercel.app/media/logo-leaf-tile.png","image":"https://renuevatehoy.vercel.app/media/og-image.jpg","description":"Cuidado facial SEYTÚ en México: limpiadores, protector solar, crema de día y sueros faciales.","address":{"@type":"PostalAddress","addressLocality":"Cancún","addressRegion":"Quintana Roo","addressCountry":"MX"}}
+{"@context":"https://schema.org","@type":"Organization","name":"Renuévate","url":"https://renuevatehoy.vercel.app/","logo":"https://renuevatehoy.vercel.app/media/logo-leaf-tile.png","image":"https://renuevatehoy.vercel.app/media/og-image.jpg","description":"Productos SEYTÚ by Omnilife en México: cuidado facial, maquillaje, cuidado capilar y suplementos.","address":{"@type":"PostalAddress","addressLocality":"Cancún","addressRegion":"Quintana Roo","addressCountry":"MX"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Renuévate","alternateName":["Renuevate","Renuévate SEYTÚ"],"url":"https://renuevatehoy.vercel.app/","inLanguage":"es-MX"}
 </script>
 <!-- Fix 78: preload de la imagen del hero (LCP) -- es la imagen mas grande
      que se pinta primero en pantalla; sin este preload el navegador la
@@ -1693,6 +1696,7 @@ var AZURA_CONFIG = {
     </div>
     <div><h5 data-i18n="footer.hCompania">Compañía</h5>
       <a onclick="openAboutModal()" data-i18n="footer.about">Sobre Renuévate</a>
+      <a href="/catalogo/">Catálogo completo</a>
     </div>
     <div><h5 data-i18n="footer.hLegal">Legal</h5>
       <a onclick="openPrivacyModal()" data-i18n="footer.privacy">Aviso de privacidad</a>
@@ -7049,6 +7053,27 @@ function handleCheckoutReturn(){
   })();
 }
 document.addEventListener('DOMContentLoaded', handleCheckoutReturn);
+
+/* Fix 215 (SEO): las paginas estaticas /producto/<slug>/ enlazan a la tienda
+   con /?producto=SKU. Aqui se abre la ficha de ese SKU. Solo acepta el
+   formato de SKU del catalogo (LETRAS-NN) y busca en V, nunca inyecta el
+   valor en el DOM. Si algo falla, la tienda carga normal. */
+function handleProductDeepLink(){
+  var sku;
+  try { sku = new URLSearchParams(window.location.search).get('producto'); } catch (e) { return; }
+  if (!sku || !/^[A-Z]{3,8}-\d{2}$/.test(sku)) return;
+  try {
+    var vert = null;
+    ['nacar','vigor','roble'].forEach(function(k){
+      var d = V[k] && (V[k][currentLang] || V[k].es);
+      if (d && d.products && findProductBySku(d.products, sku)) vert = k;
+    });
+    if (!vert) return;
+    goVertical(vert);
+    setTimeout(function(){ try { openProductDetail(sku); } catch (e) {} }, 150);
+  } catch (e) {}
+}
+window.addEventListener('load', function(){ setTimeout(handleProductDeepLink, 400); });
 
 function openProfileModal(){
   var el = document.getElementById('profileModalOverlay');
