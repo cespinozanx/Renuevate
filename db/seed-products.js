@@ -296,10 +296,26 @@ const PRODUCTS = [
     ingredients_es: ['Fibra de Acacia', 'Aceite de Mijo (Panicum miliaceum)', 'Ácido Ascórbico', 'Sabor Fresa (Saborizante Idéntico al Natural)', 'Ácido Málico (Acidulante)', 'Dióxido de Silicio (Antihumectante)', 'Lecitina de Girasol (Estabilizante)', 'Citrato de Potasio (Regulador de Acidez)', 'Glucósidos de Esteviol (Edulcorante Natural)', 'Goma Guar (Estabilizante)', 'Goma Xanthana (Estabilizante)', 'Ácido Cítrico (Acidulante)', 'Color Carmín (Colorante Natural)', 'Óxido de Zinc', 'Extracto de Fruto del Monje (Siraitia grosvenorii) (Fruto) (Edulcorante Natural)', 'Pantotenato de Calcio', 'Color Cúrcuma (Colorante Natural)', 'Palmitato de Vitamina A', 'Clorhidrato de Piridoxina', 'Selenita de Sodio', 'Biotina'],
     usage_es: 'Tomar 1 sobre diluido en agua diariamente.' },
 
-  // ROBLE (Speciality Spot): sin productos reales todavia -- sus SKUs mock
-  // siguen en RETIRED_DEMO_SKUS arriba para desactivarse en Mongo
-  // (status:'''inactive''') al correr este script -- nunca se borran
-  // registros, por si algun carrito/orden ya los referencia (ver Fix 151).
+  // ROBLE (System Spot Specialist): Fix 201 (Carlos, 2026-10-05) -- primeros 2
+  // productos reales. ROBLE-01..04 mock se borraron en Fix 154, los SKUs
+  // quedaron libres. Ingredientes/modo de uso del suplemento: Carlos no los
+  // envio todavia (no se inventan; la ficha oculta esas secciones si estan vacias).
+  { sku: 'ROBLE-01', vertical: 'roble', price: '$630 MXN', related: ['ROBLE-02'], favorito: false, system: 'spot_speciality',
+    name_i18n: { es: 'Suplemento Spot Specialist', en: 'Spot Specialist Supplement', fr: 'Complément Spot Specialist' },
+    description_i18n: { es: 'Suplemento alimenticio sabor Manzana Verde, adicionado con Probióticos Lactobacillus Rhamnosus, Vitaminas A, C, Niacina y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.', en: 'Green apple flavored dietary supplement, with added Lactobacillus rhamnosus probiotics, vitamins A and C, niacin and zinc. Content: 150 g, box with 30 sachets of 5 g each.', fr: 'Complément alimentaire saveur pomme verte, enrichi en probiotiques Lactobacillus rhamnosus, vitamines A et C, niacine et zinc. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.' },
+    image: 'media/roble-01-suplemento-front.webp',
+    images: ['media/roble-01-suplemento-front.webp', 'media/roble-01-suplemento-lifestyle-bote.webp', 'media/roble-01-suplemento-lifestyle-vaso.webp'],
+    long_description_es: 'Suplemento alimenticio sabor Manzana Verde, adicionado con Probióticos Lactobacillus Rhamnosus, Vitaminas A, C, Niacina y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.',
+    ingredients_es: [],
+    usage_es: '' },
+  { sku: 'ROBLE-02', vertical: 'roble', price: '$310 MXN', related: ['ROBLE-01'], favorito: false, system: 'spot_speciality',
+    name_i18n: { es: 'Dermolimpiador Facial', en: 'Facial Dermo-Cleanser', fr: 'Dermo-nettoyant Visage' },
+    description_i18n: { es: 'Limpiador facial adicionado con ácido salicílico que remueve las impurezas, limpia los poros a profundidad, sin resecar la piel.', en: 'Facial cleanser with added salicylic acid that removes impurities and deep-cleans pores without drying the skin.', fr: 'Nettoyant visage enrichi en acide salicylique qui élimine les impuretés et nettoie les pores en profondeur, sans dessécher la peau.' },
+    image: 'media/roble-02-dermolimpiador-front.webp',
+    images: ['media/roble-02-dermolimpiador-front.webp', 'media/roble-02-dermolimpiador-lifestyle-agave.webp', 'media/roble-02-dermolimpiador-lifestyle-spa.webp'],
+    long_description_es: ['Limpia la piel sin secarla y sin dejar efecto de tirantez.', 'Remueve impurezas y limpia los poros a profundidad.', 'Disminuye la acumulación de impurezas y sebo en el rostro.'],
+    ingredients_es: ['AQUA (WATER)', 'SODIUM C14-16 OLEFIN SULFONATE', 'COCAMIDOPROPYL BETAINE', 'SODIUM LAUROYL METHYL ISETHIONATE', 'PROPYLENE GLYCOL', 'PEG-200 HYDROGENATED GLYCERYL PALMATE', 'PEG/PPG-120/10 TRIMETHYLOLPROPANE TRIOLEATE', 'LAURETH-2', 'SODIUM CHLORIDE', 'SALICYLIC ACID', 'BACILLUS FERMENT EXTRACT FILTRATE', 'ALLANTOIN', 'PEG-7 GLYCERYL COCOATE', 'MENTHOL', 'PHENOXYETHANOL', 'ETHYLHEXYLGLYCERIN', 'SODIUM BENZOATE', 'SODIUM HYDROXIDE', 'CITRIC ACID', 'TETRASODIUM EDTA'],
+    usage_es: 'Uso mañana y noche.' },
 
   // Accesorios de carrito (upsell de bolsas, ver BAG_MODELS en index.html).
   // vertical:'accessory' a proposito -- no pertenecen a ninguno de los 4
