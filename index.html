@@ -5765,8 +5765,8 @@ function openProductDetail(sku){
 
   var media = document.getElementById('pdMedia');
   media.innerHTML = p.img
-    ? '<img src="' + p.img + '" alt="' + p.name + '" onerror="handleProductImgError(this,\'' + currentV + '\')">'
-    : iconSvg(currentV);
+    ? '<img src="' + p.img + '" alt="' + p.name + '" onerror="handleProductImgError(this,\'' + (p._v || currentV) + '\')">'
+    : iconSvg(p._v || currentV);
 
   // Filmstrip de miniaturas -- solo si el producto trae mas de una foto
   // (p.img + p.gallery). Clic en una miniatura cambia la foto principal sin
@@ -5964,6 +5964,13 @@ var categoryFilterSku = null;
 // Se resetea en openBeautyCatalog()/openBeautyCategory() igual que
 // categoryFilterSku, para no dejarlo "pegado" al navegar a otra vista.
 var categorySystemFilter = null;
+// Fix 208 (Carlos: "en el catalogo completo en ver mas no aparecen los de
+// System Hair ni los de System Spot"): openBeautyCatalog() solo pintaba la
+// vertical 'nacar'; Hair (vigor) y Spot (roble) son verticales aparte en V y
+// nunca entraban. Con catalogAllMode el grid junta nacar + vigor + roble.
+// Se activa SOLO en openBeautyCatalog() y se apaga en cualquier otra
+// navegacion (goVertical, openBeautyCategory, volver al home).
+var catalogAllMode = false;
 var BQ_STATE = { step: 0, answers: {} };
 var BQ_ROUTINE_BY_TIME = { 1:0, 2:0, 3:1, 4:2, 5:2 };
 
@@ -5971,7 +5978,16 @@ function renderVertical(v){
   currentV = v;
   var vert = V[v];
   var d = vert[currentLang];
-  CURRENT_RENDERED_PRODUCTS = d.products;
+  var allMode = catalogAllMode && !categoryFilterSku && !categorySystemFilter;
+  var pool = d.products;
+  if (allMode){
+    pool = [];
+    ['nacar','vigor','roble'].forEach(function(vv){
+      var vd = V[vv] && V[vv][currentLang];
+      if (vd && vd.products) vd.products.forEach(function(pp){ pp._v = vv; pool.push(pp); });
+    });
+  }
+  CURRENT_RENDERED_PRODUCTS = pool;
   document.documentElement.style.setProperty('--active', getComputedStyle(document.documentElement).getPropertyValue('--'+v));
   document.documentElement.style.setProperty('--active-2', getComputedStyle(document.documentElement).getPropertyValue('--'+v+'-2'));
   document.documentElement.style.setProperty('--active-soft', getComputedStyle(document.documentElement).getPropertyValue('--'+v+'-soft'));
@@ -6011,7 +6027,7 @@ function renderVertical(v){
   // mayoria de categorías, 2 para "Tratamiento"). relatedHtml sigue buscando
   // en d.products (lista completa) para que "se compra junto con" no se
   // pierda solo por estar en vista filtrada.
-  var listToRender = categorySystemFilter ? d.products.filter(function(pp){ return pp.system === categorySystemFilter; }) : (categoryFilterSku ? d.products.filter(function(pp){ return categoryFilterSku.indexOf(pp.sku) !== -1; }) : d.products);
+  var listToRender = categorySystemFilter ? d.products.filter(function(pp){ return pp.system === categorySystemFilter; }) : (categoryFilterSku ? d.products.filter(function(pp){ return categoryFilterSku.indexOf(pp.sku) !== -1; }) : pool);
   // Fix 137: un producto que el panel de Administracion marco como inactivo
   // (hydrateCatalogFromDB marca p._adminInactive=true, ver abajo) se oculta
   // de este grid. Alcance deliberado v1: NO se quita todavia de busqueda,
@@ -6021,12 +6037,13 @@ function renderVertical(v){
   listToRender = listToRender.filter(function(pp){ return !pp._adminInactive; });
   for (var k=0;k<listToRender.length;k++){
     var p = listToRender[k];
+    var pv = p._v || v;
     var ratingHtml = p.rating ? ('<div class="product-rating"><span class="stars">' + starsHtml(p.rating.stars) + '</span><span>' + p.rating.stars.toFixed(1) + ' (' + p.rating.count + ')</span></div>') : '';
     var relatedHtml = '';
     if (p.related && p.related.length){
       var names = [];
       for (var r=0;r<p.related.length;r++){
-        var rp = findProductBySku(d.products, p.related[r]);
+        var rp = findProductBySku(pool, p.related[r]);
         if (rp) names.push(rp.name);
       }
       if (names.length) relatedHtml = '<div class="product-related">' + DYN[currentLang].boughtTogether() + ' <b>' + names.join(', ') + '</b></div>';
@@ -6043,8 +6060,8 @@ function renderVertical(v){
     // foto de esta generacion) cae a p.img como antes.
     var cardImgSrc = p.thumb || p.img;
     var imgHtml = cardImgSrc
-      ? '<img src="' + cardImgSrc + '" alt="' + p.name + '" loading="lazy" onerror="handleProductImgError(this,\'' + v + '\')">'
-      : iconSvg(v);
+      ? '<img src="' + cardImgSrc + '" alt="' + p.name + '" loading="lazy" onerror="handleProductImgError(this,\'' + pv + '\')">'
+      : iconSvg(pv);
     // Fichas "dummy" (p.dummy===true): no existen como SKU real en MongoDB,
     // así que nunca se ofrece "Agregar al carrito" sobre ellas -- pero si
     // traen ficha completa (longDesc/ingredients/usage) si dejamos ver el
@@ -6102,6 +6119,7 @@ function renderVertical(v){
 }
 
 function goVertical(v, systemFilter){
+  catalogAllMode = false;
   categoryFilterSku = null; // Fix 58: navegar a un System Speciality siempre muestra todos sus productos
   // Fix 160: systemFilter es opcional a proposito -- los llamados genericos a
   // goVertical() (busqueda, chatbot, "se compra junto con", productos
@@ -6131,6 +6149,7 @@ function goVertical(v, systemFilter){
     document.getElementById('zoomEyebrow').textContent = I18N[currentLang]['zoom.eyebrow'];
   }
   catalogModeActive = false;
+  catalogAllMode = false;
   // Se oculta el resto de la home (hero/verticales/filosofia/newsletter, ver
   // clase .home-only) para que System Speciality y el catalogo se sientan
   // como su propia página -- ya no basta con mostrar/ocultar #zoom, porque
@@ -6155,6 +6174,7 @@ function resetToHomeState(){
   zoomSection.classList.add('zoom-hidden');
   zoomSection.classList.remove('catalog-mode');
   catalogModeActive = false;
+  catalogAllMode = false;
   // Fix 113: la pagina aislada de Filosofia usa el mismo mecanismo que #zoom
   // (viewing-product-page + su propia clase zoom-hidden) -- se oculta aqui
   // tambien para que "Volver a inicio"/goHome() la cierre sin importar por
@@ -6188,6 +6208,7 @@ function goToFilosofia(){
   zoomSection.classList.add('zoom-hidden');
   zoomSection.classList.remove('catalog-mode');
   catalogModeActive = false;
+  catalogAllMode = false;
   var filPage = document.getElementById('filosofiaPage');
   filPage.classList.remove('zoom-hidden');
   document.body.classList.add('viewing-product-page');
@@ -6206,6 +6227,7 @@ function goToFilosofia(){
 // si crece a mas de una vertical, este es el lugar para unificar productos.
 var catalogModeActive = false;
 function openBeautyCatalog(){
+  catalogAllMode = true; // Fix 208: catalogo completo = nacar + vigor + roble
   categoryFilterSku = null; // Fix 58: "Explorar catalogo" siempre muestra los 4 productos, sin filtro
   categorySystemFilter = null; // Fix 160: idem, catalogo completo nunca debe heredar un filtro de sistema
   renderVertical('nacar');
@@ -6241,6 +6263,7 @@ function applyCatalogPageLabels(){
 // página -- ya no se deriva del tag de un solo producto porque una categoría
 // puede agrupar 2 productos con tags distintos.
 function openBeautyCategory(skus, labelKey){
+  catalogAllMode = false;
   categoryFilterSku = skus;
   categorySystemFilter = null; // Fix 160: una categoria del menu Belleza nunca debe heredar un filtro de sistema
   renderVertical('nacar');
