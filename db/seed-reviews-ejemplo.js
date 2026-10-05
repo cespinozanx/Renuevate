@@ -52,8 +52,7 @@ const TEXT = 'Texto de ejemplo para maquetación. Reemplázalo con la reseña re
 const EJEMPLOS = [
   // NACAR-16 Crema para Contorno de Ojos (en la foto aparece junto a la Crema de Dia Time-Specialist)
   { sku: 'NACAR-16', photo: 'media/review-ejemplo-nacar-16-contorno-ojos.webp' },
-  // VIGOR-01 Shampoo Fortificante
-  { sku: 'VIGOR-01', photo: 'media/review-ejemplo-vigor-01-shampoo.webp' },
+  // VIGOR-01 ya tiene testimonio real (db/seed-reviews-reales.js), se quita de los ejemplos.
   // VIGOR-02 Locion Capilar Fortificante (en la foto aparece junto al Shampoo)
   { sku: 'VIGOR-02', photo: 'media/review-ejemplo-vigor-02-locion.webp' },
   // NACAR-09 Protector Solar Facial FPS 50+

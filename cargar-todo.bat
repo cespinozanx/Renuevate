@@ -2,7 +2,8 @@
 REM cargar-todo.bat (Fix 205) -- UN SOLO doble clic: deja la base Atlas al dia.
 REM   1) db\collections.js            -> esquema/indices (idempotente)
 REM   2) db\seed-products.js          -> catalogo (ROBLE-01/02/03, NACAR-18 -v2, etc.)
-REM   3) db\seed-reviews-ejemplo.js   -> resenas de EJEMPLO con foto (marcadas)
+REM   3) db\seed-reviews-ejemplo.js   -> fotos de comunidad (ejemplo)
+REM   4) db\seed-reviews-reales.js    -> testimonios reales
 REM Para quitar las resenas de ejemplo: node db\seed-reviews-ejemplo.js --purge
 cd /d "%~dp0"
 echo ============================================
@@ -13,6 +14,8 @@ if errorlevel 1 goto :fail
 call node db\seed-products.js
 if errorlevel 1 goto :fail
 call node db\seed-reviews-ejemplo.js
+if errorlevel 1 goto :fail
+call node db\seed-reviews-reales.js
 if errorlevel 1 goto :fail
 echo.
 echo Listo. Atlas actualizado. Recarga el sitio con Ctrl+Shift+R.
