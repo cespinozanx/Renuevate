@@ -51,7 +51,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=Bodoni+Moda:ital,wght@0,400;0,500;1,500&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
   /* Holding corporativo - paleta madre (estilo Aesop / Jo Malone / Chanel) */
@@ -1317,7 +1316,7 @@ var AZURA_CONFIG = {
     FB.init({ appId: AZURA_CONFIG.FACEBOOK_APP_ID, cookie: true, xfbml: false, version: 'v20.0' });
   };
 </script>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+<!-- Fix 224: los SDK de Google y Facebook (login) ya no se cargan al abrir el sitio; se piden al abrir el modal de acceso (loadAuthSdks) -->
 
 <!-- Vercel Analytics (incluido gratis en el plan de Vercel, sin llaves adicionales) -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
@@ -4714,7 +4713,20 @@ function onAccountIconClick(){
   if (CURRENT_CUSTOMER.id){ openAccountModal(); } else { openAuthModal('signin'); }
 }
 
+var _authSdksLoaded = false;
+function loadAuthSdks(){
+  if (_authSdksLoaded) return;
+  _authSdksLoaded = true;
+  ['https://accounts.google.com/gsi/client', 'https://connect.facebook.net/en_US/sdk.js'].forEach(function(src){
+    var sc = document.createElement('script');
+    sc.src = src; sc.async = true; sc.defer = true;
+    if (src.indexOf('facebook') > -1) sc.crossOrigin = 'anonymous';
+    document.head.appendChild(sc);
+  });
+}
+
 function openAuthModal(tab){
+  loadAuthSdks();
   setAuthTab(tab || 'signin');
   document.getElementById('authModalOverlay').classList.add('is-open');
   // Se re-renderiza el boton de Google con el modal ya visible (ver nota en
@@ -7958,7 +7970,7 @@ window.addEventListener('scroll', function(){
 })();
 
 applyLanguage('es');
-initGoogleButton('googleBtnContainer');
+/* Fix 224: sin llamada al inicio; el boton de Google se pinta al abrir el modal (openAuthModal) */
 initCookieBanner();
 </script>
 </body>
