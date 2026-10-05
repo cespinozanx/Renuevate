@@ -662,6 +662,13 @@ body.viewing-product-page .home-only{display:none;}
 .pd-rating-bar-fill{height:100%; background:var(--gold);}
 .pd-rating-row-pct{width:32px; flex-shrink:0; text-align:right; color:var(--grey);}
 .pd-reviews-list{max-height:340px; overflow-y:auto; margin-bottom:4px;}
+/* Fix 206: fotos de la comunidad (sin estrellas ni texto de opinion). Las
+   entradas de ejemplo de db/seed-reviews-ejemplo.js ya no se pintan como
+   resenas ni cuentan en el promedio: solo aportan su foto a esta tira. */
+.pd-community{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);}
+.pd-community-label{font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:var(--grey); font-weight:700; margin-bottom:8px;}
+.pd-community-photos{display:flex; gap:8px; flex-wrap:wrap;}
+.pd-community-photos img{width:84px; height:112px; object-fit:cover; border-radius:3px; border:1px solid var(--line);}
 .pd-write-review-btn{display:inline-block; margin:6px 0 4px; padding:9px 18px; font-size:11px; letter-spacing:1px; text-transform:uppercase; font-weight:700; border:1px solid var(--ink); background:transparent; color:var(--ink); border-radius:2px; cursor:pointer; transition:all .2s ease;}
 .pd-write-review-btn:hover{background:var(--ink); color:#fff;}
 
@@ -3896,6 +3903,22 @@ function buildRatingBreakdownHtml(reviews){
   return html;
 }
 
+// Fix 206: escape de texto de resena (antes se interpolaba tal cual en
+// innerHTML: XSS almacenado, con CSP script-src 'unsafe-inline' habria
+// ejecutado) y whitelist de origen para la foto (data:image o media/).
+function escReview(t){
+  return String(t == null ? '' : t).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function safeReviewImgSrc(u){
+  u = String(u || '');
+  return (/^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u) || /^media\/[A-Za-z0-9._\-\/]+$/.test(u)) ? u : '';
+}
+// Entradas de ejemplo (db/seed-reviews-ejemplo.js): se muestran solo como foto.
+var SAMPLE_REVIEW_NAME = 'Rese\u00f1a de ejemplo';
+var COMMUNITY_LABEL = { es:'Fotos de la comunidad', en:'Community photos', fr:'Photos de la communaut\u00e9' };
+
 function loadReviewsForProduct(sku){
   var listEl = document.getElementById('pdReviewsList');
   var summaryEl = document.getElementById('pdRatingSummary');
@@ -3929,8 +3952,19 @@ function loadReviewsForProduct(sku){
       // Ignora respuestas obsoletas si el visitante cambio de producto antes
       // de que este fetch regresara (clicks rapidos entre fichas).
       if (pdCurrentSku !== sku) return;
-      var reviews = (data && data.reviews) || [];
+      var allReviews = (data && data.reviews) || [];
       var purchased = !!(data && data.purchased);
+      var reviews = [], communityPhotos = [];
+      for (var q=0;q<allReviews.length;q++){
+        var rq = allReviews[q];
+        if (rq.customer_display_name === SAMPLE_REVIEW_NAME){
+          if (rq.photos) for (var z=0;z<rq.photos.length;z++){ var sp = safeReviewImgSrc(rq.photos[z].data_url); if (sp) communityPhotos.push(sp); }
+        } else { reviews.push(rq); }
+      }
+      var communityHtml = communityPhotos.length
+        ? '<div class="pd-community"><div class="pd-community-label">' + (COMMUNITY_LABEL[currentLang] || COMMUNITY_LABEL.es) + '</div><div class="pd-community-photos">' +
+          communityPhotos.map(function(u){ return '<img src="' + u + '" loading="lazy" alt="">'; }).join('') + '</div></div>'
+        : '';
 
       if (reviews.length){
         var avg = reviews.reduce(function(sum, r){ return sum + r.stars; }, 0) / reviews.length;
@@ -3939,18 +3973,18 @@ function loadReviewsForProduct(sku){
         var html = '';
         for (var j=0;j<reviews.length;j++){
           var rv = reviews[j];
-          html += '<div class="comment-item"><div class="c-head"><span>' + rv.customer_display_name + '</span><span class="c-stars">' + starsHtml(rv.stars) + '</span></div>';
-          if (rv.title) html += '<p class="review-item-title">' + rv.title + '</p>';
-          if (rv.text) html += '<p>' + rv.text + '</p>';
+          html += '<div class="comment-item"><div class="c-head"><span>' + escReview(rv.customer_display_name) + '</span><span class="c-stars">' + starsHtml(rv.stars) + '</span></div>';
+          if (rv.title) html += '<p class="review-item-title">' + escReview(rv.title) + '</p>';
+          if (rv.text) html += '<p>' + escReview(rv.text) + '</p>';
           if (rv.photos && rv.photos.length){
-            for (var k=0;k<rv.photos.length;k++){ html += '<img class="review-photo-thumb" src="' + rv.photos[k].data_url + '" loading="lazy">'; }
+            for (var k=0;k<rv.photos.length;k++){ var ps = safeReviewImgSrc(rv.photos[k].data_url); if (ps) html += '<img class="review-photo-thumb" src="' + ps + '" loading="lazy" alt="">'; }
           }
           html += '</div>';
         }
-        listEl.innerHTML = html;
+        listEl.innerHTML = html + communityHtml;
       } else {
         summaryEl.innerHTML = '';
-        listEl.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].noReviewsYet() + '</p>';
+        listEl.innerHTML = '<p class="review-login-hint">' + DYN[currentLang].noReviewsYet() + '</p>' + communityHtml;
       }
 
       formEl.innerHTML = buildReviewFormHtml(sku, purchased);
