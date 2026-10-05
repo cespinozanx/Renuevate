@@ -262,7 +262,7 @@ const PRODUCTS = [
     name_i18n: { es: 'Suplemento T-Specialist', en: 'T-Specialist Supplement', fr: 'Complément T-Specialist' },
     description_i18n: { es: 'Suplemento alimenticio, sabor arándano, adicionado con fitoceramidas de trigo, vitamina C, Vitamina E y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.', en: 'Dietary supplement, blueberry flavor, with added wheat phytoceramides, vitamin C, vitamin E and zinc. Content: 150 g, box with 30 sachets of 5 g each.', fr: 'Complément alimentaire, saveur myrtille, enrichi en phytocéramides de blé, vitamine C, vitamine E et zinc. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.' },
     image: 'media/nacar-18-suplemento-front.webp',
-    images: ['media/nacar-18-suplemento-front.webp', 'media/nacar-18-suplemento-lifestyle-espejo.webp', 'media/nacar-18-suplemento-lifestyle-cactus.webp'],
+    images: ['media/nacar-18-suplemento-front.webp', 'media/nacar-18-suplemento-lifestyle-espejo-v2.webp', 'media/nacar-18-suplemento-lifestyle-cactus-v2.webp'],
     long_description_es: 'Suplemento alimenticio, sabor arándano, adicionado con fitoceramidas de trigo, vitamina C, Vitamina E y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.',
     ingredients_es: ['Goma de Acacia', 'Inulina', 'Saborizantes Artificiales', 'Extracto de Trigo', 'Ácido Cítrico', 'Ácido Tartárico', 'Glicósidos de Esteviol', 'Colorante Antocianina', 'Dióxido de Silicio', 'Ácido Málico', 'Ascorbato de Calcio', 'Gluconato de Zinc', 'Goma Guar', 'Acetato de Alfa-Tocoferol'],
     usage_es: 'Tomar 2 sobres al día.' },
