@@ -107,6 +107,13 @@ img,svg{display:block;}
 .topbar .container{display:flex; justify-content:space-between; align-items:center; height:34px;}
 .topbar-links{display:flex; gap:18px;}
 .topbar-links span{opacity:.9;}
+/* Fix 227: se quitan los eslogan de las tarjetas (Luminosidad / Energia / Fuerza), la frase corta del tratamiento ya las reemplaza */
+.v-card .v-msg{display:none;}
+/* Fix 227: franja de atributos arriba del header */
+.claims-bar{background:#fff; border-bottom:1px solid var(--line); text-align:center; padding:7px 14px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:6px 22px; font-size:11.5px; letter-spacing:.9px; text-transform:uppercase; color:var(--grey);}
+.claims-bar .cb-line{opacity:.75;}
+.claims-bar .cb-item{display:inline-flex; align-items:center; gap:7px; font-weight:600; color:#2c4a3a;}
+.claims-bar .cb-item img{width:18px; height:18px; object-fit:contain; display:block;}
 
 /* Fix 108 (auditoria): header.site tenia z-index:50 y establece su propio
    stacking context (position:sticky + z-index). El menu movil (nav.main,
@@ -1373,6 +1380,13 @@ var AZURA_CONFIG = {
   </div>
 </div>
 
+<div class="claims-bar" id="claimsBar">
+  <span class="cb-line" data-i18n="claims.line">Línea de cuidado de la piel</span>
+  <span class="cb-item"><img src="media/logo-leaf-hd.png" alt="" width="18" height="18"><span data-i18n="claims.hypo">Hipoalergénico</span></span>
+  <span class="cb-item"><img src="media/logo-leaf-hd.png" alt="" width="18" height="18"><span data-i18n="claims.paraben">Sin parabenos</span></span>
+  <span class="cb-item"><img src="media/logo-leaf-hd.png" alt="" width="18" height="18"><span data-i18n="claims.alcohol">Sin alcohol</span></span>
+</div>
+
 <header class="site" id="siteHeader">
   <div class="container nav-row">
     <div class="hamburger" id="hamburgerBtn" onclick="toggleNav()" role="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><span></span><span></span><span></span></div>
@@ -1542,8 +1556,8 @@ var AZURA_CONFIG = {
            tamaño de pantalla. -->
       <div class="v-card nacar has-video" onclick="goVertical('nacar','time_specialist')">
         <div class="v-media">
-          <video class="v-media-el" muted loop playsinline preload="none" poster="media/seytu-system-t-showcase-poster.jpg" aria-hidden="true">
-            <source src="media/seytu-system-t-showcase.mp4" type="video/mp4">
+          <video class="v-media-el" muted loop playsinline preload="none" poster="media/seytu-system-t-showcase-v2-poster.jpg" aria-hidden="true">
+            <source src="media/seytu-system-t-showcase-v2.mp4" type="video/mp4">
           </video>
         </div>
         <div class="v-tag" id="vtagNacar">Belleza para mujer</div>
@@ -1622,8 +1636,8 @@ var AZURA_CONFIG = {
         </div>
       </div>
       <div class="zoom-banner-media">
-        <video class="v-media-el" id="zoomBannerVideoNacar" muted loop playsinline preload="none" poster="media/seytu-system-t-showcase-poster.jpg" aria-hidden="true">
-          <source src="media/seytu-system-t-showcase.mp4" type="video/mp4">
+        <video class="v-media-el" id="zoomBannerVideoNacar" muted loop playsinline preload="none" poster="media/seytu-system-t-showcase-v2-poster.jpg" aria-hidden="true">
+          <source src="media/seytu-system-t-showcase-v2.mp4" type="video/mp4">
         </video>
         <!-- Fix 210 (Carlos: "para system spot specialist pon el gif adjunto"):
              el GIF original (3.7 MB, 720x720 con franjas blancas) se recorto
@@ -1683,7 +1697,6 @@ var AZURA_CONFIG = {
         <img src="media/logo-leaf-tile.png" alt="Renuévate" class="footer-logo-icon" loading="lazy" width="40" height="40">
         <div class="logo">RENU<span class="logo-accent">É</span>VATE</div>
       </div>
-      <p data-i18n="footer.brandP">System T-Specialist, Hair y Spot: hábitos de bienestar para cada etapa de tu vida.</p>
       <div class="footer-social">
         <a href="#" id="socialInstagram" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
         <a href="#" id="socialTiktok" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M9 12a4 4 0 1 0 4 4V4c1 2 3 3 5 3"/></svg></a>
@@ -2357,7 +2370,7 @@ var V = {
           longDesc:"Suplemento alimenticio, sabor arándano, adicionado con fitoceramidas de trigo, vitamina C, Vitamina E y Zinc. Contenido 150 g, caja con 30 sobres de 5 g cada uno.",
           usage:"Tomar 2 sobres al día.",
           ingredients:["Goma de Acacia","Inulina","Saborizantes Artificiales","Extracto de Trigo","Ácido Cítrico","Ácido Tartárico","Glicósidos de Esteviol","Colorante Antocianina","Dióxido de Silicio","Ácido Málico","Ascorbato de Calcio","Gluconato de Zinc","Goma Guar","Acetato de Alfa-Tocoferol"],
-          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo-v2.webp","media/nacar-18-suplemento-lifestyle-cactus-v2.webp"],
+          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo-v2.webp"],
           related:["NACAR-08","NACAR-16","NACAR-17"]}
       ],
       routines:[{title:"Rutina esencial", desc:"limpieza + hidratacion diaria."},{title:"Rutina principal", desc:"suma serum de tratamiento."},{title:"Rutina completa", desc:"rutina de 5 pasos con contorno y protección."}]
@@ -2482,7 +2495,7 @@ var V = {
           longDesc:"Dietary supplement, blueberry flavor, with added wheat phytoceramides, vitamin C, vitamin E and zinc. Content: 150 g, box with 30 sachets of 5 g each.",
           usage:"Take 2 sachets a day.",
           ingredients:["Acacia Gum","Inulin","Artificial Flavors","Wheat Extract","Citric Acid","Tartaric Acid","Steviol Glycosides","Anthocyanin Color","Silicon Dioxide","Malic Acid","Calcium Ascorbate","Zinc Gluconate","Guar Gum","Alpha-Tocopherol Acetate"],
-          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo-v2.webp","media/nacar-18-suplemento-lifestyle-cactus-v2.webp"],
+          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo-v2.webp"],
           related:["NACAR-08","NACAR-16","NACAR-17"]}
       ],
       routines:[{title:"Essential routine", desc:"daily cleansing + hydration."},{title:"Core routine", desc:"adds a treatment serum."},{title:"Complete routine", desc:"5-step routine with eye contour and protection."}]
@@ -2607,7 +2620,7 @@ var V = {
           longDesc:"Complément alimentaire, saveur myrtille, enrichi en phytocéramides de blé, vitamine C, vitamine E et zinc. Contenu : 150 g, boîte de 30 sachets de 5 g chacun.",
           usage:"Prendre 2 sachets par jour.",
           ingredients:["Gomme d'Acacia","Inuline","Arômes Artificiels","Extrait de Blé","Acide Citrique","Acide Tartrique","Glycosides de Stéviol","Colorant Anthocyane","Dioxyde de Silicium","Acide Malique","Ascorbate de Calcium","Gluconate de Zinc","Gomme de Guar","Acétate d'Alpha-Tocophérol"],
-          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo-v2.webp","media/nacar-18-suplemento-lifestyle-cactus-v2.webp"],
+          img:"media/nacar-18-suplemento-front.webp", thumb:"media/nacar-18-suplemento-front.webp", gallery:["media/nacar-18-suplemento-lifestyle-espejo-v2.webp"],
           related:["NACAR-08","NACAR-16","NACAR-17"]}
       ],
       routines:[{title:"Routine essentielle", desc:"nettoyage + hydratation quotidienne."},{title:"Routine principale", desc:"ajoute un serum de traitement."},{title:"Routine complète", desc:"routine en 5 étapes avec contour et protection."}]
@@ -2793,6 +2806,7 @@ var V = {
 var I18N = {
   es:{
     "promo.shipping":"Envío GRATIS en compras mínimas de $1,800 MXN", "promo.cta":"Comprar ahora",
+    "claims.line":"Línea de cuidado de la piel", "claims.hypo":"Hipoalergénico", "claims.paraben":"Sin parabenos", "claims.alcohol":"Sin alcohol",
     "top.shipping":"Envío calculado en checkout . Entrega en 4 días hábiles", "top.location":"Cancun . Mexico", "top.tagline":"Bienestar real, para cada etapa de tu vida",
     "nav.nacar":"Belleza", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Nuestra filosofia", "nav.search":"Ver más",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxidante", "nav.beauty.cream":"Crema de día", "nav.beauty.treatment":"Maquillaje", "nav.beauty.sunscreen":"Descubre tu rutina", "nav.beauty.quiz":"Diagnostico personalizado", "nav.beauty.favorites":"Favoritos de Renuévate", "search.title":"Buscar",
@@ -2908,6 +2922,7 @@ var I18N = {
   },
   en:{
     "promo.shipping":"FREE shipping on orders over $1,800 MXN", "promo.cta":"Shop now",
+    "claims.line":"Skincare line", "claims.hypo":"Hypoallergenic", "claims.paraben":"Paraben-free", "claims.alcohol":"Alcohol-free",
     "top.shipping":"Shipping calculated at checkout . Delivery in 4 business days", "top.location":"Cancun . Mexico", "top.tagline":"Real wellness, for every stage of your life",
     "nav.nacar":"Beauty", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Our philosophy", "nav.search":"See more",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Antioxidant gel", "nav.beauty.cream":"Day cream", "nav.beauty.treatment":"Makeup", "nav.beauty.sunscreen":"Discover your routine", "nav.beauty.quiz":"Personalized diagnosis", "nav.beauty.favorites":"Renuévate Favorites", "search.title":"Search",
@@ -3023,6 +3038,7 @@ var I18N = {
   },
   fr:{
     "promo.shipping":"Livraison GRATUITE des $1,800 MXN d'achat", "promo.cta":"Acheter maintenant",
+    "claims.line":"Gamme de soins de la peau", "claims.hypo":"Hypoallergénique", "claims.paraben":"Sans parabènes", "claims.alcohol":"Sans alcool",
     "top.shipping":"Livraison calculee au paiement . Livraison en 4 jours ouvres", "top.location":"Cancun . Mexique", "top.tagline":"Un bien-etre réel, a chaque étape de votre vie",
     "nav.nacar":"Beauté", "nav.system.luminous":"System T-Specialist", "nav.system.health":"System Hair Specialist", "nav.system.spot":"System Spot Specialist", "nav.filosofia":"Notre philosophie", "nav.search":"Voir plus",
     "nav.beauty.cleanser":"Skincare", "nav.beauty.gel":"Gel antioxydant", "nav.beauty.cream":"Crème de jour", "nav.beauty.treatment":"Maquillage", "nav.beauty.sunscreen":"Decouvrez votre routine", "nav.beauty.quiz":"Diagnostic personnalise", "nav.beauty.favorites":"Favoris Renuévate", "search.title":"Rechercher",
