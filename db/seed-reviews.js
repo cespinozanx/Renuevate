@@ -72,38 +72,30 @@ const REVIEWS = [
   // NACAR-06 -- Espuma Limpiadora Facial (3 resenas)
   { sku: 'NACAR-06', name: 'Renata M.', stars: 5, title: 'Llega rápido y no reseca', text: 'Llego rápido y bien empacado. La espuma no reseca, la uso a diario.', photo: 'media/nacar-06-espuma-lifestyle-mano.webp' },
   { sku: 'NACAR-06', name: 'Paola S.', stars: 5, title: 'Textura increíble', text: 'Me encanto la textura, no deja la piel grasosa.' },
-  { sku: 'NACAR-06', name: 'Lucia P.', stars: 4, title: 'Rinde bastante', text: 'Buena espuma, rinde bastante. Solo me gustaria que el dispensador durara un poco mas.' },
 
   // NACAR-07 -- Omniplus Gel Premium (2 resenas)
-  { sku: 'NACAR-07', name: 'Diego H.', stars: 4, title: 'Buen producto', text: 'Buen producto, aunque el envío se tardo un poco mas de lo que decia.', photo: 'media/nacar-07-omniplus-review-diego.webp' },
   { sku: 'NACAR-07', name: 'Sofia R.', stars: 5, title: 'Ligero y refrescante', text: 'El gel se siente ligero y refresca al instante, ya es parte de mi rutina de las mananas.' },
 
   // NACAR-08 -- Crema de Dia FPS 30 (3 resenas)
-  { sku: 'NACAR-08', name: 'Andrea Q.', stars: 4, title: 'Cumple lo que promete', text: 'Cumple, aunque el precio esta un poco alto para lo que rinde.' },
   { sku: 'NACAR-08', name: 'Miguel T.', stars: 5, title: 'Se la regale a mi esposa y le encanto', text: 'Se la regale a mi esposa y le encanto, ya la volvio a pedir.' },
   { sku: 'NACAR-08', name: 'Karla M.', stars: 5, title: 'Perfecta para uso diario', text: 'Hidrata bien sin sentirse pesada bajo el maquillaje, buena opcion para uso diario.' },
 
   // NACAR-09 -- Protector Solar Facial FPS 50+ (2 resenas)
   { sku: 'NACAR-09', name: 'Fernanda L.', stars: 5, title: 'No deja la cara blanca', text: 'El protector solar no deja la cara blanca, eso ya es ganancia.', photo: 'media/nacar-09-spf50-abierto.webp' },
-  { sku: 'NACAR-09', name: 'Roberto G.', stars: 4, title: 'Buena proteccion', text: 'Buen protector, no irrita los ojos. Le doy 4 estrellas porque tarda un poco en absorber.', photo: 'media/nacar-09-spf50-review-roberto.webp' },
 
   // NACAR-10 -- Suero Facial Aloe Vera (3 resenas, agregadas en Fix 105)
   { sku: 'NACAR-10', name: 'Valeria N.', stars: 5, title: 'Se nota rapidisimo', text: 'Desde la primera semana ya se notaba la piel mas fresca, huele riquisimo y no deja nada pegajoso.', photo: 'media/nacar-10-suero-review-valeria.webp' },
-  { sku: 'NACAR-10', name: 'Jorge L.', stars: 4, title: 'Buen suero', text: 'Buen suero, se absorbe rapido. Le bajo una estrella porque el gotero a veces gotea de mas.' },
   { sku: 'NACAR-10', name: 'Ana Belen C.', stars: 5, title: 'Ya es indispensable', text: 'Lo uso manana y noche, ya no me imagino mi rutina sin el. Se los recomiendo a todas mis amigas.' },
 
   // NACAR-11 -- Maquillaje Liquido UP+ FPS15 (3 resenas, agregadas en Fix 105)
   { sku: 'NACAR-11', name: 'Marisol T.', stars: 5, title: 'Encontre mi tono', text: 'Me tarde en encontrar mi tono exacto en otras marcas, aqui el Warm Beige me quedo perfecto a la primera.' },
-  { sku: 'NACAR-11', name: 'Diana R.', stars: 4, title: 'Buena cobertura', text: 'Cubre bien sin verse cargado, dura toda la jornada de oficina. Solo cuidado con el sol de mas de medio dia.' },
   { sku: 'NACAR-11', name: 'Cynthia V.', stars: 5, title: 'No se ve como mascara', text: 'Se ve muy natural, no se ve como mascara ni se cuartea. Va a ser mi recompra fija.' },
 
   // NACAR-12 -- Brillo Labial (2 resenas, agregadas en Fix 105)
   { sku: 'NACAR-12', name: 'Paulina G.', stars: 5, title: 'Brillo espectacular', text: 'El brillo es espectacular, no se siente pegajoso y el color se ve precioso en fotos.', photo: 'media/nacar-12-brillo-review-paulina.webp' },
-  { sku: 'NACAR-12', name: 'Renata O.', stars: 4, title: 'Bonito color', text: 'El tono Agata es hermoso, solo se me quita un poco rapido despues de comer.' },
 
   // NACAR-13 -- Brocha para Maquillaje Liquido (2 resenas, agregadas en Fix 105)
   { sku: 'NACAR-13', name: 'Fernanda B.', stars: 5, title: 'Cambia el resultado', text: 'Con la brocha el maquillaje se difumina muchisimo mejor, se nota la diferencia contra usar los dedos.' },
-  { sku: 'NACAR-13', name: 'Ivonne S.', stars: 4, title: 'Cumple', text: 'Cumple bien su funcion, cerdas suaves. Nada mas hay que lavarla seguido para que no se apelmace.' },
 ];
 
 // Misma logica que recomputeRating() en api/reviews.js -- se duplica aqui
