@@ -1651,6 +1651,10 @@ var AZURA_CONFIG = {
         <video class="v-media-el" id="zoomBannerVideoRoble" muted loop playsinline preload="none" poster="media/seytu-system-spot-slideshow-v9-poster.jpg" aria-hidden="true" style="display:none;">
           <source src="media/seytu-system-spot-slideshow-v9.mp4" type="video/mp4">
         </video>
+        <!-- Fix 230: video de System Hair Specialist (vigor) en el banner, mismo archivo 3:2 de la tarjeta (cache compartido). -->
+        <video class="v-media-el" id="zoomBannerVideoVigor" muted loop playsinline preload="none" poster="media/seytu-system-h-showcase-v2-poster.jpg" aria-hidden="true" style="display:none;">
+          <source src="media/seytu-system-h-showcase-v2.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
 
@@ -6091,6 +6095,9 @@ function renderVertical(v){
   // Fix 210: slideshow de System Spot Specialist (roble) en el mismo marco.
   var zoomBannerVideoRobleEl = document.getElementById('zoomBannerVideoRoble');
   if (zoomBannerVideoRobleEl) zoomBannerVideoRobleEl.style.display = (v === 'roble') ? '' : 'none';
+  // Fix 230: video de System Hair Specialist (vigor) en el banner.
+  var zoomBannerVideoVigorEl = document.getElementById('zoomBannerVideoVigor');
+  if (zoomBannerVideoVigorEl) zoomBannerVideoVigorEl.style.display = (v === 'vigor') ? '' : 'none';
 
   var tabs = document.querySelectorAll('.zoom-tab');
   for (var i=0;i<tabs.length;i++){ tabs[i].classList.toggle('active', tabs[i].dataset.v===v); }
